@@ -1,0 +1,38 @@
+﻿using AspNetCoreHero.Results;
+using AutoMapper;
+using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Domain.Entities.LawyerDiary;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace CourtApp.Application.Features.CourtType.Command
+{
+    public class CreateCourtTypeCommand:IRequest<Result<int>>
+    {
+        public string CourtType { get; set; }
+    }
+    public class CreateCourtTypeCommandHandler : IRequestHandler<CreateCourtTypeCommand, Result<int>>
+    {
+        private readonly ICourtTypeRepository _Repository;
+        private readonly IMapper _mapper;
+        private IUnitOfWork _unitOfWork { get; set; }
+        public CreateCourtTypeCommandHandler(ICourtTypeRepository _Repository, IMapper _mapper, IUnitOfWork _unitOfWork)
+        {
+            this._unitOfWork = _unitOfWork;
+            this._mapper = _mapper;
+            this._Repository = _Repository;
+        }
+        public async Task<Result<int>> Handle(CreateCourtTypeCommand request, CancellationToken cancellationToken)
+        {
+            var CourtType = _mapper.Map<CourtTypeEntity>(request);
+            await _Repository.InsertAsync(CourtType);
+            await _unitOfWork.Commit(cancellationToken);
+            return Result<int>.Success(CourtType.Id);
+        }
+    }
+}

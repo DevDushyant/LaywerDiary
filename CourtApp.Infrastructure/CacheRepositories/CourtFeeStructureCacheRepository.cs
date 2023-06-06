@@ -1,0 +1,58 @@
+﻿using CourtApp.Application.Interfaces.CacheRepositories;
+using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Infrastructure.CacheKeys;
+using AspNetCoreHero.Extensions.Caching;
+using AspNetCoreHero.ThrowR;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
+using CourtApp.Domain.Entities.LawyerDiary;
+using System.Linq;
+
+namespace CourtApp.Infrastructure.CacheRepositories
+{
+    public class CourtFeeStructureCacheRepository : ICourtFeeStructureCacheRepository
+    {
+        private readonly IDistributedCache _distributedCache;
+        private readonly ICourtFeeStructureRepository _repository;
+        public CourtFeeStructureCacheRepository(ICourtFeeStructureRepository _repository, IDistributedCache _distributedCache)
+        {
+            this._repository = _repository;
+            this._distributedCache = _distributedCache;
+        }
+        public async Task<CourtFeeStructureEntity> GetCacheDataByIdAsync(Guid Id)
+        {
+            string cacheKey = CourtCacheKeys.GetKey(Id);
+            var data = await _distributedCache.GetAsync<CourtFeeStructureEntity>(cacheKey);
+            if (data == null)
+            {
+                data = await _repository.GetByIdAsync(Id);
+                Throw.Exception.IfNull(data, "CourtFeeStructureEntity", "No Court Fee Structure");
+                await _distributedCache.SetAsync(cacheKey, data);
+            }
+            return data;
+        }
+
+        public async Task<List<CourtFeeStructureEntity>> GetCacheDataListAsync()
+        {
+            string cacheKey = CourtFeeStructureCacheKey.ListKey;
+            try
+            {
+                var dataList = await _distributedCache.GetAsync<List<CourtFeeStructureEntity>>(cacheKey);
+                if (dataList == null)
+                {
+                    dataList = await _repository.GetListAsync();
+                    await _distributedCache.SetAsync(cacheKey, dataList);
+                }
+                return dataList;
+            }
+            catch(Exception ee) {
+                return null;
+            }
+
+
+            
+        }
+    }
+}

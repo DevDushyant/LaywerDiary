@@ -1,0 +1,315 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IHtmlLocalizer<SharedResource> localizer
+<aside id="sideBar" class="main-sidebar sidebar-dark-primary">
+    <a href="/" class="brand-link">
+        <img src="~/images/logo-transparent.png" id="brand-logo" alt="logo" class="brand-image img-circle"
+             style="opacity: .8">
+        <span class="brand-text font-weight-light" style="font-size:0.8em!important">Lawyer Diary</span>
+    </a>
+
+    <div class="sidebar">
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">
+                            <i class="nav-icon fas fa-th"></i>
+                            <p>
+                                @localizer["Dashboard"]
+                                <span class="right badge badge-danger">@localizer["New"]</span>
+                            </p>
+                        </a>
+                    </li>
+                }
+
+
+                <li class="nav-header">@localizer["Admin"]</li>
+
+                <li is-active-route asp-area="Admin" class="nav-item has-treeview">
+                    <a is-active-route asp-area="Admin" class="nav-link">
+                        <i class="nav-icon fas fa fa-wrench"></i>
+                        <p>
+                            @localizer["Admin Settings"]
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        
+
+                        @if (User.IsInRole("SuperAdmin"))
+                        {
+                            <li class="nav-item">
+                                <a is-active-route asp-area="Admin" asp-controller="User" asp-action="index" class="nav-link">
+                                    <i class="far fa-user-circle nav-icon"></i>
+                                    <p>@localizer["Users"]</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a is-active-route asp-area="Admin" asp-controller="Role" asp-action="index" class="nav-link">
+                                    <i class="far fa-user-circle nav-icon"></i>
+                                    <p>@localizer["Roles"]</p>
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+                </li>
+
+                @if (User.IsInRole("SuperAdmin"))
+                {
+                    <li is-active-route asp-area="LawyerDiary" class="nav-item has-treeview">
+                        <a is-active-route asp-area="LawyerDiary" class="nav-link">
+                            <i class="nav-icon fas fa-book-reader"></i>
+                            <p>
+                                @localizer["LawyerDiary"]
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="CaseNature" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Case Nature"]</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="TypeOfCases" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Type of cases"]</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="CourtType" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Type of court"]</p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="CourtMaster" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Court master"]</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="CaseKind" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Case Kind"]</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="BookType" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["BookType"]</p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="Publisher" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Publisher"]</p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="BookMaster" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Book Master"]</p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="Subject" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Subject"]</p>
+                                </a>
+                            </li>
+
+
+
+
+
+
+
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="CaseStage" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Case Stage"]</p>
+                                </a>
+                            </li>
+
+
+
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="ExpenseHead" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Expense Head"]</p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="CourtFeeType" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Court Fee Type"]</p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="CourtFee" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Court Fee"]</p>
+                                </a>
+                            </li>
+
+
+                        </ul>
+                    </li>
+                }
+
+                <li class="nav-header">@localizer["Client"]</li>
+                <li is-active-route asp-area="Client" class="nav-item has-treeview">
+                    <a is-active-route asp-area="Client" class="nav-link">
+                        <i class="nav-icon fas fa fa-handshake-o"></i>
+                        <p>
+                            @localizer["Client Management"]
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Client" asp-controller="ManageClient" asp-action="index" class="nav-link">
+                                <i class="fa fa-user" aria-hidden="true"></i>
+                                <p>@localizer["Client"]</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-header">@localizer["Litigation"]</li>
+                <li is-active-route asp-area="Litigation" class="nav-item has-treeview">
+                    <a is-active-route asp-area="Litigation" class="nav-link">
+                        <i class="nav-icon fas fas fa-balance-scale"></i>
+                        <p>
+                            @localizer["Case Management"]
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Litigation" asp-controller="CaseManage" asp-action="index" class="nav-link">
+                                <i class="fa fa-gavel" aria-hidden="true"></i>
+                                <p>@localizer["Manage Cases"]</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Litigation" asp-controller="CaseTracking" asp-action="index" class="nav-link">
+                                <i class="far fa-file"></i>
+                                <p>@localizer["Case Tracking"]</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <li class="nav-header">@localizer["Library"]</li>
+                <li is-active-route asp-area="Library" class="nav-item has-treeview">
+                    <a is-active-route asp-area="Library" class="nav-link">
+                        <i class="nav-icon fas fa-user-circle"></i>
+                        <p>
+                            @localizer["Library Management"]
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Client" asp-controller="CaseManage" asp-action="index" class="nav-link">
+                                <i class="fa fa-gavel" aria-hidden="true"></i>
+                                <p>@localizer["Manage Book"]</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-header">@localizer["Tools"]</li>
+                <li is-active-route asp-area="Tools" class="nav-item has-treeview">
+                    <a is-active-route asp-area="Tools" class="nav-link">
+                        <i class="nav-icon fas fa-tools"></i>
+                        <p>
+                            @localizer["Tools"]
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Client" asp-controller="Tools" asp-action="AdvalremFeeCal" class="nav-link">
+                                <i class="fa fa-calculator" aria-hidden="true"></i>
+                                <p>@localizer["Advalrem Fee Calculator"]</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Client" asp-controller="CaseManage" asp-action="index" class="nav-link">
+                                <i class="fa fa-calender" aria-hidden="true"></i>
+                                <p>@localizer["Instant Period of Limitation"]</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Client" asp-controller="CaseManage" asp-action="index" class="nav-link">
+                                <i class="fa fa-calender" aria-hidden="true"></i>
+                                <p>@localizer["Calendar"]</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Client" asp-controller="CaseManage" asp-action="index" class="nav-link">
+                                <i class="fa fa-gavel" aria-hidden="true"></i>
+                                <p>@localizer["Import Data"]</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li is-active-route asp-area="FormDrafting" class="nav-item has-treeview">
+                    <a is-active-route asp-area="FormDrafting" class="nav-link">
+                        <i class="nav-icon fa-drafting-compass"></i>
+                        <p>
+                            @localizer["Form Print"]
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a is-active-route asp-area="FormDrafting" asp-controller="CaseManage" asp-action="index" class="nav-link">
+                                <i class="fa fa-calender" aria-hidden="true"></i>
+                                <p>@localizer["Query Form Print"]</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Client" asp-controller="CaseManage" asp-action="index" class="nav-link">
+                                <i class="fa fa-calender" aria-hidden="true"></i>
+                                <p>@localizer["Manage Drafting"]</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-header">@localizer["Reports"]</li>
+                <li is-active-route asp-area="Reports" class="nav-item has-treeview">
+                    <a is-active-route asp-area="Reports" class="nav-link">
+                        <i class="nav-icon fa fa-pie-chart"></i>
+                        <p>
+                            @localizer["Reports"]
+
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</aside>

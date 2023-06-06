@@ -1,0 +1,56 @@
+﻿using AspNetCoreHero.Results;
+using CourtApp.Application.Extensions;
+using CourtApp.Application.Features.Typeofcasess.Query;
+using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Domain.Entities.LawyerDiary;
+using KT3Core.Areas.Global.Classes;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace CourtApp.Application.Features.TypeOfCases.Query
+{
+    public class GetAllTypeOfCasesQuery:IRequest<PaginatedResult<GetAllTypeOfCasesResponse>>
+    {
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int CaseNatureId { get; set; }
+        public GetAllTypeOfCasesQuery(int pagenumber, int pagesize)
+        {
+            PageNumber = pagenumber;
+            PageSize = pagesize;           
+        }
+    }
+
+    public class GetAllTypeOfCasesQueryHandler : IRequestHandler<GetAllTypeOfCasesQuery, PaginatedResult<GetAllTypeOfCasesResponse>>
+    {
+        private readonly ITypeOfCasesRepository _repository;
+        public GetAllTypeOfCasesQueryHandler(ITypeOfCasesRepository _repository)
+        {
+            this._repository = _repository;
+        }
+        public async Task<PaginatedResult<GetAllTypeOfCasesResponse>> Handle(GetAllTypeOfCasesQuery request, CancellationToken cancellationToken)
+        {
+            Expression<Func<TypeOfCasesEntity, GetAllTypeOfCasesResponse>> expression = e => new GetAllTypeOfCasesResponse
+            {
+                Id = e.Id,
+               CaseNature=e.CaseNature.CaseNature,
+               Typeofcases=e.Typeofcases
+            };
+            var predicate = PredicateBuilder.True<TypeOfCasesEntity>();
+            if (request.CaseNatureId != 0)
+                predicate = predicate.And(b => b.CaseNatureId == request.CaseNatureId);
+
+           
+            var paginatedList = await _repository.QryEntities.Where(predicate)
+                .Select(expression)
+                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+            return paginatedList;
+        }
+    }
+}

@@ -1,0 +1,8 @@
+﻿namespace CourtApp.Application.Features.BooTypes.Queries.GetById
+{
+    public class GetBookTypeByIdResponse
+    {
+        public int Id { get; set; }
+        public string BookType { get; set; }
+    }
+}

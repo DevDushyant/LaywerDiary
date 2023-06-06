@@ -1,0 +1,82 @@
+﻿using CourtApp.Application.Interfaces.CacheRepositories;
+using CourtApp.Application.Interfaces.Contexts;
+using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Infrastructure.CacheRepositories;
+using CourtApp.Infrastructure.DbContexts;
+using CourtApp.Infrastructure.Repositories;
+using AutoMapper;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+
+namespace CourtApp.Infrastructure.Extensions
+{
+    public static class ServiceCollectionExtensions
+    {
+        public static void AddPersistenceContexts(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+        }
+
+        public static void AddRepositories(this IServiceCollection services)
+        {
+            #region Repositories
+
+            services.AddTransient(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));           
+            
+            services.AddTransient<ILogRepository, LogRepository>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            services.AddTransient<IBookTypeRepository, BookTypeRepository>();
+            services.AddTransient<IBookTypeCacheRepository, BookTypeCacheRepository>();
+
+            services.AddTransient<IBookMasterRepository, BookMasterRepository>();
+            services.AddTransient<IBookMasterCacheRepository, BookMasterCacheRepository>();
+
+            services.AddTransient<IPublicationCacheRepository, PublisherCacheRepository>();
+            services.AddTransient<IPublicationRepository, PublisheRepository>();
+
+            services.AddTransient<ICaseKindCacheRepository, CaseKindCacheRepository>();
+            services.AddTransient<ICaseKindRepository, CaseKindRepository>();
+
+            services.AddTransient<ICaseNatureCacheRepository, CaseNatureCacheRepository>();
+            services.AddTransient<ICaseNatureRepository, CaseNatureRepository>();
+
+            services.AddTransient<ISubjectCacheRepository, SubjectCacheRepository>();
+            services.AddTransient<ISubjectRepository, SubjectRepository>();
+
+            services.AddTransient<ICaseKindRepository, CaseKindRepository>();
+            services.AddTransient<ICaseKindCacheRepository, CaseKindCacheRepository>();
+
+            services.AddTransient<ICaseStageRepository, CaseStageRepository>();
+            services.AddTransient<ICaseStageCacheRepository, CaseStageCacheRepository>();
+
+            services.AddTransient<ITypeOfCasesRepository, TypeOfCasesRepository>();
+            services.AddTransient<ITypeOfCasesCacheRepository, TypeOfCasesCacheRepository>();
+
+            services.AddTransient<ICourtMasterCacheRepository, CourtMasterCacheRepository>();
+            services.AddTransient<ICourtMasterRepository, CourtMasterRepository>();
+
+            services.AddTransient<IStateMasterCacheRepository, StateMasterCacheRepository>();
+            services.AddTransient<IStateMasterRepository, StateMasterRepository>();
+
+            services.AddTransient<IDsitrictMasterCacheRepository, DistrictMasterCacheRepository>();
+            services.AddTransient<IDsitrictMasterRepository, DistrictMasterRepository>();
+
+            services.AddTransient<ICourtFeeStructureCacheRepository, CourtFeeStructureCacheRepository>();
+            services.AddTransient<ICourtFeeStructureRepository, CourtFeeStructureRepository>();
+
+            services.AddTransient<IClientRepository, ClientRepository>();
+            services.AddTransient<IClientCacheRepository, ClientCacheRepository>();
+
+            services.AddTransient<ICourtTypeRepository, CourtTypeRepository>();
+            services.AddTransient<ICourtTypeCacheRepository, CourtTypeCacheRepository>();
+
+            services.AddTransient<IUserCaseRepository, UserCaseEntryRepository>();
+
+
+            #endregion Repositories
+        }
+    }
+}

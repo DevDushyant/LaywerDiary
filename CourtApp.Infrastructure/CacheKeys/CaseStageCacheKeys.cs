@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CourtApp.Infrastructure.CacheKeys
+{
+    public class CaseStageCacheKeys
+    {
+        public static string ListKey => "CaseStageList";
+
+        public static string SelectListKey => "CaseStageSelectList";
+
+        public static string GetKey(int Id) => $"CaseStage-{Id}";
+
+        public static string GetDetailsKey(int Id) => $"CaseStageDetails-{Id}";
+    }
+}

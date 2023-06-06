@@ -1,0 +1,36 @@
+﻿using CourtApp.Application.Interfaces.Repositories;
+using AspNetCoreHero.Results;
+using AutoMapper;
+using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
+using CourtApp.Domain.Entities.LawyerDiary;
+
+namespace CourtApp.Application.Features.Subjects.Commands
+{
+    public class CreateSubjectCommand:IRequest<Result<int>>
+    {
+        public string Subject { get; set; }
+    }
+
+    public class CreateSubjectCommandHandler : IRequestHandler<CreateSubjectCommand, Result<int>>
+    {
+        private readonly ISubjectRepository _repository;
+        private readonly IMapper mapper;
+        private IUnitOfWork _unitOfWork { get; set; }
+        public CreateSubjectCommandHandler(IMapper mapper, ISubjectRepository _repository, IUnitOfWork _unitOfWork)
+        {
+            this.mapper = mapper;
+            this._repository = _repository;
+            this._unitOfWork = _unitOfWork;
+        }
+
+        public async Task<Result<int>> Handle(CreateSubjectCommand request, CancellationToken cancellationToken)
+        {
+            var subject = mapper.Map<PracticeSubjectEntity>(request);
+            await _repository.InsertAsync(subject);
+            await _unitOfWork.Commit(cancellationToken);
+            return Result<int>.Success(subject.Id);
+        }
+    }
+}
