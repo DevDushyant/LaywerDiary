@@ -22,6 +22,7 @@
     <ProjectReference Include="..\CourtApp.Domain\CourtApp.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Commands\LawyerMaster\" />
     <Folder Include="DTOs\APIRes\" />
   </ItemGroup>
 </Project>

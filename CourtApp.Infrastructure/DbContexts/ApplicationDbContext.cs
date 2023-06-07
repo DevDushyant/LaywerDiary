@@ -52,6 +52,7 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<ClientEntity> Clients { get; set; }
         public DbSet<CourtTypeEntity> CourtType { get; set; }
         public DbSet<CaseEntity> Cases { get; set; }
+        public DbSet<LawyerMasterEntity> Laywers { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -92,7 +93,7 @@ namespace CourtApp.Infrastructure.DbContexts
             }
 
             base.OnModelCreating(builder);
-            
+
             builder.Entity<CourtMasterEntity>().HasIndex(i => i.UniqueId).IsUnique();
             builder.Entity<CourtMasterEntity>().Property(p => p.UniqueId).HasDefaultValueSql("NEWID()");
             builder.Entity<CaseEntity>().Property(p => p.Id).HasDefaultValueSql("NEWID()");
@@ -105,6 +106,7 @@ namespace CourtApp.Infrastructure.DbContexts
             #region Filter Data by Logged In User
             builder.Entity<ClientEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
             builder.Entity<CaseEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
+            builder.Entity<LawyerMasterEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
             #endregion
         }
     }
