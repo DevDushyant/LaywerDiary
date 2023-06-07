@@ -26,10 +26,11 @@ namespace CourtApp.Web.Permission
             }
             var user = await _userManager.GetUserAsync(context.User);
             var userRoleNames = await _userManager.GetRolesAsync(user);
-            var userRoles = _roleManager.Roles.Where(x => userRoleNames.Contains(x.Name));
+            var userRoles = _roleManager.Roles.Where(x => userRoleNames.Contains(x.Name)).ToList();
             foreach (var role in userRoles)
             {
                 var roleClaims = await _roleManager.GetClaimsAsync(role);
+                
                 var permissions = roleClaims.Where(x => x.Type == CustomClaimTypes.Permission &&
                                                         x.Value == requirement.Permission &&
                                                         x.Issuer == "LOCAL AUTHORITY")

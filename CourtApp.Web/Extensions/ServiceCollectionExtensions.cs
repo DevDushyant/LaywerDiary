@@ -76,8 +76,8 @@ namespace CourtApp.Web.Extensions
             }
             else
             {
-                services.AddDbContext<IdentityContext>(options => options.UseSqlServer(configuration.GetConnectionString("IdentityConnection")));
-                services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("IdentityConnection")));
+                services.AddDbContext<IdentityContext>(options => options.UseNpgsql(configuration.GetConnectionString("DbCnnection")));
+                services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DbCnnection")));
             }
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
