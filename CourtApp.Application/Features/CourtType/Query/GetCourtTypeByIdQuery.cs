@@ -1,12 +1,7 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
-using CourtApp.Application.Features.BooTypes.Queries.GetAllCached;
 using CourtApp.Application.Interfaces.CacheRepositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

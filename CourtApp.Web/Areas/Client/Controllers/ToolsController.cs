@@ -1,6 +1,6 @@
 ﻿using CourtApp.Application.Constants;
-using CourtApp.Application.Features.States.Queries;
-using CourtApp.Application.Features.Tools;
+using CourtApp.Application.Features.Queries.States;
+using CourtApp.Application.Features.Queries.Tools;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models;
@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Client.Controllers

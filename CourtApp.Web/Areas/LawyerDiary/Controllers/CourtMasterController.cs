@@ -1,16 +1,13 @@
-﻿using CourtApp.Application.Constants;
-using CourtApp.Application.Features.CourtMasters.Command;
+﻿using CourtApp.Application.Features.CourtMasters.Command;
 using CourtApp.Application.Features.CourtMasters.Query;
 using CourtApp.Application.Features.CourtType.Query;
-using CourtApp.Application.Features.Districts.Queries;
-using CourtApp.Application.Features.States.Queries;
+using CourtApp.Application.Features.Queries.States;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers

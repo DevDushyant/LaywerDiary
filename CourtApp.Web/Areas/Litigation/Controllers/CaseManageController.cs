@@ -1,8 +1,7 @@
-﻿using CourtApp.Application.Commands.Cases;
-using CourtApp.Application.Features.BookMasters.Commands;
-using CourtApp.Application.Features.BookMasters.Queries;
-using CourtApp.Application.Features.Clients.Queries.GetAllCached;
-using CourtApp.Application.Queries.Cases;
+﻿using CourtApp.Application.Features.Clients.Queries.GetAllCached;
+using CourtApp.Application.Features.Commands.BookMasters;
+using CourtApp.Application.Features.Commands.Cases;
+using CourtApp.Application.Features.Queries.Cases;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.Litigation.Models;

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CourtApp.Application.Features.Districts.Queries;
+using CourtApp.Application.Features.Queries.Districts;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Mappings

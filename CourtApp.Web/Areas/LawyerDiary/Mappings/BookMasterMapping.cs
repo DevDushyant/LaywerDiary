@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using CourtApp.Application.Features.BookMasters.Commands;
-using CourtApp.Application.Features.BookMasters.Queries;
+using CourtApp.Application.Features.Commands.BookMasters;
+using CourtApp.Application.Features.Queries.BookMasters;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Mappings

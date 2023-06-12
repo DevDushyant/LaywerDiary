@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using CourtApp.Application.Commands.Cases;
-using CourtApp.Application.Queries.Cases;
-using CourtApp.Web.Areas.LawyerDiary.Models;
+using CourtApp.Application.Features.Commands.Cases;
+using CourtApp.Application.Features.Queries.Cases;
 using CourtApp.Web.Areas.Litigation.Models;
 
 namespace CourtApp.Web.Areas.Litigation.Mappings

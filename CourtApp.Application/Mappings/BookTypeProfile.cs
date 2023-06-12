@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CourtApp.Application.Features.BookTypes.Commands;
-using CourtApp.Application.Features.BooTypes.Queries.GetAllCached;
-using CourtApp.Application.Features.BooTypes.Queries.GetById;
+using CourtApp.Application.Features.Queries.BookTypes.GetAllCached;
+using CourtApp.Application.Features.Queries.BookTypes.GetById;
 using CourtApp.Domain.Entities.LawyerDiary;
 
 namespace CourtApp.Application.Mappings

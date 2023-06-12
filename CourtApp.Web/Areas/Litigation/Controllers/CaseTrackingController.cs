@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CourtApp.Application.Constants;
-using CourtApp.Application.Features.States.Queries;
+using CourtApp.Application.Features.Queries.States;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.Litigation.Models;

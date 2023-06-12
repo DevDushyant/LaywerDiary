@@ -1,7 +1,7 @@
-﻿using CourtApp.Application.Features.BookMasters.Commands;
-using CourtApp.Application.Features.BookMasters.Queries;
-using CourtApp.Application.Features.BooTypes.Queries.GetAllCached;
+﻿using CourtApp.Application.Features.Commands.BookMasters;
 using CourtApp.Application.Features.Publications.Queries;
+using CourtApp.Application.Features.Queries.BookMasters;
+using CourtApp.Application.Features.Queries.BookTypes.GetAllCached;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;

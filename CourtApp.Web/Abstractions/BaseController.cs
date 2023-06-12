@@ -1,15 +1,14 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using AutoMapper;
 using CourtApp.Application.Constants;
-using CourtApp.Application.Enums;
 using CourtApp.Application.Features.CaseKinds.Query;
 using CourtApp.Application.Features.CaseNatures.Query;
 using CourtApp.Application.Features.CaseStages.Query;
 using CourtApp.Application.Features.CourtMasters.Query;
 using CourtApp.Application.Features.CourtType.Query;
-using CourtApp.Application.Features.Districts.Queries;
+using CourtApp.Application.Features.Queries.Cases;
+using CourtApp.Application.Features.Queries.Districts;
 using CourtApp.Application.Features.TypeOfCases.Query;
-using CourtApp.Application.Queries.Cases;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.Litigation.Models;
 using MediatR;

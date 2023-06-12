@@ -1,18 +1,13 @@
-﻿using CourtApp.Application.Features.CaseNatures.Query;
-using CourtApp.Application.Features.Clients.Commands;
+﻿using CourtApp.Application.Features.Clients.Commands;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.Clients.Queries.GetById;
-using CourtApp.Application.Features.Districts.Queries;
-using CourtApp.Application.Features.States.Queries;
-using CourtApp.Infrastructure.Identity.Models;
+using CourtApp.Application.Features.Queries.Districts;
+using CourtApp.Application.Features.Queries.States;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
