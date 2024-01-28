@@ -1,4 +1,4 @@
-﻿using CourtApp.Application.Features.ActivityLog.Commands.AddLog;
+﻿//using CourtApp.Application.Features.ActivityLog.Commands.AddLog;
 using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using MediatR;
@@ -107,12 +107,12 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                         var result = await _signInManager.PasswordSignInAsync(userName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                         if (result.Succeeded)
                         {
-                            await _mediator.Send(new AddActivityLogCommand() { userId = user.Id, Action = "Logged In" });
+                            //await _mediator.Send(new AddActivityLogCommand() { userId = user.Id, Action = "Logged In" });
                             _logger.LogInformation("User logged in.");
                             _notyf.Success($"Logged in as {userName}.");
                             return LocalRedirect(returnUrl);
                         }
-                        await _mediator.Send(new AddActivityLogCommand() { userId = user.Id, Action = "Log-In Failed" });
+                        //await _mediator.Send(new AddActivityLogCommand() { userId = user.Id, Action = "Log-In Failed" });
                         if (result.RequiresTwoFactor)
                         {
                             return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });

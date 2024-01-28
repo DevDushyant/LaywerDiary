@@ -444,7 +444,7 @@ namespace CourtApp.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UniqueId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "NEWID()"),
+                    UniqueId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
                     CourtName = table.Column<string>(type: "text", nullable: true),
                     Bench = table.Column<string>(type: "text", nullable: true),
                     HeadQuerter = table.Column<string>(type: "text", nullable: true),
@@ -488,7 +488,7 @@ namespace CourtApp.Infrastructure.Migrations
                 schema: "LDiary",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "NEWID()"),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
                     InstitutionDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     LinkedClient = table.Column<int>(type: "integer", nullable: false),
                     CaseNatureId = table.Column<int>(type: "integer", nullable: false),

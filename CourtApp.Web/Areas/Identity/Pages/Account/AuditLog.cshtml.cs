@@ -1,5 +1,7 @@
 using CourtApp.Application.DTOs;
-using CourtApp.Application.Features.ActivityLog.Queries.GetUserLogs;
+using CourtApp.Application.DTOs.Logs;
+using CourtApp.Application.Features.Logs.Queries.GetCurrentUserLogs;
+//using CourtApp.Application.Features.ActivityLog.Queries.GetUserLogs;
 using CourtApp.Application.Interfaces.Shared;
 using CourtApp.Web.Abstractions;
 using MediatR;

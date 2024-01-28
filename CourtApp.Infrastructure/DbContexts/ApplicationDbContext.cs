@@ -95,8 +95,8 @@ namespace CourtApp.Infrastructure.DbContexts
             base.OnModelCreating(builder);
 
             builder.Entity<CourtMasterEntity>().HasIndex(i => i.UniqueId).IsUnique();
-            builder.Entity<CourtMasterEntity>().Property(p => p.UniqueId).HasDefaultValueSql("NEWID()");
-            builder.Entity<CaseEntity>().Property(p => p.Id).HasDefaultValueSql("NEWID()");
+            builder.Entity<CourtMasterEntity>().Property(p => p.UniqueId).HasDefaultValueSql("uuid_generate_v4()");
+            builder.Entity<CaseEntity>().Property(p => p.Id).HasDefaultValueSql("uuid_generate_v4()");
 
             builder.Entity<CountryEntity>().HasKey(c => c.CountryCode);
             builder.Entity<StateEntity>().HasKey(c => c.StateCode);

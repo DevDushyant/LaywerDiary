@@ -1,4 +1,4 @@
-﻿using CourtApp.Application.Features.ActivityLog.Commands.AddLog;
+﻿//using CourtApp.Application.Features.ActivityLog.Commands.AddLog;
 using CourtApp.Application.Interfaces.Shared;
 using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
@@ -41,7 +41,7 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
-            await _mediator.Send(new AddActivityLogCommand() { userId = _userService.UserId, Action = "Logged Out" });
+           // await _mediator.Send(new AddActivityLogCommand() { userId = _userService.UserId, Action = "Logged Out" });
             await _signInManager.SignOutAsync();
             _notyf.Information("User logged out.");
             _logger.LogInformation("User logged out.");

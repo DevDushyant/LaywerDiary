@@ -108,7 +108,7 @@ namespace CourtApp.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasDefaultValueSql("NEWID()");
+                        .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<string>("AgainstCaseNumber")
                         .HasColumnType("text");
@@ -498,7 +498,7 @@ namespace CourtApp.Infrastructure.Migrations
                     b.Property<Guid>("UniqueId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasDefaultValueSql("NEWID()");
+                        .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.HasKey("Id");
 
