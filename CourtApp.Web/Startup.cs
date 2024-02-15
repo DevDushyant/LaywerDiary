@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
+using System;
 
 namespace CourtApp.Web
 {
@@ -31,6 +32,7 @@ namespace CourtApp.Web
         public IConfiguration _configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
@@ -47,11 +49,13 @@ namespace CourtApp.Web
             services.AddRepositories();
             services.AddSharedInfrastructure(_configuration);
             services.AddMultiLingualSupport();
-            services.AddControllersWithViews().AddFluentValidation(fv =>
-            {
-                fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-                fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-            });
+            services.AddControllersWithViews();
+            services.AddFluentValidationAutoValidation();
+            //services.AddControllersWithViews().AddFluentValidation(fv =>
+            //{
+            //    fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            //    fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+            //});
             services.AddMvc().AddJsonOptions(options =>
              {
                  options.JsonSerializerOptions.PropertyNamingPolicy = null;
@@ -66,6 +70,7 @@ namespace CourtApp.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

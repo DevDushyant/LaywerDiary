@@ -1,10 +1,10 @@
-using AspNetCoreHero.Abstractions.Domain;
+using AuditTrail.Abstrations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourtApp.Entities.Common
 {
-    [Table("Mst_District",Schema = "Common")]
-    public class DistrictEntity 
+    [Table("m_district")]
+    public class DistrictEntity:AuditableEntity 
     {        
         public int DistrictCode { get; set; }
         public string DistrictName { get; set; }        

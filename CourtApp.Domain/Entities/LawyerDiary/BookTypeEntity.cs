@@ -1,14 +1,11 @@
-using AspNetCoreHero.Abstractions.Domain;
-using System;
-using System.Collections.Generic;
+using AuditTrail.Abstrations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CourtApp.Domain.Entities.LawyerDiary
 {
-    [Table("Mst_BookType", Schema = "LDiary")]
+
+    [Table("m_book_type", Schema = "ld")]
     public class BookTypeEntity : AuditableEntity
     {
         [Required]

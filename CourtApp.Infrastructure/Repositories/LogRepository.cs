@@ -1,13 +1,14 @@
 ﻿using CourtApp.Application.DTOs;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Application.Interfaces.Shared;
-using AspNetCoreHero.EntityFrameworkCore.AuditTrail.Models;
+//using AspNetCoreHero.EntityFrameworkCore.AuditTrail.Models;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CourtApp.Application.DTOs.Logs;
+using AuditTrail.Models;
 
 namespace CourtApp.Infrastructure.Repositories
 {

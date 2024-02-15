@@ -1,7 +1,7 @@
-﻿using AspNetCoreHero.Abstractions.Domain;
+﻿//using AspNetCoreHero.Abstractions.Domain;
 using CourtApp.Application.Interfaces.Contexts;
 using CourtApp.Application.Interfaces.Shared;
-using AspNetCoreHero.EntityFrameworkCore.AuditTrail;
+//using AspNetCoreHero.EntityFrameworkCore.AuditTrail;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Linq;
@@ -9,9 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using CourtApp.Entities.Common;
 using CourtApp.Domain.Entities.LawyerDiary;
-
 using CourtApp.Domain.Entities.Common;
-
+using AuditTrail.Abstrations;
+using System;
 namespace CourtApp.Infrastructure.DbContexts
 {
     public class ApplicationDbContext : AuditableContext, IApplicationDbContext
@@ -25,13 +25,14 @@ namespace CourtApp.Infrastructure.DbContexts
         {
             _dateTime = dateTime;
             _authenticatedUser = authenticatedUser;
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public IDbConnection Connection => Database.GetDbConnection();
 
         public bool HasChanges => ChangeTracker.HasChanges();
 
-        public DbSet<CountryEntity> Countries { get; set; }
+       
         public DbSet<StateEntity> States { get; set; }
         public DbSet<DistrictEntity> Districts { get; set; }
         public DbSet<CityEntity> CityEntities { get; set; }
@@ -79,7 +80,7 @@ namespace CourtApp.Infrastructure.DbContexts
             }
             else
             {
-                return await base.SaveChangesAsync(_authenticatedUser.UserId);
+                return await base.SaveChangesAsync(_authenticatedUser.UserId);                
             }
         }
 
@@ -98,7 +99,7 @@ namespace CourtApp.Infrastructure.DbContexts
             builder.Entity<CourtMasterEntity>().Property(p => p.UniqueId).HasDefaultValueSql("uuid_generate_v4()");
             builder.Entity<CaseEntity>().Property(p => p.Id).HasDefaultValueSql("uuid_generate_v4()");
 
-            builder.Entity<CountryEntity>().HasKey(c => c.CountryCode);
+            
             builder.Entity<StateEntity>().HasKey(c => c.StateCode);
             builder.Entity<DistrictEntity>().HasKey(c => c.DistrictCode);
 

@@ -1,10 +1,5 @@
-﻿using AspNetCoreHero.Abstractions.Domain;
-using System;
-using System.Collections.Generic;
+﻿using AuditTrail.Abstrations;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CourtApp.Domain.Entities.LawyerDiary
 {

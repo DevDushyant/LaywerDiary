@@ -15,8 +15,7 @@ namespace CourtApp.Application.Interfaces.Contexts
 
         EntityEntry Entry(object entity);
 
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
-        DbSet<CountryEntity> Countries { get; set; }
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken);        
         DbSet<StateEntity> States { get; set; }
         DbSet<DistrictEntity> Districts { get; set; }
         DbSet<BookTypeEntity> BookTypes { get; set; }

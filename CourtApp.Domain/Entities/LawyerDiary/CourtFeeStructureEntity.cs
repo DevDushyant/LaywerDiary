@@ -1,16 +1,13 @@
-﻿using AspNetCoreHero.Abstractions.Domain;
+﻿using AuditTrail.Abstrations;
 using CourtApp.Entities.Common;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CourtApp.Domain.Entities.LawyerDiary
 {
-    [Table("Mst_CourtFeeStructure", Schema = "LDiary")]
+
+    [Table("m_court_fee_structure", Schema = "ld")]
     public class CourtFeeStructureEntity : AuditableEntity
     {
         [Key]

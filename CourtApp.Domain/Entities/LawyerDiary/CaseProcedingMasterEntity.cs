@@ -1,13 +1,10 @@
-﻿using AspNetCoreHero.Abstractions.Domain;
-using System;
-using System.Collections.Generic;
+﻿using AuditTrail.Abstrations;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourtApp.Domain.Entities.LawyerDiary
 {
+    [Table("m_case_proceeding", Schema = "ld")]
     public class CaseProcedingMasterEntity : AuditableEntity
     {
         [Required]

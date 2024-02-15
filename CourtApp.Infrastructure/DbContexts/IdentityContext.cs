@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace CourtApp.Infrastructure.DbContexts
 {
@@ -9,6 +10,7 @@ namespace CourtApp.Infrastructure.DbContexts
     {
         public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

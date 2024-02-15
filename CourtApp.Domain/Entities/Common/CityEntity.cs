@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Domain.Entities.Common
 {
-    [Table("Mst_City", Schema = "Common")]
+    [Table("m_city")]
     public class CityEntity
     {
         [Key]

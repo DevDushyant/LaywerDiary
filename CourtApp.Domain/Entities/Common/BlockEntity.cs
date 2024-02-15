@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Domain.Entities.Common
 {
-    internal class BlockEntity
+    public class BlockEntity
     {
+
     }
 }

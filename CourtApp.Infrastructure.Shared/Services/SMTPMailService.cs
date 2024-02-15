@@ -1,11 +1,11 @@
 ﻿using CourtApp.Application.DTOs.Mail;
 using CourtApp.Application.DTOs.Settings;
 using CourtApp.Application.Interfaces.Shared;
-using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace CourtApp.Infrastructure.Shared.Services
@@ -33,10 +33,10 @@ namespace CourtApp.Infrastructure.Shared.Services
                 builder.HtmlBody = request.Body;
                 email.Body = builder.ToMessageBody();
                 using var smtp = new SmtpClient();
-                smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
-                smtp.Authenticate(_mailSettings.UserName, _mailSettings.Password);
-                await smtp.SendAsync(email);
-                smtp.Disconnect(true);
+               // smtp.COn(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
+                //smtp.Authenticate(_mailSettings.UserName, _mailSettings.Password);
+                //await smtp.SendAsyncCancel(email);
+                //smtp.Disconnect(true);
             }
             catch (System.Exception ex)
             {

@@ -1,17 +1,13 @@
+using AuditTrail.Abstrations;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourtApp.Entities.Common
 {
-    [Table("Mst_State",Schema = "Common")]
-    public class StateEntity 
-    {
-        
+    [Table("m_state")]
+    public class StateEntity :AuditableEntity
+    {        
         public string StateCode { get; set; }
-        public String StateName { get; set; }      
-
-        [ForeignKey("Country")]
-        public string CountryCode { get; set; }
-        public virtual CountryEntity Country { get; set; }
+        public String StateName { get; set; } 
     }
 }
