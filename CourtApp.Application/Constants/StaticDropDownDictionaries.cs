@@ -93,6 +93,18 @@ namespace CourtApp.Application.Constants
             return _year;
         }
 
+        //public static Dictionary<string, string> CaseProceeds()
+        //{
+        //    var _CProceeds = new Dictionary<int, string>
+        //    {
+        //        { 1, "Pr" },
+        //        { 2, "HALF" }
+        //    };
+        //    return _CaseSearchBy;
+        //}
+
+
+
     }
 
 }

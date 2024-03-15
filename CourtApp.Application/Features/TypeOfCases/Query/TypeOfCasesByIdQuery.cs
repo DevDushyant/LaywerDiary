@@ -5,12 +5,13 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using CourtApp.Application.Interfaces.Repositories;
+using System;
 
 namespace CourtApp.Application.Features.Typeofcasess.Query
 {
     public class TypeOfCasesByIdQuery : IRequest<Result<TypeOfCasesQueryByIdResponse>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public TypeOfCasesByIdQuery()
         {
 

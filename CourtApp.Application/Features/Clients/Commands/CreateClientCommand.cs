@@ -5,10 +5,11 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using CourtApp.Domain.Entities.LawyerDiary;
+using System;
 
 namespace CourtApp.Application.Features.Clients.Commands
 {
-    public partial class CreateClientCommand : IRequest<Result<int>>
+    public partial class CreateClientCommand : IRequest<Result<Guid>>
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -17,11 +18,11 @@ namespace CourtApp.Application.Features.Clients.Commands
         public string Phone { get; set; }
         public string Mobile { get; set; }
         public string Address { get; set; }
-        public string StateCode { get; set; }
+        public int StateCode { get; set; }
         public int DistrictCode { get; set; }
     }
 
-    public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, Result<int>>
+    public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, Result<Guid>>
     {
         private readonly IClientRepository _clientRepository;
         private readonly IMapper _mapper;
@@ -35,12 +36,12 @@ namespace CourtApp.Application.Features.Clients.Commands
             _mapper = mapper;
         }
 
-        public async Task<Result<int>> Handle(CreateClientCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(CreateClientCommand request, CancellationToken cancellationToken)
         {
             var client = _mapper.Map<ClientEntity>(request);
             await _clientRepository.InsertAsync(client);
             await _unitOfWork.Commit(cancellationToken);
-            return Result<int>.Success(client.Id);
+            return Result<Guid>.Success(client.Id);
         }
     }
 }

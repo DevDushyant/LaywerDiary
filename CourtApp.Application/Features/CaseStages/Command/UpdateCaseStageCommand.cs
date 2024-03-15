@@ -10,17 +10,13 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.CaseStages.Command
 {
-    public class UpdateCaseStageCommand : IRequest<Result<int>>
+    public class UpdateCaseStageCommand : IRequest<Result<Guid>>
     {
-        public int Id { get; set; }
-        public string CaseStage { get; set; }
-        public UpdateCaseStageCommand()
-        {
-
-        }
+        public Guid Id { get; set; }
+        public string CaseStage { get; set; }        
     }
 
-    public class UpdateCaseStageCommandHandler : IRequestHandler<UpdateCaseStageCommand, Result<int>>
+    public class UpdateCaseStageCommandHandler : IRequestHandler<UpdateCaseStageCommand, Result<Guid>>
     {
         private readonly ICaseStageRepository repository;
         private IUnitOfWork _unitOfWork { get; set; }
@@ -30,17 +26,17 @@ namespace CourtApp.Application.Features.CaseStages.Command
             this._unitOfWork = _unitOfWork;
         }
 
-        public async Task<Result<int>> Handle(UpdateCaseStageCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(UpdateCaseStageCommand request, CancellationToken cancellationToken)
         {
             var naturedetail = await repository.GetByIdAsync(request.Id);
             if (naturedetail == null)
-                return Result<int>.Fail($"Case stage detail Not Found.");
+                return Result<Guid>.Fail($"Case stage detail Not Found.");
             else
             {
                 naturedetail.CaseStage = request.CaseStage;
                 await repository.UpdateAsync(naturedetail);
                 await _unitOfWork.Commit(cancellationToken);
-                return Result<int>.Success(naturedetail.Id);
+                return Result<Guid>.Success(naturedetail.Id);
             }
         }
     }

@@ -25,7 +25,7 @@
     <script src="~/js/site.js"></script>
     <script>
         $(document).ready(function () {
-            $("#brandTable").DataTable();
+            $("#tblNature").DataTable();
             loadData();
             $('#reload').on('click', function () {
                 loadData();
@@ -33,6 +33,6 @@
         });
         function loadData() {
             $('#viewAll').load('/lawyerdiary/TypeOfCases/LoadAll');
-        }
+        }       
     </script>
 }

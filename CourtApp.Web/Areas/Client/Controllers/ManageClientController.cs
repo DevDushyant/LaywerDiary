@@ -1,12 +1,15 @@
 ﻿using CourtApp.Application.Features.Clients.Commands;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.Clients.Queries.GetById;
+using CourtApp.Application.Features.CourtType.Query;
 using CourtApp.Application.Features.Queries.Districts;
 using CourtApp.Application.Features.Queries.States;
 using CourtApp.Web.Abstractions;
+using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,54 +18,29 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     [Area("Client")]
     public class ManageClientController : BaseController<ManageClientController>
     {
-        
+
         public IActionResult Index()
         {
-            var model = new ClientsViewModel();
-            return View(model); 
+            var model = new ClientViewModel();
+            return View(model);
         }
 
-         public async Task<IActionResult> LoadAll()
+        public async Task<IActionResult> LoadAll()
         {
-           
             var response = await _mediator.Send(new GetAllClientCachedQuery() { });
             if (response.Succeeded)
             {
-                var viewModel = _mapper.Map<List<ClientsViewModel>>(response.Data);
+                var viewModel = _mapper.Map<List<GClientViewModel>>(response.Data);
                 return PartialView("_ViewAll", viewModel);
             }
             return null;
-        }
-        public async Task<JsonResult> OnGetCreateOrEdit(int id = 0)
+        }        
+        public async Task<IActionResult> CreateOrUpdateAsync(Guid id)
         {
-            var statelist = await _mediator.Send(new GetStateMasterQuery());
-            if (id == 0)
+            if (id == Guid.Empty)
             {
-                var ViewModel = new ClientsViewModel();
-                var stateViewModel = _mapper.Map<List<StateViewModel>>(statelist.Data);
-                ViewModel.States = new SelectList(stateViewModel, nameof(StateViewModel.StateCode), nameof(StateViewModel.StateName), null, null);
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
-            }
-            else
-            {
-                //var response = await _mediator.Send(new CaseNatureByIdQuery() { Id = id });
-                //if (response.Succeeded)
-                //{
-                //    var brandViewModel = _mapper.Map<CaseNatureViewModel>(response.Data);
-                //    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", brandViewModel) });
-                //}
-                return null;
-            }
-        }
-        public async Task<IActionResult> CreateOrUpdateAsync(int id = 0)
-        {
-            var statelist = await _mediator.Send(new GetStateMasterQuery());
-            
-            if (id == 0)
-            {
-                var ViewModel = new ClientsViewModel();
-                var stateViewModel = _mapper.Map<List<StateViewModel>>(statelist.Data);              
-                ViewModel.States = new SelectList(stateViewModel, nameof(StateViewModel.StateCode), nameof(StateViewModel.StateName), null, null);
+                var ViewModel = new ClientViewModel();
+                await BindDropdownAsync(ViewModel);
                 return View("_CreateOrEdit", ViewModel);
             }
             else
@@ -70,24 +48,40 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 var response = await _mediator.Send(new GetClientByIdQuery() { Id = id });
                 if (response.Succeeded)
                 {
-                    var districtList = await _mediator.Send(new GetDistrictQuery() { StateCode=response.Data.StateCode});
-                    var viewmodel=_mapper.Map<ClientsViewModel>(response.Data);
-                    var stateViewModel = _mapper.Map<List<StateViewModel>>(statelist.Data);
-                    var districtViewModel = _mapper.Map<List<DistrictViewModel>>(districtList.Data);
-                    viewmodel.States= new SelectList(stateViewModel, nameof(StateViewModel.StateCode), nameof(StateViewModel.StateName), null, null);
-                    viewmodel.Districts = new SelectList(districtViewModel, nameof(DistrictViewModel.DistrictCode), nameof(DistrictViewModel.DistrictName), null, null);
-                    return View("_CreateOrEdit", viewmodel);
+                    var districtList = await _mediator.Send(new GetDistrictQuery() { StateCode = response.Data.StateCode });
+                    var ViewModel = _mapper.Map<ClientViewModel>(response.Data);
+                    await BindDropdownAsync(ViewModel);
+                    return View("_CreateOrEdit", ViewModel);
                 }
                 return null;
             }
         }
+        private async Task BindDropdownAsync(ClientViewModel ViewModel)
+        {
+
+            var statelist = await _mediator.Send(new GetStateMasterQuery());
+            if (statelist.Succeeded)
+            {
+                var DdlStates = _mapper.Map<List<StateViewModel>>(statelist.Data);
+                ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
+            }
+
+            var DistrictList = await _mediator.Send(new GetDistrictQuery { StateCode = ViewModel.StateCode });
+            if (DistrictList.Succeeded)
+            {
+                var DdlDistrict = _mapper.Map<List<DistrictViewModel>>(DistrictList.Data);
+                ViewModel.Districts = new SelectList(DdlDistrict, nameof(DistrictViewModel.Code), nameof(DistrictViewModel.Name_En), null, null);
+
+            }
+
+        }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostCreateOrEdit(int id, ClientsViewModel btViewModel)
+        public async Task<JsonResult> OnPostCreateOrEdit(Guid id, ClientViewModel btViewModel)
         {
             if (ModelState.IsValid)
             {
-                if (id == 0)
+                if (id == Guid.Empty)
                 {
                     var createClientCommand = _mapper.Map<CreateClientCommand>(btViewModel);
                     var result = await _mediator.Send(createClientCommand);
@@ -107,7 +101,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 var response = await _mediator.Send(new GetAllClientCachedQuery());
                 if (response.Succeeded)
                 {
-                    var viewModel = _mapper.Map<List<ClientsViewModel>>(response.Data);
+                    var viewModel = _mapper.Map<List<ClientViewModel>>(response.Data);
                     var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
                     return new JsonResult(new { isValid = true, html = html });
                 }
@@ -125,16 +119,16 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostDelete(int id)
+        public async Task<JsonResult> OnPostDelete(Guid Id)
         {
-            var deleteCommand = await _mediator.Send(new DeleteCreateClientCommand { Id = id });
+            var deleteCommand = await _mediator.Send(new DeleteCreateClientCommand { Id = Id });
             if (deleteCommand.Succeeded)
             {
-                _notify.Information($"Client with Id {id} Deleted.");
+                _notify.Information($"Client with Id {Id} Deleted.");
                 var response = await _mediator.Send(new GetAllClientCachedQuery());
                 if (response.Succeeded)
                 {
-                    var viewModel = _mapper.Map<List<ClientsViewModel>>(response.Data);
+                    var viewModel = _mapper.Map<List<ClientViewModel>>(response.Data);
                     var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
                     return new JsonResult(new { isValid = true, html = html });
                 }

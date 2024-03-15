@@ -12,19 +12,15 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.CaseKinds.Commands
 {
-    public class UpdateCaseKindCommand : IRequest<Result<int>>
+    public class UpdateCaseKindCommand : IRequest<Result<Guid>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string CaseKind { get; set; }
-        public int CourtTypeId { get; set; }
-        public UpdateCaseKindCommand()
-        {
-
-        }
+        public Guid CourtTypeId { get; set; }       
 
     }
 
-    public class UpdateCaseKindCommandHandler : IRequestHandler<UpdateCaseKindCommand, Result<int>>
+    public class UpdateCaseKindCommandHandler : IRequestHandler<UpdateCaseKindCommand, Result<Guid>>
     {
         private readonly ICaseKindRepository repository;
         private IUnitOfWork _unitOfWork { get; set; }
@@ -34,17 +30,17 @@ namespace CourtApp.Application.Features.CaseKinds.Commands
             this._unitOfWork = _unitOfWork;
         }
 
-        public async Task<Result<int>> Handle(UpdateCaseKindCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(UpdateCaseKindCommand request, CancellationToken cancellationToken)
         {
             var naturedetail = await repository.GetByIdAsync(request.Id);
             if (naturedetail == null)
-                return Result<int>.Fail($"Case kind detail Not Found.");
+                return Result<Guid>.Fail($"Case kind detail Not Found.");
             else
             {
                 naturedetail.CaseKind = request.CaseKind;
                 await repository.UpdateAsync(naturedetail);
                 await _unitOfWork.Commit(cancellationToken);
-                return Result<int>.Success(naturedetail.Id);
+                return Result<Guid>.Success(naturedetail.Id);
             }
         }
     }

@@ -20,6 +20,7 @@ namespace CourtApp.Infrastructure.Repositories
             this._distributedCache = _distributedCache;
         }
         public IQueryable<CourtFeeStructureEntity> Entites => _repository.Entities;
+         
 
         public async Task DeleteAsync(CourtFeeStructureEntity objEntity)
         {

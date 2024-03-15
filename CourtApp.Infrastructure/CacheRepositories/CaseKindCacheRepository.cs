@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CourtApp.Domain.Entities.LawyerDiary;
 using System.Linq;
+using System;
 
 namespace CourtApp.Infrastructure.CacheRepositories
 {
@@ -24,7 +25,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
 
         
 
-        public async Task<CaseKindEntity> GetByIdAsync(int Id)
+        public async Task<CaseKindEntity> GetByIdAsync(Guid Id)
         {
             string cacheKey = CaseKindCacheKeys.GetKey(Id);
             var cachedata = await  _distributedCache.GetAsync<CaseKindEntity>(cacheKey);

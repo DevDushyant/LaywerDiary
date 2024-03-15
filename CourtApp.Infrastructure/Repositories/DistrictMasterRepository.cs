@@ -21,9 +21,14 @@ namespace CourtApp.Infrastructure.Repositories
 
         public IQueryable<DistrictEntity> Entities => _repository.Entities;
 
-        public async Task<List<DistrictEntity>> GetDistrictListByStateAsync(string StateCode)
+        public DistrictEntity GetDistrictById(int Id)
         {
-            return await _repository.Entities.Where(st=>st.StateCode.ToLower().Equals(StateCode.ToLower())).ToListAsync();
+            return _repository.GetByIdAsync(Id).Result;
+        }
+
+        public async Task<List<DistrictEntity>> GetDistrictListByStateAsync(int StateCode)
+        {
+            return await _repository.Entities.Where(st=>st.State.Code==StateCode).ToListAsync();
         }
     }
 }

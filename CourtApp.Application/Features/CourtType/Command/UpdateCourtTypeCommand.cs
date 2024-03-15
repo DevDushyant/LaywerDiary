@@ -1,18 +1,19 @@
 ﻿using AspNetCoreHero.Results;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.CourtType.Command
 {
-    public class UpdateCourtTypeCommand : IRequest<Result<int>>
+    public class UpdateCourtTypeCommand : IRequest<Result<Guid>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string CourtType { get; set; }
     }
 
-    public class UpdateCourtTypeCommandHandler :IRequestHandler<UpdateCourtTypeCommand, Result<int>>
+    public class UpdateCourtTypeCommandHandler :IRequestHandler<UpdateCourtTypeCommand, Result<Guid>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICourtTypeRepository _Repository;
@@ -22,13 +23,13 @@ namespace CourtApp.Application.Features.CourtType.Command
             this._Repository = _Repository;
             _unitOfWork = unitOfWork;
         }
-        public async Task<Result<int>> Handle(UpdateCourtTypeCommand command, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(UpdateCourtTypeCommand command, CancellationToken cancellationToken)
         {
             var courtType = await _Repository.GetByIdAsync(command.Id);
 
             if (courtType == null)
             {
-                return Result<int>.Fail($"Court Type Not Found.");
+                return Result<Guid>.Fail($"Court Type Not Found.");
             }
             else
             {
@@ -36,7 +37,7 @@ namespace CourtApp.Application.Features.CourtType.Command
                 courtType.CourtType = command.CourtType;
                 await _Repository.UpdateAsync(courtType);
                 await _unitOfWork.Commit(cancellationToken);
-                return Result<int>.Success(courtType.Id);
+                return Result<Guid>.Success(courtType.Id);
             }
         }
     }

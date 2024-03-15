@@ -21,6 +21,11 @@ namespace CourtApp.Infrastructure.Repositories
 
         public IQueryable<StateEntity> Entities => _repository.Entities;
 
+        public StateEntity GetStateById(int Id)
+        {
+            return _repository.GetByIdAsync(Id).Result;
+        }
+
         public async Task<List<StateEntity>> GetStateListAsync()
         {
             return await _repository.Entities.ToListAsync();

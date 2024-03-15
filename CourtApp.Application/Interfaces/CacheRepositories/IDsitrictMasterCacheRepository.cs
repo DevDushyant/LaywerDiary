@@ -8,6 +8,6 @@ namespace CourtApp.Application.Interfaces.CacheRepositories
 {
     public interface IDsitrictMasterCacheRepository
     {
-        Task<List<DistrictEntity>> GetDistrictListByStateAsync(string StateCode);
+        Task<List<DistrictEntity>> GetDistrictListByStateAsync(int StateCode);
     }
 }

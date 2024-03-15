@@ -8,7 +8,7 @@ namespace CourtApp.Application.Features.CaseKinds.Query
 {
     public class CaseKindCacheQueryResponse
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string CaseKind { get; set; }
         public string CourtType { get; set; }
     }

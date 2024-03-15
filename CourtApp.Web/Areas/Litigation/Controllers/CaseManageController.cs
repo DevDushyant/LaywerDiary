@@ -1,9 +1,9 @@
-﻿using CourtApp.Application.Features.Clients.Queries.GetAllCached;
-using CourtApp.Application.Features.Commands.BookMasters;
-using CourtApp.Application.Features.Commands.Cases;
-using CourtApp.Application.Features.Queries.Cases;
+﻿using CourtApp.Application.Features.BookMasters.Command;
+using CourtApp.Application.Features.Clients.Queries.GetAllCached;
+//using CourtApp.Application.Features.Commands.Cases;
+//using CourtApp.Application.Features.Queries.Cases;
 using CourtApp.Web.Abstractions;
-using CourtApp.Web.Areas.LawyerDiary.Models;
+using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,12 +24,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new QueryGetAllCaseEntry() { PageNumber=1,PageSize=100});
-            if (response.Succeeded)
-            {
-                var viewModel = _mapper.Map<List<CaseViewModel>>(response.Data);
-                return PartialView("_ViewAll", viewModel);
-            }
+            //var response = await _mediator.Send(new QueryGetAllCaseEntry() { PageNumber = 1, PageSize = 100 });
+            //if (response.Succeeded)
+            //{
+            //    var viewModel = _mapper.Map<List<CaseViewModel>>(response.Data);
+            //    return PartialView("_ViewAll", viewModel);
+            //}
             return null;
         }
 
@@ -38,7 +38,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var ClientList = await _mediator.Send(new GetAllClientCachedQuery() { });
             if (id == null)
             {
-                var clientiewModel = _mapper.Map<List<ClientsViewModel>>(ClientList.Data);
+                var clientiewModel = _mapper.Map<List<Client.Model.ClientViewModel>>(ClientList.Data);
                 var caseViewModel = new CaseViewModel();
                 caseViewModel.InstitutionDate= DateTime.Now;
                 caseViewModel.CaseNatures = await LoadCaseNature();
@@ -49,8 +49,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 caseViewModel.SecondTitleList= SecondTtitleList();
                 caseViewModel.Year= DdlYears();
                 caseViewModel.CaseStatusList = DdlCaseStatus();
-                caseViewModel.LinkedBy = DdlClientCases().Result;
-                caseViewModel.ClientList = new SelectList(clientiewModel, nameof(ClientsViewModel.Id), nameof(ClientsViewModel.FullName), null, null);
+                caseViewModel.LinkedBy = null; //DdlClientCases().Result;
+                caseViewModel.ClientList = new SelectList(clientiewModel, nameof(ClientViewModel.Id), nameof(ClientViewModel.FirstName), null, null);
                 return View("_CreateOrEdit", caseViewModel);
             }
             else
@@ -66,11 +66,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 if (Id == Guid.Parse("00000000-0000-0000-0000-000000000000"))
                 {
-                    var createCommand = _mapper.Map<CommandCreateCaseEntry>(ViewModel);
-                    var result = await _mediator.Send(createCommand);
-                    if (result.Succeeded)
-                        _notify.Success($"Case created with ID {result.Data} Created.");
-                    else _notify.Error(result.Message);
+                    //var createCommand = _mapper.Map<CommandCreateCaseEntry>(ViewModel);
+                    //var result = await _mediator.Send(createCommand);
+                    //if (result.Succeeded)
+                    //    _notify.Success($"Case created with ID {result.Data} Created.");
+                    //else _notify.Error(result.Message);
                 }
                 else
                 {
@@ -79,18 +79,19 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     if (result.Succeeded)
                         _notify.Information($"Book type with ID {result.Data} Updated.");
                 }
-                var response = await _mediator.Send(new QueryGetAllCaseEntry() { PageNumber = 1, PageSize = 100 });
-                if (response.Succeeded)
-                {
-                    var viewModel = _mapper.Map<List<CaseViewModel>>(response.Data);
-                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                    return new JsonResult(new { isValid = true, html = html });
-                }
-                else
-                {
-                    _notify.Error(response.Message);
-                    return null;
-                }
+                //var response = await _mediator.Send(new QueryGetAllCaseEntry() { PageNumber = 1, PageSize = 100 });
+                //if (response.Succeeded)
+                //{
+                //    var viewModel = _mapper.Map<List<CaseViewModel>>(response.Data);
+                //    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+                //    return new JsonResult(new { isValid = true, html = html });
+                //}
+                //else
+                //{
+                //    _notify.Error(response.Message);
+                //    return null;
+                //}
+                return null;
             }
             else
             {

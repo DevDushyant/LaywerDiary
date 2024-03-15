@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.CourtType.Command
 {
-    public class CreateCourtTypeCommand:IRequest<Result<int>>
+    public class CreateCourtTypeCommand:IRequest<Result<Guid>>
     {
         public string CourtType { get; set; }
     }
-    public class CreateCourtTypeCommandHandler : IRequestHandler<CreateCourtTypeCommand, Result<int>>
+    public class CreateCourtTypeCommandHandler : IRequestHandler<CreateCourtTypeCommand, Result<Guid>>
     {
         private readonly ICourtTypeRepository _Repository;
         private readonly IMapper _mapper;
@@ -27,12 +27,12 @@ namespace CourtApp.Application.Features.CourtType.Command
             this._mapper = _mapper;
             this._Repository = _Repository;
         }
-        public async Task<Result<int>> Handle(CreateCourtTypeCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(CreateCourtTypeCommand request, CancellationToken cancellationToken)
         {
             var CourtType = _mapper.Map<CourtTypeEntity>(request);
             await _Repository.InsertAsync(CourtType);
             await _unitOfWork.Commit(cancellationToken);
-            return Result<int>.Success(CourtType.Id);
+            return Result<Guid>.Success(CourtType.Id);
         }
     }
 }

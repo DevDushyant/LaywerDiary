@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
-using CourtApp.Application.Features.BookTypes.Commands;
-using CourtApp.Application.Features.Queries.BookTypes.GetAllCached;
-using CourtApp.Application.Features.Queries.BookTypes.GetById;
+using CourtApp.Application.Features.BookTypes.Command;
+using CourtApp.Application.Features.BookTypes.Query.GetAllCached;
+using CourtApp.Application.Features.BookTypes.Query.GetById;
+using CourtApp.Application.Features.Typeofcasess.Query;
 using CourtApp.Domain.Entities.LawyerDiary;
 
 namespace CourtApp.Application.Mappings
@@ -10,9 +11,12 @@ namespace CourtApp.Application.Mappings
     {
         public BookTypeProfile()
         {
-            CreateMap<CreateBookTypeCommand, BookTypeEntity>().ReverseMap();
+
+            CreateMap<CreateBookTypeCommand, BookTypeEntity>();
+
             CreateMap<GetBookTypeByIdResponse, BookTypeEntity>().ReverseMap();
-            CreateMap<GetAllBookTypeCachedResponse, BookTypeEntity>().ReverseMap();
+            CreateMap<BookTypeEntity, GetAllBookTypeCachedResponse>();
+                
         }
     }
 }

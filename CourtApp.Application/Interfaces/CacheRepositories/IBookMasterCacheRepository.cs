@@ -1,4 +1,5 @@
 ﻿using CourtApp.Domain.Entities.LawyerDiary;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,6 +9,6 @@ namespace CourtApp.Application.Interfaces.CacheRepositories
     {
         Task<List<LDBookEntity>> GetCachedListAsync();      
 
-        Task<LDBookEntity> GetByIdAsync(int bookTypeId);
+        Task<LDBookEntity> GetByIdAsync(Guid bookTypeId);
     }
 }

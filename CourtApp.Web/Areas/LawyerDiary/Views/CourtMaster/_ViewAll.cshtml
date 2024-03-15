@@ -44,14 +44,14 @@
                         <div class="dropdown-menu shadow animated--grow-in">
                             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                             {
-                                    <a onclick="jQueryModalGet('/LawyerDiary/CourtMaster/CreateOrUpdate?id=@bt.UniqueId', 'Edit Court Master')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
+                                    <a asp-area="lawyerdiary" asp-controller="CourtMaster" asp-action="CreateOrUpdate" asp-route-id="@bt.Id" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
 
                             }
                             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded)
 
                             {
-                                <form id="form_delete_@bt.UniqueId" asp-area="LawyerDiary" asp-controller="CourtMaster" method="post" asp-action="OnPostDelete" asp-route-id="@bt.UniqueId" onsubmit="return jQueryModalDelete(this)">
-                                    <a href="javascript:$('#form_delete_@bt.UniqueId').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a>
+                                <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="CourtMaster" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
+                                    <a href="javascript:$('#form_delete_@bt.Id').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a>
                                 </form>
                             }
                         </div>

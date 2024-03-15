@@ -35,7 +35,7 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        
+
 
                         @if (User.IsInRole("SuperAdmin"))
                         {
@@ -79,6 +79,8 @@
                                     <p>@localizer["Type of cases"]</p>
                                 </a>
                             </li>
+                            
+
                             <li class="nav-item">
                                 <a is-active-route asp-area="LawyerDiary" asp-controller="CourtType" asp-action="index" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
@@ -125,22 +127,12 @@
                                     <p>@localizer["Subject"]</p>
                                 </a>
                             </li>
-
-
-
-
-
-
-
                             <li class="nav-item">
                                 <a is-active-route asp-area="LawyerDiary" asp-controller="CaseStage" asp-action="index" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>@localizer["Case Stage"]</p>
                                 </a>
                             </li>
-
-
-
                             <li class="nav-item">
                                 <a is-active-route asp-area="LawyerDiary" asp-controller="ExpenseHead" asp-action="index" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
@@ -162,7 +154,19 @@
                                 </a>
                             </li>
 
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="ProceedingHead" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Proceeding Head"]</p>
+                                </a>
+                            </li>
 
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="ProceedingSubHead" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Proceeding Sub Head"]</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 }

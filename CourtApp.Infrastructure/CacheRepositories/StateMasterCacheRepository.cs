@@ -27,7 +27,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
             if (StateList==null)
             {
                 StateList = await _repository.GetStateListAsync();
-                await _distributedCache.SetAsync(cacheKey, StateList);
+                //await _distributedCache.SetAsync(cacheKey, StateList);
             }
             return StateList;
         }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CourtApp.Domain.Entities.LawyerDiary;
+using System;
 
 namespace CourtApp.Infrastructure.CacheRepositories
 {
@@ -20,10 +21,10 @@ namespace CourtApp.Infrastructure.CacheRepositories
             _distributedCache = distributedCache;
             this._repository = _repository;
         }
-        public async Task<PracticeSubjectEntity> GetByIdAsync(int Id)
+        public async Task<SubjectEntity> GetByIdAsync(Guid Id)
         {
             string cacheKey = SubjectCacheKeys.GetKey(Id);
-            var subjectlist = await _distributedCache.GetAsync<PracticeSubjectEntity>(cacheKey);
+            var subjectlist = await _distributedCache.GetAsync<SubjectEntity>(cacheKey);
             if (subjectlist == null)
             {
                 subjectlist = await _repository.GetByIdAsync(Id);
@@ -33,10 +34,10 @@ namespace CourtApp.Infrastructure.CacheRepositories
             return subjectlist;
         }
 
-        public async Task<List<PracticeSubjectEntity>> GetCachedListAsync()
+        public async Task<List<SubjectEntity>> GetCachedListAsync()
         {
             string cacheKey = SubjectCacheKeys.ListKey;
-            var subjectlist = await _distributedCache.GetAsync<List<PracticeSubjectEntity>>(cacheKey);
+            var subjectlist = await _distributedCache.GetAsync<List<SubjectEntity>>(cacheKey);
             if (subjectlist == null)
             {
                 subjectlist = await _repository.GetListAsync();

@@ -12,8 +12,8 @@ namespace CourtApp.Infrastructure.CacheKeys
 
         public static string SelectListKey => "TypeofcasesSelectList";
 
-        public static string GetKey(int Id) => $"Typeofcases-{Id}";
+        public static string GetKey(Guid Id) => $"Typeofcases-{Id}";
 
-        public static string GetDetailsKey(int Id) => $"TypeofcasesDetails-{Id}";
+        public static string GetDetailsKey(Guid Id) => $"TypeofcasesDetails-{Id}";
     }
 }

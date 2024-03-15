@@ -11,7 +11,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Validators
     {
         public BookTypeViewModelValidator()
         {
-            RuleFor(p => p.BookType)
+            RuleFor(p => p.Name_En)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .NotNull()
                 .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");

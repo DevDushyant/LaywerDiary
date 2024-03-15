@@ -12,6 +12,7 @@ using CourtApp.Domain.Entities.LawyerDiary;
 using CourtApp.Domain.Entities.Common;
 using AuditTrail.Abstrations;
 using System;
+using CourtApp.Infrastructure.Identity.Models;
 namespace CourtApp.Infrastructure.DbContexts
 {
     public class ApplicationDbContext : AuditableContext, IApplicationDbContext
@@ -32,15 +33,15 @@ namespace CourtApp.Infrastructure.DbContexts
 
         public bool HasChanges => ChangeTracker.HasChanges();
 
-       
+
         public DbSet<StateEntity> States { get; set; }
         public DbSet<DistrictEntity> Districts { get; set; }
         public DbSet<CityEntity> CityEntities { get; set; }
         public DbSet<BookTypeEntity> BookTypes { get; set; }
-        public DbSet<CaseNatureEntity> CaseNatureEntities { get; set; }
+        public DbSet<NatureEntity> NatureEntities { get; set; }
         public DbSet<LDBookEntity> LDBooks { get; set; }
         public DbSet<PublisherEntity> Publishers { get; set; }
-        public DbSet<PracticeSubjectEntity> PracticeSubjects { get; set; }
+        public DbSet<SubjectEntity> PracticeSubjects { get; set; }
         public DbSet<ExpenseHeadEntity> ExpenseHeads { get; set; }
         public DbSet<CourtFeeEntity> CourtFees { get; set; }
         public DbSet<CourtFeeTypeEntity> CourtFeeTypes { get; set; }
@@ -54,6 +55,7 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<CourtTypeEntity> CourtType { get; set; }
         public DbSet<CaseEntity> Cases { get; set; }
         public DbSet<LawyerMasterEntity> Laywers { get; set; }
+        public DbSet<ProceedingHeadEntity> ProceedingHeads { get ; set ; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -80,7 +82,8 @@ namespace CourtApp.Infrastructure.DbContexts
             }
             else
             {
-                return await base.SaveChangesAsync(_authenticatedUser.UserId);                
+                int id = await base.SaveChangesAsync(_authenticatedUser.UserId);
+                return id;
             }
         }
 
@@ -95,14 +98,12 @@ namespace CourtApp.Infrastructure.DbContexts
 
             base.OnModelCreating(builder);
 
-            builder.Entity<CourtMasterEntity>().HasIndex(i => i.UniqueId).IsUnique();
-            builder.Entity<CourtMasterEntity>().Property(p => p.UniqueId).HasDefaultValueSql("uuid_generate_v4()");
-            builder.Entity<CaseEntity>().Property(p => p.Id).HasDefaultValueSql("uuid_generate_v4()");
-
-            
-            builder.Entity<StateEntity>().HasKey(c => c.StateCode);
-            builder.Entity<DistrictEntity>().HasKey(c => c.DistrictCode);
-
+            //builder.Entity<CourtMasterEntity>().Property(p => p.UId).HasDefaultValueSql("uuid_generate_v4()");
+            //builder.Entity<ClientEntity>().Property(p => p.UId).HasDefaultValueSql("uuid_generate_v4()");
+            //builder.Entity<CaseEntity>().Property(p => p.Id).HasDefaultValueSql("uuid_generate_v4()");
+            //builder.Entity<CourtFeeStructureEntity>().Property(p => p.UId).HasDefaultValueSql("uuid_generate_v4()");
+            //builder.Entity<ProceedingHeadEntity>().Property(p => p.Id).HasDefaultValueSql("uuid_generate_v4()");
+           
 
             #region Filter Data by Logged In User
             builder.Entity<ClientEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);

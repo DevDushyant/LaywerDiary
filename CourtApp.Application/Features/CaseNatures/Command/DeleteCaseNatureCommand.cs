@@ -3,15 +3,16 @@ using AspNetCoreHero.Results;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 namespace CourtApp.Application.Features.CaseNatures.Command
 {
-    public class DeleteCaseNatureCommand : IRequest<Result<int>>
+    public class DeleteCaseNatureCommand : IRequest<Result<Guid>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 
-    public class DeleteCaseNatureCommandHandler : IRequestHandler<DeleteCaseNatureCommand, Result<int>>
+    public class DeleteCaseNatureCommandHandler : IRequestHandler<DeleteCaseNatureCommand, Result<Guid>>
     {
         private readonly ICaseNatureRepository _Repository;
         private readonly IUnitOfWork _unitOfWork;
@@ -22,12 +23,12 @@ namespace CourtApp.Application.Features.CaseNatures.Command
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<int>> Handle(DeleteCaseNatureCommand command, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(DeleteCaseNatureCommand command, CancellationToken cancellationToken)
         {
             var detail = await _Repository.GetByIdAsync(command.Id);
             await _Repository.DeleteAsync(detail);
             await _unitOfWork.Commit(cancellationToken);
-            return Result<int>.Success(detail.Id);
+            return Result<Guid>.Success(detail.Id);
         }
     }
 }

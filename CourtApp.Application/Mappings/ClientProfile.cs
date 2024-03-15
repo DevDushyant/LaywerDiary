@@ -10,8 +10,13 @@ namespace CourtApp.Application.Mappings
     {
         public ClientProfile()
         {
-            CreateMap<CreateClientCommand, ClientEntity>().ReverseMap();
-            CreateMap<GetClientByIdResponse, ClientEntity>().ReverseMap();
+            CreateMap<CreateClientCommand, ClientEntity>()
+                .ForPath(d => d.State.Code, opt => opt.MapFrom(src => src.StateCode))
+                .ForPath(d => d.District.Code, opt => opt.MapFrom(src => src.DistrictCode));
+            CreateMap<ClientEntity,GetClientByIdResponse>()
+                .ForPath(d => d.StateCode, opt => opt.MapFrom(src => src.State.Code))
+                .ForPath(d => d.DistrictCode, opt => opt.MapFrom(src => src.District.Code));
+
             CreateMap<GetAllClientCachedResponse, ClientEntity>().ReverseMap();
         }
     }

@@ -9,8 +9,8 @@ namespace CourtApp.Application.Interfaces.CacheRepositories
 {
     public interface ICaseProcedingMasterCacheRepository
     {
-        IQueryable<CaseProcedingMasterEntity> QryEntities { get; }
-        Task<CaseProcedingMasterEntity> GetByIdAsync(int Id);
-        Task<List<CaseProcedingMasterEntity>> GetListAsync();
+        //IQueryable<CaseProcedingMasterEntity> QryEntities { get; }
+        //Task<CaseProcedingMasterEntity> GetByIdAsync(int Id);
+        //Task<List<CaseProcedingMasterEntity>> GetListAsync();
     }
 }

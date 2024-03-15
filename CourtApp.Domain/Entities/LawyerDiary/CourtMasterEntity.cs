@@ -1,34 +1,28 @@
 using AuditTrail.Abstrations;
 using CourtApp.Entities.Common;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourtApp.Domain.Entities.LawyerDiary
 {
-    [Table("m_court",Schema ="ld")]
+    [Table("m_court", Schema = "ld")]    
     public class CourtMasterEntity : AuditableEntity
     {
         
-        public Guid UniqueId { get; set; }
-        public string CourtName { get; set; }
+        public new Guid Id { get; set; }
+        public required string Name_En { get; set; }
+        public string Name_Hn { get; set; }
         public string Bench { get; set; }
         public string HeadQuerter { get; set; }
         public string Address { get; set; }
-       
-        [Required]
-        [ForeignKey("District")]
-        public int DistrictCode { get; set; }
-        public virtual DistrictEntity District { get; set; }
 
-        [Required]
-        [ForeignKey("State")]
-        public string StateCode { get; set; }
+        [ForeignKey("StateCode")]
         public virtual StateEntity State { get; set; }
 
-        [Required]
-        [ForeignKey("CourtType")]
-        public int CourtTypeId { get; set; }
+        [ForeignKey("DistrictCode")]
+        public virtual DistrictEntity District { get; set; }
+
+        [ForeignKey("CourtTypeId")]
         public virtual CourtTypeEntity CourtType { get; set; }
     }
 }

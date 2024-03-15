@@ -13,7 +13,7 @@ namespace CourtApp.Application.Features.Queries.Tools
 {
     public class AdvalremCourtFeeCalQuery : IRequest<Result<string>>
     {
-        public string StateCode { get; set; }
+        public int StateCode { get; set; }
         public string FeeKind { get; set; }
         public double CalculativeAmount { get; set; }
     }
@@ -29,8 +29,8 @@ namespace CourtApp.Application.Features.Queries.Tools
             var predicate = PredicateBuilder.True<CourtFeeStructureEntity>();
             double Rate = 0, FixedAmount = 0, CalculativeAmount = 0, MinAmt = 0, MaxAmt = 0;
             CalculativeAmount = request.CalculativeAmount;
-            if (request.StateCode != null)
-                predicate = predicate.And(b => b.StateCode == request.StateCode);
+            if (request.StateCode != 0)
+                predicate = predicate.And(b => b.State.Code == request.StateCode);
 
             if (request.CalculativeAmount != 0)
                 predicate = predicate.And(a => CalculativeAmount >= a.MinValue && CalculativeAmount <= a.MaxValue);

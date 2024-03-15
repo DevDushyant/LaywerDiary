@@ -14,10 +14,20 @@ namespace CourtApp.Application.Mappings
     {
         public CourtMasterProfile()
         {
-            CreateMap<CreateCourtMasterCommand, CourtMasterEntity>().ReverseMap();
+            CreateMap<CreateCourtMasterCommand, CourtMasterEntity>()
+                .ForPath(d => d.State.Id, opt => opt.MapFrom(src => src.StateCode))
+                .ForPath(d => d.District.Id, opt => opt.MapFrom(src => src.DistrictCode))
+                .ForPath(d => d.Name_En, opt => opt.MapFrom(src => src.CourtName))
+                .ForPath(d => d.CourtType.Id, opt => opt.MapFrom(src => src.CourtTypeId));
+
             CreateMap<UpdateCourtMasterCommand, CourtMasterEntity>().ReverseMap();
             CreateMap<DeleteCourtMasterCommand, CourtMasterEntity>().ReverseMap();
-            CreateMap<GetCourtMasterDataByIdResponse, CourtMasterEntity>().ReverseMap();
+            CreateMap<CourtMasterEntity, GetCourtMasterDataByIdResponse>()
+                .ForPath(d => d.CourtTypeId, opt => opt.MapFrom(src => src.CourtType.Id))
+                .ForPath(d => d.StateCode, opt => opt.MapFrom(src => src.State.Code))
+                .ForPath(d => d.DistrictCode, opt => opt.MapFrom(src => src.District.Code))
+                .ForPath(d => d.CourtName, opt => opt.MapFrom(src => src.Name_En));
+
             CreateMap<GetCourtMasterDataAllResponse, CourtMasterEntity>().ReverseMap();
             
         }

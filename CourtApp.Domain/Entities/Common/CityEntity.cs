@@ -1,4 +1,6 @@
-﻿using CourtApp.Entities.Common;
+﻿using AuditTrail.Abstrations;
+using CourtApp.Entities.Common;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,14 +12,14 @@ using System.Threading.Tasks;
 namespace CourtApp.Domain.Entities.Common
 {
     [Table("m_city")]
-    public class CityEntity
+    [Index(nameof(Code), IsUnique = true)]
+    public class CityEntity:AuditableEntity
     {
-        [Key]
-        public int CityCode { get; set; }
-        public string CityName { get; set; }
-
-        [ForeignKey("District")]
-        public int DistrictCode { get; set; }
+        public int Code { get; set; }
+        public string Name_En { get; set; }
+        public string Name_Hn { get; set; }
+        [ForeignKey("DistrictCode")]
         public virtual DistrictEntity District { get; set; }
+        public ICollection<WardEntity> Wards { get; set; }
     }
 }

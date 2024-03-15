@@ -14,7 +14,7 @@ namespace CourtApp.Application.Features.CourtFeeStructure.Command
     public class UpdateCourtFeeStructureCommand : IRequest<Result<Guid>>
     {
         public Guid Id { get; set; }
-        public string StateCode { get; set; }
+        public int StateCode { get; set; }
         public Double MinValue { get; set; }
         public Double MaxValue { get; set; }
         public Double Rate { get; set; }
@@ -38,7 +38,7 @@ namespace CourtApp.Application.Features.CourtFeeStructure.Command
                 return Result<Guid>.Fail($"Fee structure detail Not Found.");
             else
             {               
-                detail.StateCode = request.StateCode;
+                detail.State.Code = request.StateCode;
                 detail.MaxValue = request.MaxValue;
                 detail.MinValue = request.MinValue;
                 detail.Rate = request.Rate;

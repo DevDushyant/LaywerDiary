@@ -12,13 +12,14 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.CaseNatures.Command
 {
-   public class UpdateCaseNatureCommand:IRequest<Result<int>>
+   public class UpdateCaseNatureCommand:IRequest<Result<Guid>>
     {
-        public int Id { get; set; }
-        public string CaseNature { get; set; }
+        public Guid Id { get; set; }
+        public string Name_En { get; set; }
+        public string Name_Hn { get; set; }
     }
 
-    public class UpdateCaseNatureCommandCommandHandler : IRequestHandler<UpdateCaseNatureCommand, Result<int>>
+    public class UpdateCaseNatureCommandCommandHandler : IRequestHandler<UpdateCaseNatureCommand, Result<Guid>>
     {
         private readonly ICaseNatureRepository repository;       
         private IUnitOfWork _unitOfWork { get; set; }
@@ -28,17 +29,18 @@ namespace CourtApp.Application.Features.CaseNatures.Command
             this._unitOfWork = _unitOfWork;
         }
 
-        public async Task<Result<int>> Handle(UpdateCaseNatureCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(UpdateCaseNatureCommand request, CancellationToken cancellationToken)
         {
-            var naturedetail = await repository.GetByIdAsync(request.Id);
-            if (naturedetail == null)
-                return Result<int>.Fail($"Case nature detail Not Found.");
+            var Detail = await repository.GetByIdAsync(request.Id);
+            if (Detail == null)
+                return Result<Guid>.Fail($"Case nature detail Not Found.");
             else
             {
-                naturedetail.CaseNature = request.CaseNature;
-                await repository.UpdateAsync(naturedetail);
+                Detail.Name_En = request.Name_En;
+                Detail.Name_Hn = request.Name_Hn;
+                await repository.UpdateAsync(Detail);
                 await _unitOfWork.Commit(cancellationToken);
-                return Result<int>.Success(naturedetail.Id);
+                return Result<Guid>.Success(Detail.Id);
             }
         }
     }

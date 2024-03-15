@@ -4,6 +4,7 @@ using AspNetCoreHero.Results;
 using AutoMapper;
 using CourtApp.Application.Interfaces.CacheRepositories;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace CourtApp.Application.Features.Subjects.Queries
 {
     public class PracticeSubjectIdQuery:IRequest<Result<PracticeSubjectQueryResponse>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public PracticeSubjectIdQuery()
         {
 

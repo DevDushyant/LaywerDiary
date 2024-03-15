@@ -33,29 +33,29 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             return null;
         }
 
-        public async Task<JsonResult> OnGetCreateOrEdit(int id = 0)
+        public async Task<JsonResult> OnGetCreateOrEdit(Guid Id)
         {
             var CaseNatures = await _mediator.Send(new CaseNatureByAllCachedQuery());
-            if (id == 0)
+            if (Id==Guid.Empty)
             {
                 var ViewModel = new TypeOfCasesViewModel();
                 if (CaseNatures.Succeeded)
                 {
                     var bookTypeViewModel = _mapper.Map<List<CaseNatureViewModel>>(CaseNatures.Data);
-                    ViewModel.CaseNatures = new SelectList(bookTypeViewModel, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.CaseNature), null, null);
+                    ViewModel.CaseNatures = new SelectList(bookTypeViewModel, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.Name_En), null, null);
                 }
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
             }
             else
             {
-                var response = await _mediator.Send(new TypeOfCasesByIdQuery() { Id = id });
+                var response = await _mediator.Send(new TypeOfCasesByIdQuery() { Id = Id });
                 if (response.Succeeded)
                 {
                     var brandViewModel = _mapper.Map<TypeOfCasesViewModel>(response.Data);
                     if (CaseNatures.Succeeded)
                     {
                         var bookTypeViewModel = _mapper.Map<List<CaseNatureViewModel>>(CaseNatures.Data);
-                        brandViewModel.CaseNatures = new SelectList(bookTypeViewModel, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.CaseNature), null, null);
+                        brandViewModel.CaseNatures = new SelectList(bookTypeViewModel, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.Name_En), null, null);
                     }
                     return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", brandViewModel) });
                 }
@@ -64,11 +64,11 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostCreateOrEdit(int id, TypeOfCasesViewModel btViewModel)
+        public async Task<JsonResult> OnPostCreateOrEdit(Guid id, TypeOfCasesViewModel btViewModel)
         {
             if (ModelState.IsValid)
             {
-                if (id == 0)
+                if (id ==Guid.Empty)
                 {
                     var createTypeofCasesCommand = _mapper.Map<CreateTypeOfCasesCommand>(btViewModel);
                     var result = await _mediator.Send(createTypeofCasesCommand);
@@ -106,12 +106,12 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostDelete(int id)
+        public async Task<JsonResult> OnPostDelete(Guid Id)
         {
-            var deleteCommand = await _mediator.Send(new DeleteTypeOfCasesCommand { Id = id });
+            var deleteCommand = await _mediator.Send(new DeleteTypeOfCasesCommand { Id = Id });
             if (deleteCommand.Succeeded)
             {
-                _notify.Information($"Case Nature with Id {id} Deleted.");
+                _notify.Information($"Case Nature with Id {Id} Deleted.");
                 var response = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 100));
                 if (response.Succeeded)
                 {

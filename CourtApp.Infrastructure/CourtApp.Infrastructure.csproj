@@ -25,7 +25,6 @@
     <ProjectReference Include="..\CourtApp.Domain\CourtApp.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Migrations\Identity\" />
-    <Folder Include="Migrations\Ld\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>

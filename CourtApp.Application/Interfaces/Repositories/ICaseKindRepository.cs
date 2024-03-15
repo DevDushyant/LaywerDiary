@@ -14,9 +14,9 @@ namespace CourtApp.Application.Interfaces.Repositories
 
         Task<List<CaseKindEntity>> GetListAsync();
 
-        Task<CaseKindEntity> GetByIdAsync(int Id);
+        Task<CaseKindEntity> GetByIdAsync(Guid Id);
 
-        Task<int> InsertAsync(CaseKindEntity objEntity);
+        Task<Guid> InsertAsync(CaseKindEntity objEntity);
 
         Task UpdateAsync(CaseKindEntity objEntity);
 

@@ -1,6 +1,7 @@
 ﻿using CourtApp.Application.Features.CourtMasters.Command;
 using CourtApp.Application.Features.CourtMasters.Query;
 using CourtApp.Application.Features.CourtType.Query;
+using CourtApp.Application.Features.Queries.Districts;
 using CourtApp.Application.Features.Queries.States;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
@@ -33,25 +34,35 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
         private async Task BindDropdownAsync(CourtMasterViewModel ViewModel)
         {
-            var statelist = await _mediator.Send(new GetStateMasterQuery());
+
             var courtTypeList = await _mediator.Send(new GetCourtTypeQuery());
-            if (statelist.Succeeded)
-            {
-                var DdlStates = _mapper.Map<List<StateViewModel>>(statelist.Data);
-                ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.StateCode), nameof(StateViewModel.StateName), null, null);
-}
             if (courtTypeList.Succeeded)
             {
                 var DdlCourtTypes = _mapper.Map<List<CourtTypeViewModel>>(courtTypeList.Data);
                 ViewModel.CourtTypes = new SelectList(DdlCourtTypes, nameof(CourtTypeViewModel.Id), nameof(CourtTypeViewModel.CourtType), null, null); ;
+            }
+            var statelist = await _mediator.Send(new GetStateMasterQuery());
+            if (statelist.Succeeded)
+            {
+                var DdlStates = _mapper.Map<List<StateViewModel>>(statelist.Data);
+                ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
 
             }
+
+            var DistrictList = await _mediator.Send(new GetDistrictQuery { StateCode = ViewModel.StateCode });
+            if (DistrictList.Succeeded)
+            {
+                var DdlDistrict = _mapper.Map<List<DistrictViewModel>>(DistrictList.Data);
+                ViewModel.Districts = new SelectList(DdlDistrict, nameof(DistrictViewModel.Code), nameof(DistrictViewModel.Name_En), null, null);
+
+            }
+
         }
 
-        public async Task<IActionResult> CreateOrUpdateAsync(Guid? id = null)
+        public async Task<IActionResult> CreateOrUpdate(Guid id)
         {
-            
-            if (id == null)
+
+            if (id == Guid.Empty)
             {
                 var ViewModel = new CourtMasterViewModel();
                 await BindDropdownAsync(ViewModel);
@@ -59,7 +70,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
             else
             {
-                var response = await _mediator.Send(new GetCourtMasterDataByIdQuery() { Id = id.Value });
+                var response = await _mediator.Send(new GetCourtMasterDataByIdQuery() { Id = id });
                 if (response.Succeeded)
                 {
                     var ViewModel = _mapper.Map<CourtMasterViewModel>(response.Data);
@@ -75,7 +86,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (id == Guid.Parse("00000000-0000-0000-0000-000000000000"))
+                if (id == Guid.Empty)
                 {
                     var createBookTypeCommand = _mapper.Map<CreateCourtMasterCommand>(btViewModel);
                     var result = await _mediator.Send(createBookTypeCommand);

@@ -12,7 +12,7 @@ namespace CourtApp.Infrastructure.CacheKeys
 
         public static string SelectListKey => "PublisherSelectList";
 
-        public static string GetKey(int brandId) => $"Publisher-{brandId}";
+        public static string GetKey(Guid brandId) => $"Publisher-{brandId}";
 
         public static string GetDetailsKey(int brandId) => $"PublisherDetails-{brandId}";
     }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CourtApp.Domain.Entities.LawyerDiary;
+using System;
 
 namespace CourtApp.Infrastructure.CacheRepositories
 {
@@ -19,10 +20,10 @@ namespace CourtApp.Infrastructure.CacheRepositories
             this._distributedCache = _distributedCache;
             this._natureRepository = _natureRepository;
         }
-        public async Task<CaseNatureEntity> GetByIdAsync(int natureId)
+        public async Task<NatureEntity> GetByIdAsync(Guid natureId)
         {
             string cacheKey = BookTypeCacheKeys.GetKey(natureId);
-            var bookType = await _distributedCache.GetAsync<CaseNatureEntity>(cacheKey);
+            var bookType = await _distributedCache.GetAsync<NatureEntity>(cacheKey);
             if (bookType == null)
             {
                 bookType = await _natureRepository.GetByIdAsync(natureId);
@@ -32,10 +33,10 @@ namespace CourtApp.Infrastructure.CacheRepositories
             return bookType;
         }
 
-        public async Task<List<CaseNatureEntity>> GetCachedListAsync()
+        public async Task<List<NatureEntity>> GetCachedListAsync()
         {
             string cacheKey = CaseNatureCacheKeys.ListKey;
-            var bookTypeList = await _distributedCache.GetAsync<List<CaseNatureEntity>>(cacheKey);
+            var bookTypeList = await _distributedCache.GetAsync<List<NatureEntity>>(cacheKey);
             if (bookTypeList == null)
             {
                 bookTypeList = await _natureRepository.GetListAsync();

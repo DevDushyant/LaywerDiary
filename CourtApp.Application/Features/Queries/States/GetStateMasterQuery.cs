@@ -28,7 +28,7 @@ namespace CourtApp.Application.Features.Queries.States
         public async Task<Result<List<GetStateMasterResponse>>> Handle(GetStateMasterQuery request, CancellationToken cancellationToken)
         {
             var list = await _repositoryCache.GetStateListAsync();
-            var mappeddata = _mapper.Map<List<GetStateMasterResponse>>(list.OrderBy(s => s.StateName));
+            var mappeddata = _mapper.Map<List<GetStateMasterResponse>>(list.OrderBy(s => s.Name_En));
             return Result<List<GetStateMasterResponse>>.Success(mappeddata);
         }
     }

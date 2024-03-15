@@ -7,7 +7,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
 {
     public class CourtTypeViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string CourtType { get; set; }
     }
 }

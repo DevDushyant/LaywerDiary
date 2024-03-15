@@ -12,40 +12,43 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.Typeofcasess.Commands
 {
-    public class UpdateTypeOfCasesCommand : IRequest<Result<int>>
+    public class UpdateTypeOfCasesCommand : IRequest<Result<Guid>>
     {
-        public int Id { get; set; }
-        public int CaseNatureId { get; set; }        
-        public string Typeofcases { get; set; }
-        public UpdateTypeOfCasesCommand()
-        {
-
-        }
-
+        public Guid Id { get; set; }
+        public Guid NatureId { get; set; }        
+        public string Name_En { get; set; }        
+        public string Name_Hn { get; set; }        
     }
 
-    public class UpdateTypeofcasesCommandHandler : IRequestHandler<UpdateTypeOfCasesCommand, Result<int>>
+    public class UpdateTypeofcasesCommandHandler : IRequestHandler<UpdateTypeOfCasesCommand, Result<Guid>>
     {
         private readonly ITypeOfCasesRepository repository;
+        private readonly ICaseNatureRepository caseNatureRepository;
         private IUnitOfWork _unitOfWork { get; set; }
-        public UpdateTypeofcasesCommandHandler(ITypeOfCasesRepository repository, IUnitOfWork _unitOfWork)
+        public UpdateTypeofcasesCommandHandler(ITypeOfCasesRepository repository,
+            IUnitOfWork _unitOfWork,
+            ICaseNatureRepository caseNatureRepository)
         {
             this.repository = repository;
             this._unitOfWork = _unitOfWork;
+            this.caseNatureRepository = caseNatureRepository;
         }
 
-        public async Task<Result<int>> Handle(UpdateTypeOfCasesCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(UpdateTypeOfCasesCommand request, CancellationToken cancellationToken)
         {
-            var naturedetail = await repository.GetByIdAsync(request.Id);
-            if (naturedetail == null)
-                return Result<int>.Fail($"Case kind detail Not Found.");
+            var Detail = await repository.GetByIdAsync(request.Id);
+            if (Detail == null)
+                return Result<Guid>.Fail($"Case kind detail Not Found.");
             else
             {
-                naturedetail.Typeofcases = request.Typeofcases;
-                naturedetail.CaseNatureId = request.CaseNatureId;
-                await repository.UpdateAsync(naturedetail);
+                var nature = caseNatureRepository.GetByIdAsync(request.NatureId).Result;
+                if (nature != null)
+                Detail.Nature =nature;
+                Detail.Name_En=request.Name_En;
+                Detail.Name_Hn=request.Name_Hn;
+                await repository.UpdateAsync(Detail);
                 await _unitOfWork.Commit(cancellationToken);
-                return Result<int>.Success(naturedetail.Id);
+                return Result<Guid>.Success(Detail.Id);
             }
         }
     }

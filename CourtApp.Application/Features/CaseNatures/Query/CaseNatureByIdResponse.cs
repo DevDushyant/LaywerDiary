@@ -8,7 +8,8 @@ namespace CourtApp.Application.Features.CaseNatures.Query
 {
     public class CaseNatureByIdResponse
     {
-        public int Id { get; set; }
-        public string CaseNature { get; set; }
+        public Guid Id { get; set; }
+        public string Name_En { get; set; }
+        public string Name_Hn { get; set; }
     }
 }

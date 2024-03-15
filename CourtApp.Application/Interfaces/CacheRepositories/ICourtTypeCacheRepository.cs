@@ -10,6 +10,6 @@ namespace CourtApp.Application.Interfaces.CacheRepositories
     public interface ICourtTypeCacheRepository
     {
         Task<List<CourtTypeEntity>> GetCachedListAsync();
-        Task<CourtTypeEntity> GetByIdAsync(int CourtTypeId);
+        Task<CourtTypeEntity> GetByIdAsync(Guid CourtTypeId);
     }
 }

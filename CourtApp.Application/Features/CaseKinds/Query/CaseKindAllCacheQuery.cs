@@ -17,11 +17,7 @@ namespace CourtApp.Application.Features.CaseKinds.Query
 {
     public class CaseKindAllCacheQuery : IRequest<Result<List<CaseKindCacheQueryResponse>>>
     {
-        public int CourtTypeId { get; set; }
-        public CaseKindAllCacheQuery()
-        {
-
-        }
+        public Guid CourtTypeId { get; set; }       
     }
 
     public class CaseKindAllCacheQueryCommandHandler : IRequestHandler<CaseKindAllCacheQuery, Result<List<CaseKindCacheQueryResponse>>>
@@ -34,7 +30,7 @@ namespace CourtApp.Application.Features.CaseKinds.Query
             this._repository = _repository;
             this._mapper = _mapper;
         }
-        public async Task<Result<List<CaseKindCacheQueryResponse>>> Handle(CaseKindAllCacheQuery request, CancellationToken cancellationToken)
+        public  Task<Result<List<CaseKindCacheQueryResponse>>> Handle(CaseKindAllCacheQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<CaseKindEntity, CaseKindCacheQueryResponse>> expression = e => new CaseKindCacheQueryResponse
             {
@@ -44,12 +40,12 @@ namespace CourtApp.Application.Features.CaseKinds.Query
             };
             var predicate = PredicateBuilder.True<CaseKindEntity>();
            
-            if (request.CourtTypeId != 0)
-                predicate = predicate.And(b => b.CourtTypeId == request.CourtTypeId);
+            if (request.CourtTypeId != Guid.Empty)
+                predicate = predicate.And(b => b.CourtType.Id == request.CourtTypeId);
 
             var data = _repository.QryEntities.Where(predicate).Select(expression).ToList();
             var mappeddata = _mapper.Map<List<CaseKindCacheQueryResponse>>(data);
-            return Result<List<CaseKindCacheQueryResponse>>.Success(mappeddata);
+            return Task.FromResult(Result<List<CaseKindCacheQueryResponse>>.Success(mappeddata));
         }
     }
 }

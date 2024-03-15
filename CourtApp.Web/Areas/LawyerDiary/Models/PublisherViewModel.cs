@@ -7,7 +7,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
 {
     public class PublisherViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string PublicationName { get; set; }
         public string PropriatorName { get; set; }
     }

@@ -1,31 +1,51 @@
 ﻿@{
     ViewData["Title"] = localizer["Add New Client Information"];
     ViewData["Caption"] = localizer["Manage Client"];
+    ViewData["Note"] = localizer["All (*) marked fields are mandatory!"];
 }
+
 <hr />
-@model ClientsViewModel
+@model ClientViewModel
 <form id="create-form" method="post" asp-controller="ManageClient" asp-action="OnPostCreateOrEdit"
       asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
+
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
-                <label class="col-md-2 col-form-label">First Name</label>
+                <label class="col-md-2 col-form-label">First Name (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <input type="text" placeholder="Please enter first name" asp-for="FirstName" name="FirstName" class="form-control" />
                     <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
-                <label class="col-md-2 col-form-label">Last Name</label>
+                <label class="col-md-2 col-form-label">Middle Name</label>
                 <div class="col-md-4">
-                    <input type="text" placeholder="Please enter last name" asp-for="LastName" name="LastName" class="form-control" />
-                    <span asp-validation-for="LastName" class="text-danger"></span>
+                    <input type="text" placeholder="Please enter middle name" asp-for="MiddleName" name="MiddleName" class="form-control" />
                 </div>
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
-                <label class="col-md-2 col-form-label">Mobile</label>
+                <label class="col-md-2 col-form-label">Last Name (<span style="color:red">*</span>)</label>
+                <div class="col-md-4">
+                    <input type="text" placeholder="Please enter last name" asp-for="LastName" name="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <label class="col-md-2 col-form-label">Father Name (<span style="color:red">*</span>)</label>
+                <div class="col-md-4">
+                    <input type="text" placeholder="Please enter father name" asp-for="FatherName" name="FatherName" class="form-control" />
+                    <span asp-validation-for="FatherName" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Mobile (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <input type="tel" maxlength="10" placeholder="Please enter mobile" asp-for="Mobile" name="Mobile" class="form-control" />
                     <span asp-validation-for="Mobile" class="text-danger"></span>
@@ -38,10 +58,11 @@
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
-                <label class="col-md-2 col-form-label">Email</label>
+                <label class="col-md-2 col-form-label">Email (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <input type="email" placeholder="Please enter email" asp-for="Email" name="Email" class="form-control" />
                     <span asp-validation-for="Email" class="text-danger"></span>
@@ -54,12 +75,25 @@
             </div>
         </div>
     </div>
-    Client Address Detail
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">DOB (<span style="color:red">*</span>)</label>
+                <div class="col-md-4">
+                    <input type="date" placeholder="Please enter dob" asp-for="Dob" name="Dob" class="form-control" />
+                    <span asp-validation-for="Dob" class="text-danger"></span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    @localizer["Client Address Detail"]
     <hr>
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
-                <label class="col-md-2 col-form-label">State</label>
+                <label class="col-md-2 col-form-label">State (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <select name="StateCode" class="form-control select2bs4" id="StateCode" asp-for="StateCode"
                             asp-items="@Model.States">
@@ -67,11 +101,10 @@
                     </select>
                     <span asp-validation-for="StateCode" class="text-danger"></span>
                 </div>
-                <label class="col-md-2 col-form-label">District</label>
+                <label class="col-md-2 col-form-label">District (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <select name="DistrictCode" class="form-control select2bs4" id="DistrictCode" asp-for="DistrictCode"
                             asp-items="@Model.Districts">
-                        <option></option>
                     </select>
                     <span asp-validation-for="DistrictCode" class="text-danger"></span>
                 </div>
@@ -79,7 +112,6 @@
         </div>
         <div class="col-md-12">
             <div class="form-group row">
-
                 <label class="col-md-2 col-form-label">Address</label>
                 <div class="col-md-10">
                     <textarea asp-for="Address" name="Address" class="form-control" placeholder="Please enter address"></textarea>
@@ -96,13 +128,11 @@
         <button type="button" class="btn btn-default close-button" id="btnCancel">Cancel</button>
     </div>
 </form>
-<script src="~/js/site.js"></script>
 <script type="text/javascript" language=javascript>
     $.validator.unobtrusive.parse(document);
 </script>
 @section Scripts
-    {
-
+{
     <script>
         function loadData() {
             $('#viewAll').load('/Client/ManageClient/LoadAll');
@@ -131,19 +161,12 @@
                     return m;
                 }
             });
-            $("#CityId").select2({
-                placeholder: "Select a city",
-                theme: "bootstrap4",
-                escapeMarkup: function (m) {
-                    return m;
-                }
-            });
 
             $("#StateCode").on("change", function () {
                 $("#DistrictCode").empty();
                 $.getJSON("/Client/ManageClient/LoadDistricts?StateCode=" + $("#StateCode").val(), function (data) {
                     $.each(data.Data, function (i, item) {
-                        $("#DistrictCode").append(`<option /><option value="${item.DistrictCode}">${item.DistrictName}</option>`);
+                        $("#DistrictCode").append(`<option /><option value="${item.Code}">${item.Name_En}</option>`);
                     });
                 });
             });

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.CaseStages.Command
 {
-    public class CreateCaseStageCommand : IRequest<Result<int>>
+    public class CreateCaseStageCommand : IRequest<Result<Guid>>
     {
         public string CaseStage { get; set; }
         public CreateCaseStageCommand()
@@ -21,7 +21,7 @@ namespace CourtApp.Application.Features.CaseStages.Command
         }
     }
 
-    public class CreateCaseStageCommandHandler : IRequestHandler<CreateCaseStageCommand, Result<int>>
+    public class CreateCaseStageCommandHandler : IRequestHandler<CreateCaseStageCommand, Result<Guid>>
     {
         private readonly ICaseStageRepository repository;
         private readonly IMapper mapper;
@@ -33,12 +33,12 @@ namespace CourtApp.Application.Features.CaseStages.Command
             this._unitOfWork = _unitOfWork;
         }
 
-        public async Task<Result<int>> Handle(CreateCaseStageCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(CreateCaseStageCommand request, CancellationToken cancellationToken)
         {
             var mappeddata = mapper.Map<CaseStageEntity>(request);
             await repository.InsertAsync(mappeddata);
             await _unitOfWork.Commit(cancellationToken);
-            return Result<int>.Success(mappeddata.Id);
+            return Result<Guid>.Success(mappeddata.Id);
         }
     }
 }

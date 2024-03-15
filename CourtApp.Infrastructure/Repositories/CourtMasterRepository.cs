@@ -5,7 +5,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CourtApp.Infrastructure.Repositories
@@ -15,13 +14,17 @@ namespace CourtApp.Infrastructure.Repositories
         private readonly IRepositoryAsync<CourtMasterEntity> _repository;
         private readonly IDistributedCache _distributedCache;
 
-        public CourtMasterRepository(IRepositoryAsync<CourtMasterEntity> _repository, IDistributedCache _distributedCache)
+        public CourtMasterRepository(IRepositoryAsync<CourtMasterEntity> _repository,
+            IDistributedCache _distributedCache)
         {
             this._repository = _repository;
             this._distributedCache = _distributedCache;
         }
 
         public IQueryable<CourtMasterEntity> QryEntities => _repository.Entities;
+
+        public IQueryable<CourtMasterEntity> Entities => _repository.Entities
+            .Include(ct => ct.CourtType).Include(st => st.State).Include(d => d.District);
 
         public Task DeleteAsync(CourtMasterEntity objEntity)
         {
@@ -30,15 +33,21 @@ namespace CourtApp.Infrastructure.Repositories
 
         public async Task<CourtMasterEntity> GetByIdAsync(Guid Id)
         {
-            return await _repository.Entities.Where(p => p.UniqueId==Id).FirstOrDefaultAsync();
+            var DetailById = _repository.Entities
+                .Include(ct => ct.CourtType)
+                .Include(st => st.State)
+                .Include(d => d.District)
+                .Where(p => p.Id == Id).FirstOrDefaultAsync();
+
+            return await DetailById;
         }
 
         public async Task<List<CourtMasterEntity>> GetListAsync()
         {
-            return await _repository.Entities.OrderByDescending(o => o.CourtName).ToListAsync();
+            return await _repository.Entities.OrderByDescending(o => o.Name_En).ToListAsync();
         }
 
-        public async Task<int> InsertAsync(CourtMasterEntity objEntity)
+        public async Task<Guid> InsertAsync(CourtMasterEntity objEntity)
         {
             await _repository.AddAsync(objEntity);
             await _distributedCache.RemoveAsync(CacheKeys.CourtCacheKeys.ListKey);
@@ -49,7 +58,7 @@ namespace CourtApp.Infrastructure.Repositories
         {
             await _repository.UpdateAsync(objEntity);
             await _distributedCache.RemoveAsync(CacheKeys.CourtCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtCacheKeys.GetKey(objEntity.UniqueId));
+            await _distributedCache.RemoveAsync(CacheKeys.CourtCacheKeys.GetKey(objEntity.Id));
         }
     }
 }

@@ -14,11 +14,11 @@ namespace CourtApp.Application.Mappings
     {
         public SubjectProfile()
         {
-            CreateMap<CreateSubjectCommand, PracticeSubjectEntity>().ReverseMap();           
-            CreateMap<UpdateSubjectCommand, PracticeSubjectEntity>().ReverseMap();           
-            CreateMap<DeleteSubjectCommand, PracticeSubjectEntity>().ReverseMap();           
-            CreateMap<PracticeSubjectQueryResponse, PracticeSubjectEntity>().ReverseMap();
-            CreateMap<PracticeSubjectCacheQueryResponse, PracticeSubjectEntity>().ReverseMap();
+            CreateMap<CreateSubjectCommand, SubjectEntity>().ReverseMap();           
+            CreateMap<UpdateSubjectCommand, SubjectEntity>().ReverseMap();           
+            CreateMap<DeleteSubjectCommand, SubjectEntity>().ReverseMap();           
+            CreateMap<PracticeSubjectQueryResponse, SubjectEntity>().ReverseMap();
+            CreateMap<PracticeSubjectCacheQueryResponse, SubjectEntity>().ReverseMap();
         }
    
     }

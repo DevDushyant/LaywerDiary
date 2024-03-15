@@ -9,7 +9,7 @@ namespace CourtApp.Application.Features.CourtFeeStructure.Queries
     public class GetCourtFeeStructureByIdResponse
     {
         public Guid Id { get; set; }        
-        public string StateCode { get; set; }
+        public string StateName { get; set; }
         public Double MinValue { get; set; }
         public Double MaxValue { get; set; }
         public Double Rate { get; set; }

@@ -11,6 +11,6 @@ namespace CourtApp.Application.Interfaces.CacheRepositories
     {
         Task<List<BookTypeEntity>> GetCachedListAsync();
 
-        Task<BookTypeEntity> GetByIdAsync(int bookTypeId);
+        Task<BookTypeEntity> GetByIdAsync(Guid bookTypeId);
     }
 }

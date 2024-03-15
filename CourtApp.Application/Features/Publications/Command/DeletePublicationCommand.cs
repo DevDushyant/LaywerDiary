@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.Publications.Command
 {
-    public class DeletePublicationCommand : IRequest<Result<int>>
+    public class DeletePublicationCommand : IRequest<Result<Guid>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 
-    public class DeletePublicationCommandHandler : IRequestHandler<DeletePublicationCommand, Result<int>>
+    public class DeletePublicationCommandHandler : IRequestHandler<DeletePublicationCommand, Result<Guid>>
     {
         private readonly IPublicationRepository _Repository;
         private readonly IUnitOfWork _unitOfWork;
@@ -24,12 +24,12 @@ namespace CourtApp.Application.Features.Publications.Command
             this._Repository = _Repository;
             this._unitOfWork = _unitOfWork;
         }
-        public async Task<Result<int>> Handle(DeletePublicationCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(DeletePublicationCommand request, CancellationToken cancellationToken)
         {
             var entity = await _Repository.GetByIdAsync(request.Id);
             await _Repository.DeleteAsync(entity);
             await _unitOfWork.Commit(cancellationToken);
-            return Result<int>.Success(entity.Id);
+            return Result<Guid>.Success(entity.Id);
         }
     }
 }

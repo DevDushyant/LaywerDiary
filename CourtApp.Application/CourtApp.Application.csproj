@@ -3,6 +3,19 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Features\Commands\Cases\**" />
+    <Compile Remove="Features\Queries\Cases\**" />
+    <EmbeddedResource Remove="Features\Commands\Cases\**" />
+    <EmbeddedResource Remove="Features\Queries\Cases\**" />
+    <None Remove="Features\Commands\Cases\**" />
+    <None Remove="Features\Queries\Cases\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Mappings\UserCaseEntryMappings.cs" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AspNetCoreHero.Results" Version="1.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
@@ -20,5 +33,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DTOs\APIRes\" />
+    <Folder Include="Features\Commands\" />
   </ItemGroup>
 </Project>

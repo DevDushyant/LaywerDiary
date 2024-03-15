@@ -14,9 +14,9 @@ namespace CourtApp.Application.Interfaces.Repositories
 
         Task<List<BookTypeEntity>> GetListAsync();
 
-        Task<BookTypeEntity> GetByIdAsync(int bookTypeId);
+        Task<BookTypeEntity> GetByIdAsync(Guid bookTypeId);
 
-        Task<int> InsertAsync(BookTypeEntity bookType);
+        Task<Guid> InsertAsync(BookTypeEntity bookType);
 
         Task UpdateAsync(BookTypeEntity bookType);
 

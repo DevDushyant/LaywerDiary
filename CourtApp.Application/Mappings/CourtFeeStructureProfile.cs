@@ -14,8 +14,10 @@ namespace CourtApp.Application.Mappings
     {
         public CourtFeeStructureProfile()
         {
-            CreateMap<GetCourtFeeStructureByIdResponse, CourtFeeStructureEntity>().ReverseMap();            
-            CreateMap<CreateCourtFeeStructureCommand, CourtFeeStructureEntity>().ReverseMap();       
+            CreateMap<CourtFeeStructureEntity, GetCourtFeeStructureByIdResponse>()
+                .ForPath(d => d.StateName, opt => opt.MapFrom(src => src.State.Name_En));
+            CreateMap<CreateCourtFeeStructureCommand, CourtFeeStructureEntity>()
+                .ForPath(d => d.State.Id, opt => opt.MapFrom(src => src.StateCode));
         }
     }
 }

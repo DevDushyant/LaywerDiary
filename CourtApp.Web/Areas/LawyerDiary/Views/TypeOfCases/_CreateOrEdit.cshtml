@@ -6,17 +6,18 @@
                 <label class="col-md-3 col-form-label">Case Nature</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                        <select name="CaseNatureId" class="form-control select2bs4" id="CaseNatureId" asp-for="CaseNatureId" asp-items="@Model.CaseNatures">
+                        <select name="NatureId" class="form-control select2bs4" id="CaseNatureId" asp-for="NatureId" asp-items="@Model.CaseNatures">
+                            <option></option>
                         </select>
                     </div>
-                    <span asp-validation-for="CaseNatureId" class="text-danger"></span>
+                    <span asp-validation-for="NatureId" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">Type of case</label>
                 <div class="col-md-9">
-                    <input type="text" asp-for="Typeofcases" name="Typeofcases" class="form-control">
-                    <span asp-validation-for="Typeofcases" class="text-danger"></span>
+                    <input type="text" asp-for="Name_En" name="Name_En" class="form-control">
+                    <span asp-validation-for="Name_En" class="text-danger"></span>
                 </div>
             </div>
 
@@ -34,4 +35,11 @@
 </form>
 <script type="text/javascript" language=javascript>
     $.validator.unobtrusive.parse(document);
+    $("#CaseNatureId").select2({
+        placeholder: "Select a case nature",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
 </script>

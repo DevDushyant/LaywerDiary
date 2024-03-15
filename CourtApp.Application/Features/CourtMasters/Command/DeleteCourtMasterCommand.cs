@@ -8,6 +8,6 @@ namespace CourtApp.Application.Features.CourtMasters.Command
 {
     public class DeleteCourtMasterCommand
     {
-        public Guid UniqueId { get; set; }
+        public Guid Id { get; set; }
     }
 }

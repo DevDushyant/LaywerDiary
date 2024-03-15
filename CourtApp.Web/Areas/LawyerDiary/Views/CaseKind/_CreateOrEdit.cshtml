@@ -35,4 +35,11 @@
 </form>
 <script type="text/javascript" language=javascript>
     $.validator.unobtrusive.parse(document);
+    $("#CourtTypeId").select2({
+        placeholder: "Select a court type",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
 </script>

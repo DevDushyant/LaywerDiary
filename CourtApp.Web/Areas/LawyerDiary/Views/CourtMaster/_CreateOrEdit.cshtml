@@ -3,9 +3,9 @@
     ViewData["Caption"] = localizer["Manage Court"];
 }
 @model CourtMasterViewModel
-<hr/>
+<hr />
 <form id="create-form" method="post" asp-controller="CourtMaster" asp-action="OnPostCreateOrEdit"
-      asp-route-id="@Model.UniqueId" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
+      asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
@@ -39,7 +39,7 @@
                                 asp-items="@Model.Districts">
                         </select>
                     </div>
-                    <span asp-validation-for="StateCode" class="text-danger"></span>
+                    <span asp-validation-for="DistrictCode" class="text-danger"></span>
                 </div>
             </div>
 
@@ -100,13 +100,11 @@
 </script>
 @section Scripts
 {
-    
     <script>
         function goPrev() {
             window.history.back();
         }
         $(document).ready(function () {
-           
             $("#CourtTypeId").select2({
                 placeholder: "Select a court type",
                 theme: "bootstrap4",
@@ -132,7 +130,7 @@
                 $("#DistrictCode").empty();
                 $.getJSON("/LawyerDiary/CourtMaster/LoadDistricts?StateCode=" + $("#StateCode").val(), function (data) {
                     $.each(data.Data, function (i, item) {
-                        $("#DistrictCode").append(`<option /><option value="${item.DistrictCode}">${item.DistrictName}</option>`);
+                        $("#DistrictCode").append(`<option /><option value="${item.Code}">${item.Name_En}</option>`);
                     });
                 });
             });

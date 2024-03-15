@@ -8,7 +8,7 @@ namespace CourtApp.Application.Features.CourtMasters.Query
 {
     public class GetCourtMasterDataAllResponse
     {
-        public int UniqueId { get; set; }
+        public Guid Id { get; set; }
         public string CourtType { get; set; }
         public string CourtName { get; set; }
         public string CourtFullName { get; set; }

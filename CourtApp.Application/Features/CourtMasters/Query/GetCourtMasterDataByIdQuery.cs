@@ -11,11 +11,7 @@ namespace CourtApp.Application.Features.CourtMasters.Query
 {
     public class GetCourtMasterDataByIdQuery : IRequest<Result<GetCourtMasterDataByIdResponse>>
     {
-        public Guid Id { get; set; }
-        public GetCourtMasterDataByIdQuery()
-        {
-
-        }
+        public Guid Id { get; set; }        
     }
 
     public class GetCourtMasterDataByIdQueryHandler : IRequestHandler<GetCourtMasterDataByIdQuery, Result<GetCourtMasterDataByIdResponse>>

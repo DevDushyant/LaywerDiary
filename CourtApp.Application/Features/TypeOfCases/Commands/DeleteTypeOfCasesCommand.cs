@@ -7,17 +7,12 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.Typeofcasess.Commands
 {
-   public class DeleteTypeOfCasesCommand : IRequest<Result<int>>
+   public class DeleteTypeOfCasesCommand : IRequest<Result<Guid>>
     {
-        public int Id { get; set; }
-        public DeleteTypeOfCasesCommand()
-        {
-
-        }
-        
+        public Guid Id { get; set; }              
     }
 
-    public class DeleteCaseKindCommandHandler : IRequestHandler<DeleteTypeOfCasesCommand, Result<int>>
+    public class DeleteCaseKindCommandHandler : IRequestHandler<DeleteTypeOfCasesCommand, Result<Guid>>
     {
         private readonly ITypeOfCasesRepository _Repository;
         private readonly IUnitOfWork _unitOfWork;
@@ -28,12 +23,12 @@ namespace CourtApp.Application.Features.Typeofcasess.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<int>> Handle(DeleteTypeOfCasesCommand command, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(DeleteTypeOfCasesCommand command, CancellationToken cancellationToken)
         {
             var detail = await _Repository.GetByIdAsync(command.Id);
             await _Repository.DeleteAsync(detail);
             await _unitOfWork.Commit(cancellationToken);
-            return Result<int>.Success(detail.Id);
+            return Result<Guid>.Success(detail.Id);
         }
     }
 }

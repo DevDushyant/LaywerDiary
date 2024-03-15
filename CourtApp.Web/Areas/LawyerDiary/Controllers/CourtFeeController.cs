@@ -21,13 +21,34 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 
         public async Task<IActionResult> LoadAllAsync()
         {
-            var response = await _mediator.Send(new GetCourtFeeStructAllQuery());
+            var response = await _mediator.Send(new GetCourtFeeStructAllQuery() { PageNumber=1,PageSize=10});
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<CourtFeeStructureViewModel>>(response.Data);
                 return PartialView("_ViewAll", viewModel);
             }
             return null;
+        }
+        public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
+        {
+            var statelist = await _mediator.Send(new GetStateMasterQuery());
+            var stateViewModel = _mapper.Map<List<StateViewModel>>(statelist.Data);
+            if (id == Guid.Empty)
+            {
+                var ViewModel = new CourtFeeStructureViewModel();
+                ViewModel.States = new SelectList(stateViewModel, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
+            }
+            else
+            {
+                var response = await _mediator.Send(new GetCourtFeeStructByIdQuery() { Id = id });
+                if (response.Succeeded)
+                {
+                    var brandViewModel = _mapper.Map<CourtFeeStructureViewModel>(response.Data);
+                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", brandViewModel) });
+                }
+                return null;
+            }
         }
 
         public async Task<IActionResult> CreateOrUpdate(Guid? id = null)
@@ -41,7 +62,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
             var statelist = await _mediator.Send(new GetStateMasterQuery());
             var stateViewModel = _mapper.Map<List<StateViewModel>>(statelist.Data);
-            ViewModel.States = new SelectList(stateViewModel, nameof(StateViewModel.StateCode), nameof(StateViewModel.StateName), null, null);
+            ViewModel.States = new SelectList(stateViewModel, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
             return View(ViewModel);
         }
 
@@ -50,7 +71,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (id == Guid.Parse("00000000-0000-0000-0000-000000000000"))
+                if (id == Guid.Empty)
                 {
                     var createCommand = _mapper.Map<CreateCourtFeeStructureCommand>(ViewModel);
                     var result = await _mediator.Send(createCommand);

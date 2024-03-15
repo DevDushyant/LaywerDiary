@@ -5,48 +5,47 @@ using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CourtApp.Infrastructure.Repositories
 {
     public class SubjectRepository : ISubjectRepository
     {
-        private readonly IRepositoryAsync<PracticeSubjectEntity> _repository;
+        private readonly IRepositoryAsync<SubjectEntity> _repository;
         private readonly IDistributedCache _distributedCache;
 
-        public SubjectRepository(IRepositoryAsync<PracticeSubjectEntity> _repository, IDistributedCache _distributedCache)
+        public SubjectRepository(IRepositoryAsync<SubjectEntity> _repository, IDistributedCache _distributedCache)
         {
             this._repository = _repository;
             this._distributedCache = _distributedCache;
         }
-        public IQueryable<PracticeSubjectEntity> Subjects => _repository.Entities;
+        public IQueryable<SubjectEntity> Subjects => _repository.Entities;
 
-        public async Task DeleteAsync(PracticeSubjectEntity subject)
+        public async Task DeleteAsync(SubjectEntity subject)
         {
             await _repository.DeleteAsync(subject);
             await _distributedCache.RemoveAsync(CacheKeys.SubjectCacheKeys.ListKey);
             await _distributedCache.RemoveAsync(CacheKeys.SubjectCacheKeys.GetKey(subject.Id));
         }
 
-        public async Task<PracticeSubjectEntity> GetByIdAsync(int Id)
+        public async Task<SubjectEntity> GetByIdAsync(Guid Id)
         {
             return await _repository.Entities.Where(p => p.Id == Id).FirstOrDefaultAsync();
         }
 
-        public async Task<List<PracticeSubjectEntity>> GetListAsync()
+        public async Task<List<SubjectEntity>> GetListAsync()
         {
-            return await _repository.Entities.OrderByDescending(o => o.Subject).ToListAsync();
+            return await _repository.Entities.OrderByDescending(o => o.Name_En).ToListAsync();
         }
 
-        public async Task<int> InsertAsync(PracticeSubjectEntity subject)
+        public async Task<Guid> InsertAsync(SubjectEntity subject)
         {
             await _repository.AddAsync(subject);
             await _distributedCache.RemoveAsync(CacheKeys.SubjectCacheKeys.ListKey);
             return subject.Id;
         }
 
-        public async Task UpdateAsync(PracticeSubjectEntity subject)
+        public async Task UpdateAsync(SubjectEntity subject)
         {
             await _repository.UpdateAsync(subject);
             await _distributedCache.RemoveAsync(CacheKeys.SubjectCacheKeys.ListKey);

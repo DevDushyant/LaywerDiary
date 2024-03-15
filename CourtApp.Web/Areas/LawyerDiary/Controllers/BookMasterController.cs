@@ -1,11 +1,12 @@
-﻿using CourtApp.Application.Features.Commands.BookMasters;
+﻿using CourtApp.Application.Features.BookMasters.Command;
+using CourtApp.Application.Features.BookMasters.Query;
+using CourtApp.Application.Features.BookTypes.Query.GetAllCached;
 using CourtApp.Application.Features.Publications.Queries;
-using CourtApp.Application.Features.Queries.BookMasters;
-using CourtApp.Application.Features.Queries.BookTypes.GetAllCached;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -34,18 +35,18 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 
         
 
-        public async Task<JsonResult> OnGetCreateOrEdit(int id = 0)
+        public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
         {
             var bookTypes = await _mediator.Send(new GetAllBookTypeCachedQuery());
             var publications = await _mediator.Send(new GetAllPublisherCachedQuery());
-            if (id == 0)
+            if (id == Guid.Empty)
             {
                 var ViewModel = new BookMasterViewModel();
 
                 if (bookTypes.Succeeded)
                 {
                     var bookTypeViewModel = _mapper.Map<List<BookTypeViewModel>>(bookTypes.Data);
-                    ViewModel.BookTypes = new SelectList(bookTypeViewModel, nameof(BookTypeViewModel.Id), nameof(BookTypeViewModel.BookType), null, null);
+                    ViewModel.BookTypes = new SelectList(bookTypeViewModel, nameof(BookTypeViewModel.Id), nameof(BookTypeViewModel.Name_En), null, null);
                 }
                 if (publications.Succeeded)
                 {
@@ -63,7 +64,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     if (bookTypes.Succeeded)
                     {
                         var bookTypeViewModel = _mapper.Map<List<BookTypeViewModel>>(bookTypes.Data);
-                        ViewModel.BookTypes = new SelectList(bookTypeViewModel, nameof(BookTypeViewModel.Id), nameof(BookTypeViewModel.BookType), null, null);
+                        ViewModel.BookTypes = new SelectList(bookTypeViewModel, nameof(BookTypeViewModel.Id), nameof(BookTypeViewModel.Name_En), null, null);
                     }
                     if (publications.Succeeded)
                     {
@@ -78,11 +79,11 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostCreateOrEdit(int id, BookMasterViewModel ViewModel)
+        public async Task<JsonResult> OnPostCreateOrEdit(Guid id, BookMasterViewModel ViewModel)
         {
             if (ModelState.IsValid)
             {
-                if (id == 0)
+                if (id == Guid.Empty)
                 {
                     var createCommand = _mapper.Map<CreateBookMasterCommand>(ViewModel);
                     var result = await _mediator.Send(createCommand);
@@ -118,7 +119,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostDelete(int id)
+        public async Task<JsonResult> OnPostDelete(Guid id)
         {
             var deleteCommand = await _mediator.Send(new DeleteBookMasterCommand { Id = id });
             if (deleteCommand.Succeeded)

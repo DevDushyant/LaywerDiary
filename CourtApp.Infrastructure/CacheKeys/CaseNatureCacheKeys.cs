@@ -12,7 +12,7 @@ namespace CourtApp.Infrastructure.CacheKeys
 
         public static string SelectListKey => "NatureSelectList";
 
-        public static string GetKey(int natureId) => $"Nature-{natureId}";
+        public static string GetKey(Guid natureId) => $"Nature-{natureId}";
 
         public static string GetDetailsKey(int natureId) => $"NatureDetails-{natureId}";
     }

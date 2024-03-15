@@ -14,9 +14,9 @@ namespace CourtApp.Application.Interfaces.Repositories
 
         Task<List<LDBookEntity>> GetListAsync();
 
-        Task<LDBookEntity> GetByIdAsync(int bookTypeId);
+        Task<LDBookEntity> GetByIdAsync(Guid bookTypeId);
 
-        Task<int> InsertAsync(LDBookEntity bookMaster);
+        Task<Guid> InsertAsync(LDBookEntity bookMaster);
 
         Task UpdateAsync(LDBookEntity bookMaster);
 

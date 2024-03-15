@@ -1,10 +1,10 @@
-﻿using CourtApp.Application.Features.BookTypes.Commands;
-using CourtApp.Application.Features.Commands.BookTypes;
-using CourtApp.Application.Features.Queries.BookTypes.GetAllCached;
-using CourtApp.Application.Features.Queries.BookTypes.GetById;
+﻿using CourtApp.Application.Features.BookTypes.Command;
+using CourtApp.Application.Features.BookTypes.Query.GetAllCached;
+using CourtApp.Application.Features.BookTypes.Query.GetById;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -30,11 +30,11 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             return null;
         }
 
-        public async Task<JsonResult> OnGetCreateOrEdit(int id = 0)
+        public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
         {
             //var bookTypeResponse = await _mediator.Send(new GetAllBrandsCachedQuery());
 
-            if (id == 0)
+            if (id == Guid.Empty)
             {
                 var ViewModel = new BookTypeViewModel();
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
@@ -53,11 +53,11 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 
 
         [HttpPost]
-        public async Task<JsonResult> OnPostCreateOrEdit(int id, BookTypeViewModel btViewModel)
+        public async Task<JsonResult> OnPostCreateOrEdit(Guid id, BookTypeViewModel btViewModel)
         {
             if (ModelState.IsValid)
             {
-                if (id == 0)
+                if (id == Guid.Empty)
                 {
                     var createBookTypeCommand = _mapper.Map<CreateBookTypeCommand>(btViewModel);
                     var result = await _mediator.Send(createBookTypeCommand);
@@ -95,7 +95,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostDelete(int id)
+        public async Task<JsonResult> OnPostDelete(Guid id)
         {
             var deleteCommand = await _mediator.Send(new DeleteCreateBookTypeCommand { Id = id });
             if (deleteCommand.Succeeded)

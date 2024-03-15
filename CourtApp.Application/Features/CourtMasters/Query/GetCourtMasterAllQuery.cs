@@ -17,7 +17,7 @@ namespace CourtApp.Application.Features.CourtMasters.Query
 {
     public class GetCourtMasterAllQuery : IRequest<Result<List<GetCourtMasterDataAllResponse>>>
     {
-        public int CourtTypeId { get; set; }
+        public Guid CourtTypeId { get; set; }
         public GetCourtMasterAllQuery()
         {
 
@@ -37,19 +37,20 @@ namespace CourtApp.Application.Features.CourtMasters.Query
             Expression<Func<CourtMasterEntity, GetCourtMasterDataAllResponse>> expression = e => new GetCourtMasterDataAllResponse
             {
                 CourtType = e.CourtType.CourtType,
-                CourtName = e.CourtName,
-                UniqueId = e.Id,
+                CourtName = e.Name_En,
+                Id = e.Id,
                 Bench = e.Bench,
-                CourtFullName = e.CourtName + "(" + e.Bench + ")",
-                State = e.State.StateName,
-                District = e.District.DistrictName
+                CourtFullName = e.Name_En + "(" + e.Bench + ")",
+                State = e.State.Name_En,
+                District = e.District.Name_En,
+                Address=e.Address
             };
             var predicate = PredicateBuilder.True<CourtMasterEntity>();
-            if (request.CourtTypeId != 0)
-                predicate = predicate.And(b => b.CourtTypeId == request.CourtTypeId);
+            if (request.CourtTypeId != Guid.Empty)
+                predicate = predicate.And(b => b.CourtType.Id == request.CourtTypeId);
             
 
-            var dtlist = _repository.QryEntities.Where(predicate)
+            var dtlist = _repository.Entities.Where(predicate)
                .Select(expression)
                .ToList();
 

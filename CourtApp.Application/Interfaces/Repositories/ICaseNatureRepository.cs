@@ -10,16 +10,16 @@ namespace CourtApp.Application.Interfaces.Repositories
 {
     public interface ICaseNatureRepository
     {
-        IQueryable<CaseNatureEntity> CaseNatures { get; }
+        IQueryable<NatureEntity> CaseNatures { get; }
 
-        Task<List<CaseNatureEntity>> GetListAsync();
+        Task<List<NatureEntity>> GetListAsync();
 
-        Task<CaseNatureEntity> GetByIdAsync(int caseNatureId);
+        Task<NatureEntity> GetByIdAsync(Guid caseNatureId);
 
-        Task<int> InsertAsync(CaseNatureEntity caseNature);
+        Task<Guid> InsertAsync(NatureEntity caseNature);
 
-        Task UpdateAsync(CaseNatureEntity caseNature);
+        Task UpdateAsync(NatureEntity caseNature);
 
-        Task DeleteAsync(CaseNatureEntity caseNature);
+        Task DeleteAsync(NatureEntity caseNature);
     }
 }

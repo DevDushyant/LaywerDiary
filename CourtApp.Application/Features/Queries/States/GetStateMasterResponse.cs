@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace CourtApp.Application.Features.Queries.States
 {
     public class GetStateMasterResponse
     {
-        public string StateCode { get; set; }
-        public string StateName { get; set; }
+        public int code { get; set; }
+        public string name_en { get; set; }
+        public string name_hn { get; set; }
     }
 }

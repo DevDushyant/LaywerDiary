@@ -10,7 +10,7 @@ namespace CourtApp.Application.Interfaces.CacheRepositories
 {
     public interface ICaseNatureCacheRepository
     {
-        Task<List<CaseNatureEntity>> GetCachedListAsync();
-        Task<CaseNatureEntity> GetByIdAsync(int bookTypeId);
+        Task<List<NatureEntity>> GetCachedListAsync();
+        Task<NatureEntity> GetByIdAsync(Guid bookTypeId);
     }
 }

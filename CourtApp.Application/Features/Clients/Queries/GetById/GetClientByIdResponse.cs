@@ -1,8 +1,10 @@
-﻿namespace CourtApp.Application.Features.Clients.Queries.GetById
+﻿using System;
+
+namespace CourtApp.Application.Features.Clients.Queries.GetById
 {
     public class GetClientByIdResponse
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string FirstName { get; set; }
         //public string FatherName { get; set; }
         public string LastName { get; set; }
@@ -14,7 +16,7 @@
         public string HouseNo { get; set; }
 
         //public string CountryCode { get; set; }
-        public string StateCode { get; set; }
+        public int StateCode { get; set; }
         public int DistrictCode { get; set; }
         public int CityId { get; set; }
         public string Address { get; set; }

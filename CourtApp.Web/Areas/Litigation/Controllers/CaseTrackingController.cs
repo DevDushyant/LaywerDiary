@@ -23,7 +23,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (statelist != null)
             {
                 var stateViewModel = _mapper.Map<List<StateViewModel>>(statelist);
-                viewModel.States = new SelectList(stateViewModel, nameof(StateViewModel.StateCode), nameof(StateViewModel.StateName), null, null);
+                viewModel.States = new SelectList(stateViewModel, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
             }
             return View(viewModel);
         }

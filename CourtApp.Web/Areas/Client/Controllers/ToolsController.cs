@@ -23,13 +23,13 @@ namespace CourtApp.Web.Areas.Client.Controllers
             if (statelist != null)
             {
                 var stateViewModel = _mapper.Map<List<StateViewModel>>(statelist);
-                viewModel.States = new SelectList(stateViewModel, nameof(StateViewModel.StateCode), nameof(StateViewModel.StateName), null, null);
+                viewModel.States = new SelectList(stateViewModel, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
             }
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<JsonResult> AdvalremFeeCalResultAsync(string statecode, string feekind, string amount)
+        public async Task<JsonResult> AdvalremFeeCalResultAsync(int statecode, string feekind, string amount)
         {
             var result = await _mediator.Send(new AdvalremCourtFeeCalQuery() { StateCode = statecode,FeeKind=feekind,CalculativeAmount=Convert.ToDouble(amount) });
             var data = Json(result.Message);

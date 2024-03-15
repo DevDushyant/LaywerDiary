@@ -6,7 +6,7 @@ using CourtApp.Application.Features.CaseNatures.Query;
 using CourtApp.Application.Features.CaseStages.Query;
 using CourtApp.Application.Features.CourtMasters.Query;
 using CourtApp.Application.Features.CourtType.Query;
-using CourtApp.Application.Features.Queries.Cases;
+//using CourtApp.Application.Features.Queries.Cases;
 using CourtApp.Application.Features.Queries.Districts;
 using CourtApp.Application.Features.TypeOfCases.Query;
 using CourtApp.Web.Areas.LawyerDiary.Models;
@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,13 +36,13 @@ namespace CourtApp.Web.Abstractions
         protected ILogger<T> _logger => _loggerInstance ??= HttpContext.RequestServices.GetService<ILogger<T>>();
         protected IViewRenderService _viewRenderer => _viewRenderInstance ??= HttpContext.RequestServices.GetService<IViewRenderService>();
         protected IMapper _mapper => _mapperInstance ??= HttpContext.RequestServices.GetService<IMapper>();
-        public async Task<JsonResult> LoadDistricts(string StateCode)
+        public async Task<JsonResult> LoadDistricts(int StateCode)
         {
             var districts = await _mediator.Send(new GetDistrictQuery() { StateCode = StateCode });
             var data = Json(districts);
             return data;
         }
-        public async Task<JsonResult> LoadCourt(int CourtTypeId)
+        public async Task<JsonResult> LoadCourt(Guid CourtTypeId)
         {
             var response = await _mediator.Send(new GetCourtMasterAllQuery() {
                 CourtTypeId= CourtTypeId
@@ -59,7 +60,7 @@ namespace CourtApp.Web.Abstractions
         {
             var response = await _mediator.Send(new CaseNatureByAllCachedQuery());
             var CaseNatures = _mapper.Map<List<CaseNatureViewModel>>(response.Data);
-            return new SelectList(CaseNatures, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.CaseNature), null, null);
+            return new SelectList(CaseNatures, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.Name_En), null, null);
 
         }
 
@@ -79,11 +80,11 @@ namespace CourtApp.Web.Abstractions
 
         }
 
-        public async Task<SelectList> DdlLoadDistrict(string StateCode )
+        public async Task<SelectList> DdlLoadDistrict(int StateCode )
         {
             var districts = await _mediator.Send(new GetDistrictQuery() { StateCode = StateCode });
             var districtViewModel = _mapper.Map<List<DistrictViewModel>>(districts.Data);
-            return new SelectList(districtViewModel, nameof(DistrictViewModel.DistrictCode), nameof(DistrictViewModel.DistrictName), null, null);
+            return new SelectList(districtViewModel, nameof(DistrictViewModel.Code), nameof(DistrictViewModel.Name_En), null, null);
 
         }
 
@@ -96,13 +97,14 @@ namespace CourtApp.Web.Abstractions
         }
         public async Task<SelectList> DdlClientCases()
         {
-            var cases = await _mediator.Send(new QueryGetAllCaseEntry() { PageNumber = 1, PageSize = 100 });
-            var clientCasesViewModel = _mapper.Map<List<CaseViewModel>>(cases.Data);
-            return new SelectList(clientCasesViewModel, nameof(CaseViewModel.Id), nameof(CaseViewModel.Title), null, null);
-
+            //var cases = await _mediator.Send(new QueryGetAllCaseEntry() { PageNumber = 1, PageSize = 100 });
+            //var clientCasesViewModel = _mapper.Map<List<CaseViewModel>>(cases.Data);
+            //return new SelectList(clientCasesViewModel, nameof(CaseViewModel.Id), nameof(CaseViewModel.Title), null, null);
+            return new SelectList(null);
         }
+       
 
-        public async Task<JsonResult> LoadTypeOfCase(int natureId)
+        public async Task<JsonResult> LoadTypeOfCase(Guid natureId)
         {
             var caseType = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 100) { CaseNatureId = natureId });
             var data = Json(caseType);

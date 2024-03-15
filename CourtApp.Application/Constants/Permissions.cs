@@ -46,9 +46,7 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Brands.Create";
             public const string Edit = "Permissions.Brands.Edit";
             public const string Delete = "Permissions.Brands.Delete";
-        }
-
-        
+        }       
 
         public static class Cases
         {
@@ -97,7 +95,36 @@ namespace CourtApp.Application.Constants
             public const string Delete = "Permissions.Clients.Delete";
         }
 
+        public static class ProceedingHeads
+        {
+            public const string View = "Permissions.PHead.View";
+            public const string Create = "Permissions.PHead.Create";
+            public const string Edit = "Permissions.PHead.Edit";
+            public const string Delete = "Permissions.PHead.Delete";
+        }
 
+        public static class ProceedingSubHeads
+        {
+            public const string View = "Permissions.PSHead.View";
+            public const string Create = "Permissions.PSHead.Create";
+            public const string Edit = "Permissions.PSHead.Edit";
+            public const string Delete = "Permissions.PSHead.Delete";
+        }
 
+        public static class CaseWorks
+        {
+            public const string View = "Permissions.CaseWorks.View";
+            public const string Create = "Permissions.CaseWorks.Create";
+            public const string Edit = "Permissions.CaseWorks.Edit";
+            public const string Delete = "Permissions.CaseWorks.Delete";
+        }
+
+        public static class CaseSWorks
+        {
+            public const string View = "Permissions.CaseSWorks.View";
+            public const string Create = "Permissions.CaseSWorks.Create";
+            public const string Edit = "Permissions.CaseSWorks.Edit";
+            public const string Delete = "Permissions.CaseSWorks.Delete";
+        }
     }
 }

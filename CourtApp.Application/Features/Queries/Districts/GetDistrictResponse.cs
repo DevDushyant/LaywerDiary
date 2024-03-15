@@ -7,7 +7,7 @@ namespace CourtApp.Application.Features.Queries.Districts
 {
     public class GetDistrictResponse
     {
-        public int DistrictCode { get; set; }
-        public string DistrictName { get; set; }
+        public int Code { get; set; }
+        public string Name_En { get; set; }
     }
 }

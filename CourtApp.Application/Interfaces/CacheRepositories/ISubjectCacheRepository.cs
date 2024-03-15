@@ -10,8 +10,8 @@ namespace CourtApp.Application.Interfaces.CacheRepositories
 {
     public interface ISubjectCacheRepository
     {
-        Task<List<PracticeSubjectEntity>> GetCachedListAsync();
+        Task<List<SubjectEntity>> GetCachedListAsync();
 
-        Task<PracticeSubjectEntity> GetByIdAsync(int Id);
+        Task<SubjectEntity> GetByIdAsync(Guid Id);
     }
 }

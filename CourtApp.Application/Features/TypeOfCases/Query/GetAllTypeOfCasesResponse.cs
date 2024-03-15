@@ -8,8 +8,8 @@ namespace CourtApp.Application.Features.Typeofcasess.Query
 {
     public class GetAllTypeOfCasesResponse
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string CaseNature { get; set; }
-        public string Typeofcases { get; set; }
+        public string Name_En { get; set; }
     }
 }

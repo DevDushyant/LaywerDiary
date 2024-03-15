@@ -1,4 +1,4 @@
-﻿using CourtApp.Web.Areas.LawyerDiary.Models;
+﻿using CourtApp.Web.Areas.Client.Model;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Validators
 {
-    public class ClientsViewModelValidator : AbstractValidator<ClientsViewModel>
+    public class ClientsViewModelValidator : AbstractValidator<ClientViewModel>
     {
         public ClientsViewModelValidator()
         {

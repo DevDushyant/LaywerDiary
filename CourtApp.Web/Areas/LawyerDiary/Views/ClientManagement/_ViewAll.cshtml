@@ -16,7 +16,7 @@
         {
         <tr>           
             <td>
-                @bt.BookType
+                @bt.Name_En
             </td>
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
             {

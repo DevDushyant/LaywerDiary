@@ -19,7 +19,7 @@ namespace CourtApp.Application.Features.TypeOfCases.Query
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-        public int CaseNatureId { get; set; }
+        public Guid CaseNatureId { get; set; }
         public GetAllTypeOfCasesQuery(int pagenumber, int pagesize)
         {
             PageNumber = pagenumber;
@@ -39,12 +39,12 @@ namespace CourtApp.Application.Features.TypeOfCases.Query
             Expression<Func<TypeOfCasesEntity, GetAllTypeOfCasesResponse>> expression = e => new GetAllTypeOfCasesResponse
             {
                 Id = e.Id,
-               CaseNature=e.CaseNature.CaseNature,
-               Typeofcases=e.Typeofcases
+               CaseNature=e.Nature.Name_En,
+               Name_En=e.Name_En
             };
             var predicate = PredicateBuilder.True<TypeOfCasesEntity>();
-            if (request.CaseNatureId != 0)
-                predicate = predicate.And(b => b.CaseNatureId == request.CaseNatureId);
+            if (request.CaseNatureId != Guid.Empty)
+                predicate = predicate.And(b => b.Nature.Id==request.CaseNatureId);
 
            
             var paginatedList = await _repository.QryEntities.Where(predicate)

@@ -2,6 +2,7 @@
 using AutoMapper;
 using CourtApp.Application.Interfaces.CacheRepositories;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace CourtApp.Application.Features.CaseStages.Query
 {
     public class CaseStageByIdQuery : IRequest<Result<CaseStageQueryByIdResponse>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public CaseStageByIdQuery()
         {
 

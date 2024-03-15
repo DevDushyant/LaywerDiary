@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.Publications.Command
 {
-    public class CreatePublicationCommand : IRequest<Result<int>>
+    public class CreatePublicationCommand : IRequest<Result<Guid>>
     {
         public string PublicationName { get; set; }
         public string PropriatorName { get; set; }
     }
 
-    public class CreatePublicationCommandHandler : IRequestHandler<CreatePublicationCommand, Result<int>>
+    public class CreatePublicationCommandHandler : IRequestHandler<CreatePublicationCommand, Result<Guid>>
     {
         private readonly IPublicationRepository _repository;
         private readonly IMapper _mapper;
@@ -29,12 +29,12 @@ namespace CourtApp.Application.Features.Publications.Command
             this._unitOfWork = _unitOfWork;
             this._mapper = _mapper;
         }
-        public async Task<Result<int>> Handle(CreatePublicationCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(CreatePublicationCommand request, CancellationToken cancellationToken)
         {
             var objpublication= _mapper.Map<PublisherEntity>(request);
             await _repository.InsertAsync(objpublication);
             await _unitOfWork.Commit(cancellationToken);
-            return Result<int>.Success(objpublication.Id);
+            return Result<Guid>.Success(objpublication.Id);
         }
     }
 }

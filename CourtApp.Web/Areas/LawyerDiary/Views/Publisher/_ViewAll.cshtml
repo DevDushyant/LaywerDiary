@@ -38,7 +38,7 @@
                             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded)
 
                             {
-                                <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="BookType" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
+                                    <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="Publisher" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
                                     <a href="javascript:$('#form_delete_@bt.Id').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a>
                                 </form>
                             }

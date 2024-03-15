@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Configuration.Conventions;
 using CourtApp.Application.Features.Typeofcasess.Commands;
 using CourtApp.Application.Features.Typeofcasess.Query;
 using CourtApp.Domain.Entities.LawyerDiary;
@@ -15,7 +16,12 @@ namespace CourtApp.Application.Mappings
         public TypeofcasesProfile()
         {
             CreateMap<TypeOfCasesCacheQueryResponse, TypeOfCasesEntity>().ReverseMap();
-            CreateMap<TypeOfCasesQueryByIdResponse, TypeOfCasesEntity>().ReverseMap();
+
+            CreateMap<TypeOfCasesEntity, TypeOfCasesQueryByIdResponse>()
+                .ForMember(d => d.NatureId, opt => opt.MapFrom(src => src.Nature.Id))
+                .ForMember(d => d.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(d => d.Name_En, opt => opt.MapFrom(src => src.Name_En));
+
             CreateMap<CreateTypeOfCasesCommand, TypeOfCasesEntity>().ReverseMap();
             CreateMap<UpdateTypeOfCasesCommand, TypeOfCasesEntity>().ReverseMap();
             CreateMap<DeleteTypeOfCasesCommand, TypeOfCasesEntity>().ReverseMap();

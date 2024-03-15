@@ -14,7 +14,7 @@ namespace CourtApp.Application.Mappings
     {
         public CaseKindProfile()
         {
-            CreateMap<CaseKindQueryByIdResponse, CaseKindEntity>().ReverseMap();
+            CreateMap<CaseKindEntity,CaseKindQueryByIdResponse>();
             CreateMap<CaseKindCacheQueryResponse, CaseKindEntity>().ReverseMap();
             CreateMap<CreateCaseKindCommand, CaseKindEntity>().ReverseMap();
             CreateMap<UpdateCaseKindCommand, CaseKindEntity>().ReverseMap();

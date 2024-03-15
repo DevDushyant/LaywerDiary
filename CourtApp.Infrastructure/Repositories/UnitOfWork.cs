@@ -21,7 +21,13 @@ namespace CourtApp.Infrastructure.Repositories
 
         public async Task<int> Commit(CancellationToken cancellationToken)
         {
-            return await _dbContext.SaveChangesAsync(cancellationToken);
+            try
+            {
+                return await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception ex) {
+                return await _dbContext.SaveChangesAsync(cancellationToken);
+            }
         }
 
         public Task Rollback()

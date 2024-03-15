@@ -9,16 +9,16 @@ namespace CourtApp.Application.Interfaces.Repositories
 {
     public interface ISubjectRepository
     {
-        IQueryable<PracticeSubjectEntity> Subjects { get; }
+        IQueryable<SubjectEntity> Subjects { get; }
 
-        Task<List<PracticeSubjectEntity>> GetListAsync();
+        Task<List<SubjectEntity>> GetListAsync();
 
-        Task<PracticeSubjectEntity> GetByIdAsync(int Id);
+        Task<SubjectEntity> GetByIdAsync(Guid Id);
 
-        Task<int> InsertAsync(PracticeSubjectEntity subject);
+        Task<Guid> InsertAsync(SubjectEntity subject);
 
-        Task UpdateAsync(PracticeSubjectEntity subject);
+        Task UpdateAsync(SubjectEntity subject);
 
-        Task DeleteAsync(PracticeSubjectEntity subject);
+        Task DeleteAsync(SubjectEntity subject);
     }
 }

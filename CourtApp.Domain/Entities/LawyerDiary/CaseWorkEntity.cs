@@ -6,6 +6,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
 {
     public class CaseWorkEntity : AuditableEntity
     {
+        public new Guid Id { get; set; }
         [ForeignKey("CaseEntity")]
         public Guid CaseId { get; set; }
         public virtual CaseEntity CaseEntity { get; set; }

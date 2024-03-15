@@ -4,12 +4,13 @@ using AutoMapper;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 namespace CourtApp.Application.Features.CaseNatures.Query
 {
     public class CaseNatureByIdQuery : IRequest<Result<CaseNatureByIdResponse>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public CaseNatureByIdQuery()
         {
 

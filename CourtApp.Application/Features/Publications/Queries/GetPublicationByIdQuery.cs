@@ -4,12 +4,13 @@ using AutoMapper;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 namespace CourtApp.Application.Features.Publications.Queries
 {
     public class GetPublicationByIdQuery:IRequest<Result<GetPublicationByIdResponse>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 
     public class GetPublicationByIdQueryHandler : IRequestHandler<GetPublicationByIdQuery, Result<GetPublicationByIdResponse>>

@@ -9,6 +9,7 @@ namespace CourtApp.Application.Interfaces.Repositories
     public interface IDsitrictMasterRepository
     {
         IQueryable<DistrictEntity> Entities{get;}
-        Task<List<DistrictEntity>> GetDistrictListByStateAsync(string StateCode);
+        Task<List<DistrictEntity>> GetDistrictListByStateAsync(int StateCode);
+        DistrictEntity GetDistrictById(int Id);
     }
 }

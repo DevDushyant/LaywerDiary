@@ -15,11 +15,11 @@ namespace CourtApp.Application.Mappings
 
         public CaseNatureProfile()
         {
-            CreateMap<CaseNatureByIdResponse, CaseNatureEntity>().ReverseMap();
-            CreateMap<CaseNatureAllCachedResponse, CaseNatureEntity>().ReverseMap();
-            CreateMap<CreateCaseNatureCommand, CaseNatureEntity>().ReverseMap();
-            CreateMap<UpdateCaseNatureCommand, CaseNatureEntity>().ReverseMap();
-            CreateMap<DeleteCaseNatureCommand, CaseNatureEntity>().ReverseMap();
+            CreateMap<CaseNatureByIdResponse, NatureEntity>().ReverseMap();
+            CreateMap<CaseNatureAllCachedResponse, NatureEntity>().ReverseMap();
+            CreateMap<CreateCaseNatureCommand, NatureEntity>().ReverseMap();
+            CreateMap<UpdateCaseNatureCommand, NatureEntity>().ReverseMap();
+            CreateMap<DeleteCaseNatureCommand, NatureEntity>().ReverseMap();
         }
     }
 }

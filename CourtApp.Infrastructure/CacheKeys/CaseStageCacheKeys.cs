@@ -12,8 +12,8 @@ namespace CourtApp.Infrastructure.CacheKeys
 
         public static string SelectListKey => "CaseStageSelectList";
 
-        public static string GetKey(int Id) => $"CaseStage-{Id}";
+        public static string GetKey(Guid Id) => $"CaseStage-{Id}";
 
-        public static string GetDetailsKey(int Id) => $"CaseStageDetails-{Id}";
+        public static string GetDetailsKey(Guid Id) => $"CaseStageDetails-{Id}";
     }
 }

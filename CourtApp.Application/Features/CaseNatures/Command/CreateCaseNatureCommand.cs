@@ -12,11 +12,12 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.CaseNatures.Command
 {
-    public class CreateCaseNatureCommand : IRequest<Result<int>>
+    public class CreateCaseNatureCommand : IRequest<Result<Guid>>
     {
-        public string CaseNature { get; set; }
+        public string Name_En { get; set; }
+        public string Name_Hn { get; set; }
     }
-    public class CreateCaseNatureCommandHandler : IRequestHandler<CreateCaseNatureCommand, Result<int>>
+    public class CreateCaseNatureCommandHandler : IRequestHandler<CreateCaseNatureCommand, Result<Guid>>
     {
         private readonly ICaseNatureRepository repository;
         private readonly IMapper mapper;
@@ -27,12 +28,12 @@ namespace CourtApp.Application.Features.CaseNatures.Command
             this.mapper = mapper;
             this._unitOfWork = _unitOfWork;
         }
-        public async Task<Result<int>> Handle(CreateCaseNatureCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(CreateCaseNatureCommand request, CancellationToken cancellationToken)
         {
-            var mappeddata = mapper.Map<CaseNatureEntity>(request);
+            var mappeddata = mapper.Map<NatureEntity>(request);
             await repository.InsertAsync(mappeddata);
             await _unitOfWork.Commit(cancellationToken);
-            return Result<int>.Success(mappeddata.Id);
+            return Result<Guid>.Success(mappeddata.Id);
         }
     }
 

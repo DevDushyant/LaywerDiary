@@ -21,7 +21,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
             this._repository = _repository;
         }
 
-        public async Task<List<DistrictEntity>> GetDistrictListByStateAsync(string StateCode)
+        public async Task<List<DistrictEntity>> GetDistrictListByStateAsync(int StateCode)
         {
             string cacheKey = DistrictMasterCacheKeys.SelectListByStateKey(StateCode);
             var DistrictList = await _distributedCache.GetAsync<List<DistrictEntity>>(cacheKey);

@@ -10,5 +10,6 @@ namespace CourtApp.Application.Interfaces.Repositories
     {
         IQueryable<StateEntity> Entities { get; }
         Task<List<StateEntity>> GetStateListAsync();
+        StateEntity GetStateById(int Id);
     }
 }

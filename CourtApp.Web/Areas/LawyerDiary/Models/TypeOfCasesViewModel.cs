@@ -9,10 +9,11 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
     public class TypeOfCasesViewModel
 
     {
-        public int Id { get; set; }
-        public int CaseNatureId { get; set; }
+        public Guid Id { get; set; }        
         public SelectList CaseNatures { get; set; }
         public string CaseNature { get; set; }
-        public string Typeofcases { get; set; }
+        public Guid NatureId { get; set; }
+        public string Name_En { get; set; }
+        public string Name_Hn { get; set; }
     }
 }

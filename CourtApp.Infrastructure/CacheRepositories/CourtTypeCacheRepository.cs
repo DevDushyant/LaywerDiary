@@ -22,7 +22,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
             _distributedCache = distributedCache;
             this._Repository = _Repository;
         }
-        public async Task<CourtTypeEntity> GetByIdAsync(int CourtTypeId)
+        public async Task<CourtTypeEntity> GetByIdAsync(Guid CourtTypeId)
         {
             string cacheKey = CourtTypeCacheKeys.GetKey(CourtTypeId);
             var CourtType = await _distributedCache.GetAsync<CourtTypeEntity>(cacheKey);

@@ -27,5 +27,7 @@ namespace CourtApp.Application.Interfaces.Contexts
         DbSet<CaseKindEntity> CaseKinds { get; set; }
         DbSet<CaseEntity> Cases { get; set; }
         DbSet<LawyerMasterEntity> Laywers { get; set; }
+        public DbSet<ProceedingHeadEntity> ProceedingHeads { get; set; }
+
     }
 }

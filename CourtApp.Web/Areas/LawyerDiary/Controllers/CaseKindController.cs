@@ -31,10 +31,10 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             return null;
         }
 
-        public async Task<JsonResult> OnGetCreateOrEdit(int id = 0)
+        public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
         {
             var courtTypeList = await _mediator.Send(new GetCourtTypeQuery());
-            if (id == 0)
+            if (id == Guid.Empty)
             {
                 var ViewModel = new CaseKindViewModel();
                 var courtTypeViewModel = _mapper.Map<List<CourtTypeViewModel>>(courtTypeList.Data);
@@ -58,11 +58,11 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostCreateOrEdit(int id, CaseKindViewModel btViewModel)
+        public async Task<JsonResult> OnPostCreateOrEdit(Guid id, CaseKindViewModel btViewModel)
         {
             if (ModelState.IsValid)
             {
-                if (id == 0)
+                if (id == Guid.Empty)
                 {
                     var createBookTypeCommand = _mapper.Map<CreateCaseKindCommand>(btViewModel);
                     var result = await _mediator.Send(createBookTypeCommand);
@@ -100,7 +100,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostDelete(int id)
+        public async Task<JsonResult> OnPostDelete(Guid id)
         {
             var deleteCommand = await _mediator.Send(new DeleteCaseKindCommand { Id = id });
             if (deleteCommand.Succeeded)

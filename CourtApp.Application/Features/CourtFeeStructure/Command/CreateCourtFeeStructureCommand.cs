@@ -36,7 +36,7 @@ namespace CourtApp.Application.Features.CourtFeeStructure.Command
         }
         public async Task<Result<Guid>> Handle(CreateCourtFeeStructureCommand request, CancellationToken cancellationToken)
         {
-            var mappeddata = mapper.Map<CourtFeeStructureEntity>(request);
+            var mappeddata = mapper.Map<CourtFeeStructureEntity>(request);          
             await repository.InsertAsync(mappeddata);
             await _unitOfWork.Commit(cancellationToken);
             return Result<Guid>.Success(mappeddata.Id);

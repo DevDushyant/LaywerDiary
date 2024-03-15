@@ -12,8 +12,8 @@ namespace CourtApp.Infrastructure.CacheKeys
 
         public static string SelectListKey => "BookTypeSelectList";
 
-        public static string GetKey(int brandId) => $"BookType-{brandId}";
+        public static string GetKey(Guid Id) => $"BookType-{Id}";
 
-        public static string GetDetailsKey(int brandId) => $"BookTypeDetails-{brandId}";
+        public static string GetDetailsKey(Guid Id) => $"BookTypeDetails-{Id}";
     }
 }

@@ -3,12 +3,13 @@ using AspNetCoreHero.Results;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 namespace CourtApp.Application.Features.Clients.Commands
 {
-    public class UpdateCreateClientCommand : IRequest<Result<int>>
+    public class UpdateCreateClientCommand : IRequest<Result<Guid>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
@@ -17,43 +18,41 @@ namespace CourtApp.Application.Features.Clients.Commands
         public string Mobile { get; set; }
         public string Address { get; set; }
         public string StateCode { get; set; }
-        public int DistrictCode { get; set; }
+        public int DistrictCode { get; set; }        
+    }
+    public class UpdateClientCommandHandler : IRequestHandler<UpdateCreateClientCommand, Result<Guid>>
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IClientRepository _clientRepository;
 
-        public class UpdateClientCommandHandler : IRequestHandler<UpdateCreateClientCommand, Result<int>>
+        public UpdateClientCommandHandler(IClientRepository _clientRepository, IUnitOfWork unitOfWork)
         {
-            private readonly IUnitOfWork _unitOfWork;
-            private readonly IClientRepository _clientRepository;
+            this._clientRepository = _clientRepository;
+            _unitOfWork = unitOfWork;
+        }
 
-            public UpdateClientCommandHandler(IClientRepository _clientRepository, IUnitOfWork unitOfWork)
+        public async Task<Result<Guid>> Handle(UpdateCreateClientCommand command, CancellationToken cancellationToken)
+        {
+            var client = await _clientRepository.GetByIdAsync(command.Id);
+
+            if (client == null)
             {
-                this._clientRepository = _clientRepository;
-                _unitOfWork = unitOfWork;
+                return Result<Guid>.Fail($"Client Not Found.");
             }
-
-            public async Task<Result<int>> Handle(UpdateCreateClientCommand command, CancellationToken cancellationToken)
+            else
             {
-                var client = await _clientRepository.GetByIdAsync(command.Id);
+                client.FirstName = command.FirstName ?? client.FirstName;
+                client.LastName = command.LastName ?? client.LastName;
+                client.Email = command.Email ?? client.Email;
+                client.OfficeEmail = command.OfficeEmail ?? client.OfficeEmail;
+                client.Phone = command.Phone ?? client.Phone;
+                client.Mobile = command.Mobile ?? client.Mobile;
+                client.State.Code = client.State.Code;
+                client.District.Code = command.DistrictCode;
 
-                if (client == null)
-                {
-                    return Result<int>.Fail($"Client Not Found.");
-                }
-                else
-                {
-                    client.FirstName = command.FirstName ?? client.FirstName;
-                    client.LastName = command.LastName ?? client.LastName;
-                    client.Email = command.Email ?? client.Email;
-                    client.OfficeEmail = command.OfficeEmail ?? client.OfficeEmail;
-                    client.Phone = command.Phone ?? client.Phone;
-                    client.Mobile = command.Mobile ?? client.Mobile;
-                    client.StateCode = command.StateCode ?? client.StateCode;
-                    client.DistrictCode = command.DistrictCode;
-                    client.Address = command.Address;
-                    
-                    await _clientRepository.UpdateAsync(client);
-                    await _unitOfWork.Commit(cancellationToken);
-                    return Result<int>.Success(client.Id);
-                }
+                await _clientRepository.UpdateAsync(client);
+                await _unitOfWork.Commit(cancellationToken);
+                return Result<Guid>.Success(client.Id);
             }
         }
     }

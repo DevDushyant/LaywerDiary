@@ -12,7 +12,7 @@ namespace CourtApp.Application.Interfaces.CacheRepositories
     {
 
         Task<List<CaseKindEntity>> GetCachedListAsync();
-        Task<CaseKindEntity> GetByIdAsync(int Id);
+        Task<CaseKindEntity> GetByIdAsync(Guid Id);
         //IQueryable<CaseKindEntity> CacheQuerableEntity();
       
     }

@@ -7,7 +7,7 @@ namespace CourtApp.Infrastructure.CacheKeys
 {
     public class DistrictMasterCacheKeys
     {
-        public static string SelectListByStateKey(string StateCode) => $"DistrictSelectList-{StateCode}";
+        public static string SelectListByStateKey(int StateCode) => $"DistrictSelectList-{StateCode}";
          
     }
 }

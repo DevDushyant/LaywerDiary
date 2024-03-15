@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CourtApp.Domain.Entities.LawyerDiary;
+using System;
 
 
 namespace CourtApp.Infrastructure.CacheRepositories
@@ -20,7 +21,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
             this._repository = _repository;
             this._distributedCache = _distributedCache;
         }
-        public async Task<CaseStageEntity> GetByIdAsync(int Id)
+        public async Task<CaseStageEntity> GetByIdAsync(Guid Id)
         {
             string cacheKey = CaseStageCacheKeys.GetKey(Id);
             var bookType = await _distributedCache.GetAsync<CaseStageEntity>(cacheKey);

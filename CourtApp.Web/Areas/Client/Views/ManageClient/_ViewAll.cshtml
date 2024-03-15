@@ -1,9 +1,10 @@
-@model IEnumerable<ClientsViewModel>
+@model IEnumerable<GClientViewModel>
 <table id="brandTable" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
             <th>Sno.</th>
             <th>Name</th>
+            <th>Father Name</th>
             <th>Mobile</th>
             <th>Email</th>
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Delete)).Result.Succeeded ||
@@ -24,9 +25,11 @@
                     @(count = count + 1)
                 </td>
                 <td>
-                    @string.Concat(bt.FirstName, " ", bt.LastName)
+                    @(String.Concat(bt.FirstName,bt.MiddleName,bt.LastName))
                 </td>
-
+                <td>
+                    @bt.FatherName
+                </td>
                 <td>
                     @bt.Mobile
                 </td>
@@ -46,19 +49,16 @@
                             <div class="dropdown-menu shadow animated--grow-in">
                                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Edit)).Result.Succeeded)
                                 {
-
-
-                                    <a asp-area="Client" asp-controller="ManageClient" asp-action="CreateOrUpdate" asp-route-id="@bt.Id" class="btn bg-success">
+                                    <a asp-area="Client" asp-controller="ManageClient" asp-action="CreateOrUpdate" asp-route-id="@bt.UId">
                                         <i class="fas fa-pencil-alt"></i> Edit
                                     </a>
 
                                 }
                                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Delete)).Result.Succeeded)
-
                                 {
-                                    <form id="form_delete_@bt.Id" asp-area="Client" asp-controller="manageclient" method="post"
-                              asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
-                                        <a href="javascript:$('#form_delete_@bt.Id').submit();" class="dropdown-item">
+                                    <form id="form_delete_@bt.UId" asp-area="Client" asp-controller="manageclient" method="post"
+                                          asp-action="OnPostDelete" asp-route-id="@bt.UId" onsubmit="return jQueryModalDelete(this)">
+                                        <a href="javascript:$('#form_delete_@bt.UId').submit();" class="dropdown-item">
                                             <i class="fas fa-trash-alt"></i> Delete
                                         </a>
                                     </form>

@@ -1,4 +1,4 @@
-﻿using CourtApp.Application.Enums;
+﻿
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +6,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CourtApp.Infrastructure.Repositories
@@ -30,19 +29,21 @@ namespace CourtApp.Infrastructure.Repositories
             await _distributedCache.RemoveAsync(CacheKeys.ClientCacheKeys.GetKey(client.Id));
         }
 
-        public async Task<ClientEntity> GetByIdAsync(int clientId)
+        public async Task<ClientEntity> GetByIdAsync(Guid clientId)
         {
-            return await _repository.Entities.Where(p => p.Id == clientId).FirstOrDefaultAsync();
+            var Detail = await _repository.Entities
+                .Include(s => s.State)
+                .Include(d => d.District)
+                .Where(p => p.Id == clientId).FirstOrDefaultAsync();
+            return Detail;
         }
 
         public async Task<List<ClientEntity>> GetListAsync()
         {
-            
-                return await _repository.Entities.OrderByDescending(o => o.Id).ToListAsync();
-            
+            return await _repository.Entities.ToListAsync();
         }
 
-        public async Task<int> InsertAsync(ClientEntity client)
+        public async Task<Guid> InsertAsync(ClientEntity client)
         {
             await _repository.AddAsync(client);
             await _distributedCache.RemoveAsync(CacheKeys.ClientCacheKeys.ListKey);

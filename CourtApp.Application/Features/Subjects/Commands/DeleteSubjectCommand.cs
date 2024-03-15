@@ -3,15 +3,16 @@ using AspNetCoreHero.Results;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 namespace CourtApp.Application.Features.Subjects.Commands
 {
-    public class DeleteSubjectCommand : IRequest<Result<int>>
+    public class DeleteSubjectCommand : IRequest<Result<Guid>>
     {
-        public int Id { get; set; }    
+        public Guid Id { get; set; }    
     }
 
-    public class DeleteSubjectCommandHandler : IRequestHandler<DeleteSubjectCommand, Result<int>>
+    public class DeleteSubjectCommandHandler : IRequestHandler<DeleteSubjectCommand, Result<Guid>>
     {
         private readonly ISubjectRepository _Repository;
         private readonly IUnitOfWork _unitOfWork;
@@ -22,12 +23,12 @@ namespace CourtApp.Application.Features.Subjects.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<int>> Handle(DeleteSubjectCommand command, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(DeleteSubjectCommand command, CancellationToken cancellationToken)
         {
             var booktype = await _Repository.GetByIdAsync(command.Id);
             await _Repository.DeleteAsync(booktype);
             await _unitOfWork.Commit(cancellationToken);
-            return Result<int>.Success(booktype.Id);
+            return Result<Guid>.Success(booktype.Id);
         }
     }
 }

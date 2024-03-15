@@ -30,10 +30,10 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             return null;
         }
 
-        public async Task<JsonResult> OnGetCreateOrEdit(int id = 0)
+        public async Task<JsonResult> OnGetCreateOrEdit(Guid id )
         {
           
-            if (id == 0)
+            if (id == Guid.Empty)
             {
                 var ViewModel = new PublisherViewModel();
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
@@ -51,11 +51,11 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostCreateOrEdit(int id, PublisherViewModel btViewModel)
+        public async Task<JsonResult> OnPostCreateOrEdit(Guid id, PublisherViewModel btViewModel)
         {
             if (ModelState.IsValid)
             {
-                if (id == 0)
+                if (id == Guid.Empty)
                 {
                     var createBookTypeCommand = _mapper.Map<CreatePublicationCommand>(btViewModel);
                     var result = await _mediator.Send(createBookTypeCommand);
@@ -93,7 +93,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostDelete(int id)
+        public async Task<JsonResult> OnPostDelete(Guid id)
         {
             var deleteCommand = await _mediator.Send(new DeletePublicationCommand { Id = id });
             if (deleteCommand.Succeeded)

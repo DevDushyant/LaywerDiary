@@ -7,7 +7,8 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
 {
     public class CaseNatureViewModel
     {
-        public int Id { get; set; }
-        public string CaseNature { get; set; }
+        public Guid Id { get; set; }
+        public string Name_En { get; set; }
+        public string Name_Hn { get; set; }
     }
 }

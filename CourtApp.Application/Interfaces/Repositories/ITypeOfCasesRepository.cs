@@ -1,4 +1,5 @@
 ﻿using CourtApp.Domain.Entities.LawyerDiary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,9 +12,9 @@ namespace CourtApp.Application.Interfaces.Repositories
 
         Task<List<TypeOfCasesEntity>> GetListAsync();
 
-        Task<TypeOfCasesEntity> GetByIdAsync(int Id);
+        Task<TypeOfCasesEntity> GetByIdAsync(Guid Id);
 
-        Task<int> InsertAsync(TypeOfCasesEntity objEntity);
+        Task<Guid> InsertAsync(TypeOfCasesEntity objEntity);
 
         Task UpdateAsync(TypeOfCasesEntity objEntity);
 

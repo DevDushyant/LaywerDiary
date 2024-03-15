@@ -8,7 +8,7 @@ namespace CourtApp.Application.Features.CourtType.Query
 {
     public class GetCourtTypeResponse
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string CourtType { get; set; }
     }
 }

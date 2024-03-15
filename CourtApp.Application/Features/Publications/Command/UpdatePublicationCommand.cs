@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.Publications.Command
 {
-    public class UpdatePublicationCommand : IRequest<Result<int>>
+    public class UpdatePublicationCommand : IRequest<Result<Guid>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string PublicationName { get; set; }
         public string PropriatorName { get; set; }
     }
 
-    public class UpdatePublicationCommandHandler : IRequestHandler<UpdatePublicationCommand, Result<int>>
+    public class UpdatePublicationCommandHandler : IRequestHandler<UpdatePublicationCommand, Result<Guid>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPublicationRepository _Repository;
@@ -26,11 +26,11 @@ namespace CourtApp.Application.Features.Publications.Command
             this._Repository = _Repository;
             this._unitOfWork = _unitOfWork;
         }
-        public async Task<Result<int>> Handle(UpdatePublicationCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(UpdatePublicationCommand request, CancellationToken cancellationToken)
         {
             var publicationDetail = await _Repository.GetByIdAsync(request.Id);
             if (publicationDetail == null)
-                return Result<int>.Fail($"Book Type Not Found.");
+                return Result<Guid>.Fail($"Book Type Not Found.");
             else
             {
                 publicationDetail.PropriatorName = request.PropriatorName;
@@ -38,7 +38,7 @@ namespace CourtApp.Application.Features.Publications.Command
                 publicationDetail.LastModifiedOn = DateTime.Now;
                 await _Repository.UpdateAsync(publicationDetail);
                 await _unitOfWork.Commit(cancellationToken);
-                return Result<int>.Success(publicationDetail.Id);
+                return Result<Guid>.Success(publicationDetail.Id);
             }
         }
     }

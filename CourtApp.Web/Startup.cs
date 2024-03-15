@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
 using System;
+using CourtApp.Web.Areas.LawyerDiary.Models;
 
 namespace CourtApp.Web
 {
@@ -32,7 +33,8 @@ namespace CourtApp.Web
         public IConfiguration _configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        
+
+        [Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
@@ -49,13 +51,12 @@ namespace CourtApp.Web
             services.AddRepositories();
             services.AddSharedInfrastructure(_configuration);
             services.AddMultiLingualSupport();
-            services.AddControllersWithViews();
+            
             services.AddFluentValidationAutoValidation();
-            //services.AddControllersWithViews().AddFluentValidation(fv =>
-            //{
-            //    fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            //    fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-            //});
+            services.AddControllersWithViews().AddFluentValidation(fv =>
+            {
+                fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());                
+            });
             services.AddMvc().AddJsonOptions(options =>
              {
                  options.JsonSerializerOptions.PropertyNamingPolicy = null;

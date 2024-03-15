@@ -29,7 +29,7 @@ namespace CourtApp.Infrastructure.Repositories
             await _distributedCache.RemoveAsync(CacheKeys.BookTypeCacheKeys.GetKey(bookType.Id));
         }
 
-        public async Task<BookTypeEntity> GetByIdAsync(int bookTypeId)
+        public async Task<BookTypeEntity> GetByIdAsync(Guid bookTypeId)
         {
             return await _repository.Entities.Where(p => p.Id == bookTypeId).FirstOrDefaultAsync();
         }
@@ -39,7 +39,7 @@ namespace CourtApp.Infrastructure.Repositories
             return await _repository.Entities.OrderByDescending(o=>o.Id).ToListAsync();
         }
 
-        public async Task<int> InsertAsync(BookTypeEntity bookType)
+        public async Task<Guid> InsertAsync(BookTypeEntity bookType)
         {
             await _repository.AddAsync(bookType);
             await _distributedCache.RemoveAsync(CacheKeys.BookTypeCacheKeys.ListKey);
