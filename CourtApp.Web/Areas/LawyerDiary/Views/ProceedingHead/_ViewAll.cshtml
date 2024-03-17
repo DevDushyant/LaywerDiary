@@ -4,8 +4,8 @@
         <tr>
             <th>Name(En)</th>
             <th>Name(Hn)</th>
-            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.ProceedingHeads.Delete)).Result.Succeeded
-            || (AuthorizationService.AuthorizeAsync(User, Permissions.ProceedingHeads.Edit)).Result.Succeeded)
+            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded
+            || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
             {
                 <th>Actions</th>
             }
@@ -22,8 +22,8 @@
                 <td>
                     @bt.Name_Hn
                 </td>
-                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.ProceedingHeads.Delete)).Result.Succeeded ||
-               (AuthorizationService.AuthorizeAsync(User, Permissions.ProceedingHeads.Edit)).Result.Succeeded)
+                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded ||
+               (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                 {
                     <td text-right">
                         <div class="btn-group">
@@ -31,12 +31,12 @@
                                 Action
                             </button>
                             <div class="dropdown-menu shadow animated--grow-in">
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.ProceedingHeads.Edit)).Result.Succeeded)
+                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                                 {
                                     <a onclick="jQueryModalGet('/LawyerDiary/ProceedingHead/OnGetCreateOrEdit?id=@bt.Id','Edit Proceeding Head Type')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
 
                                 }
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.ProceedingHeads.Delete)).Result.Succeeded)
+                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded)
                                 {
                                     <form id="form_delete_@bt.Id" asp-area="LawyerDiary"
                                           asp-controller="ProceedingHead" method="post" asp-action="OnPostDelete"

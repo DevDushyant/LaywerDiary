@@ -39,6 +39,8 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             allPermissions.GetPermissions(typeof(Permissions.Publishers), roleId);
             allPermissions.GetPermissions(typeof(Permissions.Subjects), roleId);
             allPermissions.GetPermissions(typeof(Permissions.Clients), roleId);
+            allPermissions.GetPermissions(typeof(Permissions.ProceedingHeads), roleId);
+            allPermissions.GetPermissions(typeof(Permissions.ProceedingSubHeads), roleId);
            
             var role = await _roleManager.FindByIdAsync(roleId);
             model.RoleId = roleId;

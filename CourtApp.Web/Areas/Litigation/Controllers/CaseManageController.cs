@@ -1,7 +1,6 @@
 ﻿using CourtApp.Application.Features.BookMasters.Command;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
-//using CourtApp.Application.Features.Commands.Cases;
-//using CourtApp.Application.Features.Queries.Cases;
+using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
@@ -18,39 +18,37 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     {
         public IActionResult Index()
         {
-            var model = new CaseViewModel();
+            var model = new GetCaseViewModel();
             return View(model);
         }
 
         public async Task<IActionResult> LoadAll()
         {
-            //var response = await _mediator.Send(new QueryGetAllCaseEntry() { PageNumber = 1, PageSize = 100 });
-            //if (response.Succeeded)
-            //{
-            //    var viewModel = _mapper.Map<List<CaseViewModel>>(response.Data);
-            //    return PartialView("_ViewAll", viewModel);
-            //}
+            var response = await _mediator.Send(new QGetUserCaseDetail(1, 100));
+            if (response.Succeeded)
+            {
+                var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
+                return PartialView("_ViewAll", viewModel);
+            }
             return null;
         }
 
-        public async Task<IActionResult> CreateOrUpdateAsync(Guid? id=null)
+        public async Task<IActionResult> CreateOrUpdateAsync(Guid? id = null)
         {
             var ClientList = await _mediator.Send(new GetAllClientCachedQuery() { });
             if (id == null)
-            {
-                var clientiewModel = _mapper.Map<List<Client.Model.ClientViewModel>>(ClientList.Data);
+            {                
                 var caseViewModel = new CaseViewModel();
-                caseViewModel.InstitutionDate= DateTime.Now;
+                caseViewModel.InstitutionDate = DateTime.Now;
                 caseViewModel.CaseNatures = await LoadCaseNature();
-                caseViewModel.CaseTypes=await LoadCaseTypes();
-                caseViewModel.CourtTypes=await LoadCourtTypes();
-                caseViewModel.CaseStages=await DdlCaseStages();
-                caseViewModel.FirstTitleList= FirstTtitleList();
-                caseViewModel.SecondTitleList= SecondTtitleList();
-                caseViewModel.Year= DdlYears();
+                caseViewModel.CaseTypes = await LoadCaseTypes();
+                caseViewModel.CourtTypes = await LoadCourtTypes();
+                caseViewModel.CaseStages = await DdlCaseStages();
+                caseViewModel.FirstTitleList = FirstTtitleList();
+                caseViewModel.SecondTitleList = SecondTtitleList();
+                caseViewModel.Year = DdlYears();
                 caseViewModel.CaseStatusList = DdlCaseStatus();
-                caseViewModel.LinkedBy = null; //DdlClientCases().Result;
-                caseViewModel.ClientList = new SelectList(clientiewModel, nameof(ClientViewModel.Id), nameof(ClientViewModel.FirstName), null, null);
+                caseViewModel.LinkedBy =DdlClient().Result;
                 return View("_CreateOrEdit", caseViewModel);
             }
             else

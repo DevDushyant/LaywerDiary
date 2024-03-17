@@ -9,7 +9,7 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace CourtApp.Infrastructure.Repositories
 {
-    public class DistrictMasterRepository:IDsitrictMasterRepository
+    public class DistrictMasterRepository:IDistrictMasterRepository
     {
          private readonly IDistributedCache _distributedCache;
           private readonly IRepositoryAsync<DistrictEntity> _repository;

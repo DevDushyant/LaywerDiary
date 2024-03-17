@@ -12,7 +12,10 @@ namespace CourtApp.Application.Features.Clients.Commands
     public partial class CreateClientCommand : IRequest<Result<Guid>>
     {
         public string FirstName { get; set; }
+        public string MiddleName { get; set; }
         public string LastName { get; set; }
+        public string FatherName { get; set; }
+        public string Dob { get; set; }
         public string Email { get; set; }
         public string OfficeEmail { get; set; }
         public string Phone { get; set; }
@@ -26,22 +29,30 @@ namespace CourtApp.Application.Features.Clients.Commands
     {
         private readonly IClientRepository _clientRepository;
         private readonly IMapper _mapper;
+        private readonly IStateMasterRepository _rStateMst;
+        private readonly IDistrictMasterRepository _rDistrictMst;
+
 
         private IUnitOfWork _unitOfWork { get; set; }
 
-        public CreateClientCommandHandler(IClientRepository _clientRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateClientCommandHandler(IClientRepository _clientRepository, IUnitOfWork unitOfWork
+            , IMapper mapper, IStateMasterRepository rStateMst, IDistrictMasterRepository _rDistrictMst)
         {
             this._clientRepository = _clientRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _rStateMst = rStateMst;
+            this._rDistrictMst = _rDistrictMst;
         }
 
         public async Task<Result<Guid>> Handle(CreateClientCommand request, CancellationToken cancellationToken)
         {
-            var client = _mapper.Map<ClientEntity>(request);
-            await _clientRepository.InsertAsync(client);
+            var entity = _mapper.Map<ClientEntity>(request);
+            entity.State = _rStateMst.GetStateById(request.StateCode);
+            entity.District = _rDistrictMst.GetDistrictById(request.DistrictCode);
+            await _clientRepository.InsertAsync(entity);
             await _unitOfWork.Commit(cancellationToken);
-            return Result<Guid>.Success(client.Id);
+            return Result<Guid>.Success(entity.Id);
         }
     }
 }

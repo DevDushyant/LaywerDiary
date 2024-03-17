@@ -21,7 +21,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
         public IActionResult Index()
         {
-            var model = new ClientViewModel();
+            var model = new GClientViewModel();
             return View(model);
         }
 
@@ -94,7 +94,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 }
                 else
                 {
-                    var updateClientCommand = _mapper.Map<UpdateCreateClientCommand>(btViewModel);
+                    var updateClientCommand = _mapper.Map<UpdateClientCommand>(btViewModel);
                     var result = await _mediator.Send(updateClientCommand);
                     if (result.Succeeded) _notify.Information($"Client with ID {result.Data} Updated.");
                 }
@@ -121,7 +121,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         [HttpPost]
         public async Task<JsonResult> OnPostDelete(Guid Id)
         {
-            var deleteCommand = await _mediator.Send(new DeleteCreateClientCommand { Id = Id });
+            var deleteCommand = await _mediator.Send(new DeleteClientCommand { Id = Id });
             if (deleteCommand.Succeeded)
             {
                 _notify.Information($"Client with Id {Id} Deleted.");

@@ -62,7 +62,7 @@ namespace CourtApp.Infrastructure.Extensions
             services.AddTransient<IStateMasterRepository, StateMasterRepository>();
 
             services.AddTransient<IDsitrictMasterCacheRepository, DistrictMasterCacheRepository>();
-            services.AddTransient<IDsitrictMasterRepository, DistrictMasterRepository>();
+            services.AddTransient<IDistrictMasterRepository, DistrictMasterRepository>();
 
             services.AddTransient<ICourtFeeStructureCacheRepository, CourtFeeStructureCacheRepository>();
             services.AddTransient<ICourtFeeStructureRepository, CourtFeeStructureRepository>();

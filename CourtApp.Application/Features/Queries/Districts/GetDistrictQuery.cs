@@ -20,9 +20,9 @@ namespace CourtApp.Application.Features.Queries.Districts
     {
 
         private readonly IDsitrictMasterCacheRepository _repositoryCache;
-        private readonly IDsitrictMasterRepository _repository;
+        private readonly IDistrictMasterRepository _repository;
         private readonly IMapper _mapper;
-        public GetDistrictQueryHandler(IDsitrictMasterRepository _repository, IMapper _mapper)
+        public GetDistrictQueryHandler(IDistrictMasterRepository _repository, IMapper _mapper)
         {
             //this._repositoryCache = _repositoryCache;
             this._repository= _repository;

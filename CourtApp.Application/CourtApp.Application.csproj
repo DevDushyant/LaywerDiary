@@ -5,11 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Features\Commands\Cases\**" />
     <Compile Remove="Features\Queries\Cases\**" />
-    <EmbeddedResource Remove="Features\Commands\Cases\**" />
     <EmbeddedResource Remove="Features\Queries\Cases\**" />
-    <None Remove="Features\Commands\Cases\**" />
     <None Remove="Features\Queries\Cases\**" />
   </ItemGroup>
 
@@ -33,6 +30,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DTOs\APIRes\" />
-    <Folder Include="Features\Commands\" />
   </ItemGroup>
 </Project>

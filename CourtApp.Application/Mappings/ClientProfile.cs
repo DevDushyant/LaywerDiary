@@ -17,6 +17,7 @@ namespace CourtApp.Application.Mappings
                 .ForPath(d => d.StateCode, opt => opt.MapFrom(src => src.State.Code))
                 .ForPath(d => d.DistrictCode, opt => opt.MapFrom(src => src.District.Code));
 
+                        
             CreateMap<GetAllClientCachedResponse, ClientEntity>().ReverseMap();
         }
     }

@@ -27,12 +27,12 @@ namespace CourtApp.Application.Features.CourtMasters.Command
         private readonly ICourtMasterRepository repository;
         private readonly ICourtTypeCacheRepository _CourtTypeRepo;
         private readonly IStateMasterRepository _StateRepo;
-        private readonly IDsitrictMasterRepository _DistrictRepo;
+        private readonly IDistrictMasterRepository _DistrictRepo;
         private readonly IMapper mapper;
         private IUnitOfWork _unitOfWork { get; set; }
         public CreateCourtMasterCommandHandler(ICourtMasterRepository repository, IMapper mapper,
             IUnitOfWork _unitOfWork, ICourtTypeCacheRepository _CourtTypeRepo,
-            IStateMasterRepository _StateRepo, IDsitrictMasterRepository districtRepo)
+            IStateMasterRepository _StateRepo, IDistrictMasterRepository districtRepo)
         {
             this.repository = repository;
             this.mapper = mapper;

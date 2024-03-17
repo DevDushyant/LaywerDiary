@@ -7,11 +7,11 @@ using System;
 
 namespace CourtApp.Application.Features.Clients.Commands
 {
-    public class DeleteCreateClientCommand : IRequest<Result<Guid>>
+    public class DeleteClientCommand : IRequest<Result<Guid>>
     {
         public Guid Id { get; set; }        
     }
-    public class DeleteClientCommandHandler : IRequestHandler<DeleteCreateClientCommand, Result<Guid>>
+    public class DeleteClientCommandHandler : IRequestHandler<DeleteClientCommand, Result<Guid>>
     {
         private readonly IClientRepository _Repository;
         private readonly IUnitOfWork _unitOfWork;
@@ -22,7 +22,7 @@ namespace CourtApp.Application.Features.Clients.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<Guid>> Handle(DeleteCreateClientCommand command, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(DeleteClientCommand command, CancellationToken cancellationToken)
         {
             var client = await _Repository.GetByIdAsync(command.Id);
             await _Repository.DeleteAsync(client);

@@ -4,11 +4,13 @@ using CourtApp.Application.Constants;
 using CourtApp.Application.Features.CaseKinds.Query;
 using CourtApp.Application.Features.CaseNatures.Query;
 using CourtApp.Application.Features.CaseStages.Query;
+using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.CourtMasters.Query;
 using CourtApp.Application.Features.CourtType.Query;
 //using CourtApp.Application.Features.Queries.Cases;
 using CourtApp.Application.Features.Queries.Districts;
 using CourtApp.Application.Features.TypeOfCases.Query;
+using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.Litigation.Models;
 using MediatR;
@@ -95,12 +97,11 @@ namespace CourtApp.Web.Abstractions
             return new SelectList(caseStagesViewModel, nameof(CaseStageViewModel.Id), nameof(CaseStageViewModel.CaseStage), null, null);
 
         }
-        public async Task<SelectList> DdlClientCases()
+        public async Task<SelectList> DdlClient()
         {
-            //var cases = await _mediator.Send(new QueryGetAllCaseEntry() { PageNumber = 1, PageSize = 100 });
-            //var clientCasesViewModel = _mapper.Map<List<CaseViewModel>>(cases.Data);
-            //return new SelectList(clientCasesViewModel, nameof(CaseViewModel.Id), nameof(CaseViewModel.Title), null, null);
-            return new SelectList(null);
+            var response = await _mediator.Send(new GetAllClientCachedQuery());
+            var viewModel = _mapper.Map<List<GClientViewModel>>(response.Data);                   
+            return new SelectList(viewModel, nameof(GClientViewModel.Id), nameof(GClientViewModel.Name), null, null);           
         }
        
 

@@ -2,7 +2,7 @@
     ViewData["Title"] = localizer["Client Information List"];
     ViewData["Caption"] = localizer["Client List"];
 }
-@model             CourtApp.Web.Areas.Client.Model.ClientViewModel
+@model CourtApp.Web.Areas.Client.Model.GClientViewModel
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
       
@@ -25,7 +25,7 @@
             $('#viewAll').load('/Client/ManageClient/LoadAll');
         }
         $(document).ready(function () {
-            $("#brandTable").DataTable();
+            $("#tblClient").DataTable();
             loadData();
             $('#reload').on('click', function () {
                 loadData();

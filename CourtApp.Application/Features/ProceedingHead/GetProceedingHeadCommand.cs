@@ -2,6 +2,7 @@
 using AutoMapper;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace CourtApp.Application.Features.ProceedingHead
 {
     public class GetProceedingHeadCommand : IRequest<Result<List<GetProceedingHeadResponse>>>
     {
-        
+        public Guid Id { get; set; }
     }
     public class GetProceedingHeadCommandHandler : IRequestHandler<GetProceedingHeadCommand, Result<List<GetProceedingHeadResponse>>>
     {
@@ -26,6 +27,7 @@ namespace CourtApp.Application.Features.ProceedingHead
             var Heads = await repository.GetListAsync();
             var HeadsDt = mapper.Map<List<GetProceedingHeadResponse>>(Heads);
             return Result<List<GetProceedingHeadResponse>>.Success(HeadsDt);
+
         }
     }
 

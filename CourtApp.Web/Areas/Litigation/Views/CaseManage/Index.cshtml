@@ -2,19 +2,15 @@
     ViewData["Title"] = localizer["Case List"];
     ViewData["Caption"] = localizer["Your Case List"];
 }
-@model CaseViewModel
+@model GetCaseViewModel
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
-        @*@if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Create)).Result.Succeeded)
-        {*@
-            @*<a onclick="jQueryModalGet('/lawyerdiary/casemanagement/OnGetCreateOrEdit','Create New Case')" class="btn bg-success">
-                    <i class="fa fa-plus-square"></i> Create
-                </a>*@
+        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Create)).Result.Succeeded)
+        {           
             <a asp-area="Litigation" asp-controller="CaseManage" asp-action="CreateOrUpdate" class="btn bg-success">
                 <i class="fa fa-plus-square"></i> Create
             </a>
-       @* }*@
-
+        }
         <a id="reload" class="btn btn-primary text-white">
             <i class="fa fas fa-bolt"></i>
             Reload
@@ -28,7 +24,7 @@
     <script src="~/js/site.js"></script>
     <script>
         $(document).ready(function () {
-            $("#brandTable").DataTable();
+            $("#tblUserCase").DataTable();
             loadData();
             $('#reload').on('click', function () {
                 loadData();

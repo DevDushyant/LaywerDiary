@@ -9,7 +9,7 @@ namespace CourtApp.Application.Mappings
         public ProceedingHeadProfile()
         {
             CreateMap<ProceedingHeadEntity, GetProceedingHeadResponse>();
-            CreateMap<CreateProceedingHeadCommand, ProceedingHeadEntity>();
+            CreateMap<ProceedingHeadCommand, ProceedingHeadEntity>();
         }
     }
 }

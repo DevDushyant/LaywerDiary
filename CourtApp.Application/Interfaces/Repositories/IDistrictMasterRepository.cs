@@ -6,7 +6,7 @@ using CourtApp.Entities.Common;
 
 namespace CourtApp.Application.Interfaces.Repositories
 {
-    public interface IDsitrictMasterRepository
+    public interface IDistrictMasterRepository
     {
         IQueryable<DistrictEntity> Entities{get;}
         Task<List<DistrictEntity>> GetDistrictListByStateAsync(int StateCode);

@@ -13,9 +13,9 @@ namespace CourtApp.Infrastructure.CacheRepositories
 {
     public class DistrictMasterCacheRepository:IDsitrictMasterCacheRepository
     {
-        private readonly IDsitrictMasterRepository _repository;
+        private readonly IDistrictMasterRepository _repository;
         private readonly IDistributedCache _distributedCache;
-        public DistrictMasterCacheRepository(IDsitrictMasterRepository _repository, IDistributedCache _distributedCache)
+        public DistrictMasterCacheRepository(IDistrictMasterRepository _repository, IDistributedCache _distributedCache)
         {
             this._distributedCache = _distributedCache;
             this._repository = _repository;

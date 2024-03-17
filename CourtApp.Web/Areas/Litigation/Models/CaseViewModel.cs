@@ -55,18 +55,6 @@ namespace CourtApp.Web.Areas.Litigation.Models
 
         #endregion
 
-        #region View Data View Model Properties
-        public string Title { get; set; }
-        public string NextHearingDate { get; set; }
-        public string CaseTypeName { get; set; }
-        public string CaseStageName { get; set; }
-        public string AgainstCourtName { get; set; }
-        public string CaseStatus { get; set; }
-        public string CaseStatusCode { get; set; }
-        public string FileNumber { get; set; }
-        public int SelectedFirstTitle { get; set; }
-        public int SelectedSecondTitle { get; set; }
-        public string CourtName { get; set; }
-        #endregion
+        
     }
 }
