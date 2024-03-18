@@ -102,8 +102,7 @@ namespace CourtApp.Web.Abstractions
             var response = await _mediator.Send(new GetAllClientCachedQuery());
             var viewModel = _mapper.Map<List<GClientViewModel>>(response.Data);                   
             return new SelectList(viewModel, nameof(GClientViewModel.Id), nameof(GClientViewModel.Name), null, null);           
-        }
-       
+        }      
 
         public async Task<JsonResult> LoadTypeOfCase(Guid natureId)
         {
@@ -111,6 +110,8 @@ namespace CourtApp.Web.Abstractions
             var data = Json(caseType);
             return data;
         }
+
+
 
 
         #region Static Dropdown Region
