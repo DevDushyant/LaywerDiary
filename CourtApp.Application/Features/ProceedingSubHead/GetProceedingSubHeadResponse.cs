@@ -1,17 +1,19 @@
 ﻿using CourtApp.Domain.Entities.LawyerDiary;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CourtApp.Web.Areas.LawyerDiary.Models
+namespace CourtApp.Application.Features.ProceedingSubHead
 {
-    public class ProceedingSubHeadViewModel
+    public class GetProceedingSubHeadResponse
     {
         public Guid Id { get; set; }
         public Guid PHeadId { get; set; }
-        public string PheadName { get; set; }
-        public SelectList PHeads { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
         public virtual ProceedingHeadEntity ProceedingHead { get; set; }
+
     }
 }

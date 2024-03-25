@@ -1,8 +1,8 @@
-﻿@model IEnumerable<ProceedingSubHeadViewModel>
-<table id="tblProceedingSHead" class="table table-striped" width="100%" cellspacing="0">
+﻿@model IEnumerable<WorkMasterSubViewModel>
+<table id="tblWorkMasterSub" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th>Head</th>
+            <th>WorkMaster</th>
             <th>Name(En)</th>
             <th>Name(Hn)</th>
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded
@@ -18,7 +18,7 @@
         {
             <tr>
                 <td>
-                    @bt.ProceedingHead.Name_En
+                    @bt.WorkMaster.Work_En
                 </td>
                 <td>
                     @bt.Name_En
@@ -37,13 +37,13 @@
                             <div class="dropdown-menu shadow animated--grow-in">
                                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                                 {
-                                    <a onclick="jQueryModalGet('/LawyerDiary/ProceedingSubHead/OnGetCreateOrEdit?id=@bt.Id','Edit Proceeding Sub Head Type')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
+                                    <a onclick="jQueryModalGet('/LawyerDiary/WorkMasterSub/OnGetCreateOrEdit?id=@bt.Id','Edit Work Master Sub Type')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
 
                                 }
                                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded)
                                 {
                                     <form id="form_delete_@bt.Id" asp-area="LawyerDiary"
-                                          asp-controller="ProceedingSubHead" method="post" asp-action="OnPostDelete"
+                                          asp-controller="WorkMasterSub" method="post" asp-action="OnPostDelete"
                                           asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
                                         <a href="javascript:$('#form_delete_@bt.Id').submit();"
                                            class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a>
@@ -59,6 +59,6 @@
 </table>
 <script>
     $(document).ready(function () {
-        $("#tblProceedingSHead").DataTable();
+        $("#tblWorkMasterSub").DataTable();
     });
 </script>

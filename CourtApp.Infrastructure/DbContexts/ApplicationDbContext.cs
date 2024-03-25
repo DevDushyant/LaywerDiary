@@ -56,7 +56,9 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<CaseEntity> Cases { get; set; }
         public DbSet<LawyerMasterEntity> Laywers { get; set; }
         public DbSet<ProceedingHeadEntity> ProceedingHeads { get ; set ; }
-
+        public DbSet<ProceedingSubHeadEntity> ProceedingSubHeads { get; set; }
+        public DbSet<WorkMasterEntity> WorkMasters { get; set; }
+        public DbSet<WorkMasterSubEntity> WorkMasterSubs { get; set; }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             foreach (var entry in ChangeTracker.Entries<AuditableEntity>().ToList())

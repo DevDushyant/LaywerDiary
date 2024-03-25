@@ -167,6 +167,18 @@
                                     <p>@localizer["Proceeding Sub Head"]</p>
                                 </a>
                             </li>
+                             <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="WorkMaster" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Work Master"]</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="WorkMasterSub" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Work Master Sub"]</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 }
