@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AuditTrail.Abstrations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Domain.Entities.Advocate
 {
-    [Table("Mst_ActTypes")]
-    public class ActTypeEntity:BaseEntity
+    [Table("m_act_type",Schema ="ad")]
+    public class ActTypeEntity: AuditableEntity
     {
-        [Column(TypeName ="varchar(100)")]
-        public string ActType { get; set; }
+        public new Guid Id { get; set; }        
+        public required string Name_En { get; set; }
+        public string Name_Hn { get; set; }
     }
 }

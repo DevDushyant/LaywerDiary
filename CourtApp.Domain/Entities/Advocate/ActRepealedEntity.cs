@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AuditTrail.Abstrations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -6,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Domain.Entities.Advocate
 {
-    [Table("Mst_RepealedAct")]
-    public class RepealedActEntity : BaseEntity
+    [Table("ad.m_repealed_rule")]
+    public class ActRepealedEntity : AuditableEntity
     {
-        [ForeignKey("Act")]
-        public int ActID { get; set; }        
         public int RepealedActID { get; set; }
+
+        [ForeignKey("ActID")]
         public ActEntity Act { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AuditTrail.Abstrations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 namespace CourtApp.Domain.Entities.Advocate
 {
     [Table("Mst_NotificationBook")]
-    public class NotificationBookEntity : BaseEntity
+    public class NotificationBookEntity : AuditableEntity
     {
         [ForeignKey("Rule")]
         public int RuleId { get; set; }

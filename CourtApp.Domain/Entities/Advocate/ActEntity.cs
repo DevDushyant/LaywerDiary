@@ -1,61 +1,41 @@
-﻿using System;
+﻿using AuditTrail.Abstrations;
+using CourtApp.Domain.Entities.Common;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CourtApp.Domain.Entities.Advocate
 {
-    [Table("Mst_Act")]
-    public class ActEntity : BaseEntity
+    [Table("m_act",Schema ="ad")]
+    public class ActEntity : AuditableEntity
     {
-        [Column(TypeName = "varchar(10)")]
-        public string ActCategory { get; set; }
-
-        [Column(TypeName = "int")]
-        public int ActTypeId { get; set; }
-
-        [Column(TypeName = "int")]
-        public int ActNumber { get; set; }
-
-        [Column(TypeName = "varchar(3)")]
-        public int SubActNumber { get; set; }
-
-        [Column(TypeName = "int")]
-        public int ActYear { get; set; }
-
-        [Column(TypeName = "varchar(100)")]
-        public string AssentBy { get; set; }
-
-        [Column(TypeName = "date")]
-        public DateTime? AssentDate { get; set; }
-        [Column(TypeName = "varchar(250)")]
+        [Key]
+        public new Guid Id { get; set; }
+        public string ActCategory { get; set; }        
+        public required int ActNumber { get; set; }
+        public required int SubActNumber { get; set; }
+        public int ActYear { get; set; }        
+        public string AssentBy { get; set; }        
+        public DateTime? AssentDate { get; set; }        
         public string ActName { get; set; }
-
-        [Column("PublishedIn", TypeName = "int")]
         public int GazetteId { get; set; }
-
-        [Column(TypeName = "int")]
-        public int PartId { get; set; }
-
-        [Column(TypeName = "varchar(10)")]
         public string Nature { get; set; }
-
-        [Column(TypeName = "date")]
         public DateTime? GazetteDate { get; set; }
-
-        [Column(TypeName = "int")]
         public int? PageNo { get; set; }
+        public string ComeInforce { get; set; }               
+        public DateTime? PublishedGazeteDate { get; set; }
 
-        [Column(TypeName = "varchar(10)")]
-        public string ComeInforce { get; set; }
-        [Column(TypeName = "varchar(100)")]
-        public string SubjectAct { get; set; }
+        [ForeignKey("SubjectId")]
+        public SubjectEntity Subject { get; set; }
 
-        [Column(TypeName = "date")]
-        public DateTime? PublishedInGazeteDate { get; set; }
-        public virtual List<AmendedActEntity> AmendedActList { get; set; }
-        public virtual List<RepealedActEntity> RepealedActList { get; set; }
-        public virtual List<ActBookEntity> ActBookList { get; set; }
+        [ForeignKey("ActTypeId")]
+        public ActTypeEntity ActType { get; set; }
+
+        [ForeignKey("PartId")]
+        public PartEntity Part { get; set; }
+        public virtual ICollection<ActAmendedEntity> AmendedActs { get; set; }
+        public virtual ICollection<ActRepealedEntity> RepealedActs { get; set; }
+        public virtual ICollection<ActBookEntity> ActBooks { get; set; }
     }
 }
