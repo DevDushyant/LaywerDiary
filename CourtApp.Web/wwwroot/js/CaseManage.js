@@ -7,10 +7,13 @@
         }
     });
     $("#CaseNatureId").on("change", function () {
+        debugger;
         $("#TypeOfCaseId").empty();
         $.getJSON("/Litigation/CaseManage/LoadTypeOfCase?natureId=" + $("#CaseNatureId").val(), function (data) {
+            debugger;
             $.each(data.Data, function (i, item) {
-                $("#TypeOfCaseId").append(`<option /><option value="${item.Id}">${item.Typeofcases}</option>`);
+                debugger;
+                $("#TypeOfCaseId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
             });
         });
     });

@@ -4,14 +4,13 @@ using System;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Models
 {
-    public class ProceedingSubHeadViewModel
+    public class WorkMasterSubViewModel
     {
         public Guid Id { get; set; }
-        public Guid PHeadId { get; set; }
-        public string PheadName { get; set; }
-        public SelectList PHeads { get; set; }
+        public Guid WMasterId { get; set; }
+        public SelectList WMasters { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
-        public virtual ProceedingHeadEntity ProceedingHead { get; set; }
+        public virtual WorkMasterEntity WorkMaster { get; set; } 
     }
 }
