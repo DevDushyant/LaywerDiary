@@ -12,6 +12,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Interfaces\AdvocateRepositories\IBookServiceAsync.cs" />
+    <Compile Remove="Interfaces\AdvocateRepositories\IEGazzetDataServiceAsync.cs" />
+    <Compile Remove="Interfaces\AdvocateRepositories\IFileServiceAsync.cs" />
+    <Compile Remove="Interfaces\AdvocateRepositories\IGazzetServiceAsync.cs" />
+    <Compile Remove="Interfaces\AdvocateRepositories\IGenericServiceAsync.cs" />
+    <Compile Remove="Interfaces\AdvocateRepositories\INavigationAsync.cs" />
+    <Compile Remove="Interfaces\AdvocateRepositories\INotifcationTypeAsyncService.cs" />
+    <Compile Remove="Interfaces\AdvocateRepositories\INotificationServiceAsync.cs" />
+    <Compile Remove="Interfaces\AdvocateRepositories\IRuleServiceAsync.cs" />
+    <Compile Remove="Interfaces\AdvocateRepositories\ISubGazzetServiceAsync.cs" />
+    <Compile Remove="Interfaces\AdvocateRepositories\ISubjectServiceAsync.cs" />
+    <Compile Remove="Interfaces\AdvocateRepositories\IUriService.cs" />
     <Compile Remove="Mappings\UserCaseEntryMappings.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CourtApp.Application.Features.Subjects.Commands;
 using CourtApp.Application.Features.Subjects.Queries;
-using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Domain.Entities.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;

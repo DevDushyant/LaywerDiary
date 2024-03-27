@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Domain.Entities.Advocate
 {
-    [Table("Mst_NavigationMenus")]
+    [Table("ad.")]
     public class NavigationEntity : BaseEntity
     {
         [Column(TypeName = "varchar(100)")]
