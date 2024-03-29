@@ -54,6 +54,7 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<ClientEntity> Clients { get; set; }
         public DbSet<CourtTypeEntity> CourtType { get; set; }
         public DbSet<CaseEntity> Cases { get; set; }
+        public DbSet<AgainstCaseDetails> AgainstCaseDetails { get; set; }
         public DbSet<LawyerMasterEntity> Laywers { get; set; }
         public DbSet<ProceedingHeadEntity> ProceedingHeads { get ; set ; }
         public DbSet<ProceedingSubHeadEntity> ProceedingSubHeads { get; set; }

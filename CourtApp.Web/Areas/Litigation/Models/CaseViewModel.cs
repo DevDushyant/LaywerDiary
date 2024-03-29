@@ -30,31 +30,38 @@ namespace CourtApp.Web.Areas.Litigation.Models
 
         #region Upsert properties
 
-        public  Guid Id { get; set; }
-        public Guid LinkedCaseId { get; set; }
+        public  Guid Id { get; set; }        
         public DateTime InstitutionDate { get; set; }
-        public int LinkedClient { get; set; }
-        public int CaseNatureId { get; set; }
-        public int TypeOfCaseId { get; set; }
-        public int CourtTypeId { get; set; }
-        public int CourtId { get; set; }
-        public int CaseTypeId { get; set; }
-        public string CaseNumber { get; set; }
+        public Guid ClientId { get; set; }
+        public Guid NatureId { get; set; }
+        public Guid TypeCaseId { get; set; }
+        public Guid CourtTypeId { get; set; }
+        public Guid CourtId { get; set; }
+        public Guid CaseTypeId { get; set; }
+        public string Number { get; set; }
         public int CaseYear { get; set; }
-        public string TitleFirst { get; set; }
-        public int FirstTitleType { get; set; }
-        public string TitleSecond { get; set; }
-        public int SecondTitleType { get; set; }
+        public string FirstTitle { get; set; }
+        public int TitleTypeFirst { get; set; }
+        public string SecondTitle { get; set; }
+        public int TitleTypeSecond { get; set; }
         public DateTime NextDate { get; set; }
         public string CaseStageCode { get; set; }
-        public DateTime CaseAgainstDecisionDate { get; set; }
-        public int AgainstCourtTypeId { get; set; }
-        public int AgainstCourtId { get; set; }
-        public string AgainstCaseNumber { get; set; }
-        public int AgainstYear { get; set; }
+        public List<AgainstCaseDecision1> AgainstCaseDetails { get; set; }
 
         #endregion
-
         
+
+    }
+    public class AgainstCaseDecision1
+    {
+        public new Guid Id { get; set; }
+        public Guid clientcaseid { get; set; }
+        public DateTime? CaseAgainstDecisionDate { get; set; }
+        public string AgainstCaseNumber { get; set; }
+        public int? AgainstYear { get; set; }
+        // public Guid LinkedCaseId { get; set; }
+        public Guid AgainstCourtTypeId { get; set; }
+        public Guid AgainstCourtId { get; set; }
+        //public Guid LinkedCaseId { get; set; }
     }
 }
