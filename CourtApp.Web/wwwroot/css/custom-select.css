@@ -63,3 +63,10 @@
     padding-left: 1rem;
     font-size: 125%;
 }
+.remove {
+    display: none;
+}
+
+.agenestcaseId-append .remove {
+    display: block;
+}
