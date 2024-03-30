@@ -16,5 +16,6 @@ namespace CourtApp.Application.Interfaces.Repositories
         Task<Guid> InsertAsync(CaseTitleEntity CaseTtitle);
         Task UpdateAsync(CaseTitleEntity CaseTtitle);
         Task DeleteAsync(CaseTitleEntity CaseTtitle);
+        Task BulkInsertAsync(List<CaseTitleEntity> titles);
     }
 }

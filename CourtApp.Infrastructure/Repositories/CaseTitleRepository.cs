@@ -20,7 +20,7 @@ namespace CourtApp.Infrastructure.Repositories
             this._repository = _repository;
             this._distributedCache = _distributedCache;
         }
-        public IQueryable<CaseTitleEntity> Titles => _repository.Entities;
+        public IQueryable<CaseTitleEntity> Titles => _repository.Entities;       
 
         public async Task DeleteAsync(CaseTitleEntity CaseTtitle)
         {
@@ -63,6 +63,11 @@ namespace CourtApp.Infrastructure.Repositories
             await _repository.UpdateAsync(CaseTtitle);
             await _distributedCache.RemoveAsync(CacheKeys.CaseTitleCacheKeys.ListKey);
             await _distributedCache.RemoveAsync(CacheKeys.CaseTitleCacheKeys.GetKey(CaseTtitle.Id));
+        }
+
+        public async Task BulkInsertAsync(List<CaseTitleEntity> titles)
+        {
+            await _repository.BulkInsert(titles);            
         }
     }
 }

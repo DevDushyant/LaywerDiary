@@ -15,9 +15,10 @@ namespace CourtApp.Application.Interfaces.Repositories
         Task<List<T>> GetPagedReponseAsync(int pageNumber, int pageSize);
 
         Task<T> AddAsync(T entity);
-
         Task UpdateAsync(T entity);
-
         Task DeleteAsync(T entity);
+        Task BulkInsert(List<T> entity);
+        Task BulkUpdate(List<T> entity);
+        Task BulkDelete(List<T> entity);
     }
 }

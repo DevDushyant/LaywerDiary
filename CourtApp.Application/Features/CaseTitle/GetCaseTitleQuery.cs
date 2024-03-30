@@ -8,5 +8,6 @@ namespace CourtApp.Application.Features.CaseTitle
 {
     public class GetCaseTitleQuery
     {
+
     }
 }

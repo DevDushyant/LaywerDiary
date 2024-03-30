@@ -1,6 +1,7 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
+using EFCore.BulkExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace CourtApp.Infrastructure.Repositories
         {
             await _dbContext.Set<T>().AddAsync(entity);
             return entity;
-        }
+        }        
 
         public Task DeleteAsync(T entity)
         {
@@ -57,6 +58,21 @@ namespace CourtApp.Infrastructure.Repositories
         {
             _dbContext.Entry(entity).CurrentValues.SetValues(entity);
             return Task.CompletedTask;
+        }        
+
+        public async Task BulkInsert(List<T> entity)
+        {
+            await _dbContext.BulkInsertAsync(entity);
+        }
+
+        public async Task BulkUpdate(List<T> entity)
+        {
+            await _dbContext.BulkUpdateAsync(entity);
+        }
+
+        public async Task BulkDelete(List<T> entity)
+        {
+            await _dbContext.BulkDeleteAsync(entity);
         }
     }
 }

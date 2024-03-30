@@ -16,14 +16,13 @@ namespace CourtApp.Application.Features.CaseTitle
         public int Type { get; set; }
         public List<string> Title { get; set; }
     }
-
     public class CreateCaseTitleCommandHandler : IRequestHandler<CreateCaseTitleCommand, Result<Guid>>
     {
         private readonly IMapper _mapper;
         private readonly IUserCaseRepository _UserCaseRepo;
         private readonly ICaseTitleRepository _CaseTitleRepository;
         private IUnitOfWork _unitOfWork { get; set; }
-        public CreateCaseTitleCommandHandler(IUserCaseRepository _UserCaseRepo, 
+        public CreateCaseTitleCommandHandler(IUserCaseRepository _UserCaseRepo,
             IMapper _mapper, IUnitOfWork unitOfWork, ICaseTitleRepository caseTitleRepository)
         {
             this._mapper = _mapper;
@@ -34,11 +33,20 @@ namespace CourtApp.Application.Features.CaseTitle
         }
         public async Task<Result<Guid>> Handle(CreateCaseTitleCommand request, CancellationToken cancellationToken)
         {
-            var CaseTitle = _mapper.Map<CaseTitleEntity>(request);
-            CaseTitle.Case = _UserCaseRepo.GetByIdAsync(request.CaseId).Result;            
-            await _CaseTitleRepository.InsertAsync(CaseTitle);
+            var casedetail = _UserCaseRepo.GetByIdAsync(request.CaseId).Result;
+            List<CaseTitleEntity> obj = new List<CaseTitleEntity>();
+            foreach (var item in request.Title)
+            {
+                obj.Add(new CaseTitleEntity()
+                {
+                    Title = item,
+                    TypeId = request.Type,
+                    Case = casedetail
+                });
+            }
+            await _CaseTitleRepository.BulkInsertAsync(obj);
             await _unitOfWork.Commit(cancellationToken);
-            return Result<Guid>.Success(CaseTitle.Id);
+            return Result<Guid>.Success(casedetail.Id);
         }
     }
 }
