@@ -4,14 +4,11 @@ using CourtApp.Application.Features.CaseManagment;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
-using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Printing;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
@@ -52,6 +49,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 caseViewModel.Year = DdlYears();
                 caseViewModel.CaseStatusList = DdlCaseStatus();
                 caseViewModel.LinkedBy =DdlClient().Result;
+                caseViewModel.Cadres =DdlCadres();
+                
                 return View("_CreateOrEdit", caseViewModel);
             }
             else

@@ -18,18 +18,18 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public SelectList CourtTypes { get; set; }
         public SelectList Courts { get; set; }
         public SelectList CaseTypes { get; set; }
-        public SelectList Year { get; set; }
+        public SelectList Year { get; set; }        
         public SelectList CaseStages { get; set; }
         public SelectList ClientList { get; set; }
         public SelectList CaseStatusList { get; set; }
         public SelectList FirstTitleList { get; set; }
         public SelectList SecondTitleList { get; set; }
         public SelectList LinkedBy { get; set; }
+        public SelectList Cadres { get; set; }
 
         #endregion
 
         #region Upsert properties
-
         public  Guid Id { get; set; }        
         public DateTime InstitutionDate { get; set; }
         public Guid ClientId { get; set; }
@@ -40,28 +40,18 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public Guid CaseTypeId { get; set; }
         public string Number { get; set; }
         public int CaseYear { get; set; }
+        public string CisNumber { get; set; }
+        public int CisYear { get; set; }
+        public string CnrNumber { get; set; }
         public string FirstTitle { get; set; }
         public int TitleTypeFirst { get; set; }
         public string SecondTitle { get; set; }
         public int TitleTypeSecond { get; set; }
         public DateTime NextDate { get; set; }
         public string CaseStageCode { get; set; }
-        public List<AgainstCaseDecision1> AgainstCaseDetails { get; set; }
+        public Guid LinkedWith { get; set; }
+        public List<CaseAgainstViewModel> AgainstCaseDetails { get; set; }
 
-        #endregion
-        
-
-    }
-    public class AgainstCaseDecision1
-    {
-        public new Guid Id { get; set; }
-        public Guid clientcaseid { get; set; }
-        public DateTime? CaseAgainstDecisionDate { get; set; }
-        public string AgainstCaseNumber { get; set; }
-        public int? AgainstYear { get; set; }
-        // public Guid LinkedCaseId { get; set; }
-        public Guid AgainstCourtTypeId { get; set; }
-        public Guid AgainstCourtId { get; set; }
-        //public Guid LinkedCaseId { get; set; }
-    }
+        #endregion   
+    }    
 }

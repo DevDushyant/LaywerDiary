@@ -79,8 +79,8 @@ namespace CourtApp.Infrastructure.Extensions
             services.AddTransient<IProceedingSubHeadRepository, ProceedingSubHeadRepository>();
             services.AddTransient<IWorkMasterRepository, WorkMasterRepository>();
             services.AddTransient<IWorkMasterSubRepository, WorkMasterSubRepository>();
-            //services.AddTransient<ICaseWorkMasterRepository, >();
-
+            services.AddTransient<ICaseManagmentRepository, CaseManagmentRepository>();
+            services.AddTransient<ICaseTitleRepository, CaseTitleRepository>();
 
             #endregion Repositories
         }

@@ -222,6 +222,20 @@ namespace CourtApp.Application.Constants
             return _RDictionary;
         }
 
+        public static Dictionary<string, string> Cadres()
+        {
+            var _Cadre = new Dictionary<string, string>
+            {
+                {"RJ", "Rajasthan" },
+                { "UP", "Uttar Pradesh" },
+                { "GJ", "Gujrat" },
+                { "HR", "Haryana" },
+                 { "UT", "AGMUT" }
+
+            };
+            return _Cadre;
+        }
+
     }
 
 }

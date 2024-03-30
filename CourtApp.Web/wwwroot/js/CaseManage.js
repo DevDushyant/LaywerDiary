@@ -166,4 +166,20 @@
         }
     });
 
+    $("#AgainstCourtTypeId_0").select2({
+        placeholder: "Select court type",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+
+    $("#AgainstCourtId_0").select2({
+        placeholder: "Select court",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+
 });

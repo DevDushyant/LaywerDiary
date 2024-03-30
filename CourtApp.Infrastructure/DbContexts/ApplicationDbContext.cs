@@ -12,7 +12,6 @@ using CourtApp.Domain.Entities.LawyerDiary;
 using CourtApp.Domain.Entities.Common;
 using AuditTrail.Abstrations;
 using System;
-using CourtApp.Infrastructure.Identity.Models;
 namespace CourtApp.Infrastructure.DbContexts
 {
     public class ApplicationDbContext : AuditableContext, IApplicationDbContext
@@ -45,7 +44,6 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<ExpenseHeadEntity> ExpenseHeads { get; set; }
         public DbSet<CourtFeeEntity> CourtFees { get; set; }
         public DbSet<CourtFeeTypeEntity> CourtFeeTypes { get; set; }
-
         public DbSet<CaseKindEntity> CaseKinds { get; set; }
         public DbSet<TypeOfCasesEntity> Typeofcases { get; set; }
         public DbSet<CaseStageEntity> CaseStages { get; set; }

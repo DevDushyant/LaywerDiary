@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.CaseManagment
 {
-    public class GetCaseManagmentDetail : IRequest<PaginatedResult<GetCaseManagmentDetail>>
+    public class GetCaseManagmentDetail : IRequest<PaginatedResult<GetCaseManagmentResponse>>
     {
         public Guid Id { get; set; }
         public int ActionType { get; set; }
@@ -65,9 +65,9 @@ namespace CourtApp.Application.Features.CaseManagment
             Expression<Func<CaseEntity, GetCaseManagmentResponse>> expression = e => new GetCaseManagmentResponse
             {
                 Id = e.Id,
-                CaseNumber = String.Concat(e.Number," ",e.Year),
-                CaseTypeName=e.CaseType.CaseKind,
-                CourtName=e.Court.Name_En,
+                Number = String.Concat(e.Number," ",e.Year),
+                //kin=e.CaseType.CaseKind,
+                //CourtName=e.Court.Name_En,
                 FirstTitle=e.FirstTitle,
                 SecondTitle=e.SecondTitle,
                 //NextHearingDate=e.NextDate.ToString(),
@@ -78,10 +78,10 @@ namespace CourtApp.Application.Features.CaseManagment
             var predicate = PredicateBuilder.True<CaseEntity>();
             if (predicate != null)
             {
-                if (request.Year != 0)
-                    predicate = predicate.And(y => y.Year == request.Year);
-                if (request.CaseNumber != string.Empty)
-                    predicate = predicate.And(x => x.Number == request.CaseNumber);
+                //if (request.Year != 0)
+                  //  predicate = predicate.And(y => y.Year == request.Year);
+                //if (request.CaseNumber != string.Empty)
+                    //predicate = predicate.And(x => x.Number == request.CaseNumber);
                 if (request.CourtId != Guid.Empty)
                     predicate = predicate.And(x => x.CourtType.Id==request.CourtId);
                 if (request.CourtTypeId != Guid.Empty)

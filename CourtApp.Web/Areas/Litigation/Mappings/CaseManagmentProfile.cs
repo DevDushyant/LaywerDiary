@@ -15,7 +15,7 @@ namespace CourtApp.Web.Areas.Litigation.Mappings
         {
            // CreateMap<GetWorkMasterResponse, WorkMasterViewModel>().ReverseMap();
             CreateMap<CaseManagmentCommand, CaseViewModel>().ForMember(dest => dest.AgainstCaseDetails, conf => conf.MapFrom(src => src.AgainstCaseDetails)).ReverseMap();
-            CreateMap<AgainstCaseDecision, AgainstCaseDecision1>().ReverseMap();
+           // CreateMap<AgainstCaseDecision, AgainstCaseDecision1>().ReverseMap();
         }
     }
 }

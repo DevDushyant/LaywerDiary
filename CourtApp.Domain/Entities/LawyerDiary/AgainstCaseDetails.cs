@@ -5,28 +5,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CourtApp.Domain.Entities.LawyerDiary
 {
 
-    [Table("Against_case_details", Schema = "ld")]
+    [Table("case_detail_against", Schema = "ld")]
     public class AgainstCaseDetails : AuditableEntity
-    {
-        
+    {        
         public new Guid Id { get; set; }
-        public Guid clientcaseid { get; set; }
-        public DateTime? CaseAgainstDecisionDate { get; set; }
-        public string AgainstCaseNumber { get; set; }
-        public int? AgainstYear { get; set; }
-       // public Guid LinkedCaseId { get; set; }
-        public Guid AgainstCourtTypeId { get; set; }
-        public Guid AgainstCourtId { get; set; }
-        //public DateTime NextDate { get; set; }
+        public DateTime ImpugedOrderDate { get; set; }
 
-        #region Relation Area
-        [ForeignKey("clientcaseid")]
-        public virtual CaseEntity CaseDetails { get; set; }
+        [ForeignKey("CourtTypeId")]
+        public virtual CourtTypeEntity CourtType { get; set; }
 
-        [ForeignKey("AgainstCourtTypeId")]
-        public virtual CourtTypeEntity AgainstCourtType { get; set; }
-        [ForeignKey("AgainstCourtId")]
-        public virtual CourtMasterEntity AgainstCourt { get; set; }
-        #endregion
+        [ForeignKey("CourtId")]
+        public virtual CourtMasterEntity Court { get; set; }
+        public required string Number { get; set; }
+        public required int Year { get; set; }
+        public int CisNumber { get; set; }
+        public int CisYear { get; set; }
+        public int CnrNumber { get; set; }
+        public string  ProcOfficer { get; set; }
+        public string  Cadder { get; set; }
     }
 }

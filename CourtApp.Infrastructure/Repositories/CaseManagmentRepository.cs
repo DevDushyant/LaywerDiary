@@ -37,11 +37,11 @@ namespace CourtApp.Infrastructure.Repositories
         }
         public async Task<Guid> InsertAsync(CaseEntity workMasterEntity)
         {
-            foreach (var item in workMasterEntity.AgainstCaseDetails)
-            {
-                item.clientcaseid = workMasterEntity.Id;
-            }
-            await _repository.AddAsync(workMasterEntity);
+            //foreach (var item in workMasterEntity.AgainstCaseDetails)
+            //{
+            //    item. = workMasterEntity.Id;
+            //}
+            //await _repository.AddAsync(workMasterEntity);
             return workMasterEntity.Id;
         }
 
