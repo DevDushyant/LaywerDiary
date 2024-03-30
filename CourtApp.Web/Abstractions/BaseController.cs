@@ -20,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -78,6 +79,7 @@ namespace CourtApp.Web.Abstractions
         {
             var response = await _mediator.Send(new GetCourtTypeQuery());
             var CaseKind = _mapper.Map<List<CourtTypeViewModel>>(response.Data);
+
             return new SelectList(CaseKind, nameof(CourtTypeViewModel.Id), nameof(CourtTypeViewModel.CourtType), null, null);
 
         }

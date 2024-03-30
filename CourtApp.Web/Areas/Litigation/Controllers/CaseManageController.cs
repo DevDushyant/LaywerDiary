@@ -1,4 +1,6 @@
-﻿using CourtApp.Application.Features.BookMasters.Command;
+﻿using CourtApp.Application.Enums;
+using CourtApp.Application.Features.BookMasters.Command;
+using CourtApp.Application.Features.CaseManagment;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
@@ -6,6 +8,7 @@ using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
@@ -62,13 +65,17 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (Id == Guid.Parse("00000000-0000-0000-0000-000000000000"))
+                if (Id == Guid.Empty)
                 {
-                    //var createCommand = _mapper.Map<CommandCreateCaseEntry>(ViewModel);
-                    //var result = await _mediator.Send(createCommand);
-                    //if (result.Succeeded)
-                    //    _notify.Success($"Case created with ID {result.Data} Created.");
-                    //else _notify.Error(result.Message);
+                    var createCommand = _mapper.Map<CaseManagmentCommand>(ViewModel);
+                    createCommand.ActionType = ((int)ActionTypes.Add);
+                    var result = await _mediator.Send(createCommand);
+                    if (result.Succeeded) {
+                        _notify.Success($"Case created with ID {result.Data} Created.");
+                        var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", ViewModel);
+                        return new JsonResult(new { isValid = true, html = html });
+                    }                    
+                    else _notify.Error(result.Message);
                 }
                 else
                 {
@@ -89,10 +96,20 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 //    _notify.Error(response.Message);
                 //    return null;
                 //}
-                return null;
+                return new JsonResult(new { isValid = false, html = "" });
             }
             else
             {
+                ViewModel.InstitutionDate = DateTime.Now;
+                ViewModel.CaseNatures = await LoadCaseNature();
+                ViewModel.CaseTypes = await LoadCaseTypes();
+                ViewModel.CourtTypes = await LoadCourtTypes();
+                ViewModel.CaseStages = await DdlCaseStages();
+                ViewModel.FirstTitleList = FirstTtitleList();
+                ViewModel.SecondTitleList = SecondTtitleList();
+                ViewModel.Year = DdlYears();
+                ViewModel.CaseStatusList = DdlCaseStatus();
+                ViewModel.LinkedBy = DdlClient().Result;
                 var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
                 return new JsonResult(new { isValid = false, html = html });
             }

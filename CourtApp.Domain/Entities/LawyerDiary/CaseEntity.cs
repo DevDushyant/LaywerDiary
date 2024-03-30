@@ -1,5 +1,6 @@
 ﻿using AuditTrail.Abstrations;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourtApp.Domain.Entities.LawyerDiary
@@ -18,10 +19,13 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public required int TitleTypeSecond { get; set; }
         public required string SecondTitle { get; set; }
         public string CaseStageCode { get; set; }
-        public DateTime? CaseAgainstDecisionDate { get; set; }
-        public string AgainstCaseNumber { get; set; }
-        public int? AgainstYear { get; set; }
-        public Guid LinkedCaseId { get; set; }
+
+        public Guid NatureId { get; set; }
+        public Guid TypeCaseId { get; set; }
+        public Guid CourtTypeId { get; set; }
+        public Guid CourtId { get; set; }
+        public Guid CaseTypeId { get; set; }
+        public List<AgainstCaseDetails> AgainstCaseDetails { get; set; }
         //public DateTime NextDate { get; set; }
 
         #region Relation Area
@@ -41,10 +45,6 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public virtual CourtMasterEntity Court { get; set; }
         [ForeignKey("CaseTypeId")]
         public CaseKindEntity CaseType { get; set; }
-        [ForeignKey("AgainstCourtTypeId")]
-        public virtual CourtTypeEntity AgainstCourtType { get; set; }
-        [ForeignKey("AgainstCourtId")]
-        public virtual CourtMasterEntity AgainstCourt { get; set; }
         #endregion
     }
 }
