@@ -212,8 +212,15 @@ namespace CourtApp.Application.Constants
             };
             return _RDictionary;
         }
-
-
+        public static Dictionary<int, string> CaseTitle()
+        {
+            var _RDictionary = new Dictionary<int, string>
+            {
+                { 1, "Responder" },
+                { 2, "Petitionary" }                
+            };
+            return _RDictionary;
+        }
 
     }
 

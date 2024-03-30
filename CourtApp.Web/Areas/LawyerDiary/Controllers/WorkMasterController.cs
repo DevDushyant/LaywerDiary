@@ -65,8 +65,8 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                         {
                             Id = result.Data;
                             _notify.Success($"Work Master with ID {result.Data} Created.");
-                            var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                            return new JsonResult(new { isValid = true, html = html });
+                            //var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+                            //return new JsonResult(new { isValid = true, html = html });
                         }
                         else _notify.Error(result.Message);
                     }
@@ -83,9 +83,10 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     if (result.Succeeded)
                     {
                         _notify.Information($"Work Master with ID {result.Data} Updated.");
-                        var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                        return new JsonResult(new { isValid = true, html = html });
+                        //var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+                       // return new JsonResult(new { isValid = true, html = html });
                     }
+                    else _notify.Error(result.Message);
                 }
 
             }

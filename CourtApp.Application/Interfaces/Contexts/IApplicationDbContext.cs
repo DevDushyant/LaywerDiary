@@ -30,5 +30,9 @@ namespace CourtApp.Application.Interfaces.Contexts
         DbSet<ProceedingHeadEntity> ProceedingHeads { get; set; }
         DbSet<ProceedingSubHeadEntity> ProceedingSubHeads { get; set; }
 
+        public DbSet<WorkMasterEntity> WorkMasters { get; set; }
+        public DbSet<WorkMasterSubEntity> WorkMasterSubs { get; set; }
+
+
     }
 }

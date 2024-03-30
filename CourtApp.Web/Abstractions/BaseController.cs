@@ -133,6 +133,10 @@ namespace CourtApp.Web.Abstractions
         {
             return new SelectList(StaticDropDownDictionaries.CaseStatus().OrderBy(v=>v.Value), "Key", "Value");
         }
+        public SelectList DdlCaseTitle()
+        {
+            return new SelectList(StaticDropDownDictionaries.CaseTitle().OrderBy(v => v.Value), "Key", "Value");
+        }
         #endregion
 
 
