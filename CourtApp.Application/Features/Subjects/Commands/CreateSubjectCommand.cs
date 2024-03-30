@@ -4,8 +4,8 @@ using AutoMapper;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using CourtApp.Domain.Entities.LawyerDiary;
 using System;
+using CourtApp.Domain.Entities.Common;
 
 namespace CourtApp.Application.Features.Subjects.Commands
 {

@@ -1,5 +1,4 @@
-﻿using CourtApp.Domain.Entities.LawyerDiary;
-using CourtApp.Domain.Entities.LawyerDiary;
+﻿using CourtApp.Domain.Entities.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;

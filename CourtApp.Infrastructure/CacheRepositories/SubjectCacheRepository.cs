@@ -6,8 +6,8 @@ using AspNetCoreHero.ThrowR;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CourtApp.Domain.Entities.LawyerDiary;
 using System;
+using CourtApp.Domain.Entities.Common;
 
 namespace CourtApp.Infrastructure.CacheRepositories
 {

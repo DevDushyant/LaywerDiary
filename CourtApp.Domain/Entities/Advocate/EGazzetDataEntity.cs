@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using AuditTrail.Abstrations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourtApp.Domain.Entities.Advocate
 {
-	[Table("Mst_GazetteData")]
-	public class EGazzetDataEntity : BaseEntity
-	{
-		
+	[Table("ad.m_egazzet")]
+	public class EGazzetDataEntity : AuditableEntity
+    {		
 		public int gazzetTypeId { get; set; }
 		public string oraganization { get; set; }
 		public string department { get; set; }

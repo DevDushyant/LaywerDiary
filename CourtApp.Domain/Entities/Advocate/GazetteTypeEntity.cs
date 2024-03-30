@@ -1,16 +1,17 @@
-﻿using System;
+﻿using AuditTrail.Abstrations;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CourtApp.Domain.Entities.Advocate
 {
-    [Table("Mst_GazetteType")]
-    public class GazetteTypeEntity : BaseEntity
+    [Table("m_gazzet_type",Schema ="ad")]
+    public class GazetteTypeEntity : AuditableEntity
     {
-        [Column(TypeName ="varchar(150)")]
-        public string GazetteName { get; set; }
-        public virtual List<PartEntity> PartEntities { get; set; }
+        [Key]
+        public new Guid Id { get; set; }
+        public string Name_En { get; set; }
+        public virtual ICollection<PartEntity> Parts { get; set; }
     }
 }
