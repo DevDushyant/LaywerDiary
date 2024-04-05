@@ -22,7 +22,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
         }
         public async Task<CourtMasterEntity> GetByIdAsync(Guid UniqueId)
         {
-            string cacheKey = CourtCacheKeys.GetKey(UniqueId);
+            string cacheKey = AppCacheKeys.CourtMasterKey;
             var bookType = await _distributedCache.GetAsync<CourtMasterEntity>(cacheKey);
             if (bookType == null)
             {
@@ -35,7 +35,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
 
         public async Task<List<CourtMasterEntity>> GetCachedListAsync()
         {
-            string cacheKey = CourtCacheKeys.ListKey;
+            string cacheKey = AppCacheKeys.CourtMasterKey;
             var bookTypeList = await _distributedCache.GetAsync<List<CourtMasterEntity>>(cacheKey);
             if (bookTypeList == null)
             {

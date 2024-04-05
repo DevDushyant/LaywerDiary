@@ -14,7 +14,7 @@ namespace CourtApp.Application.Constants
             };
             return _Module;
         }
-        public static Dictionary<string, string> CaseStatus()
+        public static Dictionary<string, string> CaseStatus() //it will be renames as case stage
         {
             var _CaseStatus = new Dictionary<string, string>
             {

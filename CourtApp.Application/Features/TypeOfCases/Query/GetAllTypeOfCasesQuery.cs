@@ -5,6 +5,7 @@ using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,9 @@ namespace CourtApp.Application.Features.TypeOfCases.Query
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-        public Guid CaseNatureId { get; set; }
+        public Guid CategoryId { get; set; }
+        public Guid CourtTypeId { get; set; }
+        public int StateId { get; set; }
         public GetAllTypeOfCasesQuery(int pagenumber, int pagesize)
         {
             PageNumber = pagenumber;
@@ -40,17 +43,38 @@ namespace CourtApp.Application.Features.TypeOfCases.Query
             {
                 Id = e.Id,
                CaseNature=e.Nature.Name_En,
-               Name_En=e.Name_En
+               Name_En=e.Name_En,
+               Name_Hn=e.Name_Hn,
+               Abbreviation=e.Abbreviation,
+               CourtTypeName=e.CourtType.CourtType,
+               StateName=e.State.Name_En
             };
             var predicate = PredicateBuilder.True<TypeOfCasesEntity>();
-            if (request.CaseNatureId != Guid.Empty)
-                predicate = predicate.And(b => b.Nature.Id==request.CaseNatureId);
 
-           
-            var paginatedList = await _repository.QryEntities.Where(predicate)
-                .Select(expression)
-                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-            return paginatedList;
+            if (request.CategoryId != Guid.Empty)
+                predicate = predicate.And(b => b.CaseCategoryId==request.CategoryId);
+
+            if (request.StateId != 0)
+                predicate = predicate.And(b => b.StateId == request.StateId);
+
+            if (request.CourtTypeId != Guid.Empty)
+                predicate = predicate.And(b => b.CourtTypeId == request.CourtTypeId);
+            try
+            {
+                var paginatedList = await _repository.QryEntities
+                    .Include(c => c.CourtType)
+                    .Include(c => c.State)
+                    .Include(c => c.Nature)
+                    .Where(predicate)
+                    .Select(expression)
+                    .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+                return paginatedList;
+            }
+            catch(Exception ex) { 
+            Console.WriteLine(ex.ToString());
+            }
+            return null;
+
         }
     }
 }

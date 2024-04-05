@@ -1,11 +1,13 @@
-﻿using CourtApp.Application.Features.CaseNatures.Command;
-using CourtApp.Application.Features.CaseNatures.Query;
+﻿using CourtApp.Application.Features.CaseCategory;
+using CourtApp.Application.Features.CaseNatures.Command;
+using CourtApp.Application.Features.CourtType.Query;
+using CourtApp.Application.Features.Queries.States;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers
@@ -18,10 +20,9 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             var model = new CaseNatureViewModel();
             return View(model);
         }
-
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new CaseNatureByAllCachedQuery());
+            var response = await _mediator.Send(new GetQueryCaseCategory());
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<CaseNatureViewModel>>(response.Data);
@@ -30,25 +31,43 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             return null;
         }
 
+        private async Task BindDropdownAsync(CaseNatureViewModel ViewModel)
+        {
+            var courtTypeList = await _mediator.Send(new GetCourtTypeQuery());
+            if (courtTypeList.Succeeded)
+            {
+                var DdlCourtTypes = _mapper.Map<List<CourtTypeViewModel>>(courtTypeList.Data);
+                ViewModel.CourtTypes = new SelectList(DdlCourtTypes, nameof(CourtTypeViewModel.Id), nameof(CourtTypeViewModel.CourtType), null, null); ;
+            }
+            var statelist = await _mediator.Send(new GetStateMasterQuery());
+            if (statelist.Succeeded)
+            {
+                var DdlStates = _mapper.Map<List<StateViewModel>>(statelist.Data);
+                ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
+
+            }
+        }
+
         public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
         {
             if (id == Guid.Empty)
             {
                 var ViewModel = new CaseNatureViewModel();
+                await BindDropdownAsync(ViewModel);
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
             }
             else
             {
-                var response = await _mediator.Send(new CaseNatureByIdQuery() { Id = id });
+                var response = await _mediator.Send(new GetQueryByIdCaseCategory() { Id = id });
                 if (response.Succeeded)
                 {
-                    var brandViewModel = _mapper.Map<CaseNatureViewModel>(response.Data);
-                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", brandViewModel) });
+                    var ViewModel = _mapper.Map<CaseNatureViewModel>(response.Data);
+                    await BindDropdownAsync(ViewModel);
+                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
                 }
                 return null;
             }
         }
-
 
         [HttpPost]
         public async Task<JsonResult> OnPostCreateOrEdit(Guid id, CaseNatureViewModel btViewModel)
@@ -62,7 +81,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     if (result.Succeeded)
                     {
                         id = result.Data;
-                        _notify.Success($"Case Nature with ID {result.Data} Created.");
+                        _notify.Success($"Case Category with ID {result.Data} Created.");
                     }
                     else _notify.Error(result.Message);
                 }
@@ -70,9 +89,9 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 {
                     var updateBookCommand = _mapper.Map<UpdateCaseNatureCommand>(btViewModel);
                     var result = await _mediator.Send(updateBookCommand);
-                    if (result.Succeeded) _notify.Information($"Case Nature with ID {result.Data} Updated.");
+                    if (result.Succeeded) _notify.Information($"Case Category with ID {result.Data} Updated.");
                 }
-                var response = await _mediator.Send(new CaseNatureByAllCachedQuery());
+                var response = await _mediator.Send(new GetQueryCaseCategory());
                 if (response.Succeeded)
                 {
                     var viewModel = _mapper.Map<List<CaseNatureViewModel>>(response.Data);
@@ -98,8 +117,8 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             var deleteCommand = await _mediator.Send(new DeleteCaseNatureCommand { Id = id });
             if (deleteCommand.Succeeded)
             {
-                _notify.Information($"Case Nature with Id {id} Deleted.");
-                var response = await _mediator.Send(new CaseNatureByAllCachedQuery());
+                _notify.Information($"Case Category with Id {id} Deleted.");
+                var response = await _mediator.Send(new GetQueryCaseCategory());
                 if (response.Succeeded)
                 {
                     var viewModel = _mapper.Map<List<CaseNatureViewModel>>(response.Data);

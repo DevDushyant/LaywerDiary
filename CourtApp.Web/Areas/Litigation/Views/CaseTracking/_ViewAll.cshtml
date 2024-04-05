@@ -1,10 +1,10 @@
-﻿@model IEnumerable<CaseViewModel>
+﻿@model IEnumerable<GetCaseViewModel>
 <table id="brandTable" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
             <th>Sno.</th>
             <th>Case Type</th>
-            <th>Case No</th>
+            <th>Case No/Year</th>
             <th>Case Year</th>
             <th>Parties</th>
             <th>Court</th>
@@ -23,22 +23,20 @@
                @count++;
             </td>
             <td>
-                @bt.TypeCaseId
+                @bt.CaseTypeName
             </td>
             <td>
-                @bt.Number
+                @bt.CaseNumber
             </td>
             <td>
-                @bt.Year
+                @bt.CaseStage
             </td>
             <td>
                 @string.Concat(bt.FirstTitle, " V/S ", bt.SecondTitle)
             </td>
+           
             <td>
-               
-            </td
-            <td>
-                @bt.NextDate
+                @bt.NextHearingDate
             </td>
             @* <td>
                 <a onclick="jQueryModalGet('/LawyerDiary/casestage/OnGetCreateOrEdit?id=@bt.CaseUniqueId', 'Case Detail')"><i class="fas fa-eye"></i></a>

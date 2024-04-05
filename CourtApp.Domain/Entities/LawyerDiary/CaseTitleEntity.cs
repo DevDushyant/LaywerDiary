@@ -5,15 +5,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourtApp.Domain.Entities.LawyerDiary
 {
-    [Table("m_case_title", Schema = "ld")]
+    [Table("case_titles", Schema = "ld")]
     public class CaseTitleEntity : AuditableEntity
     {
         [Key]
         public new Guid Id { get; set; }
         public int TypeId { get; set; }
-        public required string Title { get; set; }
-
-        [ForeignKey("CaseId")]
+        public Guid CaseId { get; set; }
+        public required string Title { get; set; } 
         public virtual CaseEntity Case { get; set; }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using AutoMapper;
 using CourtApp.Application.Constants;
+using CourtApp.Application.Features.CaseCategory;
 using CourtApp.Application.Features.CaseKinds.Query;
-using CourtApp.Application.Features.CaseNatures.Query;
 using CourtApp.Application.Features.CaseStages.Query;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.CourtMasters.Query;
@@ -12,7 +12,6 @@ using CourtApp.Application.Features.Queries.Districts;
 using CourtApp.Application.Features.TypeOfCases.Query;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models;
-using CourtApp.Web.Areas.Litigation.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,7 +19,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -61,13 +59,13 @@ namespace CourtApp.Web.Abstractions
 
         public async Task<SelectList> LoadCaseNature()
         {
-            var response = await _mediator.Send(new CaseNatureByAllCachedQuery());
+            var response = await _mediator.Send(new GetQueryCaseCategory());
             var CaseNatures = _mapper.Map<List<CaseNatureViewModel>>(response.Data);
             return new SelectList(CaseNatures, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.Name_En), null, null);
 
         }
 
-        public async Task<SelectList> LoadCaseTypes()
+        public async Task<SelectList> LoadCaseKinds()
         {
             var response = await _mediator.Send(new CaseKindAllCacheQuery());
             var CaseKind = _mapper.Map<List<CaseKindViewModel>>(response.Data);
@@ -108,7 +106,7 @@ namespace CourtApp.Web.Abstractions
 
         public async Task<JsonResult> LoadTypeOfCase(Guid natureId)
         {
-            var caseType = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 100) { CaseNatureId = natureId });
+            var caseType = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 100) { CategoryId = natureId });
             var data = Json(caseType);
             return data;
         }

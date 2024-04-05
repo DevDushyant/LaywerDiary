@@ -1,4 +1,5 @@
 using AuditTrail.Abstrations;
+using CourtApp.Entities.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -13,8 +14,12 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public new Guid Id { get; set; }
         public required string Name_En { get; set; }
         public string Name_Hn { get; set; }
-
-        [ForeignKey("NatureId")]
+        public string Abbreviation { get; set; }
+        public Guid CaseCategoryId { get; set; }
         public virtual NatureEntity Nature { get; set; }
+        public Guid CourtTypeId { get; set; }
+        public virtual CourtTypeEntity CourtType { get; set; }
+        public int StateId { get; set; }
+        public virtual StateEntity State { get; set; }
     }
 }

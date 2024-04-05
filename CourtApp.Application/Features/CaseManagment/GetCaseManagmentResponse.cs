@@ -1,4 +1,4 @@
-﻿using CourtApp.Application.Features.CaseManagment;
+﻿using CourtApp.Domain.Entities.LawyerDiary;
 using System;
 using System.Collections.Generic;
 
@@ -22,6 +22,6 @@ namespace CourtApp.Application.Features.ProceedingHead
         public int TitleTypeSecond { get; set; }
         public DateTime NextDate { get; set; }
         public string CaseStageCode { get; set; }
-        public List<AgainstCaseDecision> AgainstCaseDetails { get; set; }
+        public List<AgainstCaseDetails> AgainstCaseDetails { get; set; }
     }
 }

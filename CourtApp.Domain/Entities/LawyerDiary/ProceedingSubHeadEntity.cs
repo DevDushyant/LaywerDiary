@@ -12,14 +12,11 @@ namespace CourtApp.Domain.Entities.LawyerDiary
     [Table("m_proceeding_sub_head", Schema = "ld")]
     public class ProceedingSubHeadEntity : AuditableEntity
     {
-        public new Guid Id { get; set; }
-        [Required]
-        public Guid PHeadId { get; set; }        
-        [Required]
+        public new Guid Id { get; set; }        
+        public Guid PHeadId { get; set; } 
         public required string Name_En { get; set; }
         public string Name_Hn { get; set; }
-        [Required]
-        [ForeignKey("PHeadId")]
+        public string Abbreviation { get; set; }        
         public virtual ProceedingHeadEntity ProceedingHead { get; set; }
     }
 }

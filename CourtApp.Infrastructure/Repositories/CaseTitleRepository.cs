@@ -20,13 +20,12 @@ namespace CourtApp.Infrastructure.Repositories
             this._repository = _repository;
             this._distributedCache = _distributedCache;
         }
-        public IQueryable<CaseTitleEntity> Titles => _repository.Entities;       
+        public IQueryable<CaseTitleEntity> Titles => _repository.Entities;
 
         public async Task DeleteAsync(CaseTitleEntity CaseTtitle)
         {
             await _repository.DeleteAsync(CaseTtitle);
             await _distributedCache.RemoveAsync(CacheKeys.CaseTitleCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.CaseTitleCacheKeys.GetKey(CaseTtitle.Id));
         }
         public async Task<List<CaseTitleEntity>> GetByCaseIdAsync(Guid CaseId)
         {
@@ -40,7 +39,7 @@ namespace CourtApp.Infrastructure.Repositories
         {
             var DetailById = _repository.Entities
             .Include(d => d.Case)
-               .Where(p => p.Id == TitleId).FirstOrDefaultAsync();
+            .Where(p => p.Id == TitleId).FirstOrDefaultAsync();
             return await DetailById;
         }
 
@@ -67,7 +66,7 @@ namespace CourtApp.Infrastructure.Repositories
 
         public async Task BulkInsertAsync(List<CaseTitleEntity> titles)
         {
-            await _repository.BulkInsert(titles);            
+            await _repository.BulkInsert(titles);
         }
     }
 }

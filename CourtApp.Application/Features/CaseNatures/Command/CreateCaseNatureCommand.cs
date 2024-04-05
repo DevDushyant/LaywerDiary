@@ -16,6 +16,8 @@ namespace CourtApp.Application.Features.CaseNatures.Command
     {
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
+        public Guid CourtTypeId { get; set; }
+        public int StateId { get; set; }
     }
     public class CreateCaseNatureCommandHandler : IRequestHandler<CreateCaseNatureCommand, Result<Guid>>
     {

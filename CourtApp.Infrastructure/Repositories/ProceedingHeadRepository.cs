@@ -1,6 +1,7 @@
 ﻿using CourtApp.Application.Enums;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Infrastructure.CacheKeys;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
@@ -26,6 +27,7 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task DeleteAsync(ProceedingHeadEntity proceedingHeadEntity)
         {
             await _repository.DeleteAsync(proceedingHeadEntity);
+            await _distributedCache.RemoveAsync(AppCacheKeys.ProcHeadKey);
         }
 
         public async Task<ProceedingHeadEntity> GetByIdAsync(Guid Id)
@@ -43,6 +45,7 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<Guid> InsertAsync(ProceedingHeadEntity proceedingHeadEntity)
         {
             await _repository.AddAsync(proceedingHeadEntity);
+            await _distributedCache.RemoveAsync(AppCacheKeys.ProcHeadKey);
             return proceedingHeadEntity.Id;
         }
 

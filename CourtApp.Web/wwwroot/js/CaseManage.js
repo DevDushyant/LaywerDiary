@@ -7,22 +7,35 @@
         }
     });
     $("#CaseNatureId").on("change", function () {
-       
+
         $("#TypeOfCaseId").empty();
         $.getJSON("/Litigation/CaseManage/LoadTypeOfCase?natureId=" + $("#CaseNatureId").val(), function (data) {
-           
+
             $.each(data.Data, function (i, item) {
                 debugger;
-                $("#TypeOfCaseId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
+                $("#CaseTypeId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
             });
         });
     });
     $("#CourtTypeCode").on("change", function () {
         $("#CourtName").empty();
         $.getJSON("/Litigation/CaseManage/LoadCourt?CourtTypeId=" + $("#CourtTypeCode").val(), function (data) {
-            debugger;
             $.each(data.Data, function (i, item) {
                 $("#CourtName").append(`<option /><option value="${item.Id}">${item.CourtName}</option>`);
+            });
+        });
+        //$.getJSON("/Litigation/CaseManage/LoadCourt?CourtTypeId=" + $("#CourtTypeCode").val(), function (data) {
+        //    $.each(data.Data, function (i, item) {
+        //        $("#CourtName").append(`<option /><option value="${item.Id}">${item.CourtName}</option>`);
+        //    });
+        //});
+    });
+    $("#AgainstCourtTypeId_0").on("change", function () {
+        $("#AgainstCourtId_0").empty();
+        $.getJSON("/Litigation/CaseManage/LoadCourt?CourtTypeId=" + $("#AgainstCourtTypeId_0").val(), function (data) {
+
+            $.each(data.Data, function (i, item) {
+                $("#AgainstCourtId_0").append(`<option /><option value="${item.Id}">${item.CourtName}</option>`);
             });
         });
     });
@@ -45,16 +58,16 @@
             return m;
         }
     });
-    $("#TypeOfCaseId").select2({
-        placeholder: "Select a type of case",
+    $("#CaseTypeId").select2({
+        placeholder: "Select a case type",
         theme: "bootstrap4",
         escapeMarkup: function (m) {
             return m;
         }
     });
 
-    $("#CaseTypeId").select2({
-        placeholder: "Select a case type",
+    $("#CaseKindId").select2({
+        placeholder: "Select a case kind",
         theme: "bootstrap4",
         escapeMarkup: function (m) {
             return m;
@@ -176,6 +189,43 @@
 
     $("#AgainstCourtId_0").select2({
         placeholder: "Select court",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+
+    $("#LinkedWith").select2({
+        placeholder: "Select link case",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+
+    $("#CisYear").select2({
+        placeholder: "Select cis year",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    $("#AgainstCisYear_0").select2({
+        placeholder: "Select against cis year",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    $("#Cadder_0").select2({
+        placeholder: "Select cadder",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    $("#AgainstYear_0").select2({
+        placeholder: "Select year",
         theme: "bootstrap4",
         escapeMarkup: function (m) {
             return m;

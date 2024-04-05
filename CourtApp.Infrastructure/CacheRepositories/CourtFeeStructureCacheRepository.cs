@@ -23,7 +23,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
         }
         public async Task<CourtFeeStructureEntity> GetCacheDataByIdAsync(Guid Id)
         {
-            string cacheKey = CourtCacheKeys.GetKey(Id);
+            string cacheKey = CacheKeys.AppCacheKeys.CourtFeeKey;
             var data = await _distributedCache.GetAsync<CourtFeeStructureEntity>(cacheKey);
             if (data == null)
             {
@@ -36,7 +36,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
 
         public async Task<List<CourtFeeStructureEntity>> GetCacheDataListAsync()
         {
-            string cacheKey = CourtFeeStructureCacheKey.ListKey;
+            string cacheKey = CacheKeys.AppCacheKeys.CourtFeeKey;
             try
             {
                 var dataList = await _distributedCache.GetAsync<List<CourtFeeStructureEntity>>(cacheKey);

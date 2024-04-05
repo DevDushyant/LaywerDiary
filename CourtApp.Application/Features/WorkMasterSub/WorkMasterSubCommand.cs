@@ -44,7 +44,7 @@ namespace CourtApp.Application.Features.WorkMasterSub
             if (request.ActionType == ((int)ActionTypes.Update))
             {
                 entity = _Repository.GetByIdAsync(request.Id).Result;
-                entity.WMasterId = request.WMasterId;
+                entity.WorkId = request.WMasterId;
                 entity.Name_En = request.Name_En;
                 entity.Name_Hn = request.Name_Hn;
                 await _Repository.UpdateAsync(entity);

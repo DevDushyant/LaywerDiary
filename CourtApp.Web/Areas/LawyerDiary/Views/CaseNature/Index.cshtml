@@ -1,13 +1,13 @@
 ﻿@{
-    ViewData["Title"] = localizer["Case Nature"];
-    ViewData["Caption"] = localizer["Manage Case Nature"];
+    ViewData["Title"] = localizer["Case Category"];
+    ViewData["Caption"] = localizer["Manage Case Category"];
 }
 @model CaseNatureViewModel
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
         @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Create)).Result.Succeeded)
         {
-            <a onclick="jQueryModalGet('/lawyerdiary/CaseNature/OnGetCreateOrEdit','Create Case Nature')" class="btn bg-success">
+            <a onclick="jQueryModalGet('/lawyerdiary/CaseNature/OnGetCreateOrEdit','Manage Case Category')" class="btn bg-success">
                 <i class="fa fa-plus-square"></i> Create
             </a>
         }

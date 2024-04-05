@@ -7,6 +7,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Validators
     {
         public CaseNatureViewModelValidator()
         {
+
             RuleFor(p => p.Name_En)
                 .NotEmpty().WithMessage("Nature name is required.")
                 .NotNull()

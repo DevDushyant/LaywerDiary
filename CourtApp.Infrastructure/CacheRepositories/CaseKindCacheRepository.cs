@@ -32,7 +32,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
             if (cachedata == null)
             {
                 cachedata = await _repository.GetByIdAsync(Id);
-                Throw.Exception.IfNull(cachedata, "Brand", "No Brand Found");
+                Throw.Exception.IfNull(cachedata, "CaseKind", "No CaseKind Found");
                 await _distributedCache.SetAsync(cacheKey, cachedata);
             }
             return cachedata;

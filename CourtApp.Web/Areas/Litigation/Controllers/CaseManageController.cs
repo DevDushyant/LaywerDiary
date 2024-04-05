@@ -1,6 +1,7 @@
-﻿using CourtApp.Application.Enums;
+﻿using CourtApp.Application.Constants;
+using CourtApp.Application.Enums;
 using CourtApp.Application.Features.BookMasters.Command;
-using CourtApp.Application.Features.CaseManagment;
+using CourtApp.Application.Features.Case;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
@@ -8,7 +9,6 @@ using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
@@ -24,7 +24,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new QGetUserCaseDetail(1, 100));
+            var response = await _mediator.Send(new GetCaseDetailsQuery(1, 100));
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
@@ -33,24 +33,23 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return null;
         }
 
-        public async Task<IActionResult> CreateOrUpdateAsync(Guid? id = null)
+        public async Task<IActionResult> CreateOrUpdateAsync(Guid id)
         {
             var ClientList = await _mediator.Send(new GetAllClientCachedQuery() { });
-            if (id == null)
+            if (id == Guid.Empty)
             {                
                 var caseViewModel = new CaseViewModel();
                 caseViewModel.InstitutionDate = DateTime.Now;
                 caseViewModel.CaseNatures = await LoadCaseNature();
-                caseViewModel.CaseTypes = await LoadCaseTypes();
+                caseViewModel.CaseKinds = await LoadCaseKinds();
                 caseViewModel.CourtTypes = await LoadCourtTypes();
                 caseViewModel.CaseStages = await DdlCaseStages();
                 caseViewModel.FirstTitleList = FirstTtitleList();
                 caseViewModel.SecondTitleList = SecondTtitleList();
-                caseViewModel.Year = DdlYears();
+                caseViewModel.Years = DdlYears();
                 caseViewModel.CaseStatusList = DdlCaseStatus();
                 caseViewModel.LinkedBy =DdlClient().Result;
-                caseViewModel.Cadres =DdlCadres();
-                
+                caseViewModel.Cadres =DdlCadres();            
                 return View("_CreateOrEdit", caseViewModel);
             }
             else
@@ -66,8 +65,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 if (Id == Guid.Empty)
                 {
-                    var createCommand = _mapper.Map<CaseManagmentCommand>(ViewModel);
-                    createCommand.ActionType = ((int)ActionTypes.Add);
+                    var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);
+                    //createCommand.ActionType = ((int)ActionTypes.Add);
                     var result = await _mediator.Send(createCommand);
                     if (result.Succeeded) {
                         _notify.Success($"Case created with ID {result.Data} Created.");
@@ -101,12 +100,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 ViewModel.InstitutionDate = DateTime.Now;
                 ViewModel.CaseNatures = await LoadCaseNature();
-                ViewModel.CaseTypes = await LoadCaseTypes();
+                ViewModel.CaseKinds = await LoadCaseKinds();
                 ViewModel.CourtTypes = await LoadCourtTypes();
                 ViewModel.CaseStages = await DdlCaseStages();
                 ViewModel.FirstTitleList = FirstTtitleList();
                 ViewModel.SecondTitleList = SecondTtitleList();
-                ViewModel.Year = DdlYears();
+                ViewModel.Years = DdlYears();
                 ViewModel.CaseStatusList = DdlCaseStatus();
                 ViewModel.LinkedBy = DdlClient().Result;
                 var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);

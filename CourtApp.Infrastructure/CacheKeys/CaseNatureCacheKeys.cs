@@ -9,6 +9,7 @@ namespace CourtApp.Infrastructure.CacheKeys
     public class CaseNatureCacheKeys
     {
         public static string ListKey => "NatureList";
+        public static string QuerableKey => "QryCaseCategory";
 
         public static string SelectListKey => "NatureSelectList";
 

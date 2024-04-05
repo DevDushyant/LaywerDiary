@@ -8,7 +8,6 @@ using KT3Core.Areas.Global.Classes;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -35,7 +34,7 @@ namespace CourtApp.Application.Features.CaseManagment
         public int TitleTypeSecond { get; set; }
         public DateTime NextDate { get; set; }
         public string CaseStageCode { get; set; }
-        public List<AgainstCaseDecision> AgainstCaseDetails { get; set; }
+        //public List<AgainstCaseDecision> AgainstCaseDetails { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
       
@@ -82,17 +81,17 @@ namespace CourtApp.Application.Features.CaseManagment
                   //  predicate = predicate.And(y => y.Year == request.Year);
                 //if (request.CaseNumber != string.Empty)
                     //predicate = predicate.And(x => x.Number == request.CaseNumber);
-                if (request.CourtId != Guid.Empty)
-                    predicate = predicate.And(x => x.CourtType.Id==request.CourtId);
-                if (request.CourtTypeId != Guid.Empty)
-                    predicate = predicate.And(x => x.CourtType.Id == request.CourtTypeId);
+                //if (request.CourtId != Guid.Empty)
+                //    predicate = predicate.And(x => x.CourtType.Id==request.CourtId);
+                //if (request.CourtTypeId != Guid.Empty)
+                //    predicate = predicate.And(x => x.CourtType.Id == request.CourtTypeId);
 
             }
             try
             {
                 var paginatedList = await _RepoCase.Entites
-                    .Include(c => c.CourtType)
-                    .Include(c => c.Court)
+                   // .Include(c => c.CourtType)
+                    //.Include(c => c.Court)
                     .Where(predicate)
                     .Select(expression)
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);

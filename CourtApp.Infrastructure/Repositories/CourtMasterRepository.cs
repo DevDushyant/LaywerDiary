@@ -1,5 +1,7 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Domain.Entities.Common;
 using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Infrastructure.CacheKeys;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
@@ -26,9 +28,10 @@ namespace CourtApp.Infrastructure.Repositories
         public IQueryable<CourtMasterEntity> Entities => _repository.Entities
             .Include(ct => ct.CourtType).Include(st => st.State).Include(d => d.District);
 
-        public Task DeleteAsync(CourtMasterEntity objEntity)
+        public async Task DeleteAsync(CourtMasterEntity objEntity)
         {
-            throw new NotImplementedException();
+            await _repository.DeleteAsync(objEntity);
+            await _distributedCache.RemoveAsync(AppCacheKeys.CourtMasterKey);
         }
 
         public async Task<CourtMasterEntity> GetByIdAsync(Guid Id)
@@ -50,15 +53,14 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<Guid> InsertAsync(CourtMasterEntity objEntity)
         {
             await _repository.AddAsync(objEntity);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(AppCacheKeys.CourtMasterKey);
             return objEntity.Id;
         }
 
         public async Task UpdateAsync(CourtMasterEntity objEntity)
         {
             await _repository.UpdateAsync(objEntity);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtCacheKeys.GetKey(objEntity.Id));
+            await _distributedCache.RemoveAsync(AppCacheKeys.CourtMasterKey);
         }
     }
 }

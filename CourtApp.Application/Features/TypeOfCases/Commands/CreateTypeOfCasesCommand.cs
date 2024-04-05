@@ -15,8 +15,11 @@ namespace CourtApp.Application.Features.Typeofcasess.Commands
     public class CreateTypeOfCasesCommand:IRequest<Result<Guid>>
     {
         public Guid NatureId { get; set; }
+        public Guid CourtTypeId { get; set; }
+        public int StateId { get; set; }
         public string Name_En { get; set; }
-        public string Name_Hn { get; set; }        
+        public string Name_Hn { get; set; }
+        public string Abbreviation { get; set; }
     }
 
     public class CreateCaseKindCommandHandler : IRequestHandler<CreateTypeOfCasesCommand, Result<Guid>>

@@ -68,39 +68,67 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="CourtType" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Type of court"]</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a is-active-route asp-area="LawyerDiary" asp-controller="CaseNature" asp-action="index" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>@localizer["Case Nature"]</p>
+                                    <p>@localizer["Case Category"]</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a is-active-route asp-area="LawyerDiary" asp-controller="TypeOfCases" asp-action="index" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>@localizer["Type of cases"]</p>
+                                    <p>@localizer["Case Type"]</p>
                                 </a>
                             </li>
+
+                            @* <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="CaseKind" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Case Kind"]</p>
+                                </a>
+                            </li> *@
+
+                            @* <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="CaseStage" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Case Stage"]</p>
+                                </a>
+                            </li> *@
+                            
+
                             
 
                             <li class="nav-item">
-                                <a is-active-route asp-area="LawyerDiary" asp-controller="CourtType" asp-action="index" class="nav-link">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="CourtMaster" asp-action="index" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>@localizer["Type of court"]</p>
+                                    <p>@localizer["Court District"]</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="CourtMaster" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Court Complex"]</p>
                                 </a>
                             </li>
 
                             <li class="nav-item">
                                 <a is-active-route asp-area="LawyerDiary" asp-controller="CourtMaster" asp-action="index" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>@localizer["Court master"]</p>
+                                    <p>@localizer["Court"]</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a is-active-route asp-area="LawyerDiary" asp-controller="CaseKind" asp-action="index" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>@localizer["Case Kind"]</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
+
+
+
+
+                            
+
+                            @* <li class="nav-item">
                                 <a is-active-route asp-area="LawyerDiary" asp-controller="BookType" asp-action="index" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>@localizer["BookType"]</p>
@@ -127,12 +155,7 @@
                                     <p>@localizer["Subject"]</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a is-active-route asp-area="LawyerDiary" asp-controller="CaseStage" asp-action="index" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>@localizer["Case Stage"]</p>
-                                </a>
-                            </li>
+                            
                             <li class="nav-item">
                                 <a is-active-route asp-area="LawyerDiary" asp-controller="ExpenseHead" asp-action="index" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
@@ -152,7 +175,7 @@
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>@localizer["Court Fee"]</p>
                                 </a>
-                            </li>
+                            </li> *@
 
                             <li class="nav-item">
                                 <a is-active-route asp-area="LawyerDiary" asp-controller="ProceedingHead" asp-action="index" class="nav-link">

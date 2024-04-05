@@ -30,17 +30,17 @@
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label">@localizer["Type Of Cases"] (<span style="color:red">*</span>)</label>
+                        <label class="col-md-2 col-form-label">@localizer["Case Type"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-4">
                             <div class="input-group">
-                                <select name="TypeCaseId" class="form-control select2bs4" id="TypeOfCaseId" asp-for="TypeCaseId" asp-items="@Model.TypeOfCases">
+                                <select name="CaseTypeId" class="form-control select2bs4" id="CaseTypeId" asp-for="CaseTypeId" asp-items="@Model.TypeOfCases">
                                     <option></option>
                                 </select>
                             </div>
-                            <span asp-validation-for="TypeCaseId" class="text-danger"></span>
+                            <span asp-validation-for="CaseTypeId" class="text-danger"></span>
                         </div>
 
-                        <label class="col-md-2 col-form-label">@localizer["Type Of Court"] (<span style="color:red">*</span>)</label>
+                        <label class="col-md-2 col-form-label">@localizer["Court Type"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-4">
                             <div class="input-group">
                                 <select name="CourtTypeId" class="form-control select2bs4" id="CourtTypeCode" asp-for="CourtTypeId" asp-items="@Model.CourtTypes">
@@ -60,14 +60,14 @@
                             </div>
                             <span asp-validation-for="CourtId" class="text-danger"></span>
                         </div>
-                        <label class="col-md-2 col-form-label">@localizer["Case Type"] (<span style="color:red">*</span>)</label>
+                        <label class="col-md-2 col-form-label">@localizer["Case Kind"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-4">
                             <div class="input-group">
-                                <select name="CaseTypeId" class="form-control select2bs4" id="CaseTypeId" asp-for="CaseTypeId" asp-items="@Model.CaseTypes">
+                                <select name="CaseKindId" class="form-control select2bs4" id="CaseKindId" asp-for="CaseKindId" asp-items="@Model.CaseKinds">
                                     <option></option>
                                 </select>
                             </div>
-                            <span asp-validation-for="CaseTypeId" class="text-danger"></span>
+                            <span asp-validation-for="CaseKindId" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -81,11 +81,11 @@
                         </div>
                         <div class="col-md-2">
                             <div class="input-group">
-                                <select name="CaseYear" class="form-control select2bs4" id="year" asp-for="CaseYear" asp-items="@Model.Year">
+                                <select name="Year" class="form-control select2bs4" id="year" asp-for="Year" asp-items="@Model.Years">
                                     <option></option>
                                 </select>
                             </div>
-                            <span asp-validation-for="CaseYear" class="text-danger"></span>
+                            <span asp-validation-for="Year" class="text-danger"></span>
                         </div>
 
                         <label class="col-md-2 col-form-label">@localizer["Cis Number/Year"]</label>
@@ -97,7 +97,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="input-group">
-                                <select name="CisYear" class="form-control select2bs4" id="CisYear" asp-for="CisYear" asp-items="@Model.Year">
+                                <select name="CisYear" class="form-control select2bs4" id="CisYear" asp-for="CisYear" asp-items="@Model.Years">
                                     <option></option>
                                 </select>
                             </div>
@@ -126,11 +126,11 @@
                         </div>
                         <div class="col-md-2">
                             <div class="input-group">
-                                <select name="TitleTypeFirst" class="form-control select2bs4" id="FirstTitleType" asp-for="TitleTypeFirst" asp-items="@Model.FirstTitleList">
+                                <select name="FirstTitleCode" class="form-control select2bs4" id="FirstTitleCode" asp-for="FirstTitleCode" asp-items="@Model.FirstTitleList">
                                     <option></option>
                                 </select>
                             </div>
-                            <span asp-validation-for="TitleTypeFirst" class="text-danger"></span>
+                            <span asp-validation-for="FirstTitleCode" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -148,11 +148,11 @@
                         </div>
                         <div class="col-md-2">
                             <div class="input-group">
-                                <select name="TitleTypeSecond" class="form-control select2bs4" id="SecondTitleType" asp-for="TitleTypeSecond" asp-items="@Model.SecondTitleList">
+                                <select name="SecoundTitleCode" class="form-control select2bs4" id="SecoundTitleCode" asp-for="SecoundTitleCode" asp-items="@Model.SecondTitleList">
                                     <option></option>
                                 </select>
                             </div>
-                            <span asp-validation-for="TitleTypeSecond" class="text-danger"></span>
+                            <span asp-validation-for="SecoundTitleCode" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -183,7 +183,7 @@
                         <label class="col-md-2 col-form-label">@localizer["Linked With"]</label>
                         <div class="col-md-4">
                             <div class="input-group">
-                                <select name="LinkedWith" class="form-control select2bs4" id="LinkedWith" asp-for="LinkedWith" asp-items="@Model.LinkedBy">
+                                <select name="LinkedWith" class="form-control select2bs4" id="LinkedWith" asp-for="LinkedBy" asp-items="@Model.LinkedBy">
                                     <option></option>
                                 </select>
                             </div>
@@ -232,7 +232,7 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="input-group">
-                                    <select class="form-control select2bs4" id="AgainstYear_0" asp-for="AgainstCaseDetails[0].CaseYear" asp-items="@Model.Year">
+                                    <select class="form-control select2bs4" id="AgainstYear_0" asp-for="AgainstCaseDetails[0].CaseYear" asp-items="@Model.Years">
                                         <option></option>
                                     </select>
                                 </div>
@@ -244,13 +244,13 @@
                             <label class="col-md-2 col-form-label">@localizer["Cis Number/Year"]</label>
                             <div class="col-md-2">
                                 <div class="input-group">
-                                    <input type="text" placeholder="CIS Number" asp-for="AgainstCaseDetails[0].CisNumber" name="CisNumber" id="CisNumber_0" class="form-control" />
+                                    <input type="text" placeholder="CIS Number" asp-for="AgainstCaseDetails[0].CisNumber" name="CisNumber_0" id="CisNumber_0" class="form-control" />
                                 </div>
                                 <span asp-validation-for="AgainstCaseDetails[0].CisNumber" class="text-danger"></span>
                             </div>
                             <div class="col-md-2">
                                 <div class="input-group">
-                                    <select name="AgainstCisYear_0" class="form-control select2bs4" id="AgainstCisYear_0" asp-for="AgainstCaseDetails[0].CisYear" asp-items="@Model.Year">
+                                    <select name="AgainstCisYear_0" class="form-control select2bs4" id="AgainstCisYear_0" asp-for="AgainstCaseDetails[0].CisYear" asp-items="@Model.Years">
                                         <option></option>
                                     </select>
                                 </div>
@@ -260,7 +260,7 @@
                             <label class="col-md-2 col-form-label">@localizer["Cnr Number"]</label>
                             <div class="col-md-4">
                                 <div class="input-group">
-                                    <input type="text" placeholder="Cnr number" asp-for="AgainstCaseDetails[0].CnrNumber" name="CnrNumber" id="CnrNumber_0" class="form-control" />
+                                    <input type="text" placeholder="Cnr number" asp-for="AgainstCaseDetails[0].CnrNumber" name="CnrNumber_0" id="CnrNumber_0" class="form-control" />
 
                                 </div>
                                 <span asp-validation-for="AgainstCaseDetails[0].CnrNumber" class="text-danger"></span>
@@ -271,17 +271,17 @@
                             <label class="col-md-2 col-form-label">@localizer["Proceeding Officer"]</label>
                             <div class="col-md-4">
                                 <div class="input-group">
-                                    <input type="text" asp-for="AgainstCaseDetails[0].ProcOfficer" name="ProcOfficer" id="ProcOfficer"  placeholder="Proceeding officer" class="form-control">
+                                    <input type="text" asp-for="AgainstCaseDetails[0].ProcOfficer" name="ProcOfficer_0" id="ProcOfficer_0"  placeholder="Proceeding officer" class="form-control">
                                 </div>
                             </div>
-                            <label class="col-md-2 col-form-label">@localizer["Cadder"]</label>
+                            <label class="col-md-2 col-form-label">@localizer["Cadre"]</label>
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <select name="Cadder_0" class="form-control select2bs4" id="Cadder_0" asp-for="AgainstCaseDetails[0].Cadre" asp-items="@Model.Cadres">
                                         <option></option>
                                     </select>
                                 </div>
-                                <span asp-validation-for="CaseStageCode" class="text-danger"></span>
+                                <span asp-validation-for="AgainstCaseDetails[0].Cadre" class="text-danger"></span>
                             </div>
                         </div>
 

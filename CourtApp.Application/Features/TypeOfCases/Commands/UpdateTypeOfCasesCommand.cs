@@ -17,7 +17,8 @@ namespace CourtApp.Application.Features.Typeofcasess.Commands
         public Guid Id { get; set; }
         public Guid NatureId { get; set; }        
         public string Name_En { get; set; }        
-        public string Name_Hn { get; set; }        
+        public string Name_Hn { get; set; }
+        public string Abbreviation { get; set; }
     }
 
     public class UpdateTypeofcasesCommandHandler : IRequestHandler<UpdateTypeOfCasesCommand, Result<Guid>>
@@ -46,6 +47,7 @@ namespace CourtApp.Application.Features.Typeofcasess.Commands
                 Detail.Nature =nature;
                 Detail.Name_En=request.Name_En;
                 Detail.Name_Hn=request.Name_Hn;
+                Detail.Abbreviation=request.Abbreviation;
                 await repository.UpdateAsync(Detail);
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(Detail.Id);

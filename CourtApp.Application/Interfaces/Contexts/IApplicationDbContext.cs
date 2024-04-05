@@ -29,10 +29,12 @@ namespace CourtApp.Application.Interfaces.Contexts
         DbSet<LawyerMasterEntity> Laywers { get; set; }
         DbSet<ProceedingHeadEntity> ProceedingHeads { get; set; }
         DbSet<ProceedingSubHeadEntity> ProceedingSubHeads { get; set; }
-        public DbSet<WorkMasterEntity> WorkMasters { get; set; }
-        public DbSet<WorkMasterSubEntity> WorkMasterSubs { get; set; }
-        public DbSet<AgainstCaseDetails> AgainstCaseDetails { get; set; }
-
+        DbSet<WorkMasterEntity> WorkMasters { get; set; }
+        DbSet<WorkMasterSubEntity> WorkMasterSubs { get; set; }
+        DbSet<AgainstCaseDetails> AgainstCaseDetails { get; set; }
+        DbSet<CourtDistrictEntity> CDistricts { get; set; }
+        DbSet<CourtComplexEntity> CourtComplex { get; set; }
+        DbSet<CaseTitleEntity> CaseTitiles { get; set; }
 
     }
 }

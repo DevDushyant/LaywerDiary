@@ -74,7 +74,7 @@ namespace CourtApp.Infrastructure.Extensions
             services.AddTransient<ICourtTypeCacheRepository, CourtTypeCacheRepository>();
            
 
-            services.AddTransient<IUserCaseRepository, UserCaseEntryRepository>();
+            services.AddTransient<IUserCaseRepository, UserCaseRepository>();
             services.AddTransient<IProceedingHeadRepository, ProceedingHeadRepository>();
             services.AddTransient<IProceedingSubHeadRepository, ProceedingSubHeadRepository>();
             services.AddTransient<IWorkMasterRepository, WorkMasterRepository>();

@@ -11,5 +11,9 @@ namespace CourtApp.Application.Features.Typeofcasess.Query
         public Guid Id { get; set; }
         public Guid NatureId { get; set; }
         public string Name_En { get; set; }
+        public string Name_Hn { get; set; }
+        public string Abbreviation { get; set; }        
+        public Guid CourtTypeId { get; set; }
+        public int StateId { get; set; }
     }
 }
