@@ -5,10 +5,12 @@ using CourtApp.Application.Features.CaseCategory;
 using CourtApp.Application.Features.CaseKinds.Query;
 using CourtApp.Application.Features.CaseStages.Query;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
+using CourtApp.Application.Features.CourtDistrict;
 using CourtApp.Application.Features.CourtMasters.Query;
 using CourtApp.Application.Features.CourtType.Query;
 //using CourtApp.Application.Features.Queries.Cases;
 using CourtApp.Application.Features.Queries.Districts;
+using CourtApp.Application.Features.Queries.States;
 using CourtApp.Application.Features.TypeOfCases.Query;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models;
@@ -37,9 +39,24 @@ namespace CourtApp.Web.Abstractions
         protected ILogger<T> _logger => _loggerInstance ??= HttpContext.RequestServices.GetService<ILogger<T>>();
         protected IViewRenderService _viewRenderer => _viewRenderInstance ??= HttpContext.RequestServices.GetService<IViewRenderService>();
         protected IMapper _mapper => _mapperInstance ??= HttpContext.RequestServices.GetService<IMapper>();
+
+        public async Task<SelectList> LoadStates()
+        {
+            var response = await _mediator.Send(new GetStateMasterQuery());
+            var ViewModel = _mapper.Map<List<StateViewModel>>(response.Data);
+            return new SelectList(ViewModel, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
+        }
+
         public async Task<JsonResult> LoadDistricts(int StateCode)
         {
             var districts = await _mediator.Send(new GetDistrictQuery() { StateCode = StateCode });
+            var data = Json(districts);
+            return data;
+        }
+
+        public async Task<JsonResult> LoadCourtDistrict(int DistrictId)
+        {
+            var districts = await _mediator.Send(new GetCourtDistrictQuery() { DistrictId = DistrictId });
             var data = Json(districts);
             return data;
         }
@@ -87,6 +104,13 @@ namespace CourtApp.Web.Abstractions
             var districts = await _mediator.Send(new GetDistrictQuery() { StateCode = StateCode });
             var districtViewModel = _mapper.Map<List<DistrictViewModel>>(districts.Data);
             return new SelectList(districtViewModel, nameof(DistrictViewModel.Code), nameof(DistrictViewModel.Name_En), null, null);
+
+        }
+        public async Task<SelectList> DdlLoadCourtDistrict(int DistrictId)
+        {
+            var districts = await _mediator.Send(new GetCourtDistrictQuery() { DistrictId = DistrictId });
+            var districtViewModel = _mapper.Map<List<CourtDistrictViewModel>>(districts.Data);
+            return new SelectList(districtViewModel, nameof(CourtDistrictViewModel.Id), nameof(CourtDistrictViewModel.Name_En), null, null);
 
         }
 

@@ -17,7 +17,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public new Guid Id { get; set; }
         public required string Name_En { get; set; }
         public string Name_Hn { get; set; }
-        public Guid StateId { get; set; }
+        public int StateId { get; set; }
         public int DistrictId { get; set; }
         public Guid CourtDistrictId { get; set; }
         public string Abbreviation { get; set; }

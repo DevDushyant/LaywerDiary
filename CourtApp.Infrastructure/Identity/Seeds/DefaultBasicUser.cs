@@ -15,8 +15,8 @@ namespace CourtApp.Infrastructure.Identity.Seeds
             {
                 UserName = "basicuser",
                 Email = "basicuser@gmail.com",
-                FirstName = "Sophiya",
-                LastName = "Begum",
+                FirstName = "Prithvi",
+                LastName = "Singh",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
                 IsActive = true

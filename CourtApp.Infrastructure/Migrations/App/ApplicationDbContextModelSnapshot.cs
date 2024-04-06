@@ -850,7 +850,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.ToTable("client", "ld");
                 });
 
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtComplex", b =>
+            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtComplexEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -862,7 +862,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<Guid?>("CDistrictId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CourtDistrict")
+                    b.Property<Guid>("CourtDistrictId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -887,10 +887,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("Name_Hn")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("StateId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int?>("StateId1")
+                    b.Property<int>("StateId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -899,7 +896,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasIndex("DistrictId");
 
-                    b.HasIndex("StateId1");
+                    b.HasIndex("StateId");
 
                     b.ToTable("m_court_complex", "ld");
                 });
@@ -935,17 +932,14 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("Name_Hn")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("StateId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int?>("StateId1")
+                    b.Property<int>("StateId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DistrictId");
 
-                    b.HasIndex("StateId1");
+                    b.HasIndex("StateId");
 
                     b.ToTable("m_court_district", "ld");
                 });
@@ -1744,7 +1738,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Navigation("State");
                 });
 
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtComplex", b =>
+            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtComplexEntity", b =>
                 {
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtDistrictEntity", "CDistrict")
                         .WithMany()
@@ -1758,7 +1752,9 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
                         .WithMany()
-                        .HasForeignKey("StateId1");
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CDistrict");
 
@@ -1777,7 +1773,9 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
                         .WithMany()
-                        .HasForeignKey("StateId1");
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("District");
 

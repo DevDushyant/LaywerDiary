@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CourtApp.Infrastructure.Migrations.App
 {
     /// <inheritdoc />
-    public partial class A001 : Migration
+    public partial class App001 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -207,31 +207,14 @@ namespace CourtApp.Infrastructure.Migrations.App
                 });
 
             migrationBuilder.CreateTable(
-                name: "m_nature",
+                name: "m_proceeding_head",
                 schema: "ld",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name_En = table.Column<string>(type: "text", nullable: true),
                     Name_Hn = table.Column<string>(type: "text", nullable: true),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
-                    LastModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_m_nature", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "m_proceeding_head",
-                schema: "ld",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name_En = table.Column<string>(type: "text", nullable: false),
-                    Name_Hn = table.Column<string>(type: "text", nullable: true),
+                    Abbreviation = table.Column<string>(type: "text", nullable: true),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "text", nullable: true),
@@ -304,8 +287,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Work_En = table.Column<string>(type: "text", nullable: false),
+                    Work_En = table.Column<string>(type: "text", nullable: true),
                     Work_Hn = table.Column<string>(type: "text", nullable: true),
+                    Abbreviation = table.Column<string>(type: "text", nullable: true),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "text", nullable: true),
@@ -392,39 +376,16 @@ namespace CourtApp.Infrastructure.Migrations.App
                 });
 
             migrationBuilder.CreateTable(
-                name: "m_c_type",
-                schema: "ld",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name_En = table.Column<string>(type: "text", nullable: true),
-                    Name_Hn = table.Column<string>(type: "text", nullable: true),
-                    NatureId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
-                    LastModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_m_c_type", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_m_c_type_m_nature_NatureId",
-                        column: x => x.NatureId,
-                        principalSchema: "ld",
-                        principalTable: "m_nature",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "m_proceeding_sub_head",
                 schema: "ld",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     PHeadId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name_En = table.Column<string>(type: "text", nullable: false),
+                    Name_En = table.Column<string>(type: "text", nullable: true),
                     Name_Hn = table.Column<string>(type: "text", nullable: true),
+                    Abbreviation = table.Column<string>(type: "text", nullable: true),
+                    ProceedingHeadId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "text", nullable: true),
@@ -434,12 +395,11 @@ namespace CourtApp.Infrastructure.Migrations.App
                 {
                     table.PrimaryKey("PK_m_proceeding_sub_head", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_m_proceeding_sub_head_m_proceeding_head_PHeadId",
-                        column: x => x.PHeadId,
+                        name: "FK_m_proceeding_sub_head_m_proceeding_head_ProceedingHeadId",
+                        column: x => x.ProceedingHeadId,
                         principalSchema: "ld",
                         principalTable: "m_proceeding_head",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -526,14 +486,49 @@ namespace CourtApp.Infrastructure.Migrations.App
                 });
 
             migrationBuilder.CreateTable(
+                name: "m_nature",
+                schema: "ld",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name_En = table.Column<string>(type: "text", nullable: true),
+                    Name_Hn = table.Column<string>(type: "text", nullable: true),
+                    CourtTypeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    StateId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_m_nature", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_m_nature_m_court_type_CourtTypeId",
+                        column: x => x.CourtTypeId,
+                        principalSchema: "ld",
+                        principalTable: "m_court_type",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_m_nature_m_state_StateId",
+                        column: x => x.StateId,
+                        principalTable: "m_state",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "m_work_master_sub",
                 schema: "ld",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    WMasterId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name_En = table.Column<string>(type: "text", nullable: false),
+                    WorkId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name_En = table.Column<string>(type: "text", nullable: true),
                     Name_Hn = table.Column<string>(type: "text", nullable: true),
+                    Abbreviation = table.Column<string>(type: "text", nullable: true),
+                    WorkMasterId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "text", nullable: true),
@@ -543,12 +538,11 @@ namespace CourtApp.Infrastructure.Migrations.App
                 {
                     table.PrimaryKey("PK_m_work_master_sub", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_m_work_master_sub_m_work_master_WMasterId",
-                        column: x => x.WMasterId,
+                        name: "FK_m_work_master_sub_m_work_master_WorkMasterId",
+                        column: x => x.WorkMasterId,
                         principalSchema: "ld",
                         principalTable: "m_work_master",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -731,6 +725,81 @@ namespace CourtApp.Infrastructure.Migrations.App
                 });
 
             migrationBuilder.CreateTable(
+                name: "m_court_district",
+                schema: "ld",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name_En = table.Column<string>(type: "text", nullable: true),
+                    Name_Hn = table.Column<string>(type: "text", nullable: true),
+                    StateId = table.Column<int>(type: "integer", nullable: false),
+                    DistrictId = table.Column<int>(type: "integer", nullable: false),
+                    Abbreviation = table.Column<string>(type: "text", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_m_court_district", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_m_court_district_m_district_DistrictId",
+                        column: x => x.DistrictId,
+                        principalTable: "m_district",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_m_court_district_m_state_StateId",
+                        column: x => x.StateId,
+                        principalTable: "m_state",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "m_c_type",
+                schema: "ld",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name_En = table.Column<string>(type: "text", nullable: true),
+                    Name_Hn = table.Column<string>(type: "text", nullable: true),
+                    Abbreviation = table.Column<string>(type: "text", nullable: true),
+                    CaseCategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    NatureId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CourtTypeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    StateId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_m_c_type", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_m_c_type_m_court_type_CourtTypeId",
+                        column: x => x.CourtTypeId,
+                        principalSchema: "ld",
+                        principalTable: "m_court_type",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_m_c_type_m_nature_NatureId",
+                        column: x => x.NatureId,
+                        principalSchema: "ld",
+                        principalTable: "m_nature",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_m_c_type_m_state_StateId",
+                        column: x => x.StateId,
+                        principalTable: "m_state",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ad.m_repealed_rule",
                 columns: table => new
                 {
@@ -834,6 +903,47 @@ namespace CourtApp.Infrastructure.Migrations.App
                 });
 
             migrationBuilder.CreateTable(
+                name: "m_court_complex",
+                schema: "ld",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name_En = table.Column<string>(type: "text", nullable: true),
+                    Name_Hn = table.Column<string>(type: "text", nullable: true),
+                    StateId = table.Column<int>(type: "integer", nullable: false),
+                    DistrictId = table.Column<int>(type: "integer", nullable: false),
+                    CourtDistrictId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Abbreviation = table.Column<string>(type: "text", nullable: true),
+                    CDistrictId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_m_court_complex", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_m_court_complex_m_court_district_CDistrictId",
+                        column: x => x.CDistrictId,
+                        principalSchema: "ld",
+                        principalTable: "m_court_district",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_m_court_complex_m_district_DistrictId",
+                        column: x => x.DistrictId,
+                        principalTable: "m_district",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_m_court_complex_m_state_StateId",
+                        column: x => x.StateId,
+                        principalTable: "m_state",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "case_detail",
                 schema: "ld",
                 columns: table => new
@@ -903,6 +1013,32 @@ namespace CourtApp.Infrastructure.Migrations.App
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "case_titles",
+                schema: "ld",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TypeId = table.Column<int>(type: "integer", nullable: false),
+                    CaseId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_case_titles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_case_titles_case_detail_CaseId",
+                        column: x => x.CaseId,
+                        principalSchema: "ld",
+                        principalTable: "case_detail",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ad.m_repealed_rule_ActID",
                 table: "ad.m_repealed_rule",
@@ -937,6 +1073,12 @@ namespace CourtApp.Infrastructure.Migrations.App
                 schema: "ld",
                 table: "case_detail",
                 column: "TypeOfCaseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_case_titles_CaseId",
+                schema: "ld",
+                table: "case_titles",
+                column: "CaseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_client_DistrictCode",
@@ -1004,10 +1146,22 @@ namespace CourtApp.Infrastructure.Migrations.App
                 column: "PublisherId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_m_c_type_CourtTypeId",
+                schema: "ld",
+                table: "m_c_type",
+                column: "CourtTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_m_c_type_NatureId",
                 schema: "ld",
                 table: "m_c_type",
                 column: "NatureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_m_c_type_StateId",
+                schema: "ld",
+                table: "m_c_type",
+                column: "StateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_m_case_kind_CourtTypeId",
@@ -1045,6 +1199,36 @@ namespace CourtApp.Infrastructure.Migrations.App
                 column: "StateCode");
 
             migrationBuilder.CreateIndex(
+                name: "IX_m_court_complex_CDistrictId",
+                schema: "ld",
+                table: "m_court_complex",
+                column: "CDistrictId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_m_court_complex_DistrictId",
+                schema: "ld",
+                table: "m_court_complex",
+                column: "DistrictId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_m_court_complex_StateId",
+                schema: "ld",
+                table: "m_court_complex",
+                column: "StateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_m_court_district_DistrictId",
+                schema: "ld",
+                table: "m_court_district",
+                column: "DistrictId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_m_court_district_StateId",
+                schema: "ld",
+                table: "m_court_district",
+                column: "StateId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_m_court_fee_CourtFeeTypeId",
                 schema: "ld",
                 table: "m_court_fee",
@@ -1068,16 +1252,28 @@ namespace CourtApp.Infrastructure.Migrations.App
                 column: "StateCode");
 
             migrationBuilder.CreateIndex(
+                name: "IX_m_nature_CourtTypeId",
+                schema: "ld",
+                table: "m_nature",
+                column: "CourtTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_m_nature_StateId",
+                schema: "ld",
+                table: "m_nature",
+                column: "StateId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_m_part_GazetteTypeId",
                 schema: "ad",
                 table: "m_part",
                 column: "GazetteTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_m_proceeding_sub_head_PHeadId",
+                name: "IX_m_proceeding_sub_head_ProceedingHeadId",
                 schema: "ld",
                 table: "m_proceeding_sub_head",
-                column: "PHeadId");
+                column: "ProceedingHeadId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_m_state_Code",
@@ -1097,10 +1293,10 @@ namespace CourtApp.Infrastructure.Migrations.App
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_m_work_master_sub_WMasterId",
+                name: "IX_m_work_master_sub_WorkMasterId",
                 schema: "ld",
                 table: "m_work_master_sub",
-                column: "WMasterId");
+                column: "WorkMasterId");
         }
 
         /// <inheritdoc />
@@ -1113,11 +1309,11 @@ namespace CourtApp.Infrastructure.Migrations.App
                 name: "AuditLogs");
 
             migrationBuilder.DropTable(
-                name: "case_detail",
+                name: "case_detail_against",
                 schema: "ld");
 
             migrationBuilder.DropTable(
-                name: "case_detail_against",
+                name: "case_titles",
                 schema: "ld");
 
             migrationBuilder.DropTable(
@@ -1141,6 +1337,10 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             migrationBuilder.DropTable(
                 name: "m_case_stage",
+                schema: "ld");
+
+            migrationBuilder.DropTable(
+                name: "m_court_complex",
                 schema: "ld");
 
             migrationBuilder.DropTable(
@@ -1171,15 +1371,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                 schema: "ld");
 
             migrationBuilder.DropTable(
-                name: "m_c_type",
-                schema: "ld");
-
-            migrationBuilder.DropTable(
-                name: "m_case_kind",
-                schema: "ld");
-
-            migrationBuilder.DropTable(
-                name: "m_court",
+                name: "case_detail",
                 schema: "ld");
 
             migrationBuilder.DropTable(
@@ -1192,6 +1384,10 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             migrationBuilder.DropTable(
                 name: "m_publisher",
+                schema: "ld");
+
+            migrationBuilder.DropTable(
+                name: "m_court_district",
                 schema: "ld");
 
             migrationBuilder.DropTable(
@@ -1210,11 +1406,15 @@ namespace CourtApp.Infrastructure.Migrations.App
                 schema: "ld");
 
             migrationBuilder.DropTable(
-                name: "m_nature",
+                name: "m_c_type",
                 schema: "ld");
 
             migrationBuilder.DropTable(
-                name: "m_court_type",
+                name: "m_case_kind",
+                schema: "ld");
+
+            migrationBuilder.DropTable(
+                name: "m_court",
                 schema: "ld");
 
             migrationBuilder.DropTable(
@@ -1230,11 +1430,19 @@ namespace CourtApp.Infrastructure.Migrations.App
                 schema: "common");
 
             migrationBuilder.DropTable(
+                name: "m_nature",
+                schema: "ld");
+
+            migrationBuilder.DropTable(
                 name: "m_district");
 
             migrationBuilder.DropTable(
                 name: "m_gazzet_type",
                 schema: "ad");
+
+            migrationBuilder.DropTable(
+                name: "m_court_type",
+                schema: "ld");
 
             migrationBuilder.DropTable(
                 name: "m_state");

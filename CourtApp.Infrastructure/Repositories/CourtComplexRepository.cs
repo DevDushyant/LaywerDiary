@@ -34,7 +34,7 @@ namespace CourtApp.Infrastructure.Repositories
             var DetailById = _repository.Entities
                .Include(d => d.State)
                .Include(d => d.District)
-               .Include(d => d.CourtDistrict)
+               .Include(d => d.CDistrict)
                .Where(p => p.Id == Id).FirstOrDefaultAsync();
             return await DetailById;
         }
@@ -44,7 +44,7 @@ namespace CourtApp.Infrastructure.Repositories
             var DetailById = _repository.Entities
                .Include(d => d.State)
                .Include(d => d.District)
-               .Include(d => d.CourtDistrict)
+               .Include(d => d.CDistrict)
                .ToListAsync();
             return await DetailById;
         }

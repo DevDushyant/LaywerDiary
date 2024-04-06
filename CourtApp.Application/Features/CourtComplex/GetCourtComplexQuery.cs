@@ -38,7 +38,7 @@ namespace CourtApp.Application.Features.CourtComplex
                 DistrictName = e.District.Name_En,
                 Name_En = e.Name_En,
                 Name_Hn = e.Name_Hn,
-                StateName = e.State.Name_Hn,
+                StateName = e.State.Name_En,
                 CDistrictName = e.CDistrict.Name_En
             };
             var predicate = PredicateBuilder.True<CourtComplexEntity>();
@@ -48,7 +48,8 @@ namespace CourtApp.Application.Features.CourtComplex
                     predicate = predicate.And(y => y.StateId == request.StateId);
                 if (request.DistrictId != 0)
                     predicate = predicate.And(x => x.DistrictId == request.DistrictId);
-
+                if (request.CourDistrictId != Guid.Empty)
+                    predicate = predicate.And(x => x.CourtDistrictId == request.CourDistrictId);
             }
             try
             {
@@ -56,6 +57,7 @@ namespace CourtApp.Application.Features.CourtComplex
                 var paginatedList = await repository.Entities
                     .Include(c => c.State)
                     .Include(c => c.District)
+                    .Include(c => c.CDistrict)
                     .Where(predicate)
                     .Select(expression)
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);
