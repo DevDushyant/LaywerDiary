@@ -5,10 +5,10 @@ using CourtApp.Application.Features.CaseCategory;
 using CourtApp.Application.Features.CaseKinds.Query;
 using CourtApp.Application.Features.CaseStages.Query;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
+using CourtApp.Application.Features.CourtComplex;
 using CourtApp.Application.Features.CourtDistrict;
 using CourtApp.Application.Features.CourtMasters.Query;
 using CourtApp.Application.Features.CourtType.Query;
-//using CourtApp.Application.Features.Queries.Cases;
 using CourtApp.Application.Features.Queries.Districts;
 using CourtApp.Application.Features.Queries.States;
 using CourtApp.Application.Features.TypeOfCases.Query;
@@ -40,46 +40,36 @@ namespace CourtApp.Web.Abstractions
         protected IViewRenderService _viewRenderer => _viewRenderInstance ??= HttpContext.RequestServices.GetService<IViewRenderService>();
         protected IMapper _mapper => _mapperInstance ??= HttpContext.RequestServices.GetService<IMapper>();
 
+        #region Dropdown Select List
         public async Task<SelectList> LoadStates()
         {
             var response = await _mediator.Send(new GetStateMasterQuery());
             var ViewModel = _mapper.Map<List<StateViewModel>>(response.Data);
             return new SelectList(ViewModel, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
         }
-
-        public async Task<JsonResult> LoadDistricts(int StateCode)
-        {
-            var districts = await _mediator.Send(new GetDistrictQuery() { StateCode = StateCode });
-            var data = Json(districts);
-            return data;
-        }
-
-        public async Task<JsonResult> LoadCourtDistrict(int DistrictId)
-        {
-            var districts = await _mediator.Send(new GetCourtDistrictQuery() { DistrictId = DistrictId });
-            var data = Json(districts);
-            return data;
-        }
-        public async Task<JsonResult> LoadCourt(Guid CourtTypeId)
-        {
-            var response = await _mediator.Send(new GetCourtMasterAllQuery() {
-                CourtTypeId= CourtTypeId
-                
-            });
-            return Json(response);
-        }
-        public async Task<JsonResult> LoadCourtType()
+        public async Task<SelectList> LoadCourtTypes()
         {
             var response = await _mediator.Send(new GetCourtTypeQuery());
-            return Json(response);
+            var CaseKind = _mapper.Map<List<CourtTypeViewModel>>(response.Data);
+            return new SelectList(CaseKind, nameof(CourtTypeViewModel.Id), nameof(CourtTypeViewModel.CourtType), null, null);
         }
-
+        public async Task<SelectList> DdlLoadCourtDistricts(int DistrictId)
+        {
+            var districts = await _mediator.Send(new GetCourtDistrictQuery() { DistrictId = DistrictId });
+            var districtViewModel = _mapper.Map<List<CourtDistrictViewModel>>(districts.Data);
+            return new SelectList(districtViewModel, nameof(CourtDistrictViewModel.Id), nameof(CourtDistrictViewModel.Name_En), null, null);
+        }
+        public async Task<SelectList> DdlCourt()
+        {
+            var response = await _mediator.Send(new GetCourtTypeQuery());
+            var ViewModel = _mapper.Map<List<CourtTypeViewModel>>(response.Data);
+            return new SelectList(ViewModel, nameof(CourtTypeViewModel.Id), nameof(CourtTypeViewModel.CourtType), null, null);
+        }
         public async Task<SelectList> LoadCaseNature()
         {
             var response = await _mediator.Send(new GetQueryCaseCategory());
             var CaseNatures = _mapper.Map<List<CaseNatureViewModel>>(response.Data);
             return new SelectList(CaseNatures, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.Name_En), null, null);
-
         }
 
         public async Task<SelectList> LoadCaseKinds()
@@ -89,60 +79,77 @@ namespace CourtApp.Web.Abstractions
             return new SelectList(CaseKind, nameof(CaseKindViewModel.Id), nameof(CaseKindViewModel.CaseKind), null, null);
 
         }
-
-        public async Task<SelectList> LoadCourtTypes()
-        {
-            var response = await _mediator.Send(new GetCourtTypeQuery());
-            var CaseKind = _mapper.Map<List<CourtTypeViewModel>>(response.Data);
-
-            return new SelectList(CaseKind, nameof(CourtTypeViewModel.Id), nameof(CourtTypeViewModel.CourtType), null, null);
-
-        }
-
-        public async Task<SelectList> DdlLoadDistrict(int StateCode )
+        public async Task<SelectList> DdlLoadDistrict(int StateCode)
         {
             var districts = await _mediator.Send(new GetDistrictQuery() { StateCode = StateCode });
             var districtViewModel = _mapper.Map<List<DistrictViewModel>>(districts.Data);
             return new SelectList(districtViewModel, nameof(DistrictViewModel.Code), nameof(DistrictViewModel.Name_En), null, null);
-
         }
-        public async Task<SelectList> DdlLoadCourtDistrict(int DistrictId)
-        {
-            var districts = await _mediator.Send(new GetCourtDistrictQuery() { DistrictId = DistrictId });
-            var districtViewModel = _mapper.Map<List<CourtDistrictViewModel>>(districts.Data);
-            return new SelectList(districtViewModel, nameof(CourtDistrictViewModel.Id), nameof(CourtDistrictViewModel.Name_En), null, null);
-
-        }
-
         public async Task<SelectList> DdlCaseStages()
         {
             var stages = await _mediator.Send(new CaseStageCacheAllQuery());
             var caseStagesViewModel = _mapper.Map<List<CaseStageViewModel>>(stages.Data);
             return new SelectList(caseStagesViewModel, nameof(CaseStageViewModel.Id), nameof(CaseStageViewModel.CaseStage), null, null);
-
         }
         public async Task<SelectList> DdlClient()
         {
             var response = await _mediator.Send(new GetAllClientCachedQuery());
-            var viewModel = _mapper.Map<List<GClientViewModel>>(response.Data);                   
-            return new SelectList(viewModel, nameof(GClientViewModel.Id), nameof(GClientViewModel.Name), null, null);           
-        }      
+            var viewModel = _mapper.Map<List<GClientViewModel>>(response.Data);
+            return new SelectList(viewModel, nameof(GClientViewModel.Id), nameof(GClientViewModel.Name), null, null);
+        }
+        #endregion
 
+        public async Task<JsonResult> LoadDistricts(int StateCode)
+        {
+            var districts = await _mediator.Send(new GetDistrictQuery() { StateCode = StateCode });
+            var data = Json(districts);
+            return data;
+        }
+        public async Task<JsonResult> LoadCourtDistrict(int DistrictId)
+        {
+            var districts = await _mediator.Send(new GetCourtDistrictQuery() { DistrictId = DistrictId });
+            var data = Json(districts);
+            return data;
+        }
+
+        public async Task<JsonResult> LoadCourtDistrictByState(int StateId)
+        {
+            var districts = await _mediator.Send(new GetCourtDistrictQuery() { StateId = StateId });
+            var data = Json(districts);
+            return data;
+        }
+
+        public async Task<JsonResult> LoadCourt(Guid CourtTypeId)
+        {
+            var response = await _mediator.Send(new GetCourtMasterAllQuery()
+            {
+                CourtTypeId = CourtTypeId
+
+            });
+            return Json(response);
+        }
+        public async Task<JsonResult> LoadCourtType()
+        {
+            var response = await _mediator.Send(new GetCourtTypeQuery());
+            return Json(response);
+        }
+
+        public async Task<JsonResult> LoadCourtComplex(Guid CDistrictId)
+        {
+            var response = await _mediator.Send(new GetCourtComplexQuery() { CourDistrictId=CDistrictId});
+            return Json(response);
+        }
         public async Task<JsonResult> LoadTypeOfCase(Guid natureId)
         {
             var caseType = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 100) { CategoryId = natureId });
             var data = Json(caseType);
             return data;
         }
-
-
-
-
         #region Static Dropdown Region
 
         public SelectList DdlYears()
-        {   
-            return   new SelectList(StaticDropDownDictionaries.Year(), "Key", "Value");
+        {
+            return new SelectList(StaticDropDownDictionaries.Year(), "Key", "Value");
         }
         public SelectList FirstTtitleList()
         {
@@ -155,7 +162,7 @@ namespace CourtApp.Web.Abstractions
 
         public SelectList DdlCaseStatus()
         {
-            return new SelectList(StaticDropDownDictionaries.CaseStatus().OrderBy(v=>v.Value), "Key", "Value");
+            return new SelectList(StaticDropDownDictionaries.CaseStatus().OrderBy(v => v.Value), "Key", "Value");
         }
         public SelectList DdlCaseTitle()
         {

@@ -5,7 +5,7 @@ using CourtApp.Domain.Entities.LawyerDiary;
 
 namespace CourtApp.Application.Mappings
 {
-    internal class CourtComplexProfile:Profile
+    public class CourtComplexProfile:Profile
     {
         public CourtComplexProfile()
         {

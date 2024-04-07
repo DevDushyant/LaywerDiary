@@ -26,6 +26,8 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public SelectList SecondTitleList { get; set; }
         public SelectList LinkedBy { get; set; }
         public SelectList Cadres { get; set; }
+        public SelectList CourtDistricts { get; set; }
+        public SelectList ComplexBenchs { get; set; }
 
         #endregion
 
@@ -50,6 +52,9 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string CaseStageCode { get; set; }
         public Guid LinkedCaseId { get; set; }
         public Guid ClientId { get; set; }
+
+        public Guid CourtDistrictId { get; set; }
+        public Guid ComplexBenchId { get; set; }
         public List<CaseAgainstModel> AgainstCaseDetails { get; set; }
 
         #endregion   

@@ -5,11 +5,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CourtApp.Web.Abstractions;
 using CourtApp.Application.Features.ProceedingSubHead;
-using CourtApp.Application.Enums;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using CourtApp.Application.Features.CourtType.Query;
-using System.Linq;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 {
@@ -23,7 +20,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
         public async Task<IActionResult> LoadAllAsync()
         {
-            var response = await _mediator.Send(new GetProceedingSubHeadCommand());
+            var response = await _mediator.Send(new GetProceedingSubHeadQuery());
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<ProceedingSubHeadViewModel>>(response.Data);
@@ -33,7 +30,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
         public async Task<JsonResult> OnGetCreateOrEdit(Guid Id)
         {
-            var pHeadList = await _mediator.Send(new GetProceedingHeadCommand());
+            var pHeadList = await _mediator.Send(new GetProceedingHeadQuery());
             if (Id == Guid.Empty)
             {
                 var ViewModel = new ProceedingSubHeadViewModel();
@@ -43,11 +40,10 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
             else
             {
-                var response = await _mediator.Send(new GetProceedingSubHeadCommand() { Id = Id });
+                var response = await _mediator.Send(new GetProceedingSubHeadGetByIdQuery() { Id = Id });
                 if (response.Succeeded)
                 {
-                    var data = response.Data.Where(o => o.Id == Id).FirstOrDefault();
-                    var brandViewModel = _mapper.Map<ProceedingSubHeadViewModel>(data);
+                    var brandViewModel = _mapper.Map<ProceedingSubHeadViewModel>(response.Data);
                     var pHeadViewModel = _mapper.Map<List<ProceedingHeadViewModel>>(pHeadList.Data);
                     brandViewModel.PHeads = new SelectList(pHeadViewModel, nameof(ProceedingHeadViewModel.Id), nameof(ProceedingHeadViewModel.Name_En), null, null);
                     return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", brandViewModel) });
@@ -63,48 +59,50 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 if (Id == Guid.Empty)
                 {
-                    try
+                    var cmd = _mapper.Map<CreateProcSubHeadCommand>(viewModel);
+                    var result = await _mediator.Send(cmd);
+                    if (result.Succeeded)
                     {
-                        var cmd = _mapper.Map<ProceedingSubHeadCommand>(viewModel);
-                        cmd.ActionType = ((int)ActionTypes.Add);
-                        var result = await _mediator.Send(cmd);
-                        if (result.Succeeded)
-                        {
-                            Id = result.Data;
-                            _notify.Success($"Proceeding Head with ID {result.Data} Created.");
-                        }
-                        else _notify.Error(result.Message);
+                        Id = result.Data;
+                        _notify.Success($"Proceeding Head with ID {result.Data} Created.");
                     }
-                    catch(Exception ex)
-                    {
-
-                    }
+                    else _notify.Error(result.Message);
                 }
                 else
                 {
-                    var cmd = _mapper.Map<ProceedingSubHeadCommand>(viewModel);
-                    cmd.ActionType = ((int)ActionTypes.Update);
+                    var cmd = _mapper.Map<UpdateProcSubHeadCommand>(viewModel);
                     var result = await _mediator.Send(cmd);
                     if (result.Succeeded) _notify.Information($"Proceeding Head with ID {result.Data} Updated.");
                 }
-
+                var response = await _mediator.Send(new GetProceedingSubHeadQuery());
+                if (response.Succeeded)
+                {
+                    var btviewModel = _mapper.Map<List<ProceedingSubHeadViewModel>>(response.Data);
+                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", btviewModel);
+                    return new JsonResult(new { isValid = true, html = html });
+                }
+                else
+                {
+                    _notify.Error(response.Message);
+                    return null;
+                }
             }
             else
             {
                 var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", viewModel);
                 return new JsonResult(new { isValid = false, html = html });
-            }
-            return new JsonResult(new { isValid = false, html = "" });
+            }           
         }
 
         [HttpPost]
         public async Task<JsonResult> OnPostDelete(Guid id)
         {
-            var deleteCommand = await _mediator.Send(new ProceedingSubHeadCommand { Id = id, ActionType = ((int)ActionTypes.Update) });
+            var deleteCommand = await _mediator.Send(new DeleteProcSubHeadCommand { Id = id });
+
             if (deleteCommand.Succeeded)
             {
-                _notify.Information($"Proceeding Head with ID {id} Deleted.");
-                var response = await _mediator.Send(new GetProceedingSubHeadCommand());
+                _notify.Information($"Proc sub Head with ID {id} Deleted.");
+                var response = await _mediator.Send(new GetProceedingSubHeadQuery());
                 if (response.Succeeded)
                 {
                     var viewModel = _mapper.Map<List<ProceedingSubHeadViewModel>>(response.Data);

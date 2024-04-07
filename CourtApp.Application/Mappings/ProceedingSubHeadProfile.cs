@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using CourtApp.Application.DTOs.ProceedingHead;
+using CourtApp.Application.DTOs.ProcSubHead;
 using CourtApp.Application.Features.ProceedingHead;
 using CourtApp.Application.Features.ProceedingSubHead;
 using CourtApp.Domain.Entities.LawyerDiary;
@@ -14,8 +16,12 @@ namespace CourtApp.Application.Mappings
     {
         public ProceedingSubHeadProfile()
         {
-            CreateMap<ProceedingSubHeadEntity, GetProceedingSubHeadResponse>();
-            CreateMap<ProceedingSubHeadCommand, ProceedingSubHeadEntity>();
+            CreateMap<ProceedingSubHeadEntity, GetProcSubHeadResponse>();            
+            CreateMap<ProceedingSubHeadEntity, GetProceedingHeadResponse>();
+            CreateMap<CreateProcSubHeadCommand, ProceedingSubHeadEntity>();
+            CreateMap<UpdateProcSubHeadCommand, ProceedingSubHeadEntity>();
+            CreateMap<DeleteProcSubHeadCommand, ProceedingSubHeadEntity>();
+           
         }
     }
 }

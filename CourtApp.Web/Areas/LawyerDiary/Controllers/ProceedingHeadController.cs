@@ -1,5 +1,4 @@
-﻿using CourtApp.Application.Enums;
-using CourtApp.Application.Features.ProceedingHead;
+﻿using CourtApp.Application.Features.ProceedingHead;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +19,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 
         public async Task<IActionResult> LoadAllAsync()
         {
-            var response = await _mediator.Send(new GetProceedingHeadCommand());
+            var response = await _mediator.Send(new GetProceedingHeadQuery());
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<ProceedingHeadViewModel>>(response.Data);
@@ -38,7 +37,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
             else
             {
-                var response = await _mediator.Send(new GetProceedingHeadCommand() { Id = Id });
+                var response = await _mediator.Send(new GetProceedingHeadByIdQuery() { Id = Id });
                 if (response.Succeeded)
                 {
                     var brandViewModel = _mapper.Map<ProceedingHeadViewModel>(response.Data);
@@ -55,8 +54,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 if (Id == Guid.Empty)
                 {
-                    var cmd = _mapper.Map<ProceedingHeadCommand>(viewModel);
-                    cmd.ActionType = ((int)ActionTypes.Add);
+                    var cmd = _mapper.Map<CreateProceedingHeadCommand>(viewModel);                    
                     var result = await _mediator.Send(cmd);
                     if (result.Succeeded)
                     {
@@ -66,11 +64,22 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     else _notify.Error(result.Message);
                 }
                 else
-                {                   
-                    var cmd = _mapper.Map<ProceedingHeadCommand>(viewModel);
-                    cmd.ActionType = ((int)ActionTypes.Update);
+                {
+                    var cmd = _mapper.Map<UpdateProceedingHeadCommand>(viewModel);                   
                     var result = await _mediator.Send(cmd);
                     if (result.Succeeded) _notify.Information($"Proceeding Head with ID {result.Data} Updated.");
+                }
+                var response = await _mediator.Send(new GetProceedingHeadQuery());
+                if (response.Succeeded)
+                {
+                    var btviewModel = _mapper.Map<List<ProceedingHeadViewModel>>(response.Data);
+                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", btviewModel);
+                    return new JsonResult(new { isValid = true, html = html });
+                }
+                else
+                {
+                    _notify.Error(response.Message);
+                    return null;
                 }
 
             }
@@ -79,17 +88,17 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", viewModel);
                 return new JsonResult(new { isValid = false, html = html });
             }
-            return new JsonResult(new { isValid = false, html = "" });
         }
 
         [HttpPost]
         public async Task<JsonResult> OnPostDelete(Guid id)
         {
-            var deleteCommand = await _mediator.Send(new ProceedingHeadCommand { Id = id,ActionType= ((int)ActionTypes.Update) });
+            var deleteCommand = await _mediator.Send(new DeleteProceedingHeadCommand { Id = id});
+            
             if (deleteCommand.Succeeded)
             {
                 _notify.Information($"Proceeding Head with ID {id} Deleted.");
-                var response = await _mediator.Send(new GetProceedingHeadCommand());
+                var response = await _mediator.Send(new GetProceedingHeadQuery());
                 if (response.Succeeded)
                 {
                     var viewModel = _mapper.Map<List<ProceedingHeadViewModel>>(response.Data);

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
+using CourtApp.Application.DTOs.ProceedingHead;
 using CourtApp.Application.Features.ProceedingHead;
-using CourtApp.Application.Features.Publications.Command;
-using CourtApp.Application.Features.Publications.Queries;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Mappings
@@ -10,8 +9,10 @@ namespace CourtApp.Web.Areas.LawyerDiary.Mappings
     {
         public ProceedingHeadProfile()
         {  
-            CreateMap<GetProceedingHeadResponse, ProceedingHeadViewModel>().ReverseMap();
-            CreateMap<ProceedingHeadCommand, ProceedingHeadViewModel>().ReverseMap();
+            CreateMap<GetProceedingHeadResponse, ProceedingHeadViewModel>();
+            CreateMap<ProceedingHeadViewModel,CreateProceedingHeadCommand>();
+            CreateMap<ProceedingHeadViewModel,UpdateProceedingHeadCommand>();
+            
         }
     }
 }

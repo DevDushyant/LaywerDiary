@@ -1,5 +1,6 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
+using CourtApp.Application.DTOs.ProceedingHead;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
 using System;
@@ -9,20 +10,20 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.ProceedingHead
 {
-    public class GetProceedingHeadCommand : IRequest<Result<List<GetProceedingHeadResponse>>>
+    public class GetProceedingHeadQuery : IRequest<Result<List<GetProceedingHeadResponse>>>
     {
-        public Guid Id { get; set; }
+        
     }
-    public class GetProceedingHeadCommandHandler : IRequestHandler<GetProceedingHeadCommand, Result<List<GetProceedingHeadResponse>>>
+    public class GetProceedingHeadQueryHandler : IRequestHandler<GetProceedingHeadQuery, Result<List<GetProceedingHeadResponse>>>
     {
         private readonly IProceedingHeadRepository repository;
         private readonly IMapper mapper;
-        public GetProceedingHeadCommandHandler(IProceedingHeadRepository repository, IMapper mapper)
+        public GetProceedingHeadQueryHandler(IProceedingHeadRepository repository, IMapper mapper)
         {
             this.repository = repository;
             this.mapper = mapper;
         }
-        public async Task<Result<List<GetProceedingHeadResponse>>> Handle(GetProceedingHeadCommand request, CancellationToken cancellationToken)
+        public async Task<Result<List<GetProceedingHeadResponse>>> Handle(GetProceedingHeadQuery request, CancellationToken cancellationToken)
         {
             var Heads = await repository.GetListAsync();
             var HeadsDt = mapper.Map<List<GetProceedingHeadResponse>>(Heads);

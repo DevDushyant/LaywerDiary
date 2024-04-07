@@ -58,6 +58,28 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
 
         }
+        public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                var ViewModel = new CourtMasterViewModel();
+                ViewModel.CourtTypes = await LoadCourtTypes();
+                ViewModel.States = await LoadStates();                
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
+            }
+            else
+            {
+                var response = await _mediator.Send(new GetCourtMasterDataByIdQuery() { Id = id });
+                if (response.Succeeded)
+                {
+                    var ViewModel = _mapper.Map<CourtDistrictViewModel>(response.Data);
+                    ViewModel.States = await LoadStates();
+                    ViewModel.Districts = await DdlLoadDistrict(ViewModel.DistrictId);
+                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
+                }
+                return null;
+            }
+        }
 
         public async Task<IActionResult> CreateOrUpdate(Guid id)
         {

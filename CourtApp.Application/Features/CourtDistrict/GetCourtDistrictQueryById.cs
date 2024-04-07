@@ -1,7 +1,6 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
 using CourtApp.Application.DTOs.CourtDistrict;
-using CourtApp.Application.Features.BookMasters.Query;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
 using System;

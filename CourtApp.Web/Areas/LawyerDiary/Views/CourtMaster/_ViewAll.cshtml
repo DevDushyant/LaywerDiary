@@ -6,7 +6,7 @@
             <th>State</th>
             <th>District</th>
             <th>Court Name</th>
-            <th>Court Bench</th>
+            @* <th>Court Bench</th> *@
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded
          || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
             {
@@ -31,9 +31,9 @@
             <td>
                 @bt.CourtName
             </td>
-            <td>
+            @* <td>
                 @bt.Bench
-            </td>
+            </td> *@
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
             {
                 <td text-right">
