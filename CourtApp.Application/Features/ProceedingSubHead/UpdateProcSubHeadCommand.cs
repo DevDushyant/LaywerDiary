@@ -35,7 +35,7 @@ namespace CourtApp.Application.Features.ProceedingSubHead
             {
                 detailById.Name_En = request.Name_En;
                 detailById.Name_Hn = request.Name_Hn;
-                detailById.PHeadId = request.PHeadId;
+                detailById.HeadId = request.PHeadId;
                 await _Repository.UpdateAsync(detailById);
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(detailById.Id);

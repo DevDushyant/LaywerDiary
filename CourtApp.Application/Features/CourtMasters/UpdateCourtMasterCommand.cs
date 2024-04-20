@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.Results;
+using CourtApp.Application.DTOs.CourtMaster;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
 using System;
@@ -21,6 +22,7 @@ namespace CourtApp.Application.Features.CourtMasters.Command
         public string Address { get; set; }
         public int DistrictCode { get; set; }
         public int StateCode { get; set; }
+        public List<CourtBenchResponse> CBAddress { get; set; }
     }
 
     public class UpdateCourtMasterCommandHandler : IRequestHandler<UpdateCourtMasterCommand, Result<Guid>>
@@ -40,10 +42,7 @@ namespace CourtApp.Application.Features.CourtMasters.Command
             else
             {
                 detail.CourtType.Id = request.CourtTypeId;
-                detail.Name_En = request.CourtName;
-                detail.Address = request.Address;
-                detail.HeadQuerter = request.HeadQuerter;
-                detail.Bench = request.Bench;
+                detail.Name_En = request.CourtName;               
                 detail.District.Code = request.DistrictCode;
                 detail.State.Code = request.StateCode;
                 detail.LastModifiedOn = DateTime.Now;

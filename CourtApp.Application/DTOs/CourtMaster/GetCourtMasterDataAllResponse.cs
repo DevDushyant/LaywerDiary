@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CourtApp.Application.Features.CourtMasters.Query
+namespace CourtApp.Application.DTOs.CourtMaster
 {
     public class GetCourtMasterDataAllResponse
     {

@@ -61,10 +61,10 @@ namespace CourtApp.Application.Features.CaseManagment
         }
         public async Task<PaginatedResult<GetCaseManagmentResponse>> Handle(GetCaseManagmentDetail request, CancellationToken cancellationToken)
         {
-            Expression<Func<CaseEntity, GetCaseManagmentResponse>> expression = e => new GetCaseManagmentResponse
+            Expression<Func<CaseDetailEntity, GetCaseManagmentResponse>> expression = e => new GetCaseManagmentResponse
             {
                 Id = e.Id,
-                Number = String.Concat(e.Number," ",e.Year),
+                Number = String.Concat(e.CaseNo, " ", e.CaseYear),
                 //kin=e.CaseType.CaseKind,
                 //CourtName=e.Court.Name_En,
                 FirstTitle=e.FirstTitle,
@@ -74,7 +74,7 @@ namespace CourtApp.Application.Features.CaseManagment
                // CaseStage = e.,                
             };
 
-            var predicate = PredicateBuilder.True<CaseEntity>();
+            var predicate = PredicateBuilder.True<CaseDetailEntity>();
             if (predicate != null)
             {
                 //if (request.Year != 0)

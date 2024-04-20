@@ -13,15 +13,15 @@ namespace CourtApp.Infrastructure.Repositories
 {
     public class CaseManagmentRepository: ICaseManagmentRepository
     {
-        private readonly IRepositoryAsync<CaseEntity> _repository;
+        private readonly IRepositoryAsync<CaseDetailEntity> _repository;
         private readonly IDistributedCache _distributedCache;
-        public CaseManagmentRepository(IRepositoryAsync<CaseEntity> _repository, IDistributedCache _distributedCache)
+        public CaseManagmentRepository(IRepositoryAsync<CaseDetailEntity> _repository, IDistributedCache _distributedCache)
         {
             this._repository = _repository;
             this._distributedCache = _distributedCache;
         }
-        public IQueryable<CaseEntity> Entities => _repository.Entities;
-        public async Task<List<CaseEntity>> GetListAsync()
+        public IQueryable<CaseDetailEntity> Entities => _repository.Entities;
+        public async Task<List<CaseDetailEntity>> GetListAsync()
         {
             try { var data = _repository.Entities.ToListAsync(); return await data; }
            catch (Exception ex)
@@ -29,13 +29,13 @@ namespace CourtApp.Infrastructure.Repositories
 
 
         }
-        public async Task<CaseEntity> GetByIdAsync(Guid Id)
+        public async Task<CaseDetailEntity> GetByIdAsync(Guid Id)
         {
             var DetailDt = await _repository.Entities
                 .Where(c => c.Id == Id).FirstOrDefaultAsync();
             return DetailDt;
         }
-        public async Task<Guid> InsertAsync(CaseEntity workMasterEntity)
+        public async Task<Guid> InsertAsync(CaseDetailEntity workMasterEntity)
         {
             //foreach (var item in workMasterEntity.AgainstCaseDetails)
             //{
@@ -45,11 +45,11 @@ namespace CourtApp.Infrastructure.Repositories
             return workMasterEntity.Id;
         }
 
-        public async Task UpdateAsync(CaseEntity workMasterEntity)
+        public async Task UpdateAsync(CaseDetailEntity workMasterEntity)
         {
             await _repository.UpdateAsync(workMasterEntity);
         }
-        public async Task DeleteAsync(CaseEntity workMasterEntity)
+        public async Task DeleteAsync(CaseDetailEntity workMasterEntity)
         {
             await _repository.DeleteAsync(workMasterEntity);
         }

@@ -9,11 +9,11 @@ namespace CourtApp.Application.Interfaces.Repositories
 {
     public interface ICaseManagmentRepository
     {
-        IQueryable<CaseEntity> Entities { get; }
-        Task<List<CaseEntity>> GetListAsync();
-        Task<CaseEntity> GetByIdAsync(Guid Id);
-        Task<Guid> InsertAsync(CaseEntity workMasterEntity);
-        Task UpdateAsync(CaseEntity workMasterEntity);
-        Task DeleteAsync(CaseEntity workMasterEntity);
+        IQueryable<CaseDetailEntity> Entities { get; }
+        Task<List<CaseDetailEntity>> GetListAsync();
+        Task<CaseDetailEntity> GetByIdAsync(Guid Id);
+        Task<Guid> InsertAsync(CaseDetailEntity workMasterEntity);
+        Task UpdateAsync(CaseDetailEntity workMasterEntity);
+        Task DeleteAsync(CaseDetailEntity workMasterEntity);
     }
 }

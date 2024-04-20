@@ -6,11 +6,11 @@
                 <label class="col-md-3 col-form-label">@localizer["Head"]</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                        <select name="PHeadId" class="form-control select2bs4" id="PHeadId" asp-for="PHeadId" asp-items="@Model.PHeads">
+                        <select name="PHeadId" class="form-control select2bs4" id="HeadId" asp-for="HeadId" asp-items="@Model.PHeads">
                             <option></option>
                         </select>
                     </div>
-                    <span asp-validation-for="PHeadId" class="text-danger"></span>
+                    <span asp-validation-for="HeadId" class="text-danger"></span>
                 </div>
             </div>
 

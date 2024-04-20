@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using CourtApp.Application.DTOs.CourtMaster;
 using CourtApp.Application.Features.CourtMasters.Command;
-using CourtApp.Application.Features.CourtMasters.Query;
 using CourtApp.Domain.Entities.LawyerDiary;
 using System;
 using System.Collections.Generic;
@@ -29,6 +29,7 @@ namespace CourtApp.Application.Mappings
                 .ForPath(d => d.CourtName, opt => opt.MapFrom(src => src.Name_En));
 
             CreateMap<GetCourtMasterDataAllResponse, CourtMasterEntity>().ReverseMap();
+            CreateMap<CourtBenchResponse, CourtBenchEntity>();
             
         }
     }

@@ -12,6 +12,6 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public required string Name_En { get; set; }
         public string Name_Hn { get; set; }
         public string Abbreviation { get; set; }
-        public virtual WorkMasterEntity WorkMaster { get; set; }
+        public virtual WorkMasterEntity Work { get; set; }
     }
 }

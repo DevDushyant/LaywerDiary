@@ -1,6 +1,5 @@
 ﻿using AspNetCoreHero.Results;
-using CourtApp.Application.Constants;
-using CourtApp.Application.Extensions;
+using CourtApp.Application.DTOs.CourtMaster;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using KT3Core.Areas.Global.Classes;
@@ -9,11 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CourtApp.Application.Features.CourtMasters.Query
+namespace CourtApp.Application.Features.CourtMasters
 {
     public class GetCourtMasterAllQuery : IRequest<Result<List<GetCourtMasterDataAllResponse>>>
     {
@@ -33,22 +31,19 @@ namespace CourtApp.Application.Features.CourtMasters.Query
         }
         public Task<Result<List<GetCourtMasterDataAllResponse>>> Handle(GetCourtMasterAllQuery request, CancellationToken cancellationToken)
         {
-
             Expression<Func<CourtMasterEntity, GetCourtMasterDataAllResponse>> expression = e => new GetCourtMasterDataAllResponse
             {
                 CourtType = e.CourtType.CourtType,
                 CourtName = e.Name_En,
                 Id = e.Id,
-                Bench = e.Bench,
-                CourtFullName = e.Name_En + "(" + e.Bench + ")",
+                CourtFullName = e.Name_En,
                 State = e.State.Name_En,
-                District = e.District.Name_En,
-                Address=e.Address
+                District = e.District.Name_En
             };
             var predicate = PredicateBuilder.True<CourtMasterEntity>();
             if (request.CourtTypeId != Guid.Empty)
                 predicate = predicate.And(b => b.CourtType.Id == request.CourtTypeId);
-            
+
 
             var dtlist = _repository.Entities.Where(predicate)
                .Select(expression)

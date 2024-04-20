@@ -6,12 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using CourtApp.Application.Interfaces.Repositories;
 using System;
+using CourtApp.Application.DTOs.CourtMaster;
 
-namespace CourtApp.Application.Features.CourtMasters.Query
+namespace CourtApp.Application.Features.CourtMasters
 {
     public class GetCourtMasterDataByIdQuery : IRequest<Result<GetCourtMasterDataByIdResponse>>
     {
-        public Guid Id { get; set; }        
+        public Guid Id { get; set; }
     }
 
     public class GetCourtMasterDataByIdQueryHandler : IRequestHandler<GetCourtMasterDataByIdQuery, Result<GetCourtMasterDataByIdResponse>>

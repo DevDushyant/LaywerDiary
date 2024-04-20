@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CourtApp.Application.DTOs.WorkSub;
 using CourtApp.Application.Features.ProceedingHead;
 using CourtApp.Application.Features.WorkMasterSub;
 using CourtApp.Domain.Entities.LawyerDiary;
@@ -14,8 +15,9 @@ namespace CourtApp.Application.Mappings
     {
         public WorkMasterSubProfile()
         {
-            CreateMap<WorkMasterSubEntity, GetWorkMasterSubResponse>();
-            CreateMap<WorkMasterSubCommand, WorkMasterSubEntity>();
+            CreateMap<WorkMasterSubEntity, WorkSubMasterResponse>();
+            CreateMap<WorkMasterSubEntity, WorkSubMasterByIdResponse>();
+            CreateMap<CreateWorkSubMstCommand, WorkMasterSubEntity>();
         }
     }
 }

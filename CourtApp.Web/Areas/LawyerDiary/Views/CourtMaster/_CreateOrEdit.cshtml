@@ -69,8 +69,7 @@
                 <label class="col-md-3 col-form-label">@localizer["Court District"]</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                        <select name="CourtDistrictId" class="form-control select2bs4" id="CourtDistrictId" asp-for="CourtDistrictId"
-                                asp-items="@Model.CourtDistricts">
+                        <select name="CourtDistrictId" class="form-control select2bs4" id="CourtDistrictId" asp-for="CourtDistrictId">
                         </select>
                     </div>
                     <span asp-validation-for="CourtDistrictId" class="text-danger"></span>
@@ -82,7 +81,7 @@
                 <div class="col-md-9">
                     <div class="input-group">
                         <select name="CourtComplexId" class="form-control select2bs4" id="CourtComplexId" asp-for="CourtComplexId"
-                                asp-items="@Model.CourtDistricts">
+                               >
                         </select>
                     </div>
                     <span asp-validation-for="CourtComplexId" class="text-danger"></span>
@@ -111,8 +110,8 @@
                         </thead>
                         <tbody class="data-repeater">
                             <tr class="kolom">
-                                <td><input type="text" asp-for="CBAddress[0].Court_Bench_Name" width="300px" placeholder="Enter court/Bench name" class="form-control" /></td>
-                                <td><input type="text" asp-for="CBAddress[0].Court_Bench_Address" width="300px" placeholder="Enter court/Bench adress" class="form-control" /></td>
+                                <td><input type="text" asp-for="CourtBenches[0].CourtBench_En" width="300px" placeholder="Enter court/Bench name" class="form-control" /></td>
+                                <td><input type="text" asp-for="CourtBenches[0].Address" width="300px" placeholder="Enter court/Bench adress" class="form-control" /></td>
                                 <td class="btn-repeater">
                                     <button class="add-btn-repeat btn btn-success" onclick="addElement($(this))" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button>
                                 </td>
@@ -130,117 +129,10 @@
 
     <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
         <button type="submit" class="btn btn-success">Save</button>
-        <button type="submit" class="btn btn-default close-button" onclick="goPrev()">Cancel</button>
+        <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
     </div>
 </form>
 <script type="text/javascript" language=javascript>
-    $.validator.unobtrusive.parse(document);
-    $("#CourtTypeId").select2({
-        placeholder: "Select a court type",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-    $("#StateCode").select2({
-        placeholder: "Select a state",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-    $("#DistrictCode").select2({
-        placeholder: "Select a district",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-    $("#CourtDistrictId").select2({
-        placeholder: "Select a district court",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-    $("#CourtComplexId").select2({
-        placeholder: "Select a complex",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-
-    $("#CourtTypeId").on("change", function () {
-        if ($("#CourtTypeId").val() === "359acb34-7b8c-4fc8-a276-8b198ea5105c") {
-            $('#c_district').addClass('div_hide');
-            $('#d_court_Complex').addClass('div_hide');
-            $('#d_high_court_name').removeClass('div_hide');
-        }
-        else {
-            $('#c_district').addClass('div_hide');
-            $('#d_court_Complex').addClass('div_hide');
-            $('#c_district').removeClass('div_hide');
-            $('#d_court_Complex').removeClass('div_hide');
-            $('#d_high_court_name').addClass('div_hide');
-        }
-
-        $.getJSON("/LawyerDiary/CourtMaster/LoadDistricts?StateCode=" + $("#StateCode").val(), function (data) {
-            $("#DistrictCode").empty();
-            $.each(data.Data, function (i, item) {
-                $("#DistrictCode").append(`<option /><option value="${item.Code}">${item.Name_En}</option>`);
-            });
-        });
-    });
-    $("#DistrictCode").on("change", function () {
-        $.getJSON("/LawyerDiary/CourtMaster/LoadCourtDistrict?DistrictId=" + $("#DistrictCode").val(), function (data) {
-            $("#CourtDistrictId").empty();
-            $.each(data.Data, function (i, item) {
-                $("#CourtDistrictId").append(`<option /><option value="${item.Code}">${item.Name_En}</option>`);
-            });
-        });
-    });
-
-    $("#CourtDistrictId").on("change", function () {
-        $.getJSON("/LawyerDiary/CourtMaster/LoadCourtComplex?CDistrictId=" + $("#CourtDistrictId").val(), function (data) {
-            $("#CourtComplexId").empty();
-            $.each(data.Data, function (i, item) {
-                $("#CourtComplexId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
-            });
-        });
-    });
-
-    var btn_delete = '<button type="button" onclick="removeKolom($(this))" class="btn btn-warning"><i class="fa fa-trash" aria-hidden="true"></i></button>';
-    var btn_add = '<button class="add-btn-repeat btn btn-success" onclick="addElement($(this))" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button>';
-
-    function removeKolom(e) {
-        e.parents('.kolom').remove();
-    }
-
-    function addElement(e) {
-        var trlength = $('#tblCourtBench tbody tr').length;
-        var clonedRow = $('#tblCourtBench tbody tr:last').clone();        
-        //clonedRow.find('input').attr('name', "CBAddress[" + trlength + "].Court_Bench_Name").attr('id', NameId)
-        //clonedRow.find('input').attr('name', "CBAddress[" + trlength + "].Court_Bench_Address").attr('id', AddressId);
-        clonedRow.find('input').each(function (i) {
-            var BName = "", BenchId;
-            if (i === 0) {
-                NameAtr = "CBAddress[" + trlength + "].Court_Bench_Name";
-                IdAtr = "CBAddress_" + trlength + "__Court_Bench_Name";
-            }
-            if (i === 1) {
-                NameAtr = "CBAddress[" + trlength + "].Court_Bench_Address";
-                IdAtr = "CBAddress_" + trlength + "__Court_Bench_Address";
-            }
-            $(this).attr('name', NameAtr).attr('id', IdAtr);
-        });
-        clonedRow.find('button').find('button').replaceWith(btn_add);
-        clonedRow.find('button.add-btn-repeat').replaceWith(btn_delete);
-        clonedRow.find("input").val("");
-        $('#tblCourtBench tbody').append(clonedRow);
-        // var newElement = $(".kolom").last().clone();
-        //$(".kolom").find('button.add-btn-repeat').replaceWith(btn_delete);
-        //newElement.appendTo(".data-repeater").find('button').replaceWith(btn_add);
-    }
-
+    $.validator.unobtrusive.parse(document);    
 </script>
+<script src="~/js/lawyer/courtmaster.js"></script>

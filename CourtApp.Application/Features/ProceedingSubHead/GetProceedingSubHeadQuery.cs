@@ -37,20 +37,20 @@ namespace CourtApp.Application.Features.ProceedingSubHead
                 Id = e.Id,               
                 Name_En = e.Name_En,
                 Name_Hn = e.Name_Hn,
-                Head=e.ProceedingHead.Name_Hn
+                Head=e.Head.Name_Hn
                 
             };
             var predicate = PredicateBuilder.True<ProceedingSubHeadEntity>();
             if (predicate != null)
             {
                 if (request.HeadId != Guid.Empty)
-                    predicate = predicate.And(y => y.PHeadId == request.HeadId);               
+                    predicate = predicate.And(y => y.HeadId == request.HeadId);               
             }
             try
             {
 
                 var paginatedList = await repository.Entities
-                    .Include(c => c.ProceedingHead)                   
+                    .Include(c => c.Head)                   
                     .Where(predicate)
                     .Select(expression)
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);

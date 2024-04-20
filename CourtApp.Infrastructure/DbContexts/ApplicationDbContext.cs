@@ -51,8 +51,8 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<CourtFeeStructureEntity> CourtFeeStructures { get; set; }
         public DbSet<ClientEntity> Clients { get; set; }
         public DbSet<CourtTypeEntity> CourtType { get; set; }
-        public DbSet<CaseEntity> Cases { get; set; }
-        public DbSet<AgainstCaseDetails> AgainstCaseDetails { get; set; }
+        public DbSet<CaseDetailEntity> Cases { get; set; }
+        public DbSet<CaseDetailAgainstEntity> AgainstCaseDetails { get; set; }
         public DbSet<LawyerMasterEntity> Laywers { get; set; }
         public DbSet<ProceedingHeadEntity> ProceedingHeads { get ; set ; }
         public DbSet<ProceedingSubHeadEntity> ProceedingSubHeads { get; set; }
@@ -61,6 +61,8 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<CourtDistrictEntity> CDistricts { get; set; }
         public DbSet<CourtComplexEntity> CourtComplex { get; set; }
         public DbSet<CaseTitleEntity> CaseTitiles { get; set; }
+        public DbSet<CourtBenchEntity> CourtBenchEntities { get ; set ; }
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             foreach (var entry in ChangeTracker.Entries<AuditableEntity>().ToList())
@@ -101,7 +103,8 @@ namespace CourtApp.Infrastructure.DbContexts
             }
 
             base.OnModelCreating(builder);
-
+            builder.Entity<CourtMasterEntity>().Property(p => p.CourtComplexId).IsRequired(false);
+            builder.Entity<CourtMasterEntity>().Property(p => p.CourtDistrictId).IsRequired(false);
             //builder.Entity<CourtMasterEntity>().Property(p => p.UId).HasDefaultValueSql("uuid_generate_v4()");
             //builder.Entity<ClientEntity>().Property(p => p.UId).HasDefaultValueSql("uuid_generate_v4()");
             //builder.Entity<CaseEntity>().Property(p => p.Id).HasDefaultValueSql("uuid_generate_v4()");
@@ -111,7 +114,7 @@ namespace CourtApp.Infrastructure.DbContexts
 
             #region Filter Data by Logged In User
             builder.Entity<ClientEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
-            builder.Entity<CaseEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
+            builder.Entity<CaseDetailEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
             builder.Entity<LawyerMasterEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
             #endregion
         }

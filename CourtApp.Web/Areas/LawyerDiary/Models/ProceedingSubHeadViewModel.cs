@@ -10,7 +10,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
         public string Head { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
-        public Guid PHeadId { get; set; }
+        public Guid HeadId { get; set; }
         public string PheadName { get; set; }
         public SelectList PHeads { get; set; }      
         

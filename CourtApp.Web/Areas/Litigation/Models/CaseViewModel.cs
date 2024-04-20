@@ -28,6 +28,8 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public SelectList Cadres { get; set; }
         public SelectList CourtDistricts { get; set; }
         public SelectList ComplexBenchs { get; set; }
+        public SelectList States { get; set; }
+        public SelectList Strengths { get; set; }
 
         #endregion
 
@@ -53,9 +55,11 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public Guid LinkedCaseId { get; set; }
         public Guid ClientId { get; set; }
 
-        public Guid CourtDistrictId { get; set; }
-        public Guid ComplexBenchId { get; set; }
+        public Guid? CourtDistrictId { get; set; }
+        public Guid? ComplexBenchId { get; set; }
         public List<CaseAgainstModel> AgainstCaseDetails { get; set; }
+        public int? StateId { get; set; }
+        public int? StrengthId { get; set; }
 
         #endregion   
     }    

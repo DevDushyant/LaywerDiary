@@ -1,5 +1,5 @@
-﻿using CourtApp.Application.Features.CourtMasters.Command;
-using CourtApp.Application.Features.CourtMasters.Query;
+﻿using CourtApp.Application.Features.CourtMasters;
+using CourtApp.Application.Features.CourtMasters.Command;
 using CourtApp.Application.Features.CourtType.Query;
 using CourtApp.Application.Features.Queries.Districts;
 using CourtApp.Application.Features.Queries.States;
@@ -72,9 +72,8 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 var response = await _mediator.Send(new GetCourtMasterDataByIdQuery() { Id = id });
                 if (response.Succeeded)
                 {
-                    var ViewModel = _mapper.Map<CourtDistrictViewModel>(response.Data);
-                    ViewModel.States = await LoadStates();
-                    ViewModel.Districts = await DdlLoadDistrict(ViewModel.DistrictId);
+                    var ViewModel = _mapper.Map<CourtMasterViewModel>(response.Data);
+                    await BindDropdownAsync(ViewModel);
                     return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
                 }
                 return null;
@@ -110,11 +109,18 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 if (id == Guid.Empty)
                 {
-                    var createBookTypeCommand = _mapper.Map<CreateCourtMasterCommand>(btViewModel);
-                    var result = await _mediator.Send(createBookTypeCommand);
-                    if (result.Succeeded)
-                        _notify.Success($"Case type with ID {result.Data} Created.");
-                    else _notify.Error(result.Message);
+                    try
+                    {
+                        var createBookTypeCommand = _mapper.Map<CreateCourtMasterCommand>(btViewModel);
+                        var result = await _mediator.Send(createBookTypeCommand);
+                        if (result.Succeeded)
+                            _notify.Success($"Case type with ID {result.Data} Created.");
+                        else _notify.Error(result.Message);
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    };
                 }
                 else
                 {
@@ -142,31 +148,31 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
         }
 
-        //[HttpPost]
-        //public async Task<JsonResult> OnPostDelete(Guid id)
-        //{
-        //    var deleteCommand = await _mediator.Send(new DeleteCourtMasterCommand { UniqueId = id });
-        //    if (deleteCommand.Succeeded)
-        //    {
-        //        _notify.Information($"Case Nature with Id {id} Deleted.");
-        //        var response = await _mediator.Send(new GetCourtMasterAllQuery());
-        //        if (response.Succeeded)
-        //        {
-        //            var viewModel = _mapper.Map<List<CourtMasterViewModel>>(response.Data);
-        //            var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-        //            return new JsonResult(new { isValid = true, html = html });
-        //        }
-        //        else
-        //        {
-        //            _notify.Error(response.Message);
-        //            return null;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        _notify.Error(deleteCommand.Message);
-        //        return null;
-        //    }
-        //}
+        [HttpPost]
+        public async Task<JsonResult> OnPostDelete(Guid id)
+        {
+            var deleteCommand = await _mediator.Send(new DeleteCourtMasterCommand { Id = id });
+            if (deleteCommand.Succeeded)
+            {
+                _notify.Information($"Case Nature with Id {id} Deleted.");
+                var response = await _mediator.Send(new GetCourtMasterAllQuery());
+                if (response.Succeeded)
+                {
+                    var viewModel = _mapper.Map<List<CourtMasterViewModel>>(response.Data);
+                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+                    return new JsonResult(new { isValid = true, html = html });
+                }
+                else
+                {
+                    _notify.Error(response.Message);
+                    return null;
+                }
+            }
+            else
+            {
+                _notify.Error(deleteCommand.Message);
+                return null;
+            }
+        }
     }
 }

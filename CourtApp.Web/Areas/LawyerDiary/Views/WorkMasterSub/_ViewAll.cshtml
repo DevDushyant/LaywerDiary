@@ -2,7 +2,7 @@
 <table id="tblWorkMasterSub" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th>WorkMaster</th>
+            <th>Work</th>
             <th>Name(En)</th>
             <th>Name(Hn)</th>
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded
@@ -18,7 +18,7 @@
         {
             <tr>
                 <td>
-                    @bt.WorkMaster.Work_En
+                    @bt.WorkName
                 </td>
                 <td>
                     @bt.Name_En

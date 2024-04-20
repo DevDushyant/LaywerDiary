@@ -52,7 +52,7 @@ namespace CourtApp.Application.Features.TypeOfCases.Query
             var predicate = PredicateBuilder.True<TypeOfCasesEntity>();
 
             if (request.CategoryId != Guid.Empty)
-                predicate = predicate.And(b => b.CaseCategoryId==request.CategoryId);
+                predicate = predicate.And(b => b.Nature.Id==request.CategoryId);
 
             if (request.StateId != 0)
                 predicate = predicate.And(b => b.StateId == request.StateId);

@@ -19,10 +19,10 @@ namespace CourtApp.Infrastructure.Repositories
             this._repository = _repository;
             this._distributedCache = _distributedCache;
         }
-        public IQueryable<WorkMasterSubEntity> Entities => _repository.Entities.Include(o => o.WorkMaster);
+        public IQueryable<WorkMasterSubEntity> Entities => _repository.Entities.Include(o => o.Work);
         public async Task<List<WorkMasterSubEntity>> GetListAsync()
         {
-            try { var data = _repository.Entities.Include(o => o.WorkMaster).ToListAsync(); return await data; }
+            try { var data = _repository.Entities.Include(o => o.Work).ToListAsync(); return await data; }
            catch (Exception ex)
             { return null; }           
 

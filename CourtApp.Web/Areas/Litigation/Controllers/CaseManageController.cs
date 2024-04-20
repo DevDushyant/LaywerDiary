@@ -40,9 +40,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {                
                 var caseViewModel = new CaseViewModel();
                 caseViewModel.InstitutionDate = DateTime.Now;
+                caseViewModel.CourtTypes = await LoadCourtTypes();
+                caseViewModel.CourtDistricts = await DdlLoadCourtDistricts(1);
+                
                 caseViewModel.CaseNatures = await LoadCaseNature();
                 caseViewModel.CaseKinds = await LoadCaseKinds();
-                caseViewModel.CourtTypes = await LoadCourtTypes();
+                
                 caseViewModel.CaseStages = await DdlCaseStages();
                 caseViewModel.FirstTitleList = FirstTtitleList();
                 caseViewModel.SecondTitleList = SecondTtitleList();
@@ -50,6 +53,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 caseViewModel.CaseStatusList = DdlCaseStatus();
                 caseViewModel.LinkedBy =DdlClient().Result;
                 caseViewModel.Cadres =DdlCadres();            
+                caseViewModel.Strengths =DdlStrength();            
+                caseViewModel.States =await LoadStates();            
                 return View("_CreateOrEdit", caseViewModel);
             }
             else

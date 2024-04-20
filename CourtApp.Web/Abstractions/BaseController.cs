@@ -7,7 +7,7 @@ using CourtApp.Application.Features.CaseStages.Query;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.CourtComplex;
 using CourtApp.Application.Features.CourtDistrict;
-using CourtApp.Application.Features.CourtMasters.Query;
+using CourtApp.Application.Features.CourtMasters;
 using CourtApp.Application.Features.CourtType.Query;
 using CourtApp.Application.Features.Queries.Districts;
 using CourtApp.Application.Features.Queries.States;
@@ -59,6 +59,7 @@ namespace CourtApp.Web.Abstractions
             var districtViewModel = _mapper.Map<List<CourtDistrictViewModel>>(districts.Data);
             return new SelectList(districtViewModel, nameof(CourtDistrictViewModel.Id), nameof(CourtDistrictViewModel.Name_En), null, null);
         }
+        
         public async Task<SelectList> DdlCourt()
         {
             var response = await _mediator.Send(new GetCourtTypeQuery());
@@ -70,6 +71,14 @@ namespace CourtApp.Web.Abstractions
             var response = await _mediator.Send(new GetQueryCaseCategory());
             var CaseNatures = _mapper.Map<List<CaseNatureViewModel>>(response.Data);
             return new SelectList(CaseNatures, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.Name_En), null, null);
+        }
+
+        public async Task<JsonResult> LoadCaseCategory(Guid CourtTypeId)
+        {
+            var response = await _mediator.Send(new GetQueryCaseCategory { CourtTypeId=CourtTypeId});
+            var CaseNatures = _mapper.Map<List<CaseNatureViewModel>>(response.Data);
+            var data = Json(CaseNatures);
+            return data;
         }
 
         public async Task<SelectList> LoadCaseKinds()
@@ -136,7 +145,7 @@ namespace CourtApp.Web.Abstractions
 
         public async Task<JsonResult> LoadCourtComplex(Guid CDistrictId)
         {
-            var response = await _mediator.Send(new GetCourtComplexQuery() { CourDistrictId=CDistrictId});
+            var response = await _mediator.Send(new GetCourtComplexQuery() { CourDistrictId = CDistrictId });
             return Json(response);
         }
         public async Task<JsonResult> LoadTypeOfCase(Guid natureId)
@@ -145,6 +154,14 @@ namespace CourtApp.Web.Abstractions
             var data = Json(caseType);
             return data;
         }
+
+        public async Task<JsonResult> LoadCourtBench(Guid CourtTypeId,int StateId,Guid ComplexId)
+        {
+            var dt = await _mediator.Send(new GetCourtBenchQuery(1, 100) { StateId=StateId,CourtTypeId=CourtTypeId , CourtId = ComplexId });
+            var data = Json(dt);
+            return data;
+        }        
+
         #region Static Dropdown Region
 
         public SelectList DdlYears()
@@ -172,8 +189,11 @@ namespace CourtApp.Web.Abstractions
         {
             return new SelectList(StaticDropDownDictionaries.Cadres().OrderBy(v => v.Value), "Key", "Value");
         }
+        public SelectList DdlStrength()
+        {
+            return new SelectList(StaticDropDownDictionaries.Stength().OrderBy(v => v.Key), "Key", "Value");
+        }
         #endregion
-
 
     }
 }

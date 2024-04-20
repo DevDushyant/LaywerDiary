@@ -27,7 +27,7 @@ namespace CourtApp.Application.Features.CaseCategory
 
         public async Task<Result<CaseCategoryByIdResponse>> Handle(GetQueryByIdCaseCategory request, CancellationToken cancellationToken)
         {
-            var data =  _repository.GetCachedListAsync().Result.Where(w => w.Id == request.Id).FirstOrDefault();
+            var data =   _repository.GetCachedListAsync().Result.Where(w => w.Id == request.Id).FirstOrDefault();
             var mappeddata = mapper.Map<CaseCategoryByIdResponse>(data);
             return Result<CaseCategoryByIdResponse>.Success(mappeddata);
         }

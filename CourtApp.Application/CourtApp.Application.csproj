@@ -43,5 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DTOs\APIRes\" />
+    <Folder Include="DTOs\Work\" />
   </ItemGroup>
 </Project>

@@ -9,7 +9,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public new Guid Id { get; set; }
         [ForeignKey("CaseEntity")]
         public Guid CaseId { get; set; }
-        public virtual CaseEntity CaseEntity { get; set; }
+        public virtual CaseDetailEntity CaseEntity { get; set; }
 
         [ForeignKey("StageEntity")]
         public int CaseStageId { get; set; }

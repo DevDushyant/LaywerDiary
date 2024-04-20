@@ -13,6 +13,6 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public int TypeId { get; set; }
         public Guid CaseId { get; set; }
         public required string Title { get; set; } 
-        public virtual CaseEntity Case { get; set; }
+        public virtual CaseDetailEntity Case { get; set; }
     }
 }

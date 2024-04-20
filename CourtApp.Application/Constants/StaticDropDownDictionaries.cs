@@ -111,7 +111,7 @@ namespace CourtApp.Application.Constants
                 { "Center", "Centeral" }
             };
             return _volumeDictionary;
-        }      
+        }
 
         public static Dictionary<string, string> AssentByDictionary()
         {
@@ -154,7 +154,7 @@ namespace CourtApp.Application.Constants
                 { "RPD", "Repealed" }
             };
             return _volumeDictionary;
-        }       
+        }
 
         public static Dictionary<string, string> ComeInforce()
         {
@@ -217,7 +217,7 @@ namespace CourtApp.Application.Constants
             var _RDictionary = new Dictionary<int, string>
             {
                 { 1, "Responder" },
-                { 2, "Petitionary" }                
+                { 2, "Petitionary" }
             };
             return _RDictionary;
         }
@@ -234,6 +234,15 @@ namespace CourtApp.Application.Constants
 
             };
             return _Cadre;
+        }
+        public static Dictionary<int, string> Stength()
+        {
+            var _Str = new Dictionary<int, string>
+            {
+                {1, "S.B." },
+                {2, "D.B" }
+            };
+            return _Str;
         }
 
     }

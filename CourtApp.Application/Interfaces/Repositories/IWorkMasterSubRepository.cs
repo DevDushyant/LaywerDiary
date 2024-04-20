@@ -14,6 +14,6 @@ namespace CourtApp.Application.Interfaces.Repositories
         Task<WorkMasterSubEntity> GetByIdAsync(Guid Id);
         Task<Guid> InsertAsync(WorkMasterSubEntity workMasterSubEntity);
         Task UpdateAsync(WorkMasterSubEntity workMasterSubEntity);
-        Task DeleteAsync(WorkMasterSubEntity workMasterSubEntity);
+        Task DeleteAsync(WorkMasterSubEntity workMasterSubEntity);       
     }
 }

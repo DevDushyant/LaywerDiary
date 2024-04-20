@@ -25,16 +25,17 @@ namespace CourtApp.Application.Interfaces.Contexts
         DbSet<CourtTypeEntity> CourtType { get; set; }
         DbSet<TypeOfCasesEntity> Typeofcases { get; set; }
         DbSet<CaseKindEntity> CaseKinds { get; set; }
-        DbSet<CaseEntity> Cases { get; set; }
+        DbSet<CaseDetailEntity> Cases { get; set; }
         DbSet<LawyerMasterEntity> Laywers { get; set; }
         DbSet<ProceedingHeadEntity> ProceedingHeads { get; set; }
         DbSet<ProceedingSubHeadEntity> ProceedingSubHeads { get; set; }
         DbSet<WorkMasterEntity> WorkMasters { get; set; }
         DbSet<WorkMasterSubEntity> WorkMasterSubs { get; set; }
-        DbSet<AgainstCaseDetails> AgainstCaseDetails { get; set; }
+        DbSet<CaseDetailAgainstEntity> AgainstCaseDetails { get; set; }
         DbSet<CourtDistrictEntity> CDistricts { get; set; }
         DbSet<CourtComplexEntity> CourtComplex { get; set; }
         DbSet<CaseTitleEntity> CaseTitiles { get; set; }
+        DbSet<CourtBenchEntity> CourtBenchEntities { get; set; }
 
     }
 }
