@@ -16,7 +16,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new GetCaseDetailsQuery(1, 100));
+            var response = await _mediator.Send(new GetCaseDetailsQuery());
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<TitleGetViewModel>>(response.Data);

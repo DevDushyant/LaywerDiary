@@ -1,0 +1,42 @@
+﻿@model IEnumerable<CaseWorkingViewModel>
+<table id="tblCaseWork" class="table table-striped" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th width="10%">Sno.</th>
+            <th width="90%">Case Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int count = 0;
+        }
+        @foreach (var bt in Model)
+        {
+            <tr>
+                <td>
+                    @(count = count + 1)
+                </td>
+                <td>
+                    <b>@bt.CaseDetail.ToUpper()</b>
+                    <input type="hidden" value="@bt.CaseId" />
+                    <table>
+                        @foreach (var w in bt.AWorks)
+                        {
+                            <tr style="width:100%">
+                                <td style="width:90%">
+                                    @w.WorkDetail
+                                </td>
+                                <td style="width:10%"><input type="checkbox" value="@w.WorkId" /></td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+    $(document).ready(function () {
+        $("#tblCaseWork").DataTable();
+    });
+</script>

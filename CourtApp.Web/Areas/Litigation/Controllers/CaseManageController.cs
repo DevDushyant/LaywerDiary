@@ -1,7 +1,7 @@
-﻿using CourtApp.Application.Constants;
-using CourtApp.Application.Enums;
-using CourtApp.Application.Features.BookMasters.Command;
+﻿using CourtApp.Application.Features.BookMasters.Command;
 using CourtApp.Application.Features.Case;
+using CourtApp.Application.Features.CaseCategory;
+using CourtApp.Application.Features.CaseProceeding;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
@@ -24,7 +24,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new GetCaseDetailsQuery(1, 100));
+            var response = await _mediator.Send(new GetCaseDetailsQuery());
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
@@ -70,8 +70,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 if (Id == Guid.Empty)
                 {
-                    var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);
-                    //createCommand.ActionType = ((int)ActionTypes.Add);
+                    var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);                    
                     var result = await _mediator.Send(createCommand);
                     if (result.Succeeded) {
                         _notify.Success($"Case created with ID {result.Data} Created.");
@@ -117,5 +116,72 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 return new JsonResult(new { isValid = false, html = html });
             }
         }
+
+        #region Case Proceeding Area    
+        public async Task<IActionResult> LoadCaseProceeding()
+        {
+            var response = await _mediator.Send(new GetCaseProceedingQuery());
+            if (response.Succeeded)
+            {
+                var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
+                return PartialView("_ViewAll", viewModel);
+            }
+            return null;
+        }
+
+        public async Task<JsonResult> OnGetCaseProceeding(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                var ViewModel = new CaseProceedingViewModel();
+                ViewModel.Heads = await DdlProcHeads();
+                ViewModel.NextStages =  await DdlCaseStages();
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", ViewModel) });
+            }
+            else
+            {
+                var response = await _mediator.Send(new GetQueryByIdCaseCategory() { Id = id });
+                if (response.Succeeded)
+                {
+                    var ViewModel = _mapper.Map<CaseProceedingViewModel>(response.Data);
+                    
+                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
+                }
+                return null;
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> OnPostCaseProceeding(Guid id, CaseProceedingViewModel ViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                if (id == Guid.Empty)
+                {
+                    var createCommand = _mapper.Map<CreateCaseWorkCommand>(ViewModel);
+                    var result = await _mediator.Send(createCommand);
+                    if (result.Succeeded)
+                        _notify.Success($"Case Proceeding with ID {result.Data} Created.");
+                    else _notify.Error(result.Message);
+                }
+                else
+                {
+                    var updateCommand = _mapper.Map<UpdateCaseProceedingCommand>(ViewModel);
+                    var result = await _mediator.Send(updateCommand);
+                    if (result.Succeeded)
+                        _notify.Information($"Case Proceeding with ID {result.Data} Updated.");
+                }
+                return new JsonResult(new { isValid = false, html = "" });
+            }
+            else
+            {
+                var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
+                return new JsonResult(new { isValid = false, html = html });
+            }
+        }
+
+        #endregion
+
+       
     }
 }

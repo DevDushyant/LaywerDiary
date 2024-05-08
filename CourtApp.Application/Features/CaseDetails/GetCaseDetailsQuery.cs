@@ -27,11 +27,6 @@ namespace CourtApp.Application.Features.UserCase
         public Guid CourtTypeId { get; set; }
         public Guid CourtId { get; set; }
         public Guid CaseTyepId { get; set; }
-        public GetCaseDetailsQuery(int PageNumber, int PageSize)
-        {
-            this.PageNumber = PageNumber;
-            this.PageSize = PageSize;
-        }
     }
     public class GetCaseDetailsQueryHandler : IRequestHandler<GetCaseDetailsQuery, PaginatedResult<CaseDetailResponse>>
     {
@@ -50,16 +45,19 @@ namespace CourtApp.Application.Features.UserCase
         }
         public async Task<PaginatedResult<CaseDetailResponse>> Handle(GetCaseDetailsQuery request, CancellationToken cancellationToken)
         {
-
+            
             Expression<Func<CaseDetailEntity, CaseDetailResponse>> expression = e => new CaseDetailResponse
             {
                 Id = e.Id,
-                CaseNumber = String.Concat(e.CaseNo, " ", e.CaseYear),
                 CaseTypeName = e.CaseType.Name_En,
+                CourtType = e.CourtType.CourtType,
+                CaseNumber = String.Concat(e.CaseNo, "/", e.CaseYear),
                 CourtName = e.CourtBench.CourtBench_En,
                 FirstTitle = e.FirstTitle,
                 SecondTitle = e.SecondTitle,
-                NextHearingDate = e.NextDate.ToString("dd-MM-yyyy")
+                NextHearingDate = e.NextDate.Value != Convert.ToDateTime("0001-01-01") ? e.NextDate.Value.ToString("dd/MM/yyyy") : "-",
+                CaseStage = e.CaseStageCode,//StCodes.Where(s=>s.Key.Equals(e.CaseStageCode)).Select(s=>s.Value).FirstOrDefault(),
+                CaseTitle = e.FirstTitle + " V/S " + e.SecondTitle + "(" + e.CaseNo + "/" + e.CaseYear + ")",
             };
 
             var predicate = PredicateBuilder.True<CaseDetailEntity>();
@@ -72,13 +70,11 @@ namespace CourtApp.Application.Features.UserCase
             }
             try
             {
-                var paginatedList = await _RepoCase.Entites
-                    .Include(c => c.CourtBench)
-                    .Include(c => c.CaseType)
+                var dt = await _RepoCase.Entites
                     .Where(predicate)
                     .Select(expression)
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-                return paginatedList;
+                return dt;
             }
             catch (Exception ex)
             {

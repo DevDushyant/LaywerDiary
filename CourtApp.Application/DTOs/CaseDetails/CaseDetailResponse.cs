@@ -6,6 +6,7 @@ namespace CourtApp.Application.DTOs.Case
     {
         public Guid Id { get; set; }
         public string CaseTypeName { get; set; }
+        public string CourtType { get; set; }
         public string CaseKindName { get; set; }
         public string CaseNumber { get; set; }
         public string NextHearingDate { get; set; }
@@ -13,5 +14,6 @@ namespace CourtApp.Application.DTOs.Case
         public string FirstTitle { get; set; }
         public string SecondTitle { get; set; }
         public string CourtName { get; set; }
+        public string CaseTitle { get; set; }
     }
 }

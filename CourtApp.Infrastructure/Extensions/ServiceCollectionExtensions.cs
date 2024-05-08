@@ -84,6 +84,9 @@ namespace CourtApp.Infrastructure.Extensions
             services.AddTransient<ICourtDistrictRepository, CourtDistrictRepository>();
             services.AddTransient<ICourtComplexRepository, CourtComplexRepository>();
             services.AddTransient<ICourtBenchRepository, CourtBenchRepository>();
+            services.AddTransient<ICaseAgainstRepository, CaseAgainstRepository>();
+            services.AddTransient<ICaseProceedingRepository, CaseProceedingRepository>();
+            services.AddTransient<ICaseWorkRepository, CaseWorkRepository>();
 
             #endregion Repositories
         }

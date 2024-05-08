@@ -2,13 +2,25 @@
     ViewData["Title"] = localizer["Case List"];
     ViewData["Caption"] = localizer["Your Case List"];
 }
+<style>
+    .btnHide {
+        display: none;
+    }
+</style>
 @model GetCaseViewModel
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
         @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Create)).Result.Succeeded)
-        {           
+        {
             <a asp-area="Litigation" asp-controller="CaseManage" asp-action="CreateOrUpdate" class="btn bg-success">
                 <i class="fa fa-plus-square"></i> Create
+            </a>            
+
+            <a id="btnProceeding" onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseProceeding','Assign Proceeding')" class="btn bg-success">
+                <i class="fa fa-plus-square"></i> Proceeding
+            </a>
+            <a id="btnWork" onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseWork','Assign Work')" class="btn bg-success">
+                <i class="fa fa-plus-square"></i> Work
             </a>
         }
         <a id="reload" class="btn btn-primary text-white">
@@ -22,16 +34,5 @@
 @section Scripts
 {
     <script src="~/js/site.js"></script>
-    <script>
-        $(document).ready(function () {
-            $("#tblUserCase").DataTable();
-            loadData();
-            $('#reload').on('click', function () {
-                loadData();
-            });
-        });
-        function loadData() {
-            $('#viewAll').load('/Litigation/CaseManage/LoadAll');
-        }
-    </script>
+    <script src="~/js/litigation/caselist.js"></script>  
 }

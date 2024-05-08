@@ -52,15 +52,16 @@
                             <span asp-validation-for="StrengthId" class="text-danger"></span>
                         </div>
                     </div>
+
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label">@localizer["Case Category"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-4">
                             <div class="input-group">
-                                <select name="NatureId" class="form-control select2bs4" id="CaseNatureId" asp-for="NatureId" asp-items="@Model.CaseNatures">
+                                <select name="CaseCategoryId" class="form-control select2bs4" id="CaseCategoryId" asp-for="CaseCategoryId" asp-items="@Model.CaseNatures">
                                     <option></option>
                                 </select>
                             </div>
-                            <span asp-validation-for="NatureId" class="text-danger"></span>
+                            <span asp-validation-for="CaseCategoryId" class="text-danger"></span>
                         </div>
                         <label class="col-md-2 col-form-label">@localizer["Case Type"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-4">
@@ -93,41 +94,31 @@
                             <span asp-validation-for="ComplexBenchId" class="text-danger"></span>
                         </div>
                     </div>
+
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label">@localizer["Court/Bench"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-4">
                             <div class="input-group">
-                                <select name="CourtId" class="form-control select2bs4" id="CourtName" asp-for="CourtId" asp-items="@Model.Courts">
+                                <select name="CourtBenchId" class="form-control select2bs4" id="CourtBenchId" asp-for="CourtBenchId" asp-items="@Model.Courts">
                                     <option></option>
                                 </select>
-                            </div>
-                            <span asp-validation-for="CourtId" class="text-danger"></span>
+                            </div>                           
                         </div>
                         <label class="col-md-2 col-form-label">@localizer["Case No/Year"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-2">
                             <div class="input-group">
-                                <input type="text" placeholder="Case Number" asp-for="Number" name="CaseNumber" id="CaseNumber" class="form-control" />
+                                <input type="text" placeholder="Case Number" asp-for="CaseNo" name="CaseNo" id="CaseNo" class="form-control" />
                             </div>
-                            <span asp-validation-for="Number" class="text-danger"></span>
+                            <span asp-validation-for="CaseNo" class="text-danger"></span>
                         </div>
                         <div class="col-md-2">
                             <div class="input-group">
-                                <select name="Year" class="form-control select2bs4" id="year" asp-for="Year" asp-items="@Model.Years">
+                                <select name="CaseYear" class="form-control select2bs4" id="CaseYear" asp-for="CaseYear" asp-items="@Model.Years">
                                     <option></option>
                                 </select>
                             </div>
-                            <span asp-validation-for="Year" class="text-danger"></span>
-                        </div>
-                        
-                       @*  <label class="col-md-2 col-form-label">@localizer["Case Kind"] (<span style="color:red">*</span>)</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <select name="CaseKindId" class="form-control select2bs4" id="CaseKindId" asp-for="CaseKindId" asp-items="@Model.CaseKinds">
-                                    <option></option>
-                                </select>
-                            </div>
-                            <span asp-validation-for="CaseKindId" class="text-danger"></span>
-                        </div> *@
+                            <span asp-validation-for="CaseYear" class="text-danger"></span>
+                        </div>                        
                     </div>
 
                     <div class="form-group row">
@@ -135,37 +126,23 @@
                         <div class="col-md-2">
                             <div class="input-group">
                                 <input type="text" placeholder="CIS Number" asp-for="CisNumber" name="CisNumber" id="CisNumber" class="form-control" />
-                            </div>
-                            <span asp-validation-for="CisNumber" class="text-danger"></span>
+                            </div>                          
                         </div>
                         <div class="col-md-2">
                             <div class="input-group">
                                 <select name="CisYear" class="form-control select2bs4" id="CisYear" asp-for="CisYear" asp-items="@Model.Years">
                                     <option></option>
                                 </select>
-                            </div>
-                            <span asp-validation-for="CisYear" class="text-danger"></span>
+                            </div>                           
                         </div>
 
                         <label class="col-md-2 col-form-label">@localizer["Cnr No"]</label>
                         <div class="col-md-4">
                             <div class="input-group">
                                 <input type="text" placeholder="Cnr number" asp-for="CnrNumber" name="CnrNumber" id="CnrNumber" class="form-control" />
-                            </div>
-                            <span asp-validation-for="CnrNumber" class="text-danger"></span>
+                            </div>                           
                         </div>
                     </div>
-
-                    @* <div class="form-group row">
-                        <label class="col-md-2 col-form-label">@localizer["Cnr No"]</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <input type="text" placeholder="Cnr number" asp-for="CnrNumber" name="CnrNumber" id="CnrNumber" class="form-control" />
-
-                            </div>
-                            <span asp-validation-for="CnrNumber" class="text-danger"></span>
-                        </div>
-                    </div> *@
 
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label"> Title First (<span style="color:red">*</span>)</label>
@@ -190,7 +167,7 @@
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label">Title Second</label>
+                        <label class="col-md-2 col-form-label">Title Second (<span style="color:red">*</span>)</label>
                         <div class="col-md-8">
                             <div class="input-group">
                                 <input type="text" placeholder="Second title" asp-for="SecondTitle" name="SecondTitle" id="TitleSecond" class="form-control" />
@@ -226,7 +203,7 @@
                                     <option></option>
                                 </select>
                             </div>
-                            <span asp-validation-for="CaseStageCode" class="text-danger"></span>
+                            @* <span asp-validation-for="CaseStageCode" class="text-danger"></span> *@
                         </div>
                     </div>
 
@@ -240,111 +217,7 @@
                             </div>
                         </div>
                     </div>
-                    <partial name="_AgainstCaseDetail" model="Model" />
-                    @*  <hr />
-                    @localizer["Against Case Decision For"]
-                    <button type="button" class="btn btn-primary add">+ Add More</button>
-                    <hr>
-                    <div id="agenestcaseId">
-                    <div class="form-group row">
-                    <label class="col-md-2 col-form-label">@localizer["Date of impuged order"]</label>
-                    <div class="col-md-4">
-                    <div class="input-group">
-                    <input type="date" asp-for="AgainstCaseDetails[0].ImpugedDate" value="@DateTime.Now.ToString("MM/dd/yyyy")" id="ImpugedDate_0" placeholder="dd/MM/yyyy" class="form-control">
-                    </div>
-                    </div>
-                    <label class="col-md-2 col-form-label">@localizer["Type of Court"]</label>
-                    <div class="col-md-4">
-                    <div class="input-group">
-                    <select class="form-control select2bs4" id="AgainstCourtTypeId_0" asp-for="AgainstCaseDetails[0].CourtTypeId" asp-items="@Model.CourtTypes">
-                    <option></option>
-                    </select>
-                    </div>
-
-                    </div>
-                    </div>
-
-                    <div class="form-group row">
-                    <label class="col-md-2 col-form-label">@localizer["Court Name"]</label>
-                    <div class="col-md-4">
-                    <div class="input-group">
-                    <select class="form-control select2bs4 AgainstCourtId" id="AgainstCourtId_0" asp-for="AgainstCaseDetails[0].CourtId" asp-items="@Model.Courts">
-                    <option></option>
-                    </select>
-                    </div>
-                    <span asp-validation-for="AgainstCaseDetails[0].CourtId" class="text-danger"></span>
-                    </div>
-                    <label class="col-md-2 col-form-label">@localizer["Case No/Year"]</label>
-                    <div class="col-md-2">
-                    <div class="input-group">
-                    <input type="text" placeholder="Case Number" asp-for="AgainstCaseDetails[0].Number" id="AgainstCaseNumber_0" class="form-control" />
-                    </div>
-
-                    </div>
-                    <div class="col-md-2">
-                    <div class="input-group">
-                    <select class="form-control select2bs4" id="AgainstYear_0" asp-for="AgainstCaseDetails[0].CaseYear" asp-items="@Model.Years">
-                    <option></option>
-                    </select>
-                    </div>
-                    <span asp-validation-for="AgainstCaseDetails[0].CaseYear" class="text-danger"></span>
-                    </div>
-                    </div>
-
-                    <div class="form-group row">
-                    <label class="col-md-2 col-form-label">@localizer["Cis Number/Year"]</label>
-                    <div class="col-md-2">
-                    <div class="input-group">
-                    <input type="text" placeholder="CIS Number" asp-for="AgainstCaseDetails[0].CisNumber" name="CisNumber_0" id="CisNumber_0" class="form-control" />
-                    </div>
-                    <span asp-validation-for="AgainstCaseDetails[0].CisNumber" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-2">
-                    <div class="input-group">
-                    <select name="AgainstCisYear_0" class="form-control select2bs4" id="AgainstCisYear_0" asp-for="AgainstCaseDetails[0].CisYear" asp-items="@Model.Years">
-                    <option></option>
-                    </select>
-                    </div>
-                    <span asp-validation-for="AgainstCaseDetails[0].CisYear" class="text-danger"></span>
-                    </div>
-
-                    <label class="col-md-2 col-form-label">@localizer["Cnr Number"]</label>
-                    <div class="col-md-4">
-                    <div class="input-group">
-                    <input type="text" placeholder="Cnr number" asp-for="AgainstCaseDetails[0].CnrNumber" name="CnrNumber_0" id="CnrNumber_0" class="form-control" />
-
-                    </div>
-                    <span asp-validation-for="AgainstCaseDetails[0].CnrNumber" class="text-danger"></span>
-                    </div>
-                    </div>
-
-                    <div class="form-group row">
-                    <label class="col-md-2 col-form-label">@localizer["Proceeding Officer"]</label>
-                    <div class="col-md-4">
-                    <div class="input-group">
-                    <input type="text" asp-for="AgainstCaseDetails[0].ProcOfficer" name="ProcOfficer_0" id="ProcOfficer_0"  placeholder="Proceeding officer" class="form-control">
-                    </div>
-                    </div>
-                    <label class="col-md-2 col-form-label">@localizer["Cadre"]</label>
-                    <div class="col-md-4">
-                    <div class="input-group">
-                    <select name="Cadder_0" class="form-control select2bs4" id="Cadder_0" asp-for="AgainstCaseDetails[0].Cadre" asp-items="@Model.Cadres">
-                    <option></option>
-                    </select>
-                    </div>
-                    <span asp-validation-for="AgainstCaseDetails[0].Cadre" class="text-danger"></span>
-                    </div>
-                    </div>
-
-                    <div class="form-group row">
-                    <div class="col-md-4">
-                    <div class="input-group">
-                    <button type="button" class="btn btn-danger remove">- remove</button>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    <div class="agenestcaseId-append"></div> *@
+                    <partial name="_AgainstCaseDetail" model="Model" />                    
                 </div>
             </div>
             <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
@@ -354,33 +227,9 @@
         </form>
     </div>
 </div>
-
 @section Scripts
 {
-    <script src="~/js/litigation/managecase.js"></script>
-    <script type="text/javascript" language=javascript>
-        $.validator.unobtrusive.parse(document);
-        var id_count = 1;
-        $('.add').on('click', function () {
-            debugger;
-            var source = $('#agenestcaseId:first'), clone = source.clone();
-            clone.find(':input').attr('id', function (i, val) {
-                if (val != undefined) {
-                    val = val.split("_")[0];
-                    $(this).attr('name', "AgainstCaseDetails[" + id_count + "]." + val);
-                }
-                return val + "_" + id_count;
-            });
-            clone.appendTo('.agenestcaseId-append');
-            id_count++;
-        });
-
-        // Removing Form Field
-        $('body').on('click', '.remove', function () {
-            var closest = $(this).closest('#agenestcaseId').remove();
-        });
-
-    </script>
+    <script src="~/js/litigation/managecase.js"></script>    
 }
 
 

@@ -1,11 +1,6 @@
-﻿using CourtApp.Domain.Entities.LawyerDiary;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Litigation.Models
 {
@@ -34,33 +29,30 @@ namespace CourtApp.Web.Areas.Litigation.Models
         #endregion
 
         #region Upsert properties
-        public  Guid Id { get; set; }
-        public  DateTime InstitutionDate { get; set; }
-        public  Guid NatureId { get; set; }
-        public  Guid CaseTypeId { get; set; }
-        public  Guid CourtTypeId { get; set; }
-        public  Guid CourtId { get; set; }
-        public  Guid CaseKindId { get; set; }
-        public  string Number { get; set; }
-        public  int Year { get; set; }
+        public Guid Id { get; set; }
+        public DateTime InstitutionDate { get; set; }
+        public Guid CourtTypeId { get; set; }
+        public Guid CaseCategoryId { get; set; }
+        public Guid CaseTypeId { get; set; }
+        public Guid CourtBenchId { get; set; }
+        public string CaseNo { get; set; }
+        public int CaseYear { get; set; }
+        public string FirstTitle { get; set; }
+        public int FirstTitleCode { get; set; }
+        public string SecondTitle { get; set; }
+        public int SecoundTitleCode { get; set; }
         public string CisNumber { get; set; }
-        public int CisYear { get; set; }
+        public int? CisYear { get; set; }
         public string CnrNumber { get; set; }
-        public  string FirstTitle { get; set; }
-        public  int FirstTitleCode { get; set; }
-        public  string SecondTitle { get; set; }
-        public  int SecoundTitleCode { get; set; }
-        public DateTime NextDate { get; set; }
+        public DateTime? NextDate { get; set; }
         public string CaseStageCode { get; set; }
         public Guid LinkedCaseId { get; set; }
         public Guid ClientId { get; set; }
-
         public Guid? CourtDistrictId { get; set; }
         public Guid? ComplexBenchId { get; set; }
         public List<CaseAgainstModel> AgainstCaseDetails { get; set; }
         public int? StateId { get; set; }
         public int? StrengthId { get; set; }
-
         #endregion   
     }    
 }

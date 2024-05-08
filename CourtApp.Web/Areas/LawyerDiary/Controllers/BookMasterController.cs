@@ -31,9 +31,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 return PartialView("_ViewAll", viewModel);
             }
             return null;
-        }
-
-        
+        }       
 
         public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
         {

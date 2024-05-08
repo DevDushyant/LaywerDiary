@@ -31,7 +31,7 @@ namespace CourtApp.Application.Features.Case
         public string CaseStageCode { get; set; }
         public Guid LinkedCaseId { get; set; }
         public Guid ClientId { get; set; }
-        public ICollection<CaseAgainstEntityModel> CaseAgainstEntities { get; set; }
+        public ICollection<CaseAgainstEntityModel> AgainstCaseDetails { get; set; }
     }
     public class CaseAgainstEntityModel
     {
@@ -61,6 +61,7 @@ namespace CourtApp.Application.Features.Case
         private readonly ICourtTypeCacheRepository _CourtTypeCacheRepository;
         private readonly ICourtMasterCacheRepository _CourtMasterCacheRepository;
         private readonly ITypeOfCasesCacheRepository _ITypeOfCasesCacheRepository;
+        private readonly ICaseAgainstRepository _CaseAgainstRepo;
 
         private IUnitOfWork _unitOfWork { get; set; }
         public CreateCaseManagmentCommandHandler(IUserCaseRepository _Repository,
@@ -71,7 +72,8 @@ namespace CourtApp.Application.Features.Case
             ICourtTypeCacheRepository _CourtTypeCacheRepository,
             ITypeOfCasesCacheRepository _ITypeOfCasesCacheRepository,
             ICourtMasterCacheRepository _CourtMasterCacheRepository,
-            ICaseNatureCacheRepository _CaseNatureCacheRepository
+            ICaseNatureCacheRepository _CaseNatureCacheRepository,
+            ICaseAgainstRepository _CaseAgainstRepo
             )
         {
             this._mapper = _mapper;
@@ -84,6 +86,7 @@ namespace CourtApp.Application.Features.Case
             this._ITypeOfCasesCacheRepository = _ITypeOfCasesCacheRepository;
             this._CourtMasterCacheRepository = _CourtMasterCacheRepository;
             this._CaseNatureCacheRepository = _CaseNatureCacheRepository;
+            this._CaseAgainstRepo = _CaseAgainstRepo;
         }
         public async Task<Result<Guid>> Handle(CreateCaseCommand request, CancellationToken cancellationToken)
         {
@@ -93,7 +96,7 @@ namespace CourtApp.Application.Features.Case
             if (entity.Id != Guid.Empty)
             {
                 List<CaseDetailAgainstEntity> againstEntities = new List<CaseDetailAgainstEntity>();
-                foreach (var item in request.CaseAgainstEntities)
+                foreach (var item in request.AgainstCaseDetails)
                 {
                     againstEntities.Add(new CaseDetailAgainstEntity
                     {
@@ -113,7 +116,9 @@ namespace CourtApp.Application.Features.Case
                         StrengthId = item.StrengthId
                     });
                 }
-            }
+                await _CaseAgainstRepo.InsertAsync(againstEntities);
+                await _unitOfWork.Commit(cancellationToken);
+            }            
             return Result<Guid>.Success(entity.Id);
         }
     }

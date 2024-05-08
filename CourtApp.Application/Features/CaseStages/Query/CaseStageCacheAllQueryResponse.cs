@@ -8,7 +8,7 @@ namespace CourtApp.Application.Features.CaseStages.Query
 {
     public class CaseStageCacheAllQueryResponse
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string CaseStage { get; set; }
     }
 }

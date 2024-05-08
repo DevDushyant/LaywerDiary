@@ -4,23 +4,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourtApp.Domain.Entities.LawyerDiary
 {
+    [Table("r_case_working", Schema = "ld")]
     public class CaseWorkEntity : AuditableEntity
     {
         public new Guid Id { get; set; }
-        [ForeignKey("CaseEntity")]
         public Guid CaseId { get; set; }
-        public virtual CaseDetailEntity CaseEntity { get; set; }
-
-        [ForeignKey("StageEntity")]
-        public int CaseStageId { get; set; }
-        public virtual CaseStageEntity StageEntity { get; set;}
-
-        [ForeignKey("CaseWorkMasterEntity")]
-        public int CaseWorkID { get; set; } 
-        public virtual CaseWorkMasterEntity CaseWorkMasterEntity { get; set; }
-        public DateTime WorkDate { get; set; }
-        public DateTime NextDate { get; set; }
+        public Guid WorkId { get; set; }
+        public Guid SubWorkId { get; set; }
+        public DateTime WorkingDate { get; set; }
         public string Remark { get; set; }
-
+        public int Status { get; set; }
+        public virtual WorkMasterEntity Work { get; set; }
+        public virtual WorkMasterSubEntity SubWork { get; set; }
+        public virtual CaseDetailEntity Case { get; set; }
     }
 }

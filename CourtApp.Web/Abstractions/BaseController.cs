@@ -9,11 +9,17 @@ using CourtApp.Application.Features.CourtComplex;
 using CourtApp.Application.Features.CourtDistrict;
 using CourtApp.Application.Features.CourtMasters;
 using CourtApp.Application.Features.CourtType.Query;
+using CourtApp.Application.Features.ProceedingHead;
+using CourtApp.Application.Features.ProceedingSubHead;
 using CourtApp.Application.Features.Queries.Districts;
 using CourtApp.Application.Features.Queries.States;
 using CourtApp.Application.Features.TypeOfCases.Query;
+using CourtApp.Application.Features.UserCase;
+using CourtApp.Application.Features.WorkMaster;
+using CourtApp.Application.Features.WorkMasterSub;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models;
+using CourtApp.Web.Areas.Litigation.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,6 +27,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -59,7 +66,6 @@ namespace CourtApp.Web.Abstractions
             var districtViewModel = _mapper.Map<List<CourtDistrictViewModel>>(districts.Data);
             return new SelectList(districtViewModel, nameof(CourtDistrictViewModel.Id), nameof(CourtDistrictViewModel.Name_En), null, null);
         }
-        
         public async Task<SelectList> DdlCourt()
         {
             var response = await _mediator.Send(new GetCourtTypeQuery());
@@ -72,15 +78,13 @@ namespace CourtApp.Web.Abstractions
             var CaseNatures = _mapper.Map<List<CaseNatureViewModel>>(response.Data);
             return new SelectList(CaseNatures, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.Name_En), null, null);
         }
-
         public async Task<JsonResult> LoadCaseCategory(Guid CourtTypeId)
         {
-            var response = await _mediator.Send(new GetQueryCaseCategory { CourtTypeId=CourtTypeId});
+            var response = await _mediator.Send(new GetQueryCaseCategory { CourtTypeId = CourtTypeId });
             var CaseNatures = _mapper.Map<List<CaseNatureViewModel>>(response.Data);
             var data = Json(CaseNatures);
             return data;
         }
-
         public async Task<SelectList> LoadCaseKinds()
         {
             var response = await _mediator.Send(new CaseKindAllCacheQuery());
@@ -106,6 +110,16 @@ namespace CourtApp.Web.Abstractions
             var viewModel = _mapper.Map<List<GClientViewModel>>(response.Data);
             return new SelectList(viewModel, nameof(GClientViewModel.Id), nameof(GClientViewModel.Name), null, null);
         }
+
+        public async Task<SelectList> UserCaseTitle() 
+        {
+            var response = await _mediator.Send(new GetCaseDetailsQuery());
+            var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
+            return new SelectList(viewModel, nameof(GetCaseViewModel.Id), nameof(GetCaseViewModel.CaseTitle), null, null);
+
+        }
+
+
         #endregion
 
         public async Task<JsonResult> LoadDistricts(int StateCode)
@@ -155,12 +169,40 @@ namespace CourtApp.Web.Abstractions
             return data;
         }
 
-        public async Task<JsonResult> LoadCourtBench(Guid CourtTypeId,int StateId,Guid ComplexId)
+        public async Task<JsonResult> LoadCourtBench(Guid CourtTypeId, int StateId, Guid ComplexId)
         {
-            var dt = await _mediator.Send(new GetCourtBenchQuery(1, 100) { StateId=StateId,CourtTypeId=CourtTypeId , CourtId = ComplexId });
+            var dt = await _mediator.Send(new GetCourtBenchQuery(1, 100) { StateId = StateId, CourtTypeId = CourtTypeId, CourtId = ComplexId });
             var data = Json(dt);
             return data;
-        }        
+        }
+
+        #region Case Proceeding & Sub Proceeding
+        public async Task<SelectList> DdlProcHeads()
+        {
+            var response = await _mediator.Send(new GetProceedingHeadQuery());
+            var viewModel = _mapper.Map<List<ProceedingHeadViewModel>>(response.Data);
+            return new SelectList(viewModel, nameof(ProceedingHeadViewModel.Id), nameof(ProceedingHeadViewModel.Name_En), null, null);
+        }
+        public async Task<JsonResult> DdlSubProcHeads(Guid Id)
+        {
+            var response = await _mediator.Send(new GetProceedingSubHeadQuery { HeadId = Id });
+            return Json(response);
+        }
+        #endregion
+
+        #region Case Work And Sub Work Area
+        public async Task<SelectList> DdlWorks()
+        {
+            var response = await _mediator.Send(new GetWorkMasterCommand());
+            var viewModel = _mapper.Map<List<WorkMasterViewModel>>(response.Data);
+            return new SelectList(viewModel, nameof(WorkMasterViewModel.Id), nameof(WorkMasterViewModel.Work_En), null, null);
+        }
+        public async Task<JsonResult> DdlSubWorks(Guid WorkId)
+        {
+            var response = await _mediator.Send(new GWorkSubMstQuery { WorkId = WorkId });
+            return Json(response);
+        }
+        #endregion
 
         #region Static Dropdown Region
 

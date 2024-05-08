@@ -14,7 +14,7 @@ namespace CourtApp.Application.Mappings
     {
         public CaseStageProfile()
         {
-            CreateMap<CaseStageCacheAllQueryResponse, CaseStageEntity>().ReverseMap();
+            CreateMap<CaseStageEntity,CaseStageCacheAllQueryResponse>();
             CreateMap<CaseStageQueryByIdResponse, CaseStageEntity>().ReverseMap();
             CreateMap<CreateCaseStageCommand, CaseStageEntity>().ReverseMap();
             CreateMap<UpdateCaseStageCommand, CaseStageEntity>().ReverseMap();

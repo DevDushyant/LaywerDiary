@@ -4,12 +4,13 @@
         <tr>
             <th>Sno.</th>
             <th>Type</th>
+            <th>Court Type</th>
             <th>Number</th>
             <th>Parties</th>
             <th>Court</th>
-            <th>Stage</th>
-            <th>Status</th>
-            <th>Next Date</th>            
+            <th>Stage</th>          
+            <th>Next Date</th>  
+            <th></th>
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded
             || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
             {
@@ -31,6 +32,9 @@
                     @bt.CaseTypeName
                 </td>
                 <td>
+                    @bt.CourtType
+                </td>
+                <td>
                     @bt.CaseNumber
                 </td>
                 <td>
@@ -42,15 +46,16 @@
                 <td>
                     @bt.CaseStage
                 </td>
-                <td>
+               @*  <td>
                     @bt.Status
-                </td>
+                </td> *@
                 <td>
                     @bt.NextHearingDate
                 </td>
-                @* <td>
-                    <a onclick="jQueryModalGet('/LawyerDiary/casestage/OnGetCreateOrEdit?id=@bt.Id', 'Case Detail')"><i class="fas fa-eye"></i></a>
-                </td> *@
+                <td>
+                    <input type="hidden" value="@bt.Id" />
+                    <input type="checkbox"/>
+                </td>
                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                 {
                     <td text-right">

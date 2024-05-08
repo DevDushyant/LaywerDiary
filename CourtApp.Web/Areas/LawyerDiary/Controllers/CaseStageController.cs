@@ -62,7 +62,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     if (result.Succeeded)
                     {
                         id = result.Data;
-                        _notify.Success($"Case Nature with ID {result.Data} Created.");
+                        _notify.Success($"Case stage with ID {result.Data} Created.");
                     }
                     else _notify.Error(result.Message);
                 }
