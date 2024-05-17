@@ -96,4 +96,12 @@
             return m;
         }
     });
+    $("#CourtTypeId").on('change', function () {
+        $.getJSON("/LawyerDiary/TypeOfCases/LCCByCourtTypeStage?CourtType=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val(), function (data) {
+            $("#CaseNatureId").empty();
+            $.each(data.Data, function (i, item) {
+                $("#CaseNatureId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
+            });
+        });
+    });
 </script>

@@ -35,13 +35,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 var DdlStates = _mapper.Map<List<StateViewModel>>(statelist.Data);
                 ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
-            }
-            var CCatogories = await _mediator.Send(new GetQueryCaseCategory());
-            if (CCatogories.Succeeded)
-            {
-                var Catogories = _mapper.Map<List<CaseNatureViewModel>>(CCatogories.Data);
-                ViewModel.CaseNatures = new SelectList(Catogories, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.Name_En), null, null);
-            }
+            }           
 
         }
 

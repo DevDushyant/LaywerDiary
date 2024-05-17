@@ -14,6 +14,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public DateTime WorkingDate { get; set; }
         public string Remark { get; set; }
         public int Status { get; set; }
+        public string Abbreviation { get; set; }
         public virtual WorkMasterEntity Work { get; set; }
         public virtual WorkMasterSubEntity SubWork { get; set; }
         public virtual CaseDetailEntity Case { get; set; }

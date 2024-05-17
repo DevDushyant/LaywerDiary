@@ -7,21 +7,14 @@
         display: none;
     }
 </style>
-@model GetCaseViewModel
+@* @model GetCaseViewModel *@
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
-        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Create)).Result.Succeeded)
+        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Create)).Result.Succeeded)
         {
             <a asp-area="Litigation" asp-controller="CaseManage" asp-action="CreateOrUpdate" class="btn bg-success">
                 <i class="fa fa-plus-square"></i> Create
-            </a>            
-
-            <a id="btnProceeding" onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseProceeding','Assign Proceeding')" class="btn bg-success">
-                <i class="fa fa-plus-square"></i> Proceeding
-            </a>
-            <a id="btnWork" onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseWork','Assign Work')" class="btn bg-success">
-                <i class="fa fa-plus-square"></i> Work
-            </a>
+            </a> 
         }
         <a id="reload" class="btn btn-primary text-white">
             <i class="fa fas fa-bolt"></i>

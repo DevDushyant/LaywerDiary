@@ -111,7 +111,7 @@ namespace CourtApp.Web.Abstractions
             return new SelectList(viewModel, nameof(GClientViewModel.Id), nameof(GClientViewModel.Name), null, null);
         }
 
-        public async Task<SelectList> UserCaseTitle() 
+        public async Task<SelectList> UserCaseTitle()
         {
             var response = await _mediator.Send(new GetCaseDetailsQuery());
             var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
@@ -167,6 +167,20 @@ namespace CourtApp.Web.Abstractions
             var caseType = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 100) { CategoryId = natureId });
             var data = Json(caseType);
             return data;
+        }
+        public async Task<JsonResult> LCCByCourtTypeStage(Guid CourtType, int StateId)
+        {
+            var CCatogories = await _mediator.Send(new GetQueryCaseCategory()
+            {
+                StateCode = StateId,
+                CourtTypeId = CourtType
+            });
+            if (CCatogories.Succeeded)
+            {
+                var data = Json(CCatogories);
+                return data;
+            }
+            return null;
         }
 
         public async Task<JsonResult> LoadCourtBench(Guid CourtTypeId, int StateId, Guid ComplexId)

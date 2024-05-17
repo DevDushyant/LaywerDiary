@@ -72,6 +72,7 @@ namespace CourtApp.Application.Features.CaseWork
                         if (cd.CId == w.CaseId)
                         {
                             var asW = new AssignedWork();
+                            asW.Id = w.Id;
                             asW.WorkId = w.SubWId;
                             asW.WorkDetail = w.Work + " - " + w.SubWork;                            
                             Works.Add(asW);

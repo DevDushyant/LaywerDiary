@@ -4,6 +4,7 @@ using CourtApp.Application.Features.CaseWork;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
             return null;
         }
-        
+
         public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
         {
             if (id == Guid.Empty)
@@ -92,7 +93,26 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
         }
 
-
-
+        public async Task<JsonResult> UpdateCaseWorkStatus(List<Guid> CWorkId)
+        {
+            if (CWorkId != null)
+            {
+                var result = await _mediator.Send(new UpdateCWorkStatusCommand { CWorkId = CWorkId });
+                if (result.Succeeded) _notify.Information($"Case Work with ID {result.Data} Updated.");
+                else _notify.Error(result.Message);
+            }
+            var response = await _mediator.Send(new GetAssignedWorkQuery { PageSize = 10, PageNumber = 1 });
+            if (response.Succeeded)
+            {
+                var viewModel = _mapper.Map<List<CaseWorkingViewModel>>(response.Data);
+                var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+                return new JsonResult(new { isValid = true, html = html });
+            }
+            else
+            {
+                _notify.Error(response.Message);
+                return null;
+            }
+        }
     }
 }

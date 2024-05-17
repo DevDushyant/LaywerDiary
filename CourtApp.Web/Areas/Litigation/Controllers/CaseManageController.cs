@@ -18,8 +18,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     {
         public IActionResult Index()
         {
-            var model = new GetCaseViewModel();
-            return View(model);
+            //var model = new GetCaseViewModel();
+            //return View(model);
+            return View();
         }
 
         public async Task<IActionResult> LoadAll()

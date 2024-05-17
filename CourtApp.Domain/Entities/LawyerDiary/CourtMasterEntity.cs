@@ -17,6 +17,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public Guid? CourtComplexId { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
+        public string Abbreviation { get; set; }
         public virtual StateEntity State { get; set; }        
         public virtual DistrictEntity District { get; set; }        
         public virtual CourtTypeEntity CourtType { get; set; }       

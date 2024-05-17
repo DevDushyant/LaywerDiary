@@ -126,5 +126,15 @@ namespace CourtApp.Application.Constants
             public const string Edit = "Permissions.CaseSWorks.Edit";
             public const string Delete = "Permissions.CaseSWorks.Delete";
         }
+        public static class CaseHearing
+        {
+            public const string View = "Permissions.Hearing.View";
+            public const string Create = "Permissions.Hearing.Create";
+            public const string Edit = "Permissions.Hearing.Edit";
+            public const string Delete = "Permissions.Hearing.Delete";
+            public const string Proceeding = "Permissions.Hearing.Proceeding";
+            public const string Work = "Permissions.Hearing.Work";
+            public const string BringToday = "Permissions.Hearing.BToday";
+        }
     }
 }

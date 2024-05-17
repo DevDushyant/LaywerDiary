@@ -240,8 +240,9 @@
     });
 
     $("#CourtTypeId").on("change", function () {
+        debugger;
         $("#CaseCategoryId").empty();
-        if ($("#CourtTypeId").val() === "359acb34-7b8c-4fc8-a276-8b198ea5105c") {
+        if ($("#CourtTypeId").val() === "b512e36f-0b6e-4a14-80d0-65266b2b320d" || $("#CourtTypeId").val() === "359acb34-7b8c-4fc8-a276-8b198ea5105c") {
             $('#divDistrictCourt').addClass('div_hide');
             $('#divHighCourt').removeClass('div_hide');
         }

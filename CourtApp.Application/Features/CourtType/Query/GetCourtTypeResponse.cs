@@ -10,5 +10,6 @@ namespace CourtApp.Application.Features.CourtType.Query
     {
         public Guid Id { get; set; }
         public string CourtType { get; set; }
+        public string Abbreviation { get; set; }
     }
 }

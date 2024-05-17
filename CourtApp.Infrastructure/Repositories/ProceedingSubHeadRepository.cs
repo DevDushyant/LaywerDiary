@@ -19,7 +19,7 @@ namespace CourtApp.Infrastructure.Repositories
             this._repository = _repository;
             this._distributedCache = _distributedCache;
         }
-        public IQueryable<ProceedingSubHeadEntity> Entities => _repository.Entities.Include(o => o.Head);
+        public IQueryable<ProceedingSubHeadEntity> Entities => _repository.Entities;
         public async Task<List<ProceedingSubHeadEntity>> GetListAsync()
         {
             try { var data = _repository.Entities.Include(o => o.Head).ToListAsync(); return await data; }

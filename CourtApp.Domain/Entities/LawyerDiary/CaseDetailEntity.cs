@@ -30,7 +30,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public string CisNumber { get; set; }
         public int CisYear { get; set; }
         public string CnrNumber { get; set; }
-        public DateTime? NextDate { get; set; } = null;
+        public DateTime? NextDate { get; set; }
         public string CaseStageCode { get; set; }
         public Guid LinkedCaseId { get; set; }
         public Guid ClientId { get; set; }

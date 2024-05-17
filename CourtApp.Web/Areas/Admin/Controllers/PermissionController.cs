@@ -41,6 +41,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             allPermissions.GetPermissions(typeof(Permissions.Clients), roleId);
             allPermissions.GetPermissions(typeof(Permissions.ProceedingHeads), roleId);
             allPermissions.GetPermissions(typeof(Permissions.ProceedingSubHeads), roleId);
+            allPermissions.GetPermissions(typeof(Permissions.CaseHearing), roleId);
            
             var role = await _roleManager.FindByIdAsync(roleId);
             model.RoleId = roleId;
@@ -67,11 +68,11 @@ namespace CourtApp.Web.Areas.Admin.Controllers
         {
             var role = await _roleManager.FindByIdAsync(model.RoleId);
             //Remove all Claims First
-            var claims = await _roleManager.GetClaimsAsync(role);
-            foreach (var claim in claims)
-            {
-                await _roleManager.RemoveClaimAsync(role, claim);
-            }
+            //var claims = await _roleManager.GetClaimsAsync(role);
+            //foreach (var claim in claims)
+            //{
+            //    await _roleManager.RemoveClaimAsync(role, claim);
+            //}
             var selectedClaims = model.RoleClaims.Where(a => a.Selected).ToList();
             foreach (var claim in selectedClaims)
             {

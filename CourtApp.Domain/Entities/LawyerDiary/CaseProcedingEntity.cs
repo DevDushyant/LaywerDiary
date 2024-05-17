@@ -14,5 +14,6 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public Guid StageId { get; set; }
         public DateTime NextDate { get; set; }
         public string Remark { get; set; }
+        public string Abbreviation { get; set; }
     }
 }

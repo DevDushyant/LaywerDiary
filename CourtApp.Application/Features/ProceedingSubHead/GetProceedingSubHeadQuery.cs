@@ -37,7 +37,7 @@ namespace CourtApp.Application.Features.ProceedingSubHead
                 Id = e.Id,               
                 Name_En = e.Name_En,
                 Name_Hn = e.Name_Hn,
-                Head=e.Head.Name_Hn
+                Head=e.Head.Name_En
                 
             };
             var predicate = PredicateBuilder.True<ProceedingSubHeadEntity>();
@@ -49,8 +49,8 @@ namespace CourtApp.Application.Features.ProceedingSubHead
             try
             {
 
-                var paginatedList = await repository.Entities
-                    .Include(c => c.Head)                   
+                var paginatedList = await repository.Entities  
+                    .Include(e => e.Head)
                     .Where(predicate)
                     .Select(expression)
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);

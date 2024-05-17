@@ -27,6 +27,8 @@ namespace CourtApp.Application.Features.UserCase
         public Guid CourtTypeId { get; set; }
         public Guid CourtId { get; set; }
         public Guid CaseTyepId { get; set; }
+        public DateTime HearingDate { get; set; }
+        public string CallingFrm { get; set; }
     }
     public class GetCaseDetailsQueryHandler : IRequestHandler<GetCaseDetailsQuery, PaginatedResult<CaseDetailResponse>>
     {
@@ -45,7 +47,7 @@ namespace CourtApp.Application.Features.UserCase
         }
         public async Task<PaginatedResult<CaseDetailResponse>> Handle(GetCaseDetailsQuery request, CancellationToken cancellationToken)
         {
-            
+
             Expression<Func<CaseDetailEntity, CaseDetailResponse>> expression = e => new CaseDetailResponse
             {
                 Id = e.Id,
@@ -55,7 +57,7 @@ namespace CourtApp.Application.Features.UserCase
                 CourtName = e.CourtBench.CourtBench_En,
                 FirstTitle = e.FirstTitle,
                 SecondTitle = e.SecondTitle,
-                NextHearingDate = e.NextDate.Value != Convert.ToDateTime("0001-01-01") ? e.NextDate.Value.ToString("dd/MM/yyyy") : "-",
+                NextHearingDate = e.NextDate != Convert.ToDateTime("0001-01-01") ? e.NextDate.Value.ToString("dd/MM/yyyy") : "-",
                 CaseStage = e.CaseStageCode,//StCodes.Where(s=>s.Key.Equals(e.CaseStageCode)).Select(s=>s.Value).FirstOrDefault(),
                 CaseTitle = e.FirstTitle + " V/S " + e.SecondTitle + "(" + e.CaseNo + "/" + e.CaseYear + ")",
             };
@@ -67,6 +69,12 @@ namespace CourtApp.Application.Features.UserCase
                     predicate = predicate.And(y => y.CaseYear == request.Year);
                 if (request.CaseNumber != string.Empty)
                     predicate = predicate.And(x => x.CaseNo == request.CaseNumber);
+
+                if (request.CallingFrm == "HTD")
+                    predicate = predicate.And(d => d.NextDate.Value.Date == DateTime.Now.Date);
+                if (request.CallingFrm == "BTD")
+                    predicate = predicate.And(d => d.NextDate == null);
+
             }
             try
             {

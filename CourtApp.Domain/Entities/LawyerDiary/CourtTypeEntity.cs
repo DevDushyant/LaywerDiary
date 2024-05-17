@@ -11,5 +11,6 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public new Guid Id { get; set; }
         [Required]
         public string CourtType { get; set; }
+        public string Abbreviation { get; set; }
     }
 }
