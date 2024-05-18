@@ -8,17 +8,13 @@ namespace CourtApp.Web.Areas.Litigation.Models
     public class CaseWorkingViewModel
     {
         public Guid Id { get; set; }
-
-        #region Select List Area
-        public SelectList CaseTitles { get; set; }
+        public SelectList WorkTypes { get; set; }
         public SelectList Works { get; set; }
-        public SelectList SubWorks { get; set; }
-        #endregion
-        
-        public Guid WorkId { get; set; }
-        public List<Guid> SubWorkId { get; set; }
+        public Guid WorkTypeId { get; set; }
+        public List<Guid> WorkId { get; set; }
         public DateTime WorkingDate { get; set; }
         public string Remark { get; set; }
+        public List<Guid> SelectedCases { get; set; }
 
         #region For Displaying Case Working
         public Guid CaseId { get; set; }

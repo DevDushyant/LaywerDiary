@@ -9,14 +9,14 @@ namespace CourtApp.Domain.Entities.LawyerDiary
     {
         public new Guid Id { get; set; }
         public Guid CaseId { get; set; }
+        public Guid WorkTypeId { get; set; }
         public Guid WorkId { get; set; }
-        public Guid SubWorkId { get; set; }
         public DateTime WorkingDate { get; set; }
         public string Remark { get; set; }
         public int Status { get; set; }
         public string Abbreviation { get; set; }
-        public virtual WorkMasterEntity Work { get; set; }
-        public virtual WorkMasterSubEntity SubWork { get; set; }
+        public virtual WorkMasterEntity WorkType { get; set; }
+        public virtual WorkMasterSubEntity Work { get; set; }
         public virtual CaseDetailEntity Case { get; set; }
     }
 }

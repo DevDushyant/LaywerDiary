@@ -21,7 +21,7 @@ namespace CourtApp.Infrastructure.Repositories
         }
         public IQueryable<CaseWorkEntity> Entities =>
             _repository.Entities            
-            .Include(w => w.SubWork)
+            .Include(w => w.Work)
             .Include(w => w.Case);
 
         public async Task DeleteAsync(CaseWorkEntity entity)

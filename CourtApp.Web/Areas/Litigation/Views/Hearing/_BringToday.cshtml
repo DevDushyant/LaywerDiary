@@ -4,7 +4,7 @@
         <form asp-controller="Hearing" method="post" asp-action="UpdateCaseDate" class="d-inline">
             <div class="row">
                 <div class="col-md-12">
-                    <table id="tblTHearingCaseDetail" class="table table-striped" width="100%" cellspacing="0">
+                    <table id="tblBringToday" class="table table-striped" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Sno.</th>
@@ -47,6 +47,17 @@
 </div>
 <script>
     $(document).ready(function () {
-        $("#tblTHearingCaseDetail").DataTable();
-    });   
+        $("#tblBringToday").DataTable(
+            {
+                "language": {
+                    "emptyTable": "No case available for bringing!"
+                }
+            }
+        );
+    });
 </script>
+@* <script>
+    $(document).ready(function () {
+        $("#tblTHearingCaseDetail").DataTable();
+    });
+</script> *@

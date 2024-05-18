@@ -1,12 +1,10 @@
-﻿using CourtApp.Application.Features.CaseStages.Command;
-using CourtApp.Application.Features.CaseStages.Query;
-using CourtApp.Application.Features.CaseWork;
+﻿using CourtApp.Application.Features.CaseWork;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
@@ -16,8 +14,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     {
         public IActionResult Index()
         {
-            var model = new CaseWorkingViewModel();
-            return View(model);
+            return View();
         }
         public async Task<IActionResult> LoadAll()
         {
@@ -25,94 +22,143 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<CaseWorkingViewModel>>(response.Data);
-                return PartialView("_ViewAll", viewModel);
+                var model = new PendingWorkDataViewModel();
+                List<CaseTitleWorkData> work = new List<CaseTitleWorkData>();
+                List<WorkDt> wdt = new List<WorkDt>();
+                foreach (var item in viewModel)
+                {
+                    var PWorkCase = new CaseTitleWorkData();
+                    PWorkCase.CaseTitle = item.CaseDetail;
+                    PWorkCase.Id = item.CaseId;
+                    foreach (var w in item.AWorks)
+                    {
+                        var wt = new WorkDt();
+                        wt.Work = w.WorkDetail;
+                        wt.Id = w.Id;
+                        wdt.Add(wt);
+                    }
+                    PWorkCase.Works = wdt;
+                    work.Add(PWorkCase);
+                }
+                model.PendingWork = work;
+                return PartialView("_ViewAll", model);
             }
             return null;
         }
 
-        public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
-        {
-            if (id == Guid.Empty)
-            {
-                var ViewModel = new CaseWorkingViewModel();
-                ViewModel.CaseTitles = await UserCaseTitle();
-                ViewModel.Works = await DdlWorks();
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
-            }
-            else
-            {
-                var response = await _mediator.Send(new CaseStageByIdQuery() { Id = id });
-                if (response.Succeeded)
-                {
-                    var brandViewModel = _mapper.Map<CaseWorkingViewModel>(response.Data);
-                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", brandViewModel) });
-                }
-                return null;
-            }
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> OnPostCreateOrEdit(Guid id, CaseWorkingViewModel ViewModel)
+        public async Task<IActionResult> Update(PendingWorkDataViewModel model)
         {
             if (ModelState.IsValid)
             {
-                if (id == Guid.Empty)
+                if (model.PendingWork != null)
                 {
-                    var cmd = _mapper.Map<CreateCaseWorkCommand>(ViewModel);
-                    var result = await _mediator.Send(cmd);
-                    if (result.Succeeded)
+                    var CaseDl = model.PendingWork.Select(s => new CaseTitleWorkData
                     {
-                        id = result.Data;
-                        _notify.Success($"Case work with ID {result.Data} Created.");
+                        Id = s.Id,
+                        CaseTitle = s.CaseTitle,
+                        Works = s.Works
+                    });
+                    var WorksDl = CaseDl.Select(s => s.Works);
+                    List<Guid> WorkIds = new List<Guid>();
+                    foreach (var works in WorksDl)
+                        foreach (var item in works)
+                        {
+                            WorkIds.Add(item.Id);
+                        }
+                    if (WorkIds != null)
+                    {
+                        var result = await _mediator.Send(new UpdateCWorkStatusCommand { CWorkId = WorkIds });
+                        if (result.Succeeded) _notify.Information($"Case Work with ID {result.Data} Updated.");
+                        else _notify.Error(result.Message);
                     }
-                    else _notify.Error(result.Message);
-                }
-                else
-                {
-                    var updateBookCommand = _mapper.Map<UpdateCaseStageCommand>(ViewModel);
-                    var result = await _mediator.Send(updateBookCommand);
-                    if (result.Succeeded) _notify.Information($"Case Nature with ID {result.Data} Updated.");
-                }
-                var response = await _mediator.Send(new GetAssignedWorkQuery { PageSize = 10, PageNumber = 1 });
-                if (response.Succeeded)
-                {
-                    var viewModel = _mapper.Map<List<CaseWorkingViewModel>>(response.Data);
-                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                    return new JsonResult(new { isValid = true, html = html });
-                }
-                else
-                {
-                    _notify.Error(response.Message);
-                    return null;
                 }
             }
-            else
-            {
-                var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
-                return new JsonResult(new { isValid = false, html = html });
-            }
+            return RedirectToAction("Index");
         }
 
-        public async Task<JsonResult> UpdateCaseWorkStatus(List<Guid> CWorkId)
-        {
-            if (CWorkId != null)
-            {
-                var result = await _mediator.Send(new UpdateCWorkStatusCommand { CWorkId = CWorkId });
-                if (result.Succeeded) _notify.Information($"Case Work with ID {result.Data} Updated.");
-                else _notify.Error(result.Message);
-            }
-            var response = await _mediator.Send(new GetAssignedWorkQuery { PageSize = 10, PageNumber = 1 });
-            if (response.Succeeded)
-            {
-                var viewModel = _mapper.Map<List<CaseWorkingViewModel>>(response.Data);
-                var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                return new JsonResult(new { isValid = true, html = html });
-            }
-            else
-            {
-                _notify.Error(response.Message);
-                return null;
-            }
-        }
+        //public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
+        //{
+        //    if (id == Guid.Empty)
+        //    {
+        //        var ViewModel = new CaseWorkingViewModel();
+        //        ViewModel.WorkTypes = await DdlWorks();
+        //        //ViewModel.Works = await DdlSubWorks();
+        //        return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
+        //    }
+        //    else
+        //    {
+        //        var response = await _mediator.Send(new CaseStageByIdQuery() { Id = id });
+        //        if (response.Succeeded)
+        //        {
+        //            var brandViewModel = _mapper.Map<CaseWorkingViewModel>(response.Data);
+        //            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", brandViewModel) });
+        //        }
+        //        return null;
+        //    }
+        //}
+
+        //[HttpPost]
+        //public async Task<JsonResult> OnPostCreateOrEdit(Guid id, CaseWorkingViewModel ViewModel)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        if (id == Guid.Empty)
+        //        {
+        //            var cmd = _mapper.Map<CreateCaseWorkCommand>(ViewModel);
+        //            var result = await _mediator.Send(cmd);
+        //            if (result.Succeeded)
+        //            {
+        //                id = result.Data;
+        //                _notify.Success($"Case work with ID {result.Data} Created.");
+        //            }
+        //            else _notify.Error(result.Message);
+        //        }
+        //        else
+        //        {
+        //            var updateBookCommand = _mapper.Map<UpdateCaseStageCommand>(ViewModel);
+        //            var result = await _mediator.Send(updateBookCommand);
+        //            if (result.Succeeded) _notify.Information($"Case Nature with ID {result.Data} Updated.");
+        //        }
+        //        var response = await _mediator.Send(new GetAssignedWorkQuery { PageSize = 10, PageNumber = 1 });
+        //        if (response.Succeeded)
+        //        {
+        //            var viewModel = _mapper.Map<List<CaseWorkingViewModel>>(response.Data);
+        //            var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+        //            return new JsonResult(new { isValid = true, html = html });
+        //        }
+        //        else
+        //        {
+        //            _notify.Error(response.Message);
+        //            return null;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
+        //        return new JsonResult(new { isValid = false, html = html });
+        //    }
+        //}
+
+        //public async Task<JsonResult> UpdateCaseWorkStatus(List<Guid> CWorkId)
+        //{
+        //    if (CWorkId != null)
+        //    {
+        //        var result = await _mediator.Send(new UpdateCWorkStatusCommand { CWorkId = CWorkId });
+        //        if (result.Succeeded) _notify.Information($"Case Work with ID {result.Data} Updated.");
+        //        else _notify.Error(result.Message);
+        //    }
+        //    var response = await _mediator.Send(new GetAssignedWorkQuery { PageSize = 10, PageNumber = 1 });
+        //    if (response.Succeeded)
+        //    {
+        //        var viewModel = _mapper.Map<List<CaseWorkingViewModel>>(response.Data);
+        //        var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+        //        return new JsonResult(new { isValid = true, html = html });
+        //    }
+        //    else
+        //    {
+        //        _notify.Error(response.Message);
+        //        return null;
+        //    }
+        //}
     }
 }

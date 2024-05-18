@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = localizer["Today's Hearing Case List"];
+    ViewData["Title"] = localizer["Today's Hearing Case Register"];
     ViewData["Caption"] = localizer["Your Case List"];
 }
 <div class="card">
@@ -12,13 +12,13 @@
         }
         @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseHearing.Work)).Result.Succeeded)
         {
-            <a id="btnWork" onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseWork','Assign Work')" class="btn bg-success">
+            <a id="btnWork" onclick="jQueryModalGet('/Litigation/hearing/AssignWorkCase','Assign Work')" class="btn bg-success">
                 <i class="fa fa-plus-square"></i> Work
             </a>
         }
         @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseHearing.BringToday)).Result.Succeeded)
         {
-            <a id="btnWork" onclick="jQueryModalGet('/Litigation/hearing/GetCaseHearing','Bring Today')" class="btn bg-success">
+            <a id="btnBirngToday" onclick="jQueryModalGet('/Litigation/hearing/GetCaseHearing','Bring Today')" class="btn bg-success">
                 <i class="fa fa-calendar"></i> Bring Today
             </a>
         }
@@ -39,6 +39,25 @@
         function loadData() {
             $('#viewAll').load('/Litigation/Hearing/LoadAll');
         }
-       
+
+        $("#btnWork").click(function () {
+            var caseHtml = "";
+            var CaseArr = [];
+            $('#tblTHearingCaseDetail tbody tr').each(function () {
+                if ($(this).find("input[type=Checkbox]").is(":checked")) {
+                    CaseArr.push($(this).find('input[type="hidden"]').val());
+                }
+            });
+            if (CaseArr.length > 0) {
+                $.each(CaseArr, function (index, value) {
+                    caseHtml += "<input type='hidden' value='" + value + "'/>";
+                });
+                $("#create-form").appendTo(caseHtml);
+            }
+            else {
+                alert("Please select atleast one case!", "", "warning");
+                return;
+            }
+        });
     </script>
 }

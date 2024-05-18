@@ -1,7 +1,7 @@
 ﻿@model BringTodayCaseViewModel
 <div class="card">
     <div id="viewAll" class="card-body table-responsive">
-        <form asp-controller="Hearing" method="post" asp-action="UpdateCaseDate" class="d-inline">
+        <form asp-controller="Hearing" method="post" asp-action="AssignWorkCase" class="d-inline" return=jQueryModalGet(this)>
             <div class="row">
                 <div class="col-md-12">
                     <table id="tblTHearingCaseDetail" class="table table-striped" width="100%" cellspacing="0">
@@ -37,12 +37,18 @@
                         </tbody>
                     </table>
                 </div>
-            </div>            
+            </div>
         </form>
     </div>
 </div>
 <script>
     $(document).ready(function () {
-        $("#tblTHearingCaseDetail").DataTable();
-    });   
+        $("#tblTHearingCaseDetail").DataTable(
+            {
+                "language": {
+                    "emptyTable": "There are no hearing today!"
+                }
+            }
+        );
+    });
 </script>

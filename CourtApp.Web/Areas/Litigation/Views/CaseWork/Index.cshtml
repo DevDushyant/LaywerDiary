@@ -1,22 +1,10 @@
 ﻿@{
-    ViewData["Title"] = localizer["Case Pending Work List"];
-    // ViewData["Caption"] = localizer["Work List"];
+    ViewData["Title"] = localizer["Pending Work Register"];
+  
 }
 @model CaseWorkingViewModel
 <div class="card">
-    <div class="col-sm-12" style="padding:20px">
-        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseWorks.Create)).Result.Succeeded)
-        {
-            <a class="btn bg-success" id="btnSave">
-                <i class="fa fa-handshake-o"></i> Save
-            </a>
-        }
-
-        @*  <a id="reload" class="btn btn-primary text-white">
-        <i class="fa fas fa-bolt"></i>
-        Reload
-        </a> *@
-    </div>
+   
     <div id="viewAll" class="card-body table-responsive">
     </div>
 </div>
@@ -32,9 +20,6 @@
         });
         function loadData() {
             $('#viewAll').load('/Litigation/CaseWork/LoadAll');
-        }
-        $("#btnSave").click('click', function () {
-            alert("hello");
-        });
+        }        
     </script>
 }

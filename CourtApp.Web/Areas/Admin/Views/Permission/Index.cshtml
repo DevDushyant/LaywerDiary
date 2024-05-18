@@ -1,6 +1,5 @@
 ﻿@model CourtApp.Web.Areas.Admin.Models.PermissionViewModel
 <div class="card">
-
     <div id="viewAll" class="card-body table-responsive">
         <form asp-controller="Permission" method="post" asp-action="Update" class="d-inline">
             <input asp-for="@Model.RoleId" type="hidden" />
