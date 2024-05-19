@@ -68,15 +68,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<JsonResult> AssignWorkCase(BringTodayCaseViewModel model)
+        public async Task<JsonResult> AssignWorkCase()
         {
-            if (model.CaseList!=null)
-            {
-                var ViewModel = new CaseWorkingViewModel();
-                ViewModel.WorkTypes = await DdlWorks();
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_AssignWork", ViewModel) });
-            }
-            return null;
+            var ViewModel = new CaseWorkingViewModel();
+            ViewModel.WorkTypes = await DdlWorks();
+            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_AssignWork", ViewModel) });
         }
 
         [HttpPost]

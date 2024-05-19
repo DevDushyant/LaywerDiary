@@ -33,7 +33,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         {
             if (Id == Guid.Empty)
             {
-                var ViewModel = new WorkMasterViewModel();               
+                var ViewModel = new WorkMasterViewModel();
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
             }
             else
@@ -56,24 +56,15 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 if (Id == Guid.Empty)
                 {
-                    try
+                    var cmd = _mapper.Map<WorkMasterCommand>(viewModel);
+                    cmd.ActionType = ((int)ActionTypes.Add);
+                    var result = await _mediator.Send(cmd);
+                    if (result.Succeeded)
                     {
-                        var cmd = _mapper.Map<WorkMasterCommand>(viewModel);
-                        cmd.ActionType = ((int)ActionTypes.Add);
-                        var result = await _mediator.Send(cmd);
-                        if (result.Succeeded)
-                        {
-                            Id = result.Data;
-                            _notify.Success($"Work Master with ID {result.Data} Created.");
-                            //var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                            //return new JsonResult(new { isValid = true, html = html });
-                        }
-                        else _notify.Error(result.Message);
+                        Id = result.Data;
+                        _notify.Success($"Work Master with ID {result.Data} Created.");
                     }
-                    catch (Exception ex)
-                    {
-
-                    }
+                    else _notify.Error(result.Message);
                 }
                 else
                 {
@@ -81,13 +72,22 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     cmd.ActionType = ((int)ActionTypes.Update);
                     var result = await _mediator.Send(cmd);
                     if (result.Succeeded)
-                    {
                         _notify.Information($"Work Master with ID {result.Data} Updated.");
-                        //var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                       // return new JsonResult(new { isValid = true, html = html });
-                    }
                     else _notify.Error(result.Message);
                 }
+                var response = await _mediator.Send(new GetWorkMasterCommand());
+                if (response.Succeeded)
+                {
+                    var vm = _mapper.Map<List<WorkMasterViewModel>>(response.Data);
+                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", vm);
+                    return new JsonResult(new { isValid = true, html = html });
+                }
+                else
+                {
+                    _notify.Error(response.Message);
+                    return null;
+                }
+
 
             }
             else

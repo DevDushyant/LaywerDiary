@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 
 namespace CourtApp.Web.Areas.Client.Model
@@ -22,5 +23,9 @@ namespace CourtApp.Web.Areas.Client.Model
         public int StateCode { get; set; }
         public SelectList Districts { get; set; }
         public int DistrictCode { get; set; }
+        [TempData]
+        public string StatusMessage { get; set; }
+        public Guid CaseId { get; set; }
+
     }
 }

@@ -1,12 +1,14 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using CourtApp.Infrastructure.CacheKeys;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CourtApp.Application.Constants.Permissions;
 
 namespace CourtApp.Infrastructure.Repositories
 {
@@ -27,9 +29,9 @@ namespace CourtApp.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<CourtBenchEntity> GetByIdAsync(Guid Id)
+        public async Task<CourtBenchEntity> GetByIdAsync(Guid Id)
         {
-            throw new NotImplementedException();
+            return await _repository.Entities.Where(p => p.Id == Id).FirstOrDefaultAsync();
         }
 
         public Task<List<CourtBenchEntity>> GetListAsync()

@@ -4,6 +4,7 @@ using CourtApp.Application.Features.Clients.Queries.GetById;
 using CourtApp.Application.Features.CourtType.Query;
 using CourtApp.Application.Features.Queries.Districts;
 using CourtApp.Application.Features.Queries.States;
+using CourtApp.Application.Features.WorkMaster;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models;
@@ -34,7 +35,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 return PartialView("_ViewAll", viewModel);
             }
             return null;
-        }        
+        }
         public async Task<IActionResult> CreateOrUpdateAsync(Guid id)
         {
             if (id == Guid.Empty)
@@ -77,7 +78,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostCreateOrEdit(Guid id, ClientViewModel btViewModel)
+        public async Task<IActionResult> OnPostCreateOrEdit(Guid id, ClientViewModel btViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -89,8 +90,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     {
                         id = result.Data;
                         _notify.Success($"Client with ID {result.Data} Created.");
+                        btViewModel.StatusMessage = "Record created successfully";
                     }
                     else _notify.Error(result.Message);
+                    return View("_CreateOrEdit", btViewModel);
                 }
                 else
                 {
@@ -143,6 +146,14 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 _notify.Error(deleteCommand.Message);
                 return null;
             }
+        }
+
+        public async Task<JsonResult> OnGetCreateOrEdit(Guid CaseId)
+        {
+            var ViewModel = new ClientViewModel();
+            ViewModel.CaseId = CaseId;
+            await BindDropdownAsync(ViewModel);
+            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
         }
     }
 }

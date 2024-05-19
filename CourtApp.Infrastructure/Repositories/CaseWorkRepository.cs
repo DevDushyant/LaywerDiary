@@ -38,8 +38,8 @@ namespace CourtApp.Infrastructure.Repositories
 
         public async Task<List<CaseWorkEntity>> GetListAsync()
         {
-            var data = _repository.Entities.ToListAsync();
-            return await data;
+            var data =await _repository.Entities.ToListAsync();
+            return  data;
         }
 
         public async Task<Guid> InsertAsync(CaseWorkEntity entity)

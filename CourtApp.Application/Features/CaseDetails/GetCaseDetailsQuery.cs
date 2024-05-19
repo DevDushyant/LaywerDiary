@@ -72,8 +72,8 @@ namespace CourtApp.Application.Features.UserCase
 
                 if (request.CallingFrm == "HTD")
                     predicate = predicate.And(d => d.NextDate.Value.Date == DateTime.Now.Date);
-                if (request.CallingFrm == "BTD")
-                    predicate = predicate.And(d => d.NextDate == null);
+                //if (request.CallingFrm == "BTD")
+                  //  predicate = predicate.And(d => d.NextDate == null);
 
             }
             try

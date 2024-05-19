@@ -1,6 +1,7 @@
 ﻿using CourtApp.Application.Features.BookMasters.Command;
 using CourtApp.Application.Features.Case;
 using CourtApp.Application.Features.CaseCategory;
+using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.CaseProceeding;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.UserCase;
@@ -18,8 +19,6 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     {
         public IActionResult Index()
         {
-            //var model = new GetCaseViewModel();
-            //return View(model);
             return View();
         }
 
@@ -38,24 +37,24 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             var ClientList = await _mediator.Send(new GetAllClientCachedQuery() { });
             if (id == Guid.Empty)
-            {                
+            {
                 var caseViewModel = new CaseViewModel();
                 caseViewModel.InstitutionDate = DateTime.Now;
                 caseViewModel.CourtTypes = await LoadCourtTypes();
                 caseViewModel.CourtDistricts = await DdlLoadCourtDistricts(1);
-                
+
                 caseViewModel.CaseNatures = await LoadCaseNature();
                 caseViewModel.CaseKinds = await LoadCaseKinds();
-                
+
                 caseViewModel.CaseStages = await DdlCaseStages();
                 caseViewModel.FirstTitleList = FirstTtitleList();
                 caseViewModel.SecondTitleList = SecondTtitleList();
                 caseViewModel.Years = DdlYears();
                 caseViewModel.CaseStatusList = DdlCaseStatus();
-                caseViewModel.LinkedBy =DdlClient().Result;
-                caseViewModel.Cadres =DdlCadres();            
-                caseViewModel.Strengths =DdlStrength();            
-                caseViewModel.States =await LoadStates();            
+                caseViewModel.LinkedBy = DdlClient().Result;
+                caseViewModel.Cadres = DdlCadres();
+                caseViewModel.Strengths = DdlStrength();
+                caseViewModel.States = await LoadStates();
                 return View("_CreateOrEdit", caseViewModel);
             }
             else
@@ -65,20 +64,23 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostCreateOrEdit(Guid Id, CaseViewModel ViewModel)
+        public async Task<IActionResult> OnPostCreateOrEdit(Guid Id, CaseViewModel ViewModel)
         {
             if (ModelState.IsValid)
             {
                 if (Id == Guid.Empty)
                 {
-                    var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);                    
+                    var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);
                     var result = await _mediator.Send(createCommand);
-                    if (result.Succeeded) {
+                    if (result.Succeeded)
+                    {
+                        ViewModel.StatusMessage = "Record created successfully";
+                        ViewModel.Id = result.Data;
                         _notify.Success($"Case created with ID {result.Data} Created.");
-                        var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", ViewModel);
-                        return new JsonResult(new { isValid = true, html = html });
-                    }                    
+
+                    }
                     else _notify.Error(result.Message);
+                    return View("_CreateOrEdit", ViewModel);
                 }
                 else
                 {
@@ -87,19 +89,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     if (result.Succeeded)
                         _notify.Information($"Book type with ID {result.Data} Updated.");
                 }
-                //var response = await _mediator.Send(new QueryGetAllCaseEntry() { PageNumber = 1, PageSize = 100 });
-                //if (response.Succeeded)
-                //{
-                //    var viewModel = _mapper.Map<List<CaseViewModel>>(response.Data);
-                //    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                //    return new JsonResult(new { isValid = true, html = html });
-                //}
-                //else
-                //{
-                //    _notify.Error(response.Message);
-                //    return null;
-                //}
-                return new JsonResult(new { isValid = false, html = "" });
+                return View("_CreateOrEdit", null);
+
             }
             else
             {
@@ -136,7 +127,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 var ViewModel = new CaseProceedingViewModel();
                 ViewModel.Heads = await DdlProcHeads();
-                ViewModel.NextStages =  await DdlCaseStages();
+                ViewModel.NextStages = await DdlCaseStages();
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", ViewModel) });
             }
             else
@@ -145,7 +136,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 if (response.Succeeded)
                 {
                     var ViewModel = _mapper.Map<CaseProceedingViewModel>(response.Data);
-                    
+
                     return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
                 }
                 return null;
@@ -183,6 +174,19 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
         #endregion
 
-       
+
+        #region Case History Resion
+        public async Task<JsonResult> OnGetCaseHistory(Guid CaseId)
+        {
+            var response = await _mediator.Send(new GetCaseHistoryQuery() { CaseId = CaseId });
+            if (response.Succeeded)
+            {               
+                var model = _mapper.Map<CaseHistoryViewModel>(response.Data);                
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseHistory", model) });
+            }
+            return null;
+        }
+        #endregion
+
     }
 }

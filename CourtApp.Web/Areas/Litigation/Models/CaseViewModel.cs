@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 
@@ -54,5 +55,8 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public int? StateId { get; set; }
         public int? StrengthId { get; set; }
         #endregion   
+
+        [TempData]
+        public string StatusMessage { get; set; }
     }    
 }

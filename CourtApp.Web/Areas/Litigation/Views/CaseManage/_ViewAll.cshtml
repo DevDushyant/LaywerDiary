@@ -8,9 +8,9 @@
             <th>Number</th>
             <th>Parties</th>
             <th>Court</th>
-            <th>Stage</th>          
-            <th>Next Date</th>  
-            @* <th></th> *@
+            <th>Stage</th>
+            <th>Next Date</th>
+            <th></th>
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded
             || (AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Edit)).Result.Succeeded)
             {
@@ -46,16 +46,15 @@
                 <td>
                     @bt.CaseStage
                 </td>
-               @*  <td>
-                    @bt.Status
-                </td> *@
+                @*  <td>
+            @bt.Status
+            </td> *@
                 <td>
                     @bt.NextHearingDate
                 </td>
-                @* <td>
-                    <input type="hidden" value="@bt.Id" />
-                    <input type="checkbox"/>
-                </td> *@
+                <td>
+                    <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-history"></a>
+                </td>
                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                 {
                     <td text-right">

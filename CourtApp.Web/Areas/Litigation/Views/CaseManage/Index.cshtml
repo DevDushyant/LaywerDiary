@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = localizer["Case List"];
+    ViewData["Title"] = localizer["User Case List"];
     ViewData["Caption"] = localizer["Your Case List"];
 }
 <style>
@@ -7,7 +7,6 @@
         display: none;
     }
 </style>
-@* @model GetCaseViewModel *@
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
         @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Create)).Result.Succeeded)

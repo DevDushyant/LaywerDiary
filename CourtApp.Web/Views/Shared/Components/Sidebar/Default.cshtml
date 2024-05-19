@@ -367,15 +367,36 @@
                     </li>
                 }
                 <li class="nav-header">@localizer["Reports"]</li>
-                <li is-active-route asp-area="Reports" class="nav-item has-treeview">
-                    <a is-active-route asp-area="Reports" class="nav-link">
-                        <i class="nav-icon fa fa-pie-chart"></i>
+                <li is-active-route asp-area="Client" class="nav-item has-treeview">
+                    <a is-active-route asp-area="Client" class="nav-link">
+                        <i class="nav-icon fas fa fa-registered"></i>
                         <p>
-                            @localizer["Reports"]
-
+                            @localizer["Registers"]
+                            <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Client" asp-controller="ManageClient" asp-action="index" class="nav-link">
+                                <i class="fa fa-close" aria-hidden="true"></i>
+                                <p>@localizer["Disposal Register"]</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Client" asp-controller="ManageClient" asp-action="index" class="nav-link">
+                                <i class="fa fa-copy" aria-hidden="true"></i>
+                                <p>@localizer["Copying Register"]</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Client" asp-controller="ManageClient" asp-action="index" class="nav-link">
+                                <i class="fa fa-institution" aria-hidden="true"></i>
+                                <p>@localizer["Institution Register"]</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+                
             </ul>
         </nav>
     </div>
