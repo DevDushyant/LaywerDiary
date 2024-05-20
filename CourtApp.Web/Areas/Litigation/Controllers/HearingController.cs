@@ -1,6 +1,5 @@
 ﻿using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.CaseStages.Command;
-using CourtApp.Application.Features.CaseStages.Query;
 using CourtApp.Application.Features.CaseWork;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
@@ -68,10 +67,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<JsonResult> AssignWorkCase()
+        public async Task<JsonResult> AssignWorkCase(Guid CaseId)
         {
             var ViewModel = new CaseWorkingViewModel();
             ViewModel.WorkTypes = await DdlWorks();
+            ViewModel.CaseId = CaseId;
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_AssignWork", ViewModel) });
         }
 

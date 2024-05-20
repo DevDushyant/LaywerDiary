@@ -2,6 +2,7 @@
 <form id="create-form" method="post" asp-controller="hearing" asp-action="OnPostAssignWork" asp-route-Id="@Model.CaseId" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-12">
+            <input type="hidden" asp-for="CaseId" />
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">@localizer["Work Type"]</label>
                 <div class="col-md-9">
@@ -18,7 +19,7 @@
                 <label class="col-md-3 col-form-label">@localizer["Work"]</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                        <select class="form-control select2bs4" asp-for="WorkId"  >
+                        <select class="form-control select2bs4" asp-for="WorkId">
                             <option></option>
                         </select>
                     </div>
@@ -44,19 +45,20 @@
             </div>
 
             <div class="form-group row">
-                <div class="col-md-12">                   
+                <div class="col-md-12">
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="form-group justify-content-between" style="margin-bottom: 0px !important">      
-        <button id="btnSubmit" type="button" class="btn btn-success">Save</button>
+    <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
+        <button type="submit" class="btn btn-success">Save</button>
+        @* <button id="btnSubmit" type="button" class="btn btn-success">Save</button> *@
         <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
     </div>
 </form>
 <script type="text/javascript" language="javascript">
-    
+
     $("#WorkTypeId").select2({
         placeholder: "Select a work type",
         theme: "bootstrap4",
@@ -71,7 +73,7 @@
             return m;
         }
     });
-   
+
     $("#WorkTypeId").on("change", function () {
         $("#WorkId").empty();
         $.getJSON("/Litigation/CaseWork/DdlSubWorks?WorkId=" + $("#WorkTypeId").val(), function (data) {
@@ -84,7 +86,7 @@
     $("#btnSubmit").on("click", function () {
         Upseart();
     });
-    Upseart = function () {      
+    Upseart = function () {
         var CaseIds = [];
         $('#tblTHearingCaseDetail tbody tr').each(function () {
             if ($(this).find("input[type='checkbox'").is(":checked")) {
@@ -99,7 +101,7 @@
         formData.append("WorkId", selectedWorks);
         formData.append("WorkingDate", $("#WorkingDate").val());
         formData.append("Remark", $("#Remark").val());
-        
+
         $.ajax({
             type: 'POST',
             url: url,

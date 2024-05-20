@@ -38,7 +38,9 @@ namespace CourtApp.Infrastructure.Repositories
 
         public async Task<List<CaseWorkEntity>> GetListAsync()
         {
-            var data =await _repository.Entities.ToListAsync();
+            var data =await _repository.Entities
+                .Include(w=>w.Work)
+                .ToListAsync();
             return  data;
         }
 

@@ -10,7 +10,7 @@
             <th>Court</th>
             <th>Stage</th>
             <th>Next Date</th>
-            <th></th>
+            <th>Case History</th>
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded
             || (AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Edit)).Result.Succeeded)
             {

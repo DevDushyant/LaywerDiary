@@ -4,7 +4,7 @@
 }
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
-        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseHearing.Proceeding)).Result.Succeeded)
+        @* @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseHearing.Proceeding)).Result.Succeeded)
         {
             <a id="btnProceeding" onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseProceeding','Assign Proceeding')" class="btn bg-success">
                 <i class="fa fa-plus-square"></i> Proceeding
@@ -15,7 +15,7 @@
             <a id="btnWork" onclick="jQueryModalGet('/Litigation/hearing/AssignWorkCase','Assign Work')" class="btn bg-success">
                 <i class="fa fa-plus-square"></i> Work
             </a>
-        }
+        } *@
         @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseHearing.BringToday)).Result.Succeeded)
         {
             <a id="btnBirngToday" onclick="jQueryModalGet('/Litigation/hearing/GetCaseHearing','Bring Today')" class="btn bg-success">

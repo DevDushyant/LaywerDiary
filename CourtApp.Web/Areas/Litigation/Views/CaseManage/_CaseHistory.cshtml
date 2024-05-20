@@ -6,26 +6,14 @@
                 <div class="col-md-12">
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label">@localizer["Court"]</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                @localizer[Model.Court]
-                            </div>                            
-                        </div>
+                        <label class="col-md-4 col-form-label">@localizer[Model.Court]</label>
                         <label class="col-md-2 col-form-label">@localizer["Case No/Year"]</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                @localizer[Model.CaseNoYear]
-                            </div>
-                        </div>
+                        <label class="col-md-4 col-form-label"> @localizer[Model.CaseNoYear]</label>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label">@localizer["Case Title"]</label>
-                        <div class="col-md-10">
-                            <div class="input-group">
-                                @localizer[Model.Title]
-                            </div>
-                        </div>                       
+                        <label class="col-md-4 col-form-label">@localizer[Model.Title]</label>
                     </div>
                 </div>
             </div>
@@ -41,7 +29,7 @@
                                 <th>Proceeding/Work Done</th>
                             </tr>
                         </thead>
-                        <tbody>                           
+                        <tbody>
                             @for (int i = 0; i < Model.History.Count(); i++)
                             {
                                 <tr>
@@ -62,7 +50,10 @@
                         </tbody>
                     </table>
                 </div>
-            </div>           
+            </div>
+            <div class="form-group justify-content-between" style="margin-bottom: 0px !important">              
+                <button type="submit" class="btn btn-warning close-button" data-dismiss="modal">Cancel</button>
+            </div>
         </form>
     </div>
 </div>

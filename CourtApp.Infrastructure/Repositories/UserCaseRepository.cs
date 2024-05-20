@@ -30,7 +30,14 @@ namespace CourtApp.Infrastructure.Repositories
 
         public async Task<CaseDetailEntity> GetByIdAsync(Guid CaseUid)
         {
-            return await _repository.Entities.Where(p => p.Id == CaseUid).FirstOrDefaultAsync();
+            return await _repository
+                .Entities
+                .Include(ct => ct.CaseType)
+                .Include(c => c.CourtType)
+                .Include(c => c.CourtBench)
+                .Include(c => c.CaseCategory)
+                .Where(p => p.Id == CaseUid)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<List<CaseDetailEntity>> GetListAsync()

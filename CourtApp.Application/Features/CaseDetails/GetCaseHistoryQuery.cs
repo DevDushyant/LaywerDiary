@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.Results;
+using AutoMapper;
 using CourtApp.Application.DTOs.CaseDetails;
 using CourtApp.Application.DTOs.CaseWorking;
 using CourtApp.Application.Features.BookMasters.Query;
@@ -19,54 +20,43 @@ namespace CourtApp.Application.Features.CaseDetails
     }
     public class GetCaseHistoryQueryHandler : IRequestHandler<GetCaseHistoryQuery, Result<CaseHistoryResposnse>>
     {
-        private readonly IUserCaseRepository _CaseRepo;
-        private readonly ICourtTypeCacheRepository _RepoCourtType;
-        private readonly ICaseStageCacheRepository _RepoStage;
-        private readonly ICourtBenchRepository _CourtRepo;
-        private readonly ICaseWorkRepository _CaseWork;
+        private readonly IUserCaseRepository _CaseRepo;       
         private readonly IWorkMasterSubRepository _WorkMasterSub;
-
-        public GetCaseHistoryQueryHandler(IUserCaseRepository _CaseRepo, ICourtTypeCacheRepository _RepoCourtType,
-            ICaseStageCacheRepository _RepoStage, ICourtBenchRepository courtRepo,
-            ICaseWorkRepository _CaseWork, IWorkMasterSubRepository _WorkMasterSub)
+        private readonly ICaseWorkRepository _CaseWorkRepo;
+        private readonly IMapper _mapper;
+        public GetCaseHistoryQueryHandler(IUserCaseRepository _CaseRepo,           
+            IWorkMasterSubRepository _WorkMasterSub, IMapper _mapper,
+            ICaseWorkRepository _CaseWorkRepo)
         {
-            this._CaseRepo = _CaseRepo;
-            this._RepoCourtType = _RepoCourtType;
-            this._RepoStage = _RepoStage;
-            _CourtRepo = courtRepo;
-            this._CaseWork = _CaseWork;
+            this._CaseRepo = _CaseRepo;           
             this._WorkMasterSub = _WorkMasterSub;
+            this._mapper = _mapper;
+            this._CaseWorkRepo = _CaseWorkRepo;
         }
         public async Task<Result<CaseHistoryResposnse>> Handle(GetCaseHistoryQuery request, CancellationToken cancellationToken)
         {
-            var CaseDetail = await _CaseRepo.GetByIdAsync(request.CaseId);
-            var courtDetail = await _RepoCourtType.GetByIdAsync(CaseDetail.CourtTypeId);
-            var court = await _CourtRepo.GetByIdAsync(CaseDetail.CourtBenchId);
-            var CaseWork = _CaseWork.Entities.AsEnumerable()
-                .Where(c => c.CaseId == request.CaseId)
-                .Select(s => new CaseWorkDto
-                {
-                    WDate = s.WorkingDate.ToString("dd/MM/yyyy"),
-                    WorkId = s.WorkId
-                });
-
-            var workdt = from w in CaseWork.ToList()
-                         join sw in await _WorkMasterSub.GetListAsync() on w.WorkId equals sw.WorkId
-                         select new CaseHistoryData
-                         {
-                             Date=w.WDate,
-                             Stage="",
-                             Activity=sw.Name_En
-                         };
-
-            CaseHistoryResposnse chr = new CaseHistoryResposnse();
-            chr.Id = request.CaseId;
-            chr.CaseNoYear = CaseDetail.CaseNo + "/" + CaseDetail.CaseYear;
-            chr.Title = CaseDetail.FirstTitle + " Vs " + CaseDetail.SecondTitle;
-            chr.CourtType = courtDetail.CourtType;
-            chr.Court = court.CourtBench_En;
-            chr.History = workdt.ToList();
-            return Result<CaseHistoryResposnse>.Success(chr);
+            var detail = await _CaseRepo.GetByIdAsync(request.CaseId);
+            if (detail != null)
+            {
+                var mappeddata = _mapper.Map<UserCaseDetailResponse>(detail);
+                CaseHistoryResposnse chr = new CaseHistoryResposnse();
+                chr.Id = request.CaseId;
+                chr.CaseNoYear = detail.CaseNo + "/" + detail.CaseYear;
+                chr.Title = detail.FirstTitle + " Vs " + detail.SecondTitle;
+                chr.CourtType = detail.CourtType.CourtType;
+                chr.Court = detail.CourtBench.CourtBench_En;
+                var cwd = await _CaseWorkRepo.GetListAsync();
+                var cwdata = cwd.Where(w => w.CaseId == request.CaseId)
+                    .Select(s => new CaseHistoryData
+                    {
+                        Date = s.WorkingDate.ToString("dd/MM/yyyy"),
+                        Stage = "",
+                        Activity = s.Work.Name_En
+                    });
+                chr.History = cwdata.ToList();
+                return Result<CaseHistoryResposnse>.Success(chr);
+            }
+            return null;
         }
     }
 }

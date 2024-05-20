@@ -16,7 +16,8 @@ namespace CourtApp.Application.Features.CaseWork
         public List<Guid> WorkId { get; set; }
         public DateTime WorkingDate { get; set; }
         public string Remark { get; set; }
-        public List<Guid> SelectedCases { get; set; }
+        public Guid CaseId { get; set; }
+        //public List<Guid> SelectedCases { get; set; }
 
     }
 
@@ -33,22 +34,33 @@ namespace CourtApp.Application.Features.CaseWork
         }
         public async Task<Result<Guid>> Handle(CreateCaseWorkCommand request, CancellationToken cancellationToken)
         {
-            foreach (var caseId in request.SelectedCases)
+            foreach (var work in request.WorkId)
             {
-                foreach (var work in request.WorkId)
-                {
-                    var mpDt = new CaseWorkEntity();
-                    mpDt.Id = Guid.NewGuid();
-                    mpDt.CaseId = caseId;
-                    mpDt.WorkTypeId = request.WorkTypeId;
-                    mpDt.WorkingDate = request.WorkingDate;
-                    mpDt.Remark = request.Remark;
-                    mpDt.WorkId = work;
-                    await _Repository.InsertAsync(mpDt);
-                }
+                var mpDt = new CaseWorkEntity();
+                mpDt.Id = Guid.NewGuid();
+                mpDt.CaseId = request.CaseId;
+                mpDt.WorkTypeId = request.WorkTypeId;
+                mpDt.WorkingDate = request.WorkingDate;
+                mpDt.Remark = request.Remark;
+                mpDt.WorkId = work;
+                await _Repository.InsertAsync(mpDt);
             }
+            //foreach (var caseId in request.SelectedCases)
+            //{
+            //    foreach (var work in request.WorkId)
+            //    {
+            //        var mpDt = new CaseWorkEntity();
+            //        mpDt.Id = Guid.NewGuid();
+            //        mpDt.CaseId = caseId;
+            //        mpDt.WorkTypeId = request.WorkTypeId;
+            //        mpDt.WorkingDate = request.WorkingDate;
+            //        mpDt.Remark = request.Remark;
+            //        mpDt.WorkId = work;
+            //        await _Repository.InsertAsync(mpDt);
+            //    }
+            //}
             await _unitOfWork.Commit(cancellationToken);
-            return Result<Guid>.Success(); ;
+            return Result<Guid>.Success();
         }
     }
 }

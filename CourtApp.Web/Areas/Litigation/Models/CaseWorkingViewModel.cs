@@ -14,7 +14,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public List<Guid> WorkId { get; set; }
         public DateTime WorkingDate { get; set; }
         public string Remark { get; set; }
-        public List<Guid> SelectedCases { get; set; }
+        //public List<Guid> SelectedCases { get; set; }
 
         #region For Displaying Case Working
         public Guid CaseId { get; set; }
