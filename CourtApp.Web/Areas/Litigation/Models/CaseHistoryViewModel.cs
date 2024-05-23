@@ -12,7 +12,8 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public List<HistoryDetail> History { get; set; }
     }
     public class HistoryDetail
-    {        
+    {
+        public string Type { get; set; }
         public string Date { get; set; }
         public string Stage { get; set; }
         public string Activity { get; set; }

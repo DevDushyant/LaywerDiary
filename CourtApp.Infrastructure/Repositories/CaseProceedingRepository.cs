@@ -1,6 +1,7 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using CourtApp.Infrastructure.CacheKeys;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
@@ -38,9 +39,22 @@ namespace CourtApp.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<List<CaseProcedingEntity>> GetListAsync()
+        public async Task<List<CaseProcedingEntity>> GetListAsync()
         {
-            throw new NotImplementedException();
+            var data = await _repository.Entities
+                .Include(w => w.SubHead)
+                .ToListAsync();
+            return data;
+        }
+
+        public async Task<List<CaseProcedingEntity>> GetProceedingByCaseIdAsync(Guid CaseId)
+        {
+            var data = await _repository.Entities
+                .Include(w => w.Head)
+                .Include(w => w.SubHead)
+                .Include(w => w.Stage)
+                .ToListAsync();
+            return data;
         }
 
         public async Task<Guid> InsertAsync(List<CaseProcedingEntity> Entity)

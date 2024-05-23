@@ -1,0 +1,127 @@
+﻿@model CaseProceedingViewModel
+<form id="create-form" method="post" asp-controller="hearing" asp-action="OnPostCaseProceeding"  enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12">
+            <input type="hidden" asp-for="CaseId" />
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">@localizer["Proceeding Type"]</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <select class="form-control select2bs4"  asp-for="ProceedingTypeId" asp-items="@Model.ProceedingTypes">
+                            <option></option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="ProceedingTypeId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">@localizer["Proceeding"]</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <select class="form-control select2bs4" asp-for="ProceedingsIds" asp-items="@Model.Proceedings">
+                            <option></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">@localizer["Next Stage"]</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <select class="form-control select2bs4" asp-for="StageId" asp-items="@Model.Stages">
+                            <option></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">@localizer["Next Date"]</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <input type="date" id="NextDate" asp-for="NextDate" value="@DateTime.Now.ToString("MM/dd/yyyy")"  placeholder="dd/MM/yyyy" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">@localizer["Remark"]</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <input type="text" placeholder="Please enter remark if any" asp-for="Remark" id="Remark" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-3">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
+        @* <button id="btnSubmit" type="button" class="btn btn-success">Save</button> *@
+        <button type="submit" class="btn btn-success">Save</button>
+        <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
+    </div>
+</form>
+<script type="text/javascript" language=javascript>
+    $("#ProceedingTypeId").select2({
+        placeholder: "Select a proceeding type",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    $("#ProceedingsIds").select2({
+        placeholder: "Select a proceeding",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    $("#StageId").select2({
+        placeholder: "Select a stage",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    $("#ProceedingTypeId").on("change", function () {
+        $("#ProceedingsIds").empty();
+        $.getJSON("/Litigation/CaseManage/DdlSubProcHeads?Id=" + $("#ProceedingTypeId").val(), function (data) {
+            $.each(data.Data, function (i, item) {
+                $("#ProceedingsIds").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
+            });
+        });
+    });
+
+    // $("#btnSubmit").on("click", function () {
+    //     Upseart();
+    // });
+    // Upseart = function () {
+    //     debugger;
+    //     var SelectedCaseId = [];
+    //     $('#tblUserCase tbody tr').each(function () {
+    //         if ($(this).find("input[type='checkbox'").is(":checked")) {
+    //             SelectedCaseId.push($(this).find('input[type="hidden"]').val());
+    //         }
+    //     });
+    //     var url = $("#create-form").attr("action");
+    //     var formData = new FormData();
+    //     formData.append("HeadId", $("#HeadId").val());
+    //     formData.append("SelectedSubHeads", $("#SubHeadId").val());
+    //     formData.append("StageId", $("#StageId").val());
+    //     formData.append("NextDate", $("#NextDate").val());
+    //     formData.append("SelectedCases", SelectedCaseId);
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: url,
+    //         data: formData,
+    //         processData: false,
+    //         contentType: false
+    //     }).done(function (response) {
+            
+    //     });
+    // }
+</script>

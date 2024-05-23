@@ -15,6 +15,7 @@ namespace CourtApp.Application.DTOs.CaseDetails
 
     public class CaseHistoryData
     {
+        public string Type { get; set; }
         public string Date { get; set; }
         public string Stage { get; set; }
         public string Activity { get; set; }

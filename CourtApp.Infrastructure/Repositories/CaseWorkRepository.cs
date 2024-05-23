@@ -20,7 +20,7 @@ namespace CourtApp.Infrastructure.Repositories
             this._distributedCache = _distributedCache;
         }
         public IQueryable<CaseWorkEntity> Entities =>
-            _repository.Entities            
+            _repository.Entities
             .Include(w => w.Work)
             .Include(w => w.Case);
 
@@ -38,10 +38,21 @@ namespace CourtApp.Infrastructure.Repositories
 
         public async Task<List<CaseWorkEntity>> GetListAsync()
         {
-            var data =await _repository.Entities
-                .Include(w=>w.Work)
+            var data = await _repository.Entities
+                .Include(w => w.Work)
                 .ToListAsync();
-            return  data;
+            return data;
+        }
+
+        public async Task<List<CaseWorkEntity>> GetWorkByCaseIdAsync(Guid CaseId)
+        {
+            var data = await _repository
+                .Entities
+                .Include(w => w.WorkType)
+                .Include(w => w.Work)
+                .Where(w => w.CaseId == CaseId)
+                .ToListAsync();
+            return data;
         }
 
         public async Task<Guid> InsertAsync(CaseWorkEntity entity)

@@ -15,5 +15,10 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public DateTime NextDate { get; set; }
         public string Remark { get; set; }
         public string Abbreviation { get; set; }
+
+        public virtual ProceedingHeadEntity Head { get; set; }
+        public virtual CaseStageEntity Stage { get; set; }
+        public virtual ProceedingSubHeadEntity SubHead { get; set; }
+        public virtual CaseDetailEntity Case { get; set; }
     }
 }

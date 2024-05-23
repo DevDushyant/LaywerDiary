@@ -24,6 +24,7 @@
                         <thead>
                             <tr>
                                 <th>Sno.</th>
+                                <th>Type</th>
                                 <th>Proceeding/Working Date</th>
                                 <th>Stage</th>
                                 <th>Proceeding/Work Done</th>
@@ -35,6 +36,9 @@
                                 <tr>
                                     <td>
                                         @(i + 1)
+                                    </td>
+                                    <td>
+                                        @Model.History[i].Type
                                     </td>
                                     <td>
                                         @Model.History[i].Date
@@ -51,7 +55,7 @@
                     </table>
                 </div>
             </div>
-            <div class="form-group justify-content-between" style="margin-bottom: 0px !important">              
+            <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
                 <button type="submit" class="btn btn-warning close-button" data-dismiss="modal">Cancel</button>
             </div>
         </form>

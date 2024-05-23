@@ -9,7 +9,7 @@ namespace CourtApp.Web.Areas.Litigation.Mappings
     {
         public CaseProceedingMappingProfile()
         {
-            CreateMap<CaseProceedingViewModel, CreateCaseWorkCommand>();
+            CreateMap<CaseProceedingViewModel, CreateCaseProceedingCommand>();
             CreateMap<CaseProceedingViewModel, UpdateCaseProceedingCommand>();
             CreateMap<GetCaseProceedingQuery, CaseProceedingViewModel>();
             CreateMap<GetCaseProceedingByIdQuery, CaseProceedingViewModel>();

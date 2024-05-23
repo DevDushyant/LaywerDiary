@@ -1,8 +1,11 @@
-﻿using CourtApp.Application.Features.CaseDetails;
+﻿using Azure;
+using CourtApp.Application.Features.CaseDetails;
+using CourtApp.Application.Features.CaseProceeding;
 using CourtApp.Application.Features.CaseStages.Command;
 using CourtApp.Application.Features.CaseWork;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
+using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,6 +18,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     [Area("Litigation")]
     public class HearingController : BaseController<HearingController>
     {
+        #region Case Hearing 
         public IActionResult Index()
         {
             return View();
@@ -26,6 +30,20 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 var viewModel = _mapper.Map<List<HearingViewModel>>(response.Data);
                 return PartialView("_ViewAll", TodayCaseList(viewModel));
+            }
+            return null;
+        }
+
+        #endregion
+
+        #region Bring Today Hearing Case
+        public async Task<JsonResult> GetCaseHearing()
+        {
+            var response = await _mediator.Send(new GetCaseDetailsQuery() { CallingFrm = "BTD" });
+            if (response.Succeeded)
+            {
+                var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_BringToday", TodayCaseList(viewModel)) });
             }
             return null;
         }
@@ -44,16 +62,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return model;
         }
 
-        public async Task<JsonResult> GetCaseHearing()
-        {
-            var response = await _mediator.Send(new GetCaseDetailsQuery() { CallingFrm = "BTD" });
-            if (response.Succeeded)
-            {
-                var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_BringToday", TodayCaseList(viewModel)) });
-            }
-            return null;
-        }
+        #endregion
+
+        #region Add the case in today's hearing register select and save.
 
         public async Task<IActionResult> UpdateCaseDate(BringTodayCaseViewModel model)
         {
@@ -66,7 +77,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
             return RedirectToAction("Index");
         }
+        #endregion
 
+        #region Assign Work to the case
         public async Task<JsonResult> AssignWorkCase(Guid CaseId)
         {
             var ViewModel = new CaseWorkingViewModel();
@@ -76,31 +89,19 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostAssignWork(Guid id, CaseWorkingViewModel ViewModel)
+        public async Task<JsonResult> OnPostAssignWork(CaseWorkingViewModel ViewModel)
         {
             if (ModelState.IsValid)
             {
-                if (id == Guid.Empty)
-                {
-                    var cmd = _mapper.Map<CreateCaseWorkCommand>(ViewModel);
-                    var result = await _mediator.Send(cmd);
-                    if (result.Succeeded)
-                    {
-                        id = result.Data;
-                        _notify.Success($"Case work with ID {result.Data} Created.");
-                    }
-                    else _notify.Error(result.Message);
-                }
-                else
-                {
-                    var updateBookCommand = _mapper.Map<UpdateCaseStageCommand>(ViewModel);
-                    var result = await _mediator.Send(updateBookCommand);
-                    if (result.Succeeded) _notify.Information($"Case Nature with ID {result.Data} Updated.");
-                }
-                var response = await _mediator.Send(new GetAssignedWorkQuery { PageSize = 10, PageNumber = 1 });
+                var cmd = _mapper.Map<CreateCaseWorkCommand>(ViewModel);
+                var result = await _mediator.Send(cmd);
+                if (result.Succeeded)
+                    _notify.Success($"Case work with ID {result.Data} Created.");
+                else _notify.Error(result.Message);
+                var response = await _mediator.Send(new GetCaseDetailsQuery() { CallingFrm = "HTD" });
                 if (response.Succeeded)
                 {
-                    var viewModel = _mapper.Map<List<CaseWorkingViewModel>>(response.Data);
+                    var viewModel = _mapper.Map<List<HearingViewModel>>(response.Data);
                     var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
                     return new JsonResult(new { isValid = true, html = html });
                 }
@@ -112,10 +113,53 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
             else
             {
-                var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
+                var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", ViewModel);
                 return new JsonResult(new { isValid = false, html = html });
             }
         }
 
+        #endregion
+
+        #region Today's Proceeding to the case
+        public async Task<JsonResult> CaseProceeding(Guid CaseId)
+        {
+            var model = new CaseProceedingViewModel();
+            model.CaseId = CaseId;
+            model.ProceedingTypes = await DdlProcHeads();
+            model.Stages = await DdlCaseStages();
+            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", model) });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> OnPostCaseProceeding(CaseProceedingViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var cmd = _mapper.Map<CreateCaseProceedingCommand>(model);
+                var result = await _mediator.Send(cmd);
+                if (result.Succeeded)
+                    _notify.Success($"Case proceeding with ID {result.Data} Created.");
+                else _notify.Error(result.Message);
+
+                var response = await _mediator.Send(new GetCaseDetailsQuery() { CallingFrm = "HTD" });
+                if (response.Succeeded)
+                {
+                    var viewModel = _mapper.Map<List<HearingViewModel>>(response.Data);
+                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+                    return new JsonResult(new { isValid = true, html = html });
+                }
+                else
+                {
+                    _notify.Error(response.Message);
+                    return null;
+                }
+            }
+            else
+            {
+                var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", model);
+                return new JsonResult(new { isValid = false, html = html });
+            }
+            #endregion
+        }
     }
 }

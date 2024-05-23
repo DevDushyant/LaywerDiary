@@ -121,56 +121,56 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return null;
         }
 
-        public async Task<JsonResult> OnGetCaseProceeding(Guid id)
-        {
-            if (id == Guid.Empty)
-            {
-                var ViewModel = new CaseProceedingViewModel();
-                ViewModel.Heads = await DdlProcHeads();
-                ViewModel.NextStages = await DdlCaseStages();
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", ViewModel) });
-            }
-            else
-            {
-                var response = await _mediator.Send(new GetQueryByIdCaseCategory() { Id = id });
-                if (response.Succeeded)
-                {
-                    var ViewModel = _mapper.Map<CaseProceedingViewModel>(response.Data);
+        //public async Task<JsonResult> OnGetCaseProceeding(Guid id)
+        //{
+        //    if (id == Guid.Empty)
+        //    {
+        //        var ViewModel = new CaseProceedingViewModel();
+        //        ViewModel.Heads = await DdlProcHeads();
+        //        ViewModel.NextStages = await DdlCaseStages();
+        //        return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", ViewModel) });
+        //    }
+        //    else
+        //    {
+        //        var response = await _mediator.Send(new GetQueryByIdCaseCategory() { Id = id });
+        //        if (response.Succeeded)
+        //        {
+        //            var ViewModel = _mapper.Map<CaseProceedingViewModel>(response.Data);
 
-                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
-                }
-                return null;
-            }
-        }
+        //            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
+        //        }
+        //        return null;
+        //    }
+        //}
 
-        [HttpPost]
-        public async Task<JsonResult> OnPostCaseProceeding(Guid id, CaseProceedingViewModel ViewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                if (id == Guid.Empty)
-                {
-                    var createCommand = _mapper.Map<CreateCaseWorkCommand>(ViewModel);
-                    var result = await _mediator.Send(createCommand);
-                    if (result.Succeeded)
-                        _notify.Success($"Case Proceeding with ID {result.Data} Created.");
-                    else _notify.Error(result.Message);
-                }
-                else
-                {
-                    var updateCommand = _mapper.Map<UpdateCaseProceedingCommand>(ViewModel);
-                    var result = await _mediator.Send(updateCommand);
-                    if (result.Succeeded)
-                        _notify.Information($"Case Proceeding with ID {result.Data} Updated.");
-                }
-                return new JsonResult(new { isValid = false, html = "" });
-            }
-            else
-            {
-                var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
-                return new JsonResult(new { isValid = false, html = html });
-            }
-        }
+        //[HttpPost]
+        //public async Task<JsonResult> OnPostCaseProceeding(Guid id, CaseProceedingViewModel ViewModel)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        if (id == Guid.Empty)
+        //        {
+        //            var createCommand = _mapper.Map<CreateCaseWorkCommand>(ViewModel);
+        //            var result = await _mediator.Send(createCommand);
+        //            if (result.Succeeded)
+        //                _notify.Success($"Case Proceeding with ID {result.Data} Created.");
+        //            else _notify.Error(result.Message);
+        //        }
+        //        else
+        //        {
+        //            var updateCommand = _mapper.Map<UpdateCaseProceedingCommand>(ViewModel);
+        //            var result = await _mediator.Send(updateCommand);
+        //            if (result.Succeeded)
+        //                _notify.Information($"Case Proceeding with ID {result.Data} Updated.");
+        //        }
+        //        return new JsonResult(new { isValid = false, html = "" });
+        //    }
+        //    else
+        //    {
+        //        var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
+        //        return new JsonResult(new { isValid = false, html = html });
+        //    }
+        //}
 
         #endregion
 
