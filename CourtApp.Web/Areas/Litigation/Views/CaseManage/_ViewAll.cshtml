@@ -2,20 +2,20 @@
 <table id="tblUserCase" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th>Sno.</th>
-            <th>Type</th>
-            <th>Court Type</th>
-            <th>Number</th>
-            <th>Parties</th>
-            <th>Court</th>
-            <th>Stage</th>
-            <th>Next Date</th>
-            <th>Case History</th>
-            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded
+            <th style="width:3%!important">Sno.</th>
+            <th style="width:10%!important">Type</th>
+            <th style="width:15%!important">Court Type</th>
+            <th style="width:10%!important">Number</th>
+            <th style="width:20%!important">Parties</th>
+            <th style="width:5%!important">Court</th>
+            <th style="width:5%!important">Stage</th>
+            <th style="width:15%!important">Next Date</th>
+            <th style="width:8%!important">Actions</th>
+           @*  @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded
             || (AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Edit)).Result.Succeeded)
             {
-                <th>Actions</th>
-            }
+                <th style="width:5%!important">Actions</th>
+            } *@
         </tr>
     </thead>
     <tbody>
@@ -54,8 +54,14 @@
                 </td>
                 <td>
                     <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-history"></a>
+                    <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=@bt.Id', 'Upload Document')" class="fa fa-file"></a>
+                    <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-email"></a>
+                    <a onclick="jQueryModalGet('/LawyerDiary/casestage/OnGetCreateOrEdit?id=@bt.Id', 'Edit Brand')" class="fas fa-pencil-alt"></a>
+                    @* <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="casestage" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
+                        <a href="javascript:$('#form_delete_@bt.Id').submit();" class="fas fa-trash-alt"></a>
+                    </form> *@
                 </td>
-                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+               @*  @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                 {
                     <td text-right">
                         <div class="btn-group">
@@ -78,7 +84,7 @@
                             </div>
                         </div>
                     </td>
-                }
+                } *@
             </tr>
         }
     </tbody>

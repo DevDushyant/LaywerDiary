@@ -1,15 +1,19 @@
-﻿using CourtApp.Application.Features.BookMasters.Command;
+﻿using Azure;
+using CourtApp.Application.Features.BookMasters.Command;
 using CourtApp.Application.Features.Case;
-using CourtApp.Application.Features.CaseCategory;
 using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.CaseProceeding;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Litigation.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
@@ -180,11 +184,81 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             var response = await _mediator.Send(new GetCaseHistoryQuery() { CaseId = CaseId });
             if (response.Succeeded)
-            {               
-                var model = _mapper.Map<CaseHistoryViewModel>(response.Data);                
+            {
+                var docs = response.Data.Docs;
+                List<CaseDoc> UDocs = new List<CaseDoc>();
+                foreach (var item in docs)
+                {
+                    UDocs.Add(new CaseDoc
+                    {
+                        DocFilePath = item.DocFilePath,
+                        DocName = item.DocName,
+                        DocType = item.DocType,
+                    });
+                }
+                var model = _mapper.Map<CaseHistoryViewModel>(response.Data);
+                model.Docs = UDocs;
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseHistory", model) });
             }
             return null;
+        }
+        #endregion
+
+        #region Document Upload 
+        public async Task<IActionResult> GetFileUploadModel(Guid CaseId)
+        {
+            var model = new CaseAttacheDocumentViewModel();
+            model.CaseId = CaseId;
+            model.DocTypes = DOTypes();
+            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_UploadCaseDoc", model) });
+        }
+
+        public async Task<IActionResult> UploadCaseDocs(CaseAttacheDocumentViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                List<CaseDocumentModel> ddoc = new List<CaseDocumentModel>();
+                string Root = "wwwroot";
+                if (model.Documents.Count() > 0)
+                {
+                    foreach (var f in model.Documents)
+                    {
+                        string DcFld = f.TypeId == 1 ? "Draft" : "Order";
+                        string DocPath = "documents/" + DcFld + "/" + model.CaseId;
+                        string FullPath = Root + "/" + DocPath;
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), FullPath);
+                        if (!Directory.Exists(path))
+                            Directory.CreateDirectory(path);
+                        FileInfo fileInfo = new FileInfo(f.Document.FileName);
+                        string fileName = f.Document.FileName;
+
+                        string fileNameWithPath = Path.Combine(path, fileName);
+
+                        using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                        {
+                            f.Document.CopyTo(stream);
+                        }
+                        ddoc.Add(new CaseDocumentModel
+                        {
+                            DocId = f.DocId,
+                            TypeId = f.TypeId,
+                            DocPath = DocPath + "/" + fileName,
+                        });
+                    }
+                }
+                var docMapper = _mapper.Map<List<DocumentAttachmentModel>>(ddoc);
+                var respose = await _mediator.Send(new CaseDocsCreateCommand()
+                {
+                    CaseId = model.CaseId,
+                    Documents = docMapper
+                });
+                if (respose.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                return null;
+            }
+            return new JsonResult(new { isValid = true });
         }
         #endregion
 

@@ -13,6 +13,7 @@ namespace CourtApp.Application.Features.ProceedingHead
         public Guid Id { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
+        public string Abbreviation { get; set; }
     }
     public class UpdateProceedingHeadCommandHandler : IRequestHandler<UpdateProceedingHeadCommand, Result<Guid>>
     {
@@ -34,6 +35,7 @@ namespace CourtApp.Application.Features.ProceedingHead
             {               
                 detailById.Name_En = request.Name_En;
                 detailById.Name_Hn = request.Name_Hn;
+                detailById.Abbreviation = request.Abbreviation;
                 await repository.UpdateAsync(detailById);
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(detailById.Id);

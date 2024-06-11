@@ -9,6 +9,7 @@ using CourtApp.Application.Features.CourtComplex;
 using CourtApp.Application.Features.CourtDistrict;
 using CourtApp.Application.Features.CourtMasters;
 using CourtApp.Application.Features.CourtType.Query;
+using CourtApp.Application.Features.DOType;
 using CourtApp.Application.Features.ProceedingHead;
 using CourtApp.Application.Features.ProceedingSubHead;
 using CourtApp.Application.Features.Queries.Districts;
@@ -24,7 +25,9 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -46,6 +49,7 @@ namespace CourtApp.Web.Abstractions
         protected ILogger<T> _logger => _loggerInstance ??= HttpContext.RequestServices.GetService<ILogger<T>>();
         protected IViewRenderService _viewRenderer => _viewRenderInstance ??= HttpContext.RequestServices.GetService<IViewRenderService>();
         protected IMapper _mapper => _mapperInstance ??= HttpContext.RequestServices.GetService<IMapper>();
+
 
         #region Dropdown Select List
         public async Task<SelectList> LoadStates()
@@ -218,6 +222,31 @@ namespace CourtApp.Web.Abstractions
         }
         #endregion
 
+        #region DOType
+        public SelectList DOTypes()
+        {
+            return new SelectList(StaticDropDownDictionaries.DOTypes(), "Key", "Value");
+        }
+
+        public JsonResult DOCTypes()
+        {
+            var dtcData = StaticDropDownDictionaries.DOTypes();            
+            return Json(dtcData);
+        }
+
+        public async Task<JsonResult> DdlDOTypes(int TypeId)
+        {
+            var response = await _mediator.Send(new GetAllDOTypeCachedQuery { TypeId = TypeId });
+            return Json(response);
+        }
+        public async Task<SelectList> DdlCDOTypes(int TypeId)
+        {
+            var response = await _mediator.Send(new GetAllDOTypeCachedQuery { TypeId = TypeId });
+            var ViewModel = _mapper.Map<List<DOTypeViewModel>>(response.Data);
+            return new SelectList(ViewModel, nameof(DOTypeViewModel.Id), nameof(DOTypeViewModel.Name_En), null, null);
+        }
+        #endregion
+
         #region Static Dropdown Region
 
         public SelectList DdlYears()
@@ -249,6 +278,8 @@ namespace CourtApp.Web.Abstractions
         {
             return new SelectList(StaticDropDownDictionaries.Stength().OrderBy(v => v.Key), "Key", "Value");
         }
+
+
         #endregion
 
     }

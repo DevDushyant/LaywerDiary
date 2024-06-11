@@ -19,6 +19,6 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public virtual ProceedingHeadEntity Head { get; set; }
         public virtual CaseStageEntity Stage { get; set; }
         public virtual ProceedingSubHeadEntity SubHead { get; set; }
-        public virtual CaseDetailEntity Case { get; set; }
+        
     }
 }

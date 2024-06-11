@@ -10,6 +10,7 @@
 <form id="create-form" method="post" asp-controller="ManageClient" asp-action="OnPostCreateOrEdit"
       asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
 
+      <input type="hidden" asp-for="@Model.CaseId"/>
     <div class="row">
        
         <div class="col-md-12">

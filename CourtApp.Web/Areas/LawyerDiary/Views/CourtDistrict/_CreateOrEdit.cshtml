@@ -84,8 +84,7 @@
         }
     });
     $("#StateId").on("change", function () {
-        $("#DistrictId").empty();
-        debugger;
+        $("#DistrictId").empty();       
         $.getJSON("/LawyerDiary/CourtDistrict/LoadDistricts?StateCode=" + $("#StateId").val(), function (data) {
             $.each(data.Data, function (i, item) {
                 $("#DistrictId").append(`<option /><option value="${item.Code}">${item.Name_En}</option>`);

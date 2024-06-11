@@ -680,6 +680,42 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.ToTable("case_detail", "ld");
                 });
 
+            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseDocsEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CaseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("DOId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("DOTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("r_case_docs", "ld");
+                });
+
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseKindEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -754,6 +790,12 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HeadId");
+
+                    b.HasIndex("StageId");
+
+                    b.HasIndex("SubHeadId");
 
                     b.ToTable("r_case_proceeding", "ld");
                 });
@@ -1253,6 +1295,36 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.HasKey("Id");
 
                     b.ToTable("m_court_type", "ld");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.DOTypeEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name_En")
+                        .HasColumnType("text");
+
+                    b.Property<int>("TypeId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("m_do_type", "ld");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.ExpenseHeadEntity", b =>
@@ -1834,6 +1906,33 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .IsRequired();
 
                     b.Navigation("CourtType");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseProcedingEntity", b =>
+                {
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.ProceedingHeadEntity", "Head")
+                        .WithMany()
+                        .HasForeignKey("HeadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CaseStageEntity", "Stage")
+                        .WithMany()
+                        .HasForeignKey("StageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.ProceedingSubHeadEntity", "SubHead")
+                        .WithMany()
+                        .HasForeignKey("SubHeadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Head");
+
+                    b.Navigation("Stage");
+
+                    b.Navigation("SubHead");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseTitleEntity", b =>

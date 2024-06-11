@@ -244,6 +244,15 @@ namespace CourtApp.Application.Constants
             };
             return _Str;
         }
+        public static Dictionary<int, string> DOTypes()
+        {
+            var _Str = new Dictionary<int, string>
+            {
+                {1, "Drafting" },
+                {2, "Order" }
+            };
+            return _Str;
+        }
 
     }
 

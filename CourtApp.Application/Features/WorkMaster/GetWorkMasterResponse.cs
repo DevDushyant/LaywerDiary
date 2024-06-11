@@ -12,7 +12,7 @@ namespace CourtApp.Application.Features.WorkMaster
         public Guid Id { get; set; }
         public string Work_En { get; set; }
         public string Work_Hn { get; set; }
-        public virtual WorkMasterEntity WorkMaster { get; set; }
+        public string Abbreviation { get; set; }
 
     }
 }

@@ -4,6 +4,7 @@
         <tr>
             <th>Name(En)</th>
             <th>Name(Hn)</th>
+            <th>Abbreviation</th>
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded
             || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
             {
@@ -21,6 +22,9 @@
                 </td>
                 <td>
                     @bt.Name_Hn
+                </td>
+                <td>
+                    @bt.Abbreviation
                 </td>
                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded ||
                (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)

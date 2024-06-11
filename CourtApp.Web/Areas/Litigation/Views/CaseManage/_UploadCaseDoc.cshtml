@@ -1,0 +1,198 @@
+﻿@model CaseAttacheDocumentViewModel
+<style>
+    .div_hide {
+        display: none
+    }
+
+    fieldset.scheduler-border {
+        border: 1px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;
+        margin: 0 0 1.5em 0 !important;
+        -webkit-box-shadow: 0px 0px 0px 0px #000;
+        box-shadow: 0px 0px 0px 0px #000;
+        width: 100% !important;
+    }
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width: auto;
+        padding: 0 10px;
+        border-bottom: none;
+    }
+    .custom-file-input {
+        opacity: 1 !important;
+    }
+</style>
+<form id="create-form" method="post" asp-controller="CaseManage" asp-action="UploadCaseDocs" enctype="multipart/form-data">
+    <input type="hidden" asp-for="CaseId" />
+    <select style="display:none" id="dynamicdata"></select>
+    <fieldset class="scheduler-border">
+        <legend class="scheduler-border">Document Upload</legend>
+        <div class="col-md-12">
+            <div class="row">
+                
+                <table id="tblDocs" border="1" style="width:100%!important">
+                    <thead>
+                        <tr>
+                            <th width="30%"><label class="col-md-3 col-form-label">Document Type</label></th>
+                            <th width="30%"><label class="col-md-3 col-form-label">Document Name</label></th>
+                            <th width="30%"><label class="col-md-3 col-form-label">Document Upload</label></th>
+                            <th width="10%"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="data-repeater">
+                       
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
+        <button type="submit" class="btn btn-success">Save</button>
+        <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
+    </div>
+</form>
+<script type="text/javascript" language=javascript>
+    $.validator.unobtrusive.parse(document);
+    $(document).ready(function () {
+        
+        BindType('dynamicdata');
+        // $("#Documents_0__DocId").select2({
+        //     placeholder: "Select a document",
+        //     theme: "bootstrap4",
+        //     escapeMarkup: function (m) {
+        //         return m;
+        //     }
+        // });
+        $(document).on("change", ".doctypechange", function () {
+        //$(".doctypechange").on("change", function () {
+            debugger;
+            var id = $(this).attr('id').split("_")[1];
+            BindDocument('Documents_' + id + '__DocId', $("#Documents_" + id + "__TypeId").val());
+        });
+    });
+
+    // var btn_delete = '<button type="button" onclick="removeKolom($(this))" class="btn btn-warning"><i class="fa fa-trash" aria-hidden="true"></i></button>';
+    // var btn_add = '<button class="add-btn-repeat btn btn-success" onclick="addElement($(this))" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button>';
+
+    function removeKolom(id) {
+        debugger;
+        $(".removedoc_"+id).remove();
+    }
+    var incval = 0;
+    function defaultload(){
+        var content = '<tr class="removedoc_' + incval + '"><td><select class="form-control select2bs4 doctypechange" id="Documents_' + incval + '__TypeId" name="Documents[' + incval + '].TypeId">' +
+            '</select></td><td><select class="form-control select2bs4" id="Documents_' + incval + '__DocId" name="Documents[' + incval + '].DocId">' +
+            '</select></td><td><input type="file" name="Documents[' + incval + '].Document" id="Documents_' + incval + '__Document" width="300px" placeholder="Enter court/Bench adress" class="form-control" /></td><td><button class="add-btn-repeat btn btn-success" id="btnDraft" onclick="addElement()" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button> </td></tr>';
+        $('#tblDocs tbody').append(content);
+        var data = $("#dynamicdata").html();
+        $("#Documents_" + incval + "__TypeId").html(data)
+        $("#Documents_" + incval + "__TypeId").select2({
+            placeholder: "Select a type",
+            theme: "bootstrap4",
+            escapeMarkup: function (m) {
+                return m;
+            }
+        });
+        incval++;
+    }
+    function validation(){
+        var count = incval - 1;
+        var type = $("#Documents_" + count + "__TypeId").val();
+        var doc = $("#Documents_" + count + "__DocId").val();
+        var imgv = $("#Documents_" + count + "__Document").val();
+        if (type == "" || doc == "" || imgv=="") {
+            return false;
+        }
+         return true;
+    }
+    function addElement(e) {
+        var vald = validation();
+        if (vald==true) {
+            var content = '<tr class="removedoc_' + incval + '"><td><select class="form-control select2bs4 doctypechange" id="Documents_' + incval + '__TypeId" name="Documents[' + incval + '].TypeId">' +
+                '</select></td><td><select class="form-control select2bs4" id="Documents_' + incval + '__DocId" name="Documents[' + incval + '].DocId">' +
+                '</select></td><td><input type="file" name="Documents[' + incval + '].Document" id="Documents_' + incval + '__Document" width="300px" placeholder="Enter court/Bench adress" class="form-control" /></td><td> <button type="button" onclick="removeKolom(' + incval + ')" class="btn btn-warning"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>';
+            $('#tblDocs tbody').append(content);
+            var data = $("#dynamicdata").html();
+            $("#Documents_" + incval + "__TypeId").html(data)
+            $("#Documents_" + incval + "__TypeId").select2({
+                placeholder: "Select a type",
+                theme: "bootstrap4",
+                escapeMarkup: function (m) {
+                    return m;
+                }
+            });
+            $("#Documents_" + incval + "__DocId").select2({
+                placeholder: "Select a document",
+                theme: "bootstrap4",
+                escapeMarkup: function (m) {
+                    return m;
+                }
+            });
+            incval++;
+        } else {
+            alert("Please select all the fileds are required");
+        }
+      
+    }
+    // function addElement(e) {
+    //     debugger;
+    //     var trlength = $('#tblDocs tbody tr').length;
+    //     var clonedRow = $('#tblDocs tbody tr:last').clone();
+    //     clonedRow.find('select').each(function (i) {
+    //         if (i === 0) {
+    //             NameAtr = "Documents[" + trlength + "].TypeId";
+    //             IdAtr = "Documents_" + trlength + "__TypeId";
+    //             BindType(IdAtr);
+    //         }
+    //         if (i === 1) {
+    //             NameAtr = "Documents[" + trlength + "].DocId";
+    //             IdAtr = "Documents_" + trlength + "__DocId";                
+    //         }
+    //         if (i === 2) {
+    //             NameAtr = "Documents[" + trlength + "].Document";
+    //             IdAtr = "Documents_" + trlength + "__Document";
+    //         }
+    //         $(this).attr('name', NameAtr).attr('id', IdAtr);
+            
+    //     });
+    //     clonedRow.find('button').find('button').replaceWith(btn_add);
+    //     clonedRow.find('button.add-btn-repeat').replaceWith(btn_delete);
+    //     clonedRow.find("select").val("");
+    //     $('#tblDocs tbody').append(clonedRow);
+    // }
+    function BindType(ddl) {
+        $.getJSON("/Litigation/casemanage/DOCTypes", function (data) {
+            $("#" + ddl).empty();;
+            $.each(data, function (key, value) {
+                $("#" + ddl).append(`<option /><option value="${key}">${value}</option>`);
+            });
+            defaultload();
+        });
+        // $("#" + ddl).select2({
+        //     placeholder: "Select a type",
+        //     theme: "bootstrap4",
+        //     escapeMarkup: function (m) {
+        //         return m;
+        //     }
+        // });
+       
+    }
+    function BindDocument(ddl,v) {        
+        $("#" + ddl).empty();
+        $.getJSON("/Litigation/casemanage/DdlDOTypes?TypeId=" + v, function (data) {
+            $.each(data.Data, function (i, item) {
+                $("#" + ddl).append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
+            });
+        });
+        $("#" + ddl).select2({
+            placeholder: "Select a document",
+            theme: "bootstrap4",
+            escapeMarkup: function (m) {
+                return m;
+            }
+        });
+    }
+</script>

@@ -6,6 +6,7 @@ using CourtApp.Application.Features.BookMasters.Query;
 using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,15 +26,19 @@ namespace CourtApp.Application.Features.CaseDetails
         private readonly ICaseWorkRepository _CaseWorkRepo;
         private readonly ICaseProceedingRepository _ProceedingRepo;
         private readonly IMapper _mapper;
+        private readonly ICaseDocsRepository _CaseDocRepo;
         public GetCaseHistoryQueryHandler(IUserCaseRepository _CaseRepo,
             IMapper _mapper,
             ICaseWorkRepository _CaseWorkRepo,
-            ICaseProceedingRepository _ProceedingRepo)
+            ICaseProceedingRepository _ProceedingRepo,
+            ICaseDocsRepository caseDocRepo)
         {
             this._CaseRepo = _CaseRepo;
             this._mapper = _mapper;
             this._CaseWorkRepo = _CaseWorkRepo;
             this._ProceedingRepo = _ProceedingRepo;
+            _CaseDocRepo = caseDocRepo;
+
         }
         public async Task<Result<CaseHistoryResposnse>> Handle(GetCaseHistoryQuery request, CancellationToken cancellationToken)
         {
@@ -67,8 +72,19 @@ namespace CourtApp.Application.Features.CaseDetails
                         Type = "Proceeding"
                     });
 
+                var Docs = _CaseDocRepo
+                    .Entities
+                    .Include(d => d.DO)
+                    .Where(w => w.CaseId == request.CaseId).Select(s => new CaseUploadedDocument
+                    {
+                        DocType = s.DOTypeId == 1 ? "Drafting" : "Order",
+                        DocFilePath = s.Path,
+                        DocName = s.DO.Name_En
+                    }).ToList();
+
                 var historydt = cwdata.Concat(cprocdt);
                 chr.History = historydt.ToList();
+                chr.Docs = Docs;
                 return Result<CaseHistoryResposnse>.Success(chr);
             }
             return null;

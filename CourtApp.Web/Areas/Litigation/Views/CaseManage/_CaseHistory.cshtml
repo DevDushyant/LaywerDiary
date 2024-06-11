@@ -1,22 +1,90 @@
 ﻿@model CaseHistoryViewModel
+<style>
+    .div_hide {
+        display: none
+    }
+
+    fieldset.scheduler-border {
+        border: 1px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;
+        margin: 0 0 1.5em 0 !important;
+        -webkit-box-shadow: 0px 0px 0px 0px #000;
+        box-shadow: 0px 0px 0px 0px #000;
+        width: 100% !important;
+    }
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width: auto;
+        padding: 0 10px;
+        border-bottom: none;
+    }
+
+    .custom-file-input {
+        opacity: 1 !important;
+    }
+</style>
 <div class="card">
     <div id="viewAll" class="card-body table-responsive">
         <form asp-controller="Hearing" method="post" asp-action="UpdateCaseDate" class="d-inline">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group row">
-                        <label class="col-md-2 col-form-label">@localizer["Court"]</label>
-                        <label class="col-md-4 col-form-label">@localizer[Model.Court]</label>
-                        <label class="col-md-2 col-form-label">@localizer["Case No/Year"]</label>
-                        <label class="col-md-4 col-form-label"> @localizer[Model.CaseNoYear]</label>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-2 col-form-label">@localizer["Case Title"]</label>
-                        <label class="col-md-4 col-form-label">@localizer[Model.Title]</label>
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">Case Detail Information</legend>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">@localizer["Court"]</label>
+                            <label class="col-md-4 col-form-label">@localizer[Model.Court]</label>
+                            <label class="col-md-2 col-form-label">@localizer["Case No/Year"]</label>
+                            <label class="col-md-4 col-form-label"> @localizer[Model.CaseNoYear]</label>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">@localizer["Case Title"]</label>
+                            <label class="col-md-4 col-form-label">@localizer[Model.Title]</label>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </fieldset>
+
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">Case Attached Documents Information</legend>
+
+                <table id="tblCaseHistory" class="table table-striped" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Sno.</th>
+                            <th>Document Type</th>
+                            <th>Document Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Docs.Count(); i++)
+                        {
+                            <tr>
+                                <td>
+                                    @(i + 1)
+                                </td>
+                                <td>
+                                    @Model.Docs[i].DocType
+                                </td>
+                                <td>
+                                    @Model.Docs[i].DocName
+                                </td>
+                                <td>
+                                    <p>
+                                        <a href="~/@Model.Docs[i].DocFilePath" target="_blank">
+                                           <i class="fa fa-file-pdf" aria-hidden="true"></i>
+                                        </a>
+                                    </p>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </fieldset>
             <hr />
             <div class="row">
                 <div class="col-md-12">

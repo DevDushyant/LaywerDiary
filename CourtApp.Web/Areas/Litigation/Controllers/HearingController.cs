@@ -1,11 +1,11 @@
 ﻿using Azure;
 using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.CaseProceeding;
-using CourtApp.Application.Features.CaseStages.Command;
+
 using CourtApp.Application.Features.CaseWork;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
-using CourtApp.Web.Areas.LawyerDiary.Models;
+
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -89,7 +89,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostAssignWork(CaseWorkingViewModel ViewModel)
+        public async Task<IActionResult> OnPostAssignWork(CaseWorkingViewModel ViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -98,24 +98,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 if (result.Succeeded)
                     _notify.Success($"Case work with ID {result.Data} Created.");
                 else _notify.Error(result.Message);
-                var response = await _mediator.Send(new GetCaseDetailsQuery() { CallingFrm = "HTD" });
-                if (response.Succeeded)
-                {
-                    var viewModel = _mapper.Map<List<HearingViewModel>>(response.Data);
-                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                    return new JsonResult(new { isValid = true, html = html });
-                }
-                else
-                {
-                    _notify.Error(response.Message);
-                    return null;
-                }
             }
-            else
-            {
-                var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", ViewModel);
-                return new JsonResult(new { isValid = false, html = html });
-            }
+            return RedirectToAction("Index");
         }
 
         #endregion
@@ -131,7 +115,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostCaseProceeding(CaseProceedingViewModel model)
+        public async Task<IActionResult> OnPostCaseProceeding(CaseProceedingViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -140,25 +124,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 if (result.Succeeded)
                     _notify.Success($"Case proceeding with ID {result.Data} Created.");
                 else _notify.Error(result.Message);
-
-                var response = await _mediator.Send(new GetCaseDetailsQuery() { CallingFrm = "HTD" });
-                if (response.Succeeded)
-                {
-                    var viewModel = _mapper.Map<List<HearingViewModel>>(response.Data);
-                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                    return new JsonResult(new { isValid = true, html = html });
-                }
-                else
-                {
-                    _notify.Error(response.Message);
-                    return null;
-                }
             }
-            else
-            {
-                var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", model);
-                return new JsonResult(new { isValid = false, html = html });
-            }
+            return RedirectToAction("Index");
             #endregion
         }
     }

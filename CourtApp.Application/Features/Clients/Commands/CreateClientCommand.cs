@@ -23,6 +23,7 @@ namespace CourtApp.Application.Features.Clients.Commands
         public string Address { get; set; }
         public int StateCode { get; set; }
         public int DistrictCode { get; set; }
+        public Guid CaseId { get; set; }
     }
 
     public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, Result<Guid>>
@@ -31,18 +32,19 @@ namespace CourtApp.Application.Features.Clients.Commands
         private readonly IMapper _mapper;
         private readonly IStateMasterRepository _rStateMst;
         private readonly IDistrictMasterRepository _rDistrictMst;
-
+        private readonly IUserCaseRepository _repository;
 
         private IUnitOfWork _unitOfWork { get; set; }
-
         public CreateClientCommandHandler(IClientRepository _clientRepository, IUnitOfWork unitOfWork
-            , IMapper mapper, IStateMasterRepository rStateMst, IDistrictMasterRepository _rDistrictMst)
+            , IMapper mapper, IStateMasterRepository rStateMst, IDistrictMasterRepository _rDistrictMst
+            , IUserCaseRepository repository)
         {
             this._clientRepository = _clientRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _rStateMst = rStateMst;
             this._rDistrictMst = _rDistrictMst;
+            _repository = repository;
         }
 
         public async Task<Result<Guid>> Handle(CreateClientCommand request, CancellationToken cancellationToken)
@@ -52,6 +54,18 @@ namespace CourtApp.Application.Features.Clients.Commands
             entity.District = _rDistrictMst.GetDistrictById(request.DistrictCode);
             await _clientRepository.InsertAsync(entity);
             await _unitOfWork.Commit(cancellationToken);
+            if (entity.Id != Guid.Empty)
+            {
+                var detail = await _repository.GetByIdAsync(request.CaseId);
+                if (detail == null)
+                    return Result<Guid>.Fail($"Case detail Not Found.");
+                else
+                {
+                    detail.ClientId = entity.Id;
+                    await _repository.UpdateAsync(detail);
+                    await _unitOfWork.Commit(cancellationToken);                    
+                }
+            }
             return Result<Guid>.Success(entity.Id);
         }
     }

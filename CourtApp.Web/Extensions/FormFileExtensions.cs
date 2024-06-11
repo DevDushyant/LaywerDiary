@@ -29,7 +29,11 @@ namespace CourtApp.Web.Extensions
                     image.SaveAsPng(writeStream);
                     return writeStream.ToArray();
                 }
+
             }
+
         }
+
+        
     }
 }

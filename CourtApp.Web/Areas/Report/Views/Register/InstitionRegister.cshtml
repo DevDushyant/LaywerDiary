@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = localizer["Institution Register"];
+    ViewData["Caption"] = localizer["User's Institution Register"];
+}
+  @model InstitutionRegisterViewMode
+<div class="card">
+    <div id="viewAll" class="card-body table-responsive">
+        <form asp-controller="Hearing" method="post" asp-action="UpdateCaseDate" class="d-inline">
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="tblRegister" class="table table-striped" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Sno.</th>
+                                <th>Court Type</th>
+                                <th>Court.</th>
+                                <th>Case Type</th>
+                                <th>Case No.</th>
+                                <th>Year</th>
+                                <th>Title</th>
+                                <th>Institution Date</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.dtmodel.Count(); i++)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="hidden" asp-for="@Model.dtmodel[i].Id" />
+                                        @(i + 1)
+                                    </td>
+                                    <td>@Model.dtmodel[i].CourtType</td>
+                                    <td> @Model.dtmodel[i].CourtBench </td>
+                                    <td>@Model.dtmodel[i].CaseType</td>
+                                    <td>@Model.dtmodel[i].CaseNo</td>
+                                    <td>@Model.dtmodel[i].CaseYear</td>
+                                    <td>
+                                        @{
+                                            string Title = Model.dtmodel[i].FirstTitle + " Vs " + Model.dtmodel[i].SecondTitle;
+                                        }
+                                        @Title
+                                    </td>
+                                    <td> @Model.dtmodel[i].InsititutionDate </td>
+                                    <td>
+                                        <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@Model.dtmodel[i].Id', 'See History')" class="fa fa-history"></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>           
+        </form>
+    </div>
+</div>
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        $("#tblRegister").DataTable(
+            {
+                "language": {
+                    "emptyTable": "Record is not there!"
+                }
+            }
+        );
+    });
+</script>
+}
+

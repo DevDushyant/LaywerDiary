@@ -44,21 +44,7 @@ namespace CourtApp.Application.Features.CaseWork
                 mpDt.Remark = request.Remark;
                 mpDt.WorkId = work;
                 await _Repository.InsertAsync(mpDt);
-            }
-            //foreach (var caseId in request.SelectedCases)
-            //{
-            //    foreach (var work in request.WorkId)
-            //    {
-            //        var mpDt = new CaseWorkEntity();
-            //        mpDt.Id = Guid.NewGuid();
-            //        mpDt.CaseId = caseId;
-            //        mpDt.WorkTypeId = request.WorkTypeId;
-            //        mpDt.WorkingDate = request.WorkingDate;
-            //        mpDt.Remark = request.Remark;
-            //        mpDt.WorkId = work;
-            //        await _Repository.InsertAsync(mpDt);
-            //    }
-            //}
+            }            
             await _unitOfWork.Commit(cancellationToken);
             return Result<Guid>.Success();
         }

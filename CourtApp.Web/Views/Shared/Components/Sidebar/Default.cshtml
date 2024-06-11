@@ -217,6 +217,12 @@
                                     <p>@localizer["Work Master"]</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="DOType" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Draft & Order Types"]</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 }
@@ -367,8 +373,8 @@
                     </li>
                 }
                 <li class="nav-header">@localizer["Reports"]</li>
-                <li is-active-route asp-area="Client" class="nav-item has-treeview">
-                    <a is-active-route asp-area="Client" class="nav-link">
+                <li is-active-route asp-area="Report" class="nav-item has-treeview">
+                    <a is-active-route asp-area="Report" class="nav-link">
                         <i class="nav-icon fas fa fa-registered"></i>
                         <p>
                             @localizer["Registers"]
@@ -377,19 +383,19 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a is-active-route asp-area="Client" asp-controller="ManageClient" asp-action="index" class="nav-link">
+                            <a is-active-route asp-area="Report" asp-controller="Register" asp-action="DispCopyRegister" asp-route-t="d" class="nav-link">
                                 <i class="fa fa-close" aria-hidden="true"></i>
                                 <p>@localizer["Disposal Register"]</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a is-active-route asp-area="Client" asp-controller="ManageClient" asp-action="index" class="nav-link">
+                            <a is-active-route asp-area="Report" asp-controller="Register" asp-action="DispCopyRegister" asp-route-t="c" class="nav-link">
                                 <i class="fa fa-copy" aria-hidden="true"></i>
                                 <p>@localizer["Copying Register"]</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a is-active-route asp-area="Client" asp-controller="ManageClient" asp-action="index" class="nav-link">
+                            <a is-active-route asp-area="Report" asp-controller="Register" asp-action="InstitionRegister" class="nav-link">
                                 <i class="fa fa-institution" aria-hidden="true"></i>
                                 <p>@localizer["Institution Register"]</p>
                             </a>

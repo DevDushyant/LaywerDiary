@@ -20,6 +20,7 @@ namespace CourtApp.Application.Features.WorkMaster
         public int ActionType { get; set; }
         public string Work_En { get; set; }
         public string Work_Hn { get; set; }
+        public string Abbreviation { get; set; }
     }
     public class CreateWorkMasterCommandHandler : IRequestHandler<WorkMasterCommand, Result<Guid>>
     {
@@ -45,6 +46,7 @@ namespace CourtApp.Application.Features.WorkMaster
                 entity = _Repository.GetByIdAsync(request.Id).Result;              
                 entity.Work_En = request.Work_En;
                 entity.Work_Hn = request.Work_Hn;
+                entity.Abbreviation = request.Abbreviation;
                 await _Repository.UpdateAsync(entity);
             }
             //if (request.ActionType == ((int)ActionTypes.Update))

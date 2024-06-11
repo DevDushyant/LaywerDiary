@@ -27,7 +27,6 @@ namespace CourtApp.Application.Features.CourtType.Query
         {
             var courtTypeList = await _courtType.GetCachedListAsync();
             var mappedCourtTpe = _mapper.Map<List<GetCourtTypeResponse>>(courtTypeList);
-
             return Result<List<GetCourtTypeResponse>>.Success(mappedCourtTpe);
         }
     }

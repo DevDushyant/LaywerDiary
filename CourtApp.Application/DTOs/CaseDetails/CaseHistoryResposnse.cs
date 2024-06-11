@@ -11,6 +11,7 @@ namespace CourtApp.Application.DTOs.CaseDetails
         public string Court { get; set; }
         public string CaseNoYear { get; set; }
         public List<CaseHistoryData> History { get; set; }
+        public List<CaseUploadedDocument> Docs { get; set; }
     }
 
     public class CaseHistoryData
@@ -19,5 +20,11 @@ namespace CourtApp.Application.DTOs.CaseDetails
         public string Date { get; set; }
         public string Stage { get; set; }
         public string Activity { get; set; }
+    }
+    public class CaseUploadedDocument
+    {
+        public string DocType { get; set; }
+        public string DocName { get; set; }
+        public string DocFilePath { get; set; }
     }
 }
