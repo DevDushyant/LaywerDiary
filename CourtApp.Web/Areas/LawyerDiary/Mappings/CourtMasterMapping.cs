@@ -18,7 +18,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Mappings
                
 
             CreateMap<GetCourtMasterDataAllResponse, CourtMasterViewModel>().ReverseMap();
-            CreateMap<GetCourtMasterDataByIdResponse, CourtMasterViewModel>().ReverseMap();
+            CreateMap<GetCourtMasterDataByIdResponse, CourtMasterViewModel>();
 
             CreateMap<UpdateCourtMasterCommand, CourtMasterViewModel>().ReverseMap();
             CreateMap<DeleteCourtMasterCommand, CourtMasterViewModel>().ReverseMap();

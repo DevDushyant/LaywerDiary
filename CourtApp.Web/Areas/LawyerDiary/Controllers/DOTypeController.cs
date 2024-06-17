@@ -21,10 +21,12 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new GetAllDOTypeCachedQuery());
+            //var response = await _mediator.Send(new GetAllDOTypeCachedQuery());
+            var response = await _mediator.Send(new GetAllDOTypeQuery(1,10));
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<DOTypeViewModel>>(response.Data);
+                var count=viewModel.Count();
                 return PartialView("_ViewAll", viewModel);
             }
             return null;

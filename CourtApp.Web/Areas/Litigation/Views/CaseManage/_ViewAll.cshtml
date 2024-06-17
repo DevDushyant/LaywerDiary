@@ -9,13 +9,8 @@
             <th style="width:20%!important">Parties</th>
             <th style="width:5%!important">Court</th>
             <th style="width:5%!important">Stage</th>
-            <th style="width:15%!important">Next Date</th>
-            <th style="width:8%!important">Actions</th>
-           @*  @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded
-            || (AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Edit)).Result.Succeeded)
-            {
-                <th style="width:5%!important">Actions</th>
-            } *@
+            <th style="width:15%!important">Hearing Date</th>
+            <th style="width:8%!important">Actions</th>           
         </tr>
     </thead>
     <tbody>
@@ -53,10 +48,9 @@
                     @bt.NextHearingDate
                 </td>
                 <td>
-                    <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-history"></a>
-                    <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=@bt.Id', 'Upload Document')" class="fa fa-file"></a>
-                    <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-email"></a>
-                    <a onclick="jQueryModalGet('/LawyerDiary/casestage/OnGetCreateOrEdit?id=@bt.Id', 'Edit Brand')" class="fas fa-pencil-alt"></a>
+                    <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-history" title="See History"></a>
+                    <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=@bt.Id', 'Upload Document')" class="fa fa-file" title="Upload Document"></a>
+                    <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail" asp-route-id="@bt.Id" class="fa fa-eye" title="View Case Detail"></a>
                     @* <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="casestage" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
                         <a href="javascript:$('#form_delete_@bt.Id').submit();" class="fas fa-trash-alt"></a>
                     </form> *@

@@ -733,7 +733,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     Name_En = table.Column<string>(type: "text", nullable: true),
                     Name_Hn = table.Column<string>(type: "text", nullable: true),
                     StateId = table.Column<int>(type: "integer", nullable: false),
-                    DistrictId = table.Column<int>(type: "integer", nullable: false),
+                    DistrictCode = table.Column<int>(type: "integer", nullable: false),
                     Abbreviation = table.Column<string>(type: "text", nullable: true),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -744,8 +744,8 @@ namespace CourtApp.Infrastructure.Migrations.App
                 {
                     table.PrimaryKey("PK_m_court_district", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_m_court_district_m_district_DistrictId",
-                        column: x => x.DistrictId,
+                        name: "FK_m_court_district_m_district_DistrictCode",
+                        column: x => x.DistrictCode,
                         principalTable: "m_district",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -1216,11 +1216,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                 table: "m_court_complex",
                 column: "StateId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_m_court_district_DistrictId",
-                schema: "ld",
-                table: "m_court_district",
-                column: "DistrictId");
+           
 
             migrationBuilder.CreateIndex(
                 name: "IX_m_court_district_StateId",

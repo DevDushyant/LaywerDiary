@@ -4,6 +4,7 @@ using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +26,12 @@ namespace CourtApp.Application.Features.CourtMasters
     internal class GetCourtMasterAllQueryHandler : IRequestHandler<GetCourtMasterAllQuery, Result<List<GetCourtMasterDataAllResponse>>>
     {
         private readonly ICourtMasterRepository _repository;
-        public GetCourtMasterAllQueryHandler(ICourtMasterRepository _repository)
+        private readonly ICourtBenchRepository _repoBench;
+        public GetCourtMasterAllQueryHandler(ICourtMasterRepository _repository,
+            ICourtBenchRepository _repoBench)
         {
             this._repository = _repository;
+            this._repoBench = _repoBench;
         }
         public Task<Result<List<GetCourtMasterDataAllResponse>>> Handle(GetCourtMasterAllQuery request, CancellationToken cancellationToken)
         {
@@ -38,18 +42,22 @@ namespace CourtApp.Application.Features.CourtMasters
                 Id = e.Id,
                 CourtFullName = e.Name_En,
                 State = e.State.Name_En,
-                District = e.District.Name_En
+                District = e.District.Name_En,
+                Total = e.CourtBenches.Count()
             };
             var predicate = PredicateBuilder.True<CourtMasterEntity>();
             if (request.CourtTypeId != Guid.Empty)
                 predicate = predicate.And(b => b.CourtType.Id == request.CourtTypeId);
-
-
-            var dtlist = _repository.Entities.Where(predicate)
+            var dtlist = _repository.Entities
+                .Include(ct => ct.CourtType)
+                .Include(st => st.State)
+                .Include(d => d.District)
+               .Where(predicate)
                .Select(expression)
                .ToList();
-
-            return Task.FromResult(Result<List<GetCourtMasterDataAllResponse>>.Success(dtlist));
+            
+            return Task.FromResult(Result<List<GetCourtMasterDataAllResponse>>
+                .Success(dtlist));
         }
     }
 }

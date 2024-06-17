@@ -17,6 +17,7 @@ namespace CourtApp.Web.Areas.Litigation.Mappings
             CreateMap<CaseHistoryData, HistoryDetail>();
             CreateMap<CaseDocumentModel, DocumentAttachmentModel>();
             CreateMap<CaseUploadedDocument, CaseDoc>();
+            CreateMap<CaseDetailInfoDto, CaseDetailInfoViewModel>();
             //CreateMap<CommandDeleteCaseEntry, CaseViewModel>().ReverseMap();
             //CreateMap<ResponseGetAllCaseEntry, CaseViewModel>().ReverseMap();           
         }

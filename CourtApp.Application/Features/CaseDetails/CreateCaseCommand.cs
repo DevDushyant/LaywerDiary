@@ -39,15 +39,21 @@ namespace CourtApp.Application.Features.Case
         public DateTime ImpugedOrderDate { get; set; }
         public Guid CourtTypeId { get; set; }
         public Guid CourtBenchId { get; set; }
+        public Guid CaseCategoryId { get; set; }
+        public Guid CaseTypeId { get; set; }
         public int StateId { get; set; }
-        public int StrengthId { get; set; }
+        public int? StrengthId { get; set; }
         public string CaseNo { get; set; }
         public int CaseYear { get; set; }
-        public string CisNo { get; set; }
-        public int CisYear { get; set; }
-        public string CnrNo { get; set; }
+        public int CisYear { get; set; }       
         public string OfficerName { get; set; }
         public string Cadre { get; set; }
+        public Guid? CourtDistrictId { get; set; }
+        public Guid? AgainstBenchId { get; set; }
+        public Guid? ComplexId { get; set; }
+        public Guid? CourtId { get; set; }
+        public string CisNumber { get; set; }
+        public string CnrNumber { get; set; }
     }
 
     public class CreateCaseManagmentCommandHandler : IRequestHandler<CreateCaseCommand, Result<Guid>>
@@ -91,34 +97,35 @@ namespace CourtApp.Application.Features.Case
         public async Task<Result<Guid>> Handle(CreateCaseCommand request, CancellationToken cancellationToken)
         {
             var entity = _mapper.Map<CaseDetailEntity>(request);
+            entity.CaseAgainstEntities= _mapper.Map<List<CaseDetailAgainstEntity>>(request.AgainstCaseDetails);
             var result = await _Repository.InsertAsync(entity);
             await _unitOfWork.Commit(cancellationToken);
-            if (entity.Id != Guid.Empty)
-            {
-                List<CaseDetailAgainstEntity> againstEntities = new List<CaseDetailAgainstEntity>();
-                foreach (var item in request.AgainstCaseDetails)
-                {
-                    againstEntities.Add(new CaseDetailAgainstEntity
-                    {
-                        Id=Guid.NewGuid(),
-                        CaseId = entity.Id,
-                        Cadre = item.Cadre,                        
-                        CaseNo = item.CaseNo,
-                        CaseYear = item.CaseYear,
-                        CisNo = item.CisNo,
-                        CisYear = item.CisYear,
-                        CnrNo = item.CnrNo,
-                        CourtBenchId = item.CourtBenchId,
-                        CourtTypeId = item.CourtTypeId,
-                        ImpugedOrderDate = item.ImpugedOrderDate,
-                        OfficerName = item.OfficerName,
-                        StateId = item.StateId,
-                        StrengthId = item.StrengthId
-                    });
-                }
-                await _CaseAgainstRepo.InsertAsync(againstEntities);
-                await _unitOfWork.Commit(cancellationToken);
-            }            
+            //if (entity.Id != Guid.Empty)
+            //{
+            //    List<CaseDetailAgainstEntity> againstEntities = new List<CaseDetailAgainstEntity>();
+            //    foreach (var item in request.AgainstCaseDetails)
+            //    {
+            //        againstEntities.Add(new CaseDetailAgainstEntity
+            //        {
+            //            Id=Guid.NewGuid(),
+            //            CaseId = entity.Id,
+            //            Cadre = item.Cadre,                        
+            //            CaseNo = item.CaseNo,
+            //            CaseYear = item.CaseYear,
+            //            CisNo = item.CisNo,
+            //            CisYear = item.CisYear,
+            //            CnrNo = item.CnrNo,
+            //            CourtBenchId = item.CourtBenchId,
+            //            CourtTypeId = item.CourtTypeId,
+            //            ImpugedOrderDate = item.ImpugedOrderDate,
+            //            OfficerName = item.OfficerName,
+            //            StateId = item.StateId,
+            //            StrengthId = item.StrengthId
+            //        });
+            //    }
+            //    await _CaseAgainstRepo.InsertAsync(againstEntities);
+            //    await _unitOfWork.Commit(cancellationToken);
+            //}            
             return Result<Guid>.Success(entity.Id);
         }
     }

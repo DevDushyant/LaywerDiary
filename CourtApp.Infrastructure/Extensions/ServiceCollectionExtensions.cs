@@ -71,18 +71,25 @@ namespace CourtApp.Infrastructure.Extensions
             services.AddTransient<IClientCacheRepository, ClientCacheRepository>();
 
             services.AddTransient<ICourtTypeRepository, CourtTypeRepository>();
-            services.AddTransient<ICourtTypeCacheRepository, CourtTypeCacheRepository>();
-           
+            services.AddTransient<ICourtTypeCacheRepository, CourtTypeCacheRepository>();           
 
             services.AddTransient<IUserCaseRepository, UserCaseRepository>();
+            services.AddTransient<IUserCaseCacheRepository, UserCaseCacheRepository>();
+
+
             services.AddTransient<IProceedingHeadRepository, ProceedingHeadRepository>();
             services.AddTransient<IProceedingSubHeadRepository, ProceedingSubHeadRepository>();
             services.AddTransient<IWorkMasterRepository, WorkMasterRepository>();
             services.AddTransient<IWorkMasterSubRepository, WorkMasterSubRepository>();
             services.AddTransient<ICaseManagmentRepository, CaseManagmentRepository>();
             services.AddTransient<ICaseTitleRepository, CaseTitleRepository>();
+
             services.AddTransient<ICourtDistrictRepository, CourtDistrictRepository>();
+            services.AddTransient<ICourtDistrictCacheRepository, CourtDistrictCacheRepository>();
+
             services.AddTransient<ICourtComplexRepository, CourtComplexRepository>();
+            services.AddTransient<ICourtComplexCacheRepository, CourtComplexCacheRepository>();
+
             services.AddTransient<ICourtBenchRepository, CourtBenchRepository>();
             services.AddTransient<ICaseAgainstRepository, CaseAgainstRepository>();
             services.AddTransient<ICaseProceedingRepository, CaseProceedingRepository>();

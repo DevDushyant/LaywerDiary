@@ -10,11 +10,13 @@ namespace CourtApp.Domain.Entities.LawyerDiary
     public class CourtDistrictEntity : AuditableEntity
     {
         [Key]
-        public new Guid Id { get; set; }
+        public new Guid Id { get; set; }        
         public required string Name_En { get; set; }
         public string Name_Hn { get; set; }
         public int StateId { get; set; }
-        public int DistrictId { get; set; }
+
+        [ForeignKey("District")]
+        public int DistrictCode { get; set; }        
         public string Abbreviation { get; set; }
         public virtual StateEntity State { get; set; }
         public virtual DistrictEntity District { get; set; }        

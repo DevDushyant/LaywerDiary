@@ -107,8 +107,8 @@ namespace CourtApp.Infrastructure.DbContexts
             }
 
             base.OnModelCreating(builder);
-            builder.Entity<CourtMasterEntity>().Property(p => p.CourtComplexId).IsRequired(false);
-            builder.Entity<CourtMasterEntity>().Property(p => p.CourtDistrictId).IsRequired(false);
+            //builder.Entity<CourtMasterEntity>().Property(p => p.CourtComplexId).IsRequired(false);
+            //builder.Entity<CourtMasterEntity>().Property(p => p.CourtDistrictId).IsRequired(false);
             //builder.Entity<CourtMasterEntity>().Property(p => p.UId).HasDefaultValueSql("uuid_generate_v4()");
             //builder.Entity<ClientEntity>().Property(p => p.UId).HasDefaultValueSql("uuid_generate_v4()");
             //builder.Entity<CaseEntity>().Property(p => p.Id).HasDefaultValueSql("uuid_generate_v4()");

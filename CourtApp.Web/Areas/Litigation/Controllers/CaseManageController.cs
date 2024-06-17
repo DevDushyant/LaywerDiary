@@ -40,15 +40,16 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         public async Task<IActionResult> CreateOrUpdateAsync(Guid id)
         {
             var ClientList = await _mediator.Send(new GetAllClientCachedQuery() { });
+            var caseViewModel = new CaseViewModel();
             if (id == Guid.Empty)
             {
-                var caseViewModel = new CaseViewModel();
+                
                 caseViewModel.InstitutionDate = DateTime.Now;
                 caseViewModel.CourtTypes = await LoadCourtTypes();
-                caseViewModel.CourtDistricts = await DdlLoadCourtDistricts(1);
+                //caseViewModel.CourtDistricts = await DdlLoadCourtDistricts(1);
 
                 caseViewModel.CaseNatures = await LoadCaseNature();
-                caseViewModel.CaseKinds = await LoadCaseKinds();
+                //caseViewModel.CaseKinds = await LoadCaseKinds();
 
                 caseViewModel.CaseStages = await DdlCaseStages();
                 caseViewModel.FirstTitleList = FirstTtitleList();
@@ -63,7 +64,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
             else
             {
-                return null;
+                return View("_CreateOrEdit", caseViewModel);
             }
         }
 
@@ -74,6 +75,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 if (Id == Guid.Empty)
                 {
+                    ViewModel.CourtBenchId = ViewModel.BenchId == null ? ViewModel.CourtId.Value : ViewModel.BenchId.Value;
                     var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);
                     var result = await _mediator.Send(createCommand);
                     if (result.Succeeded)
@@ -259,6 +261,19 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 return null;
             }
             return new JsonResult(new { isValid = true });
+        }
+        #endregion
+
+        #region Case Detail
+        public async Task<IActionResult> GetCaseDetailAsync(Guid id)
+        {
+            var response = await _mediator.Send(new GetCaseDetailInfoQuery() { CaseId=id});
+            if (response.Succeeded)
+            {
+                var viewModel = _mapper.Map<CaseDetailInfoViewModel>(response.Data);
+                return View(viewModel);
+            }
+            return null;            
         }
         #endregion
 

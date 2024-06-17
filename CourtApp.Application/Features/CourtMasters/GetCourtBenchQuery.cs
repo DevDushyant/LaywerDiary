@@ -48,14 +48,13 @@ namespace CourtApp.Application.Features.CourtMasters
             };
             var predicate = PredicateBuilder.True<CourtBenchEntity>();
             Guid CourtMasterId = Guid.Empty;
-            if (request.CourtTypeId == Guid.Parse("359acb34-7b8c-4fc8-a276-8b198ea5105c"))
-            {
-                var dt = _CourtMasterRepo.GetListAsync().Result.Where(w => w.StateId == request.StateId && w.CourtTypeId==request.CourtTypeId).FirstOrDefault();
-                CourtMasterId = dt.Id;
-            }
+            var dt = _CourtMasterRepo.GetListAsync().Result
+                .Where(w => w.StateId == request.StateId && w.CourtTypeId == request.CourtTypeId).ToList();
+            if (request.CourtTypeId != Guid.Empty && request.CourtId != Guid.Empty)
+                CourtMasterId = dt.Where(w => w.CourtComplexId == request.CourtId)
+                    .Select(s => s.Id).FirstOrDefault();
             else
-                CourtMasterId = request.CourtId;
-
+                CourtMasterId = dt.Select(s => s.Id).FirstOrDefault();
             if (request.CourtTypeId != Guid.Empty)
                 predicate = predicate.And(b => b.CourtMasterId == CourtMasterId);
 

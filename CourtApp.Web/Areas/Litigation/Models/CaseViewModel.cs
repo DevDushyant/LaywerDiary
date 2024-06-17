@@ -7,7 +7,6 @@ namespace CourtApp.Web.Areas.Litigation.Models
 {
     public class CaseViewModel
     {
-
         #region Select List Region
         public SelectList CaseNatures { get; set; }
         public SelectList TypeOfCases { get; set; }
@@ -47,13 +46,14 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string CnrNumber { get; set; }
         public DateTime? NextDate { get; set; }
         public string CaseStageCode { get; set; }
-        public Guid LinkedCaseId { get; set; }
-        public Guid ClientId { get; set; }
+        public Guid LinkedCaseId { get; set; }        
         public Guid? CourtDistrictId { get; set; }
         public Guid? ComplexBenchId { get; set; }
         public List<CaseAgainstModel> AgainstCaseDetails { get; set; }
         public int? StateId { get; set; }
         public int? StrengthId { get; set; }
+        public Guid? BenchId { get; set; }
+        public Guid? CourtId { get; set; }
         #endregion   
 
         [TempData]

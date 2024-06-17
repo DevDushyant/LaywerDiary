@@ -141,7 +141,7 @@ namespace CourtApp.Web.Abstractions
 
         public async Task<JsonResult> LoadCourtDistrictByState(int StateId)
         {
-            var districts = await _mediator.Send(new GetCourtDistrictQuery() { StateId = StateId });
+            var districts = await _mediator.Send(new GetCourtDistrictCachedQuery() { StateId = StateId });
             var data = Json(districts);
             return data;
         }
@@ -163,7 +163,7 @@ namespace CourtApp.Web.Abstractions
 
         public async Task<JsonResult> LoadCourtComplex(Guid CDistrictId)
         {
-            var response = await _mediator.Send(new GetCourtComplexQuery() { CourDistrictId = CDistrictId });
+            var response = await _mediator.Send(new GetCourtComplexCacheQuery() { CourtDistrictId = CDistrictId });
             return Json(response);
         }
         public async Task<JsonResult> LoadTypeOfCase(Guid natureId)

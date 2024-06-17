@@ -1,0 +1,320 @@
+﻿@model CaseDetailInfoViewModel
+<style>
+    .div_hide {
+        display: none
+    }
+
+    fieldset.scheduler-border {
+        border: 1px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;
+        margin: 0 0 1.5em 0 !important;
+        -webkit-box-shadow: 0px 0px 0px 0px #000;
+        box-shadow: 0px 0px 0px 0px #000;
+        width: 100% !important;
+    }
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width: auto;
+        padding: 0 10px;
+        border-bottom: none;
+    }
+</style>
+<div class="row">
+    <div class="col-sm-8"><h4>Case <b>Detail Information</b></h4></div>
+    <div class="col-sm-4">
+        <button type="button" onclick="location.href='@Url.Action("index", "CaseManage")'" class="btn btn-info btn-style float-lg-right"><i class="fa fa-arrow-left"></i> Back to list</button>
+    </div>
+</div>
+
+<fieldset class="scheduler-border">
+    <legend class="scheduler-border">Case Infromation</legend>
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InstitutionDate)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.InstitutionDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.State)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.State)
+        </dd>
+    </dl>
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CourtType)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.CourtType)
+        </dd>
+
+        <dd class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CourtBench)
+        </dd>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.CourtBench)
+
+    </dl>
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CaseNoYear)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.CaseNoYear)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CaseCategory)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.CaseCategory)
+        </dd>
+    </dl>
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CaseType)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.CaseType)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CisNoYear)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.CisNoYear)
+        </dd>
+    </dl>
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstTitle)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.FirstTitle)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstTitleDetail)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.FirstTitleDetail)
+        </dd>
+    </dl>
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SecondTitle)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.SecondTitle)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SecondTitleDetail)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.SecondTitleDetail)
+        </dd>
+    </dl>
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NextDate)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.NextDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CaseStage)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.CaseStage)
+        </dd>
+    </dl>
+</fieldset>
+
+@* <fieldset class="scheduler-border">
+    <legend class="scheduler-border">Client Detail</legend>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClientDetail.FirstName)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.ClientDetail.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClientDetail.MiddleName)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.ClientDetail.MiddleName)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClientDetail.LastName)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.ClientDetail.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClientDetail.FatherName)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.ClientDetail.FatherName)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClientDetail.Mobile)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.ClientDetail.Mobile)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClientDetail.Phone)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.ClientDetail.Phone)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClientDetail.Email)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.ClientDetail.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClientDetail.OfficeEmail)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.ClientDetail.OfficeEmail)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClientDetail.Dob)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.ClientDetail.Dob)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClientDetail.Address)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.ClientDetail.Address)
+        </dd>
+    </dl>
+</fieldset> *@
+
+@* <fieldset class="scheduler-border">
+    <legend class="scheduler-border">Against Case Details Information</legend>
+    @foreach (var ag in Model.AgainstCases)
+    {
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => ag.ImpugedOrder)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => ag.ImpugedOrder)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => ag.State)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => ag.State)
+            </dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => ag.CourtType)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => ag.CourtType)
+            </dd>
+            @if (!Model.IsHighCourt)
+            {
+                <dd class="col-sm-2">
+                    @Html.DisplayNameFor(model => ag.DistrictCourt)
+                </dd>
+                <dd class="col-sm-4">
+                    @Html.DisplayFor(model => ag.DistrictCourt)
+                </dd>
+            }
+            else
+            {
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.CourtBench)
+                </dt>
+                <dt class="col-sm-4">
+                    @Html.DisplayFor(model => model.CourtBench)
+                </dt>
+            }
+        </dl>
+
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => ag.CaseNoYear)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => ag.CaseNoYear)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => ag.CaseCategory)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => ag.CaseCategory)
+            </dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => ag.CaseType)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => ag.CaseType)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => ag.CisNoYear)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => ag.CisNoYear)
+            </dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => ag.CnrNo)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => ag.CnrNo)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => ag.OfficerName)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => ag.OfficerName)
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => ag.Cadre)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => ag.Cadre)
+            </dd>
+
+        </dl>
+
+    }
+</fieldset> *@
+<div>
+    @Html.ActionLink("Edit", "CreateOrUpdate", new { id = Model.Id })
+</div>

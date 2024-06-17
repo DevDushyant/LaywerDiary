@@ -8,8 +8,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
     [Table("case_detail_against", Schema = "ld")]
     public class CaseDetailAgainstEntity
     {        
-        public Guid Id { get; set; }
-        public Guid CaseId { get; set; }
+        public Guid Id { get; set; }        
         public DateTime ImpugedOrderDate { get; set; }
         public  Guid CourtTypeId { get; set; }
         public  Guid CourtBenchId { get; set; }

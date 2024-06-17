@@ -24,6 +24,13 @@ namespace CourtApp.Infrastructure.Repositories
         }
         public IQueryable<CourtBenchEntity> Entities => _repository.Entities;
 
+        public async Task<Guid> AddBenchAsync(CourtBenchEntity Entity)
+        {
+            await _repository.AddAsync(Entity);
+            return Entity.Id;
+
+        }
+
         public Task DeleteAsync(CourtBenchEntity Entity)
         {
             throw new NotImplementedException();

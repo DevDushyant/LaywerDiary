@@ -26,7 +26,8 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task DeleteAsync(CourtDistrictEntity Entity)
         {
             await _repository.DeleteAsync(Entity);
-            await _distributedCache.RemoveAsync(AppCacheKeys.CourtDistrictKey);            
+            await _distributedCache.RemoveAsync(CourtDistrictCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(CourtDistrictCacheKeys.GetByIdKey(Entity.Id));
         }
 
         public async Task<CourtDistrictEntity> GetByIdAsync(Guid Id)
@@ -40,24 +41,21 @@ namespace CourtApp.Infrastructure.Repositories
 
         public async Task<List<CourtDistrictEntity>> GetListAsync()
         {
-            var DetailById = _repository.Entities
-               .Include(d => d.State)
-               .Include(d => d.District)
-               .ToListAsync();
-            return await DetailById;
+            var dl = await _repository.Entities.ToListAsync();
+            return dl;
         }
 
         public async Task<Guid> InsertAsync(CourtDistrictEntity Entity)
         {
             await _repository.AddAsync(Entity);
-            await _distributedCache.RemoveAsync(AppCacheKeys.CourtDistrictKey);
+            await _distributedCache.RemoveAsync(CourtDistrictCacheKeys.ListKey);
             return Entity.Id;
         }
 
         public async Task UpdateAsync(CourtDistrictEntity Entity)
         {
             await _repository.UpdateAsync(Entity);
-            await _distributedCache.RemoveAsync(AppCacheKeys.CourtDistrictKey);
+            await _distributedCache.RemoveAsync(CourtDistrictCacheKeys.ListKey);
         }
     }
 }

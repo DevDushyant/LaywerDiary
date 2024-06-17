@@ -32,12 +32,15 @@ namespace CourtApp.Infrastructure.Repositories
         {
             return await _repository
                 .Entities
-                .Include(ct => ct.CaseType)
-                .Include(c => c.CourtType)
-                .Include(c => c.CourtBench)
-                .Include(c => c.CaseCategory)
-                .Where(p => p.Id == CaseUid)
-                .FirstOrDefaultAsync();
+                .Where(w=>w.Id==CaseUid).FirstAsync();
+            //return await _repository
+            //    .Entities
+            //    .Include(ct => ct.CaseType)
+            //    .Include(c => c.CourtType)
+            //    .Include(c => c.CourtBench)
+            //    .Include(c => c.CaseCategory)
+            //    .Where(p => p.Id == CaseUid)
+            //    .FirstOrDefaultAsync();
         }
 
         public async Task<List<CaseDetailEntity>> GetListAsync()

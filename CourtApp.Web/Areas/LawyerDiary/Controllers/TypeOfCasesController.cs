@@ -41,7 +41,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 100));
+            var response = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 200));
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<TypeOfCasesViewModel>>(response.Data);

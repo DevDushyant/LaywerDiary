@@ -15,7 +15,7 @@ namespace CourtApp.Infrastructure.Repositories
     {
         private readonly IRepositoryAsync<CourtComplexEntity> _repository;
         private readonly IDistributedCache _distributedCache;
-        public CourtComplexRepository(IRepositoryAsync<CourtComplexEntity> _repository, 
+        public CourtComplexRepository(IRepositoryAsync<CourtComplexEntity> _repository,
             IDistributedCache _distributedCache)
         {
             this._repository = _repository;
@@ -34,19 +34,15 @@ namespace CourtApp.Infrastructure.Repositories
             var DetailById = _repository.Entities
                .Include(d => d.State)
                .Include(d => d.District)
-               .Include(d => d.CDistrict)
+               .Include(d => d.CourtDistrict)
                .Where(p => p.Id == Id).FirstOrDefaultAsync();
             return await DetailById;
         }
 
         public async Task<List<CourtComplexEntity>> GetListAsync()
         {
-            var DetailById = _repository.Entities
-               .Include(d => d.State)
-               .Include(d => d.District)
-               .Include(d => d.CDistrict)
-               .ToListAsync();
-            return await DetailById;
+            var dl = _repository.Entities.ToListAsync();
+            return await dl;
         }
 
         public async Task<Guid> InsertAsync(CourtComplexEntity Entity)

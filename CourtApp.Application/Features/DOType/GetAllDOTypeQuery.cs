@@ -6,6 +6,7 @@ using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using System;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,6 +43,7 @@ namespace CourtApp.Application.Features.DOType
             var paginatedList = await _repository.Entities
                 .Select(expression)
                 .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+            paginatedList.TotalCount = _repository.Entities.Count();
             return paginatedList;
         }
     }

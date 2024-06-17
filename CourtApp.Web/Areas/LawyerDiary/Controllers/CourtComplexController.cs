@@ -22,7 +22,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new GetCourtComplexQuery());
+            var response = await _mediator.Send(new GetCourtComplexQuery() { PageNumber=1,PageSize=100});
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<CourtComplexViewModel>>(response.Data);

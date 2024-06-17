@@ -34,6 +34,6 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public string CaseStageCode { get; set; }
         public Guid LinkedCaseId { get; set; }
         public Guid ClientId { get; set; }
-        public ICollection<CaseDetailAgainstEntity> CaseAgainstEntities { get; set; }
+        public ICollection<CaseDetailAgainstEntity> CaseAgainstEntities { get; set; }=new List<CaseDetailAgainstEntity>();
     }
 }

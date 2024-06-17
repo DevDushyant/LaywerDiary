@@ -20,6 +20,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
         public Guid? CourtComplexId { get; set; }
         public string State { get; set; }
         public string District { get; set; }
+        public string Total { get; set; }
         public List<CourtBench> CourtBenches { get; set; }
 }
 

@@ -3,12 +3,7 @@
         <tr>
             @* <th>Sno.</th> *@
             <th>Type</th>
-            <th>Name</th>
-            @* @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded
-            || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
-            {
-                <th>Actions</th>
-            } *@
+            <th>Name</th>            
         </tr>
     </thead>
 </table>

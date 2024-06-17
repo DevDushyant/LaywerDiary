@@ -34,7 +34,7 @@ namespace CourtApp.Application.Features.CourtDistrict
                 return Result<Guid>.Fail($"Court District not found.");
             else
             {                
-                detailById.DistrictId=command.DistrictId;
+                detailById.DistrictCode=command.DistrictId;
                 detailById.StateId=command.StateId;                
                 detailById.Name_En=command.Name_En;
                 detailById.Name_Hn=command.Name_Hn;                

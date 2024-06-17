@@ -68,6 +68,7 @@ namespace CourtApp.Application.Features.TypeOfCases.Query
                     .Where(predicate)
                     .Select(expression)
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+                paginatedList.TotalCount = _repository.QryEntities.Count();
                 return paginatedList;
             }
             catch(Exception ex) { 

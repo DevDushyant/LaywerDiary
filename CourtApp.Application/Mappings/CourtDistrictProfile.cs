@@ -16,6 +16,7 @@ namespace CourtApp.Application.Mappings
         public CourtDistrictProfile()
         {
             CreateMap<CourtDistrictEntity, CourtDistrictByIdReponse>();
+            CreateMap<CourtDistrictEntity, CourtDistrictReponse>();
             CreateMap<CreateCourtDistrictCommand, CourtDistrictEntity>();
             CreateMap<UpdateCourtDistrictCommand, CourtDistrictEntity>();
             

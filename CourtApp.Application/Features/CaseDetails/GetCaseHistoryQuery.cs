@@ -50,8 +50,8 @@ namespace CourtApp.Application.Features.CaseDetails
                 chr.Id = request.CaseId;
                 chr.CaseNoYear = detail.CaseNo + "/" + detail.CaseYear;
                 chr.Title = detail.FirstTitle + " Vs " + detail.SecondTitle;
-                chr.CourtType = detail.CourtType.CourtType;
-                chr.Court = detail.CourtBench.CourtBench_En;
+                chr.CourtType = detail.CourtType!=null?detail.CourtType.CourtType:"";
+                chr.Court = detail.CourtBench != null ? detail.CourtBench.CourtBench_En:"";
                 var caseWorks = await _CaseWorkRepo.GetWorkByCaseIdAsync(request.CaseId);
                 var cwdata = caseWorks
                     .Select(s => new CaseHistoryData

@@ -18,11 +18,11 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public required string Name_En { get; set; }
         public string Name_Hn { get; set; }
         public int StateId { get; set; }
-        public int DistrictId { get; set; }
+        public int DistrictCode { get; set; }
         public Guid CourtDistrictId { get; set; }
         public string Abbreviation { get; set; }
         public virtual StateEntity State { get; set; }
         public virtual DistrictEntity District { get; set; }
-        public virtual CourtDistrictEntity CDistrict { get; set; }
+        public virtual CourtDistrictEntity CourtDistrict { get; set; }
     }
 }

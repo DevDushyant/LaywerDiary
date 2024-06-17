@@ -37,7 +37,7 @@ namespace CourtApp.Application.Features.CourtComplex
                 return Result<Guid>.Fail($"Court complex not found.");
             else
             {
-                detailById.DistrictId = cmd.DistrictId;
+                detailById.DistrictCode = cmd.DistrictId;
                 detailById.StateId = cmd.StateId;
                 detailById.Abbreviation = cmd.Abbreviation;
                 detailById.Name_En = cmd.Name_En;

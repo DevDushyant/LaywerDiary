@@ -13,5 +13,6 @@ namespace CourtApp.Application.DTOs.CourtMaster
         public string Address { get; set; }
         public string State { get; set; }
         public string District { get; set; }
+        public int Total { get; set; }
     }
 }

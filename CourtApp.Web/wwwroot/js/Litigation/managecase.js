@@ -1,4 +1,20 @@
 ﻿$(document).ready(function () {
+
+    $("#StateId").select2({
+        placeholder: "Select a state",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    $("#AgainstStateId_0").select2({
+        placeholder: "Select a state",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+
     $("#CourtTypeId").select2({
         placeholder: "Select a court type",
         theme: "bootstrap4",
@@ -15,21 +31,23 @@
         }
     });
 
-    $("#StateId").select2({
-        placeholder: "Select a state",
+    $("#CourtId").select2({
+        placeholder: "Select a court",
         theme: "bootstrap4",
         escapeMarkup: function (m) {
             return m;
         }
     });
 
-    $("#AgainstStateId_0").select2({
-        placeholder: "Select a state",
+    $("#CourtId").select2({
+        placeholder: "Select a court",
         theme: "bootstrap4",
         escapeMarkup: function (m) {
             return m;
         }
     });
+
+
 
     $("#StrengthId").select2({
         placeholder: "Select strength",
@@ -55,6 +73,14 @@
         }
     });
 
+    $("#AgainstCourtComplexId_0").select2({
+        placeholder: "Select complex",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+
     $("#AgainstCaseCategoryId_0").select2({
         placeholder: "Select case category",
         theme: "bootstrap4",
@@ -73,6 +99,13 @@
 
     $("#AgainstCourtDistrictId_0").select2({
         placeholder: "Select a district",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    $("#AgainstCourtId_0").select2({
+        placeholder: "Select a court",
         theme: "bootstrap4",
         escapeMarkup: function (m) {
             return m;
@@ -121,6 +154,20 @@
 
     $("#AgainstCourtBenchId_0").select2({
         placeholder: "Select court/bench",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    $("#BenchId").select2({
+        placeholder: "Select bench",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    $("#AgainstBenchId_0").select2({
+        placeholder: "Select bench",
         theme: "bootstrap4",
         escapeMarkup: function (m) {
             return m;
@@ -240,57 +287,56 @@
     });
 
     $("#CourtTypeId").on("change", function () {
-        debugger;
         $("#CaseCategoryId").empty();
         if ($("#CourtTypeId").val() === "b512e36f-0b6e-4a14-80d0-65266b2b320d" || $("#CourtTypeId").val() === "359acb34-7b8c-4fc8-a276-8b198ea5105c") {
             $('#divDistrictCourt').addClass('div_hide');
             $('#divHighCourt').removeClass('div_hide');
+            $('.highCourt').css('display', 'block');
+            $('.Court').css('display', 'none');
+            BindBench();
         }
         else {
+            $('.highCourt').css('display', 'none');
+            $('.Court').css('display', 'block');
             $('#divHighCourt').addClass('div_hide');
             $('#divDistrictCourt').removeClass('div_hide');
+            BindDistrictCourt();
         }
-        $.getJSON("/Litigation/CaseManage/LoadCaseCategory?CourtTypeId=" + $("#CourtTypeId").val(), function (data) {
-            $.each(data, function (i, item) {
-                $("#CaseCategoryId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
-            });
-        });
+        BindCaseCategory($("#CourtTypeId").val())
     });
 
-    $("#AgainstCourtTypeId_0").on("change", function () {
+    $("#AgainstCourtTypeId_0").on("change", function () {       
         $("#AgainstCaseCategoryId_0").empty();
-        if ($("#AgainstCourtTypeId_0").val() === "359acb34-7b8c-4fc8-a276-8b198ea5105c") {
-            $('#AgainstDivDistrictCourt_0').addClass('div_hide');
-            $('#AgainstDivHighCourt_0').removeClass('div_hide');
+        if ($("#AgainstCourtTypeId_0").val() === "b512e36f-0b6e-4a14-80d0-65266b2b320d" || $("#AgainstCourtTypeId_0").val() === "359acb34-7b8c-4fc8-a276-8b198ea5105c") {
+            $('.AhighCourt').css('display', 'block');
+            $('.ACourt').css('display', 'none');
+            BindAgainstBench();
         }
         else {
-            $('#AgainstDivHighCourt_0').addClass('div_hide');
-            $('#AgainstDivDistrictCourt_0').removeClass('div_hide');
+            $('.AhighCourt').css('display', 'none');
+            $('.ACourt').css('display', 'block');
+            BindAgainstDistrictCourt();
         }
-        $.getJSON("/Litigation/CaseManage/LoadCaseCategory?CourtTypeId=" + $("#CourtTypeId").val(), function (data) {
-            $.each(data, function (i, item) {
-                $("#AgainstCaseCategoryId_0").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
-            });
-        });
+        BindAgainstCaseCategory($("#AgainstCourtTypeId_0").val())
     });
 
-    $("#StateId").on('change', function () {
-        $("#CourtBenchId").empty();
-        $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val() + "&ComplexId=00000000-0000-0000-0000-000000000000", function (data) {
-            $.each(data.Data, function (i, item) {
-                $("#CourtBenchId").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
-            });
-        });
-    });
+    //$("#StateId").on('change', function () {
+    //    $("#CourtBenchId").empty();
+    //    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val() + "&ComplexId=00000000-0000-0000-0000-000000000000", function (data) {
+    //        $.each(data.Data, function (i, item) {
+    //            $("#CourtBenchId").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
+    //        });
+    //    });
+    //});
 
-    $("#AgainstStateId_0").on('change', function () {
-        $("#AgainstCourtBenchId_0").empty();
-        $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val() + "&ComplexId=00000000-0000-0000-0000-000000000000", function (data) {
-            $.each(data.Data, function (i, item) {
-                $("#AgainstCourtBenchId_0").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
-            });
-        });
-    });
+    //$("#AgainstStateId_0").on('change', function () {
+    //    $("#AgainstCourtBenchId_0").empty();
+    //    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val() + "&ComplexId=00000000-0000-0000-0000-000000000000", function (data) {
+    //        $.each(data.Data, function (i, item) {
+    //            $("#AgainstCourtBenchId_0").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
+    //        });
+    //    });
+    //});
 
     $("#CaseCategoryId").on('change', function () {
         $("#CaseTypeId").empty();
@@ -308,7 +354,7 @@
                 $("#AgainstCaseTypeId_0").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
             });
         });
-    });    
+    });
 
     $("#CourtDistrictId").on("change", function () {
         $("#ComplexBenchId").empty();
@@ -317,37 +363,98 @@
                 $("#ComplexBenchId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
             });
         });
+
     });
 
     $("#AgainstCourtDistrictId_0").on("change", function () {
-        $("#AgainstComplexBenchId_0").empty();
-        $.getJSON("/Litigation/CaseManage/LoadCourtComplex?CDistrictId=" + $("#CourtDistrictId").val(), function (data) {
+        $("#AgainstCourtComplexId_0").empty();
+        $.getJSON("/Litigation/CaseManage/LoadCourtComplex?CDistrictId=" + $("#AgainstCourtDistrictId_0").val(), function (data) {
             $.each(data.Data, function (i, item) {
-                $("#AgainstComplexBenchId_0").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
+                $("#AgainstCourtComplexId_0").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
             });
         });
+        
     });
 
     $("#ComplexBenchId").on("change", function () {
-        $("#CourtBenchId").empty();
-        $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=0&ComplexId=" + $("#ComplexBenchId").val(), function (data) {
-            $.each(data.Data, function (i, item) {
-                $("#CourtBenchId").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
-            });
-        });
+        BindCourt();
     });
 
-    $("#AgainstComplexBenchId_0").on("change", function () {
-        $("#AgainstCourtBenchId_0").empty();
-        $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=0&ComplexId=" + $("#ComplexBenchId").val(), function (data) {
-            $.each(data.Data, function (i, item) {
-                $("#AgainstCourtBenchId_0").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
-            });
-        });
+    $("#AgainstCourtComplexId_0").on("change", function () {
+        BindAgainstCourt();
     });
 
 });
 
 function addElement(e) {
 
+}
+
+BindBench = function () {
+    $("#BenchId").empty();
+    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val() + "&ComplexId=00000000-0000-0000-0000-000000000000", function (data) {
+        $.each(data.Data, function (i, item) {
+            $("#BenchId").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
+        });
+    });
+}
+BindAgainstBench = function () {
+    $("#AgainstBenchId_0").empty();
+    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#AgainstCourtTypeId_0").val() + "&StateId=" + $("#AgainstStateId_0").val() + "&ComplexId=00000000-0000-0000-0000-000000000000", function (data) {
+        $.each(data.Data, function (i, item) {
+            $("#AgainstBenchId_0").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
+        });
+    });
+}
+
+
+BindCourt = function () {
+    $("#CourtId").empty();
+    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val() + "&ComplexId=" + $("#ComplexBenchId").val(), function (data) {
+        $.each(data.Data, function (i, item) {
+            $("#CourtId").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
+        });
+    });
+}
+BindAgainstCourt = function () {
+    $("#AgainstCourtId_0").empty();
+    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#AgainstCourtTypeId_0").val() + "&StateId=" + $("#AgainstStateId_0").val() + "&ComplexId=" + $("#AgainstCourtComplexId_0").val(), function (data) {
+        $.each(data.Data, function (i, item) {
+            $("#AgainstCourtId_0").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
+        });
+    });
+}
+
+BindDistrictCourt = function () {
+    $("#CourtDistrictId").empty();
+    $.getJSON("/Litigation/CaseManage/LoadCourtDistrictByState?StateId=" + $("#StateId").val(), function (data) {
+        $.each(data.Data, function (i, item) {
+            $("#CourtDistrictId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
+        });
+    });
+}
+BindAgainstDistrictCourt = function () {
+    $("#AgainstCourtDistrictId_0").empty();
+    $.getJSON("/Litigation/CaseManage/LoadCourtDistrictByState?StateId=" + $("#AgainstStateId_0").val(), function (data) {
+        $.each(data.Data, function (i, item) {
+            $("#AgainstCourtDistrictId_0").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
+        });
+    });
+}
+
+BindCaseCategory = function (CategoryId) {
+    $("#CaseCategoryId").empty()
+    $.getJSON("/Litigation/CaseManage/LoadCaseCategory?CourtTypeId=" + CategoryId, function (data) {
+        $.each(data, function (i, item) {
+            $("#CaseCategoryId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
+        });
+    });
+}
+BindAgainstCaseCategory = function (CategoryId) {
+    $("#AgainstCaseCategoryId_0").empty()
+    $.getJSON("/Litigation/CaseManage/LoadCaseCategory?CourtTypeId=" + CategoryId, function (data) {
+        $.each(data, function (i, item) {
+            $("#AgainstCaseCategoryId_0").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
+        });
+    });
 }

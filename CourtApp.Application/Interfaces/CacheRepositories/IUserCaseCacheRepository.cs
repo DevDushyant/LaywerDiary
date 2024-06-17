@@ -11,7 +11,6 @@ namespace CourtApp.Application.Interfaces.CacheRepositories
     public interface IUserCaseCacheRepository
     {
         Task<List<CaseDetailEntity>> GetCachedListAsync();
-
         Task<CaseDetailEntity> GetByIdAsync(Guid CaseUid);
     }
 }

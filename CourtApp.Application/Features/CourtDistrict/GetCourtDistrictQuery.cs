@@ -45,7 +45,7 @@ namespace CourtApp.Application.Features.CourtDistrict
                 if (request.StateId != 0)
                     predicate = predicate.And(y => y.StateId == request.StateId);
                 if (request.DistrictId != 0)
-                    predicate = predicate.And(x => x.DistrictId == request.DistrictId);
+                    predicate = predicate.And(x => x.DistrictCode == request.DistrictId);
 
             }
             try
@@ -57,6 +57,7 @@ namespace CourtApp.Application.Features.CourtDistrict
                     .Where(predicate)
                     .Select(expression)
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+                paginatedList.TotalPages=repository.Entities.Count();
                 return paginatedList;
             }
             catch (Exception ex)
