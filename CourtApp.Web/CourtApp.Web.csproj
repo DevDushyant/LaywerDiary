@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\LawyerDiary\Views\Title\FSTitle.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCoreHero.ToastNotification" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.5">
@@ -120,6 +124,18 @@
     <Content Update="wwwroot\images\logo-transparent.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Areas\LawyerDiary\Views\Title\FSTitle.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Areas\LawyerDiary\Views\Title\FSTitle.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Areas\LawyerDiary\Views\Title\FSTitle.cshtml" />
   </ItemGroup>
 
 </Project>

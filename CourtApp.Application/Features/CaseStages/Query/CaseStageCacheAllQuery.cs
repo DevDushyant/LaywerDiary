@@ -6,6 +6,7 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CourtApp.Application.Features.CaseStages.Query
 {
@@ -30,7 +31,7 @@ namespace CourtApp.Application.Features.CaseStages.Query
         {
             var dt = await _repository.GetCachedListAsync();
             var mappeddata = _mapper.Map<List<CaseStageCacheAllQueryResponse>>(dt);
-            return Result<List<CaseStageCacheAllQueryResponse>>.Success(mappeddata);
+            return Result<List<CaseStageCacheAllQueryResponse>>.Success(mappeddata.OrderBy(o=>o.CaseStage).ToList());
         }
     }
 }

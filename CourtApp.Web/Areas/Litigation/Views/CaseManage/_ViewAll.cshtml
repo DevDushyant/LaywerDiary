@@ -2,15 +2,14 @@
 <table id="tblUserCase" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th style="width:3%!important">Sno.</th>
-            <th style="width:10%!important">Type</th>
-            <th style="width:15%!important">Court Type</th>
+            <th style="width:5%!important">Sno.</th>
+            <th style="width:15%!important">Court</th>
+            <th style="width:10%!important">Type</th>            
             <th style="width:10%!important">Number</th>
-            <th style="width:20%!important">Parties</th>
-            <th style="width:5%!important">Court</th>
-            <th style="width:5%!important">Stage</th>
-            <th style="width:15%!important">Hearing Date</th>
-            <th style="width:8%!important">Actions</th>           
+            <th style="width:30%!important">Parties</th>            
+            <th style="width:10%!important">Stage</th>
+            <th style="width:10%!important">Date</th>
+            <th style="width:10%!important">Actions</th>           
         </tr>
     </thead>
     <tbody>
@@ -24,10 +23,10 @@
                     @(count = count + 1)
                 </td>
                 <td>
-                    @bt.CaseTypeName
+                    @bt.CourtName
                 </td>
                 <td>
-                    @bt.CourtType
+                    @bt.CaseTypeName
                 </td>
                 <td>
                     @bt.CaseNumber
@@ -35,9 +34,7 @@
                 <td>
                     @string.Concat(bt.FirstTitle, " V/S ", bt.SecondTitle)
                 </td>
-                <td>
-                    @bt.CourtName
-                </td>
+                
                 <td>
                     @bt.CaseStage
                 </td>

@@ -51,11 +51,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 caseViewModel.CaseNatures = await LoadCaseNature();
                 //caseViewModel.CaseKinds = await LoadCaseKinds();
 
-                caseViewModel.CaseStages = await DdlCaseStages();
+                //caseViewModel.CaseStages = await DdlCaseStages();
                 caseViewModel.FirstTitleList = FirstTtitleList();
                 caseViewModel.SecondTitleList = SecondTtitleList();
                 caseViewModel.Years = DdlYears();
-                caseViewModel.CaseStatusList = DdlCaseStatus();
+                caseViewModel.CaseStatusList = await DdlCaseStages();
                 caseViewModel.LinkedBy = DdlClient().Result;
                 caseViewModel.Cadres = DdlCadres();
                 caseViewModel.Strengths = DdlStrength();

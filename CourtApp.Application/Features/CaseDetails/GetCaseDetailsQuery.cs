@@ -57,7 +57,10 @@ namespace CourtApp.Application.Features.UserCase
                 FirstTitle = e.FirstTitle,
                 SecondTitle = e.SecondTitle,
                 NextHearingDate = e.NextDate != Convert.ToDateTime("0001-01-01") ? e.NextDate.Value.ToString("dd/MM/yyyy") : "-",
-                CaseStage = e.CaseStageCode,//StCodes.Where(s=>s.Key.Equals(e.CaseStageCode)).Select(s=>s.Value).FirstOrDefault(),
+                CaseStage = e.CaseStageCode,
+                //CaseStage = StaticDropDownDictionaries.CaseStatus()
+                //.Where(w => w.Key.Equals(e.CaseStageCode))
+                //.Select(s => s.Value).FirstOrDefault(),
                 CaseTitle = e.FirstTitle + " V/S " + e.SecondTitle + "(" + e.CaseNo + "/" + e.CaseYear + ")",
             };
 
@@ -72,7 +75,7 @@ namespace CourtApp.Application.Features.UserCase
                 if (request.CallingFrm == "HTD")
                     predicate = predicate.And(d => d.NextDate.Value.Date == DateTime.Now.Date);
                 //if (request.CallingFrm == "BTD")
-                  //  predicate = predicate.And(d => d.NextDate == null);
+                //  predicate = predicate.And(d => d.NextDate == null);
 
             }
             try

@@ -99,6 +99,11 @@ namespace CourtApp.Infrastructure.Extensions
             services.AddTransient<ICaseDocsRepository, CaseDocsRepository>();
 
             #endregion Repositories
+
+            #region First & Secound Title Services
+            services.AddTransient<IFSTitleCacheRepository, FSTitleCacheRepository>();
+            services.AddTransient<IFSTitleRepository, FSTitleRepository>();
+            #endregion
         }
     }
 }

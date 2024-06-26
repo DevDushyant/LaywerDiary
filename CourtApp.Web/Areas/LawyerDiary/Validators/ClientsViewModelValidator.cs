@@ -1,30 +1,25 @@
 ﻿using CourtApp.Web.Areas.Client.Model;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace CourtApp.Web.Areas.LawyerDiary.Validators
 {
     public class ClientsViewModelValidator : AbstractValidator<ClientViewModel>
     {
         public ClientsViewModelValidator()
         {
-            RuleFor(p => p.FirstName)
-                .NotEmpty().WithMessage("{PropertyName} is required.")
-                .NotNull()
-                .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
+            //RuleFor(p => p.FirstName)
+            //    .NotEmpty().WithMessage("{PropertyName} is required.")
+            //    .NotNull()
+            //    .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
 
             //RuleFor(p => p.FatherName)
             //    .NotEmpty().WithMessage("{PropertyName} is required.")
             //    .NotNull()
             //    .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
 
-            RuleFor(p => p.LastName)
-                .NotEmpty().WithMessage("{PropertyName} is required.")
-                .NotNull()
-                .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
+            //RuleFor(p => p.LastName)
+            //    .NotEmpty().WithMessage("{PropertyName} is required.")
+            //    .NotNull()
+            //    .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
 
             RuleFor(p => p.Email)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
@@ -60,13 +55,13 @@ namespace CourtApp.Web.Areas.LawyerDiary.Validators
             //    .NotEmpty().WithMessage("{PropertyName} is required.")
             //    .NotNull();
 
-            RuleFor(p => p.StateCode)
-                .NotEmpty().WithMessage("{PropertyName} is required.")
-                .NotNull();
+            //RuleFor(p => p.StateCode)
+            //    .NotEmpty().WithMessage("{PropertyName} is required.")
+            //    .NotNull();
 
-            RuleFor(p => p.DistrictCode)
-                .NotEmpty().WithMessage("{PropertyName} is required.")
-                .NotNull();
+            //RuleFor(p => p.DistrictCode)
+            //    .NotEmpty().WithMessage("{PropertyName} is required.")
+            //    .NotNull();
 
 
         }

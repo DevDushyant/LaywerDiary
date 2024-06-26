@@ -6,26 +6,26 @@ namespace CourtApp.Web.Areas.Client.Model
 {
     public class ClientViewModel
     {
-        public Guid Id { get; set; }
-        public string FirstName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }
-        public string FatherName { get; set; }
-        public string Dob { get; set; }
+        public Guid Id { get; set; }   
+        [TempData]
+        public string StatusMessage { get; set; }
+        public Guid CaseId { get; set; }
+
+        #region Client Properties
+        public string Name { get; set; }
+        public string Address { get; set; }
         public string Email { get; set; }
         public string Mobile { get; set; }
         public string OfficeEmail { get; set; }
         public string Phone { get; set; }
-        public bool IsRural { get; set; }
-        public string Landmark { get; set; }        
-        public string Address { get; set; }
-        public SelectList States { get; set; }
-        public int StateCode { get; set; }
-        public SelectList Districts { get; set; }
-        public int DistrictCode { get; set; }
-        [TempData]
-        public string StatusMessage { get; set; }
-        public Guid CaseId { get; set; }
+        public Guid ReferalId { get; set; }
+        public SelectList Referals { get; set; }              
+        public int AppearenceID { get; set; }
+        public SelectList Appearences { get; set; } //it will be Title FIrst union title secound
+        public Guid OppositCounselId { get; set; }
+        public SelectList OppositCounsels { get; set; }
+        public ClientFeeViewModel FeeDetail { get; set; }
+        #endregion
 
     }
 }

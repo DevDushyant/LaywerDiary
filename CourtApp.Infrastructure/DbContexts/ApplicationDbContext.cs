@@ -66,6 +66,7 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<CaseWorkEntity> CaseWorkEntities { get; set; }
         public DbSet<DOTypeEntity> DOTypeEntities { get; set; }
         public DbSet<CaseDocsEntity> caseDocsEntities { get; set; }
+        public DbSet<FSTitleEntity> FSTitleEntities { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

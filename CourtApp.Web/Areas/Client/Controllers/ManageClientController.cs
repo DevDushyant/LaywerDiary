@@ -41,7 +41,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (id == Guid.Empty)
             {
                 var ViewModel = new ClientViewModel();
-                await BindDropdownAsync(ViewModel);
+                //await BindDropdownAsync(ViewModel);
                 return View("_CreateOrEdit", ViewModel);
             }
             else
@@ -51,7 +51,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 {
                     var districtList = await _mediator.Send(new GetDistrictQuery() { StateCode = response.Data.StateCode });
                     var ViewModel = _mapper.Map<ClientViewModel>(response.Data);
-                    await BindDropdownAsync(ViewModel);
+                   // await BindDropdownAsync(ViewModel);
                     return View("_CreateOrEdit", ViewModel);
                 }
                 return null;
@@ -60,20 +60,20 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         private async Task BindDropdownAsync(ClientViewModel ViewModel)
         {
 
-            var statelist = await _mediator.Send(new GetStateMasterQuery());
-            if (statelist.Succeeded)
-            {
-                var DdlStates = _mapper.Map<List<StateViewModel>>(statelist.Data);
-                ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
-            }
+            //var statelist = await _mediator.Send(new GetStateMasterQuery());
+            //if (statelist.Succeeded)
+            //{
+            //    var DdlStates = _mapper.Map<List<StateViewModel>>(statelist.Data);
+            //    ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
+            //}
 
-            var DistrictList = await _mediator.Send(new GetDistrictQuery { StateCode = ViewModel.StateCode });
-            if (DistrictList.Succeeded)
-            {
-                var DdlDistrict = _mapper.Map<List<DistrictViewModel>>(DistrictList.Data);
-                ViewModel.Districts = new SelectList(DdlDistrict, nameof(DistrictViewModel.Code), nameof(DistrictViewModel.Name_En), null, null);
+            //var DistrictList = await _mediator.Send(new GetDistrictQuery { StateCode = ViewModel.StateCode });
+            //if (DistrictList.Succeeded)
+            //{
+            //    var DdlDistrict = _mapper.Map<List<DistrictViewModel>>(DistrictList.Data);
+            //    ViewModel.Districts = new SelectList(DdlDistrict, nameof(DistrictViewModel.Code), nameof(DistrictViewModel.Name_En), null, null);
 
-            }
+            //}
 
         }
 

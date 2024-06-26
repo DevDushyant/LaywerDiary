@@ -5,7 +5,6 @@ using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 namespace CourtApp.Application.Features.DOType
 {
     public class DeleteDOTypeCommand : IRequest<Result<Guid>>

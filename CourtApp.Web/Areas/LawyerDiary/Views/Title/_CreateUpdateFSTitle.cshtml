@@ -1,0 +1,44 @@
+﻿@model FSTitleMViewModel
+<form id="create-form" method="post" method="post" asp-controller="Title" asp-action="FSTitle" asp-route-Id="@Model.Id" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">@localizer["Type"]</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <select class="form-control select2bs4" asp-for="TypeId" asp-items="@Model.FSTypes">
+                            <option></option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="TypeId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">@localizer["Name"]</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                       <input type="text" placeholder="Please enter type" asp-for="Name_En"></input>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">@localizer["Name (Hn)"]</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <input type="text" placeholder="Please enter type" asp-for="Name_Hn"></input>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
+        <button type="submit" class="btn btn-success">Save</button>
+        <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
+    </div>
+</form>

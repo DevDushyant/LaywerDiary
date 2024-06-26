@@ -40,6 +40,7 @@ namespace CourtApp.Application.Interfaces.Contexts
         DbSet<CaseWorkEntity> CaseWorkEntities { get; set; }
         DbSet<DOTypeEntity> DOTypeEntities { get; set; }
         DbSet<CaseDocsEntity> caseDocsEntities { get; set; }
+        DbSet<FSTitleEntity> FSTitleEntities { get; set; }
 
     }
 }

@@ -10,6 +10,7 @@ using CourtApp.Application.Features.CourtDistrict;
 using CourtApp.Application.Features.CourtMasters;
 using CourtApp.Application.Features.CourtType.Query;
 using CourtApp.Application.Features.DOType;
+using CourtApp.Application.Features.FSTitle;
 using CourtApp.Application.Features.ProceedingHead;
 using CourtApp.Application.Features.ProceedingSubHead;
 using CourtApp.Application.Features.Queries.Districts;
@@ -20,6 +21,7 @@ using CourtApp.Application.Features.WorkMaster;
 using CourtApp.Application.Features.WorkMasterSub;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models;
+using CourtApp.Web.Areas.LawyerDiary.Models.Title;
 using CourtApp.Web.Areas.Litigation.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -280,6 +282,31 @@ namespace CourtApp.Web.Abstractions
         }
 
 
+        #endregion
+
+        #region First & Secound Title
+        public SelectList FSTypes()
+        {
+            return new SelectList(StaticDropDownDictionaries.FSType(), "Key", "Value");
+        }
+
+        public JsonResult FSJTypes()
+        {
+            var dtcData = StaticDropDownDictionaries.DOTypes();
+            return Json(dtcData);
+        }
+
+        public async Task<JsonResult> DdlFSTitle(int TypeId)
+        {
+            var response = await _mediator.Send(new FSTitleGetAllCacheQuery { TypeId = TypeId });
+            return Json(response);
+        }
+        public async Task<SelectList> DdlFSTypes(int TypeId)
+        {
+            var response = await _mediator.Send(new FSTitleGetAllCacheQuery { TypeId = TypeId });
+            var ViewModel = _mapper.Map<List<FSTitleLViewModel>>(response.Data);
+            return new SelectList(ViewModel, nameof(FSTitleLViewModel.Id), nameof(FSTitleLViewModel.Name_En), null, null);
+        }
         #endregion
 
     }

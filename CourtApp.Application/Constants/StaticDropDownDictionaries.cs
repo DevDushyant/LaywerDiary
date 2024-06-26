@@ -253,6 +253,15 @@ namespace CourtApp.Application.Constants
             };
             return _Str;
         }
+        public static Dictionary<int, string> FSType()
+        {
+            var _Str = new Dictionary<int, string>
+            {
+                {1, "First Title" },
+                {2, "Secound Title" }
+            };
+            return _Str;
+        }
 
     }
 
