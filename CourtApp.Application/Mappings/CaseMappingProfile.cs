@@ -11,9 +11,13 @@ namespace CourtApp.Application.Mappings
     {
         public CaseMappingProfile()
         {
-            
 
-            CreateMap<CreateCaseCommand, CaseDetailEntity>();
+
+            CreateMap<CreateCaseCommand, CaseDetailEntity>()
+                 .ForPath(d => d.FTitleId, opt => opt.MapFrom(src => src.FirstTitleCode))
+                 .ForPath(d => d.STitleId, opt => opt.MapFrom(src => src.SecoundTitleCode))
+                 .ForPath(d => d.CaseStageId, opt => opt.MapFrom(src => src.CaseStageCode));
+
             CreateMap<CaseAgainstEntityModel, CaseDetailAgainstEntity>()
                  .ForPath(d => d.CourtBenchId, opt => opt.MapFrom(src => src.AgainstBenchId != null ? src.AgainstBenchId.Value : src.CourtId.Value))
                  .ForPath(d => d.CnrNo, opt => opt.MapFrom(src => src.CnrNumber))

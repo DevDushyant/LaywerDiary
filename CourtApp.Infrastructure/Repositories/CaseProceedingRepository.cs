@@ -34,9 +34,9 @@ namespace CourtApp.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<CaseProcedingEntity> GetByIdAsync(Guid CaseId)
+        public async Task<CaseProcedingEntity> GetByIdAsync(Guid CaseId)
         {
-            throw new NotImplementedException();
+            return  _repository.Entities.Where(w=>w.CaseId==CaseId).FirstOrDefault();
         }
 
         public async Task<List<CaseProcedingEntity>> GetListAsync()

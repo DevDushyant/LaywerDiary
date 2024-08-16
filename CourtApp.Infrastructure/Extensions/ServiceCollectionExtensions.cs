@@ -104,6 +104,11 @@ namespace CourtApp.Infrastructure.Extensions
             services.AddTransient<IFSTitleCacheRepository, FSTitleCacheRepository>();
             services.AddTransient<IFSTitleRepository, FSTitleRepository>();
             #endregion
+
+            #region Lawyer Master Information
+            services.AddTransient<ILawyerCacheRepository, LawyerCacheRepository>();
+            services.AddTransient<ILawyerRepository, LawyerMasterRepository>();
+            #endregion
         }
     }
 }

@@ -136,5 +136,13 @@ namespace CourtApp.Application.Constants
             public const string Work = "Permissions.Hearing.Work";
             public const string BringToday = "Permissions.Hearing.BToday";
         }
+
+        public static class DeathClaimPetition
+        {
+            public const string View = "Permissions.Death.View";
+            public const string Create = "Permissions.Death.Create";
+            public const string Edit = "Permissions.Death.Edit";
+            public const string Delete = "Permissions.Death.Delete";           
+        }
     }
 }

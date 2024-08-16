@@ -43,14 +43,14 @@ namespace CourtApp.Infrastructure.Repositories
 
         public Task<List<CourtBenchEntity>> GetListAsync()
         {
-            throw new NotImplementedException();
+            return _repository.Entities.ToListAsync();
         }
 
         public async Task<Guid> InsertAsync(List<CourtBenchEntity> Entity)
         {
             await _repository.BulkInsert(Entity);
             await _distributedCache.RemoveAsync(AppCacheKeys.CourtComplexKey);
-            return Entity.Select(s=>s.Id).FirstOrDefault();
+            return Entity.Select(s => s.Id).FirstOrDefault();
         }
 
         public Task UpdateAsync(List<CourtBenchEntity> Entity)

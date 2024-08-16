@@ -38,7 +38,7 @@ namespace CourtApp.Application.Features.FSTitle
             var eDt = StaticDropDownDictionaries.FSType();
             var DList = from e in Entities
                         join sdt in eDt on e.TypeId equals sdt.Key
-                        select new DOTypeResponse
+                        select new FSTitleResponse
                         {
                             Id = e.Id,
                             Name_En = e.Name_En,

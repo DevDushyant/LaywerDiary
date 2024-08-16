@@ -270,7 +270,7 @@
         }
     });
 
-    $("#LinkedWith").select2({
+    $("#LinkedCaseId").select2({
         placeholder: "Select link case",
         theme: "bootstrap4",
         escapeMarkup: function (m) {

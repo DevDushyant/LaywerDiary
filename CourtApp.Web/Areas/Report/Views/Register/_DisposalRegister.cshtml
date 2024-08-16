@@ -1,0 +1,46 @@
+﻿ @model IEnumerable<DisposalRegisterViewModel>
+<div id="viewAll" class="card-body table-responsive">
+    <form asp-controller="Register" method="post" asp-action="UpdateCopyingStatus" class="d-inline">
+        <div class="row">
+            <div class="col-md-12">
+                <table id="tblRegister" class="table table-striped" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Sno.</th>
+                            <th>Case Detail</th>
+                            <th>Disposal Date</th>
+                            <th>Remark</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int count = 0;
+                        }
+                        @foreach (var bt in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @(++count)
+                                </td>
+                                <td>
+                                    @bt.Title
+                                </td>
+                                <td>
+                                    @bt.DisposalDate
+                                </td>
+                                <td>
+                                    @bt.Reason
+                                </td>                                
+                                <td>
+                                    <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-history" title="See History"></a>
+                                    <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail" asp-route-id="@bt.Id" class="fa fa-eye" title="View Case Detail"></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>       
+    </form>
+</div>

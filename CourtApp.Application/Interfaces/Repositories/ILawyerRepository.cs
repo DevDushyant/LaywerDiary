@@ -9,7 +9,7 @@ namespace CourtApp.Application.Interfaces.Repositories
 {
     public interface ILawyerRepository
     {
-        IQueryable<LawyerMasterEntity> Lawyers { get; }
+        IQueryable<LawyerMasterEntity> Entities { get; }
 
         Task<List<LawyerMasterEntity>> GetListAsync();
 

@@ -20,7 +20,7 @@ namespace CourtApp.Infrastructure.Repositories
             this._distributedCache = _distributedCache;
             this._repository = _repository;
         }
-        public IQueryable<LawyerMasterEntity> Lawyers => _repository.Entities;
+        public IQueryable<LawyerMasterEntity> Entities => _repository.Entities;
 
         public async Task DeleteAsync(LawyerMasterEntity lawyer)
         {

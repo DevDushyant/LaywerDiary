@@ -22,7 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.3" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="AspNetCoreHero.Extensions.Logging" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.5" />
@@ -34,8 +34,8 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Dashboard\Data\" />
     <Folder Include="Areas\Dashboard\Models\" />
+    <Folder Include="Areas\Drafting\Data\" />
     <Folder Include="Areas\Litigation\Validators\" />
-    <Folder Include="Areas\Report\Data\" />
     <Folder Include="Areas\Settings\Data\" />
     <Folder Include="Areas\Settings\Models\" />
     <Folder Include="Areas\Settings\Views\" />
@@ -48,6 +48,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Areas\Drafting\Views\DraftingI\Details.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Drafting\Views\DraftingI\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Drafting\Views\DraftingI\_CreateOrEdit.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Drafting\Views\DraftingI\_ViewAll.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Update="Areas\LawyerDiary\Views\CaseKind\Index.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

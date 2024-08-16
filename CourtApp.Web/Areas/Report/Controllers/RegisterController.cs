@@ -1,9 +1,13 @@
-﻿using CourtApp.Application.Features.Registers;
+﻿using CourtApp.Application.Constants;
+using CourtApp.Application.Features.CaseWork;
+using CourtApp.Application.Features.Registers;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Report.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
@@ -11,56 +15,89 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     [Area("Report")]
     public class RegisterController : BaseController<RegisterController>
     {
-        #region Work Register Area
-        public IActionResult DispCopyRegister(string t)
+        #region Disposal Register
+        public IActionResult DisposalRegister()
         {
-            if (t == "d")
-            {
-                ViewBag.Title = "Disposal Register";
-                ViewBag.Caption = "User's disposal register";
-            }
-            else
-            {
-                ViewBag.Title = "Copying Register";
-                ViewBag.Caption = "User's copying register";
-
-            }
-            ViewBag.type = t;
             return View();
         }
-        public async Task<IActionResult> LoadDisposalCasesAsync(string type)
+        public async Task<IActionResult> LoadDisposalData()
+        {           
+            var response = await _mediator.Send(new DisposalRegisterQuery()
+            {
+                PageNumber = 1,
+                PageSize = 100,
+                FromDt = Convert.ToDateTime("2024-05-01"),
+                ToDt = DateTime.Now
+            });
+            if (response.Succeeded)
+            {
+                var model = _mapper.Map<List<DisposalRegisterViewModel>>(response.Data);
+                return PartialView("_DisposalRegister", model);
+            }
+            return null;
+        }
+
+        #endregion
+
+        #region Copying Register & Its Recieving Status
+
+        public IActionResult CopyingRegister()
         {
-            var response = await _mediator.Send(new RegistCopyDisposalQuery()
+            CopyingRegisterViewModel model = new CopyingRegisterViewModel();
+            model.Filters = new SelectList(StaticDropDownDictionaries.CopyingFilter(), "Key", "Value");
+            return View(model);
+        }
+
+        public async Task<IActionResult> LoadCopyingData(int s)
+        {
+            var response = await _mediator.Send(new CopyingRegisterQuery()
             {
                 PageNumber = 1,
                 PageSize = 100,
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
-                RegiserType = type
+                SearchType = s
             });
-            CaseRegisterViewModel model = new CaseRegisterViewModel();
-            List<RegisterDetail> rdd = new List<RegisterDetail>();
+            CopyingRegisterViewModel model = new CopyingRegisterViewModel();
+            List<CopyingCaseDetailModel> rdd = new List<CopyingCaseDetailModel>();
             if (response != null && response.Succeeded)
             {
                 foreach (var d in response.Data)
                 {
-                    RegisterDetail rd = new RegisterDetail();
+                    CopyingCaseDetailModel rd = new CopyingCaseDetailModel();
                     rd.Id = d.Id;
-                    rd.Court = d.CourtBench;
-                    rd.CaseType = d.CaseType;
-                    rd.Year = d.CaseYear.ToString();
-                    rd.CaseNo = d.CaseNo.ToString();
-                    rd.Remark = d.Reason;
-                    rd.Title = d.FirstTitle + "Vs" + d.SecondTitle;
+                    rd.AppliedOn = d.AppliedOn;
+                    rd.ReceivedOn = d.ReceivedOn;
+                    rd.Title = d.CaseAbbretion + "(" + d.CaseNo.ToString() + "/" + d.CaseYear.ToString() + ")" + d.FirstTitle + "Vs" + d.SecondTitle;
                     rdd.Add(rd);
                 }
+                model.copyingCases = rdd;
+                return PartialView("_CopyingRegister", model);
             }
-            model.registerDetails = rdd;
-            return PartialView("_Register", model);
+            model.copyingCases = rdd;
+            return PartialView("_CopyingRegister", model);
         }
 
+        public async Task<IActionResult> UpdateCopyingStatus(CopyingRegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.copyingCases != null)
+                {
+                    var CopyingCaseId = model.copyingCases.Where(w => w.Selected == true)
+                        .Select(s => s.Id).ToList();
+                    if (CopyingCaseId != null)
+                    {
+                        var result = await _mediator.Send(new UpdateCopyingStatusCommand
+                        { CaseId = CopyingCaseId, Status = 2 });
+                        if (result.Succeeded) _notify.Information($"Case Work with ID {result.Data} Updated.");
+                        else _notify.Error(result.Message);
+                    }
+                }
+            }
+            return RedirectToAction("CopyingRegister");
+        }
         #endregion
-
 
         #region Institution Register
         public async Task<IActionResult> InstitionRegister()
@@ -70,7 +107,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 PageNumber = 1,
                 PageSize = 100,
                 FromDt = Convert.ToDateTime("2024-05-01"),
-                ToDt = DateTime.Now                
+                ToDt = DateTime.Now
             });
             InstitutionRegisterViewMode model = new InstitutionRegisterViewMode();
             List<InstituteModel> inmd = new List<InstituteModel>();
@@ -86,12 +123,35 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     rd.CaseNo = d.CaseNo.ToString();
                     rd.FirstTitle = d.FirstTitle;
                     rd.SecondTitle = d.SecondTitle;
-                    rd.InsititutionDate = d.InsititutionDate; 
+                    rd.InsititutionDate = d.InsititutionDate;
                     inmd.Add(rd);
                 }
-            }          
-            model.dtmodel = inmd;   
+            }
+            model.dtmodel = inmd;
             return View(model);
+        }
+        #endregion
+
+        #region Other Register
+        public IActionResult OtherRegister()
+        {
+            return View();
+        }
+        public async Task<IActionResult> LoadOtherData()
+        {
+            var response = await _mediator.Send(new OtherRegisterQuery()
+            {
+                PageNumber = 1,
+                PageSize = 100,
+                FromDt = Convert.ToDateTime("2024-05-01"),
+                ToDt = DateTime.Now
+            });
+            if (response.Succeeded)
+            {
+                var model = _mapper.Map<List<OtherRegisterViewModel>>(response.Data);
+                return PartialView("_OtherRegister", model);
+            }
+            return null;
         }
         #endregion
     }

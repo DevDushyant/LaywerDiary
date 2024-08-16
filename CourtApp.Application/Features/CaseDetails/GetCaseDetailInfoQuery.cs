@@ -36,6 +36,9 @@ namespace CourtApp.Application.Features.CaseDetails
                                 .Include(c => c.CourtType)
                                 .Include(c => c.CourtBench)
                                 .Include(c => c.CaseCategory)
+                                .Include(c=>c.FTitle)
+                                .Include(c=>c.STitle)
+                                .Include(c=>c.CaseStage)
                                 .Where(w => w.Id == request.CaseId)
                                 .FirstOrDefaultAsync();
             CaseDetailInfoDto ct = new CaseDetailInfoDto();
@@ -46,16 +49,18 @@ namespace CourtApp.Application.Features.CaseDetails
             ct.CaseCategory = detail.CaseCategory.Name_En;
             ct.CaseType = detail.CaseType.Name_En;
             ct.CisNoYear = detail.CisNumber + "/" + detail.CisYear;
-            ct.FirstTitle = StaticDropDownDictionaries.FirstTitle()
-                .Where(w => w.Key == detail.FirstTitleCode)
-                .Select(s => s.Value).FirstOrDefault();
+            //ct.FirstTitle = StaticDropDownDictionaries.FirstTitle()
+            //    .Where(w => w.Key == detail.FirstTitleCode)
+            //    .Select(s => s.Value).FirstOrDefault();
             ct.FirstTitleDetail = detail.FirstTitle;
-            ct.SecondTitle = StaticDropDownDictionaries.SecoundTitle()
-                .Where(w => w.Key == detail.SecoundTitleCode)
-                .Select(s => s.Value).FirstOrDefault();
+            ct.FirstTitle = detail.FTitle.Name_En;
+            //ct.SecondTitle = StaticDropDownDictionaries.SecoundTitle()
+            //    .Where(w => w.Key == detail.SecoundTitleCode)
+            //    .Select(s => s.Value).FirstOrDefault();
             ct.SecondTitleDetail = detail.SecondTitle;
-            ct.NextDate = detail.NextDate.Value.ToString("dd/MM/yyyy");
-            ct.CaseStage = detail.CaseStageCode;
+            ct.SecondTitle = detail.FTitle.Name_En;
+            ct.NextDate = detail.NextDate!=null?detail.NextDate.Value.ToString("dd/MM/yyyy"):"";
+            ct.CaseStage = detail.CaseStage.CaseStage;
             ct.IsHighCourt = detail.CourtTypeId.Equals("359acb34-7b8c-4fc8-a276-8b198ea5105c") ? true : false;
             ct.CourtBench=detail.CourtBench.CourtBench_En;
             return Result<CaseDetailInfoDto>.Success(ct);

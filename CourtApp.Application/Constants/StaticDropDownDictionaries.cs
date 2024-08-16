@@ -41,9 +41,13 @@ namespace CourtApp.Application.Constants
         public static Dictionary<string, string> CaseSearchBy()
         {
             var _CaseSearchBy = new Dictionary<string, string>
-            {
-                { "BCSE", "By Case" },
-                { "BPTY", "By Party" }
+            {                
+                { "ORD", "Order" },
+                { "DFT", "Drafting" },
+                { "YER", "Year" },
+                { "CST", "Case Stage" }
+                //{ "CTY", "Case Category" }              
+               
             };
             return _CaseSearchBy;
         }
@@ -259,6 +263,31 @@ namespace CourtApp.Application.Constants
             {
                 {1, "First Title" },
                 {2, "Secound Title" }
+            };
+            return _Str;
+        }
+        public static Dictionary<int, string> CopyingFilter()
+        {
+            var _Str = new Dictionary<int, string>
+            {
+                {1, "All" },
+                {2, "Copying Pending" },
+                {3, "Copy Received" }
+            };
+            return _Str;
+        }
+        public static Dictionary<string, string> FormPrintingTypes()
+        {
+            var _Str = new Dictionary<string, string>
+            {
+                {"FINS", "Inspection Application" },
+                {"FPRS", "Permission Slip" },
+                {"FTLW", "Talwana Form" },
+                {"FNSC", "Notice of Show Cause" },
+                {"FNSA", "Notice of Stay Application" },
+                {"FNOA", "Notice of Admission" },
+                {"COPA", "Copying Application" },
+                {"FELP", "Enevlop" },                                
             };
             return _Str;
         }

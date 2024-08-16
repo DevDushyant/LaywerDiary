@@ -4,24 +4,16 @@
 }
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
-        @* @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseHearing.Proceeding)).Result.Succeeded)
-        {
-            <a id="btnProceeding" onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseProceeding','Assign Proceeding')" class="btn bg-success">
-                <i class="fa fa-plus-square"></i> Proceeding
-            </a>
-        }
-        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseHearing.Work)).Result.Succeeded)
-        {
-            <a id="btnWork" onclick="jQueryModalGet('/Litigation/hearing/AssignWorkCase','Assign Work')" class="btn bg-success">
-                <i class="fa fa-plus-square"></i> Work
-            </a>
-        } *@
-        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseHearing.BringToday)).Result.Succeeded)
-        {
-            <a id="btnBirngToday" onclick="jQueryModalGet('/Litigation/hearing/GetCaseHearing','Bring Today')" class="btn bg-success">
-                <i class="fa fa-calendar"></i> Bring Today
-            </a>
-        }
+        <div class="form-group row">
+            <div class="col-sm-3">
+                <a id="btnBirngToday" onclick="jQueryModalGet('/Litigation/hearing/GetCaseHearing','Bring Today')" class="btn bg-success">
+                    <i class="fa fa-calendar"></i> Bring Today
+                </a>
+            </div>
+            <div class="col-sm-3">
+                <input type="date" id="SelData" class="form-control">
+            </div>
+        </div>
     </div>
     <div id="viewAll" class="card-body table-responsive">
     </div>
@@ -39,6 +31,9 @@
         function loadData() {
             $('#viewAll').load('/Litigation/Hearing/LoadAll');
         }
+        $("#SelData").on("change", function () {
+            $('#viewAll').load('/Litigation/Hearing/LoadAll?seleDate=' + $("#SelData").val());
+        });
 
         $("#btnWork").click(function () {
             var caseHtml = "";

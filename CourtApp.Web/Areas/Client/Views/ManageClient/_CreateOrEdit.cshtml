@@ -29,11 +29,11 @@
 </style>
 @model ClientViewModel
 <partial name="_StatusMessage" model="Model.StatusMessage" />
-<form id="create-form" method="post" asp-controller="ManageClient" asp-action="OnPostCreateOrEdit"
-      asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
-
+<form id="create-form" method="post" asp-controller="ManageClient"
+      asp-action="OnPostCreateOrEdit"
+      asp-route-id="@Model.Id"
+      enctype="multipart/form-data">
     <input type="hidden" asp-for="@Model.CaseId" />
-
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
@@ -72,13 +72,11 @@
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">Referal By</label>
                 <div class="col-md-4">
-                    <select class="form-control select2bs4" id="ReferalId" asp-for="ReferalId" asp-items="@Model.Referals">
-                        <option></option>
-                    </select>
+                    <input type="text" placeholder="Please referals name" asp-for="ReferalBy" class="form-control" />                    
                 </div>
                 <label class="col-md-2 col-form-label">Appearance</label>
                 <div class="col-md-4">
-                    <select class="form-control select2bs4" id="AppearenceID" asp-for="AppearenceID" asp-items="@Model.Appearences">
+                    <select class="form-control select2bs4" asp-for="AppearenceID" asp-items="@Model.Appearences">
                         <option></option>
                     </select>
                 </div>
@@ -90,10 +88,10 @@
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">Opposite Counsel</label>
                 <div class="col-md-4">
-                    <select class="form-control select2bs4" id="OppositCounselId" asp-for="OppositCounselId" asp-items="@Model.OppositCounsels">
+                    <select class="form-control select2bs4" asp-for="OppositCounselId" asp-items="@Model.OppositCounsels">
                         <option></option>
                     </select>
-                </div>                
+                </div>
             </div>
         </div>
     </div>
@@ -106,12 +104,12 @@
                     <label class="col-md-2 col-form-label">Fee Settled </label>
                     <div class="col-md-4">
                         <input type="text" placeholder="Please settled fee" asp-for="FeeDetail.FeeSettled" class="form-control" />
-                       
+
                     </div>
                     <label class="col-md-2 col-form-label">Advance Fee</label>
                     <div class="col-md-4">
                         <input type="text" placeholder="Please enter advance if any" asp-for="FeeDetail.FeeAdvance" class="form-control" />
-                        
+
                     </div>
                 </div>
             </div>
@@ -123,71 +121,23 @@
         <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
     </div>
 </form>
-@* <script type="text/javascript" language=javascript>
-    $.validator.unobtrusive.parse(document);
-    $("#StateCode").select2({
-        placeholder: "Select a state",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-    $("#DistrictCode").select2({
-        placeholder: "Select a district",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-
-    $("#StateCode").on("change", function () {
-        $("#DistrictCode").empty();
-        $.getJSON("/Client/ManageClient/LoadDistricts?StateCode=" + $("#StateCode").val(), function (data) {
-            $.each(data.Data, function (i, item) {
-                $("#DistrictCode").append(`<option /><option value="${item.Code}">${item.Name_En}</option>`);
-            });
-        });
-    });
-</script>
 @section Scripts
 {
     <script>
-        function loadData() {
-            $('#viewAll').load('/Client/ManageClient/LoadAll');
-        }
-        $(document).ready(function () {
-            $("#brandTable").DataTable();
-            loadData();
-            $('#reload').on('click', function () {
-                loadData();
-            });
-            $('#btnCancel').on('click', function () {
-                window.history.back();
-            });
-
-            $("#StateCode").select2({
-                placeholder: "Select a state",
-                theme: "bootstrap4",
-                escapeMarkup: function (m) {
-                    return m;
-                }
-            });
-            $("#DistrictCode").select2({
-                placeholder: "Select a district",
-                theme: "bootstrap4",
-                escapeMarkup: function (m) {
-                    return m;
-                }
-            });
-
-            $("#StateCode").on("change", function () {
-                $("#DistrictCode").empty();
-                $.getJSON("/Client/ManageClient/LoadDistricts?StateCode=" + $("#StateCode").val(), function (data) {
-                    $.each(data.Data, function (i, item) {
-                        $("#DistrictCode").append(`<option /><option value="${item.Code}">${item.Name_En}</option>`);
-                    });
-                });
-            });
+        $("#OppositCounselId").select2({
+            placeholder: "Select a opposit councel",
+            theme: "bootstrap4",
+            escapeMarkup: function (m) {
+                return m;
+            }
+        });
+        $("#AppearenceID").select2({
+            placeholder: "Select a appearance",
+            theme: "bootstrap4",
+            escapeMarkup: function (m) {
+                return m;
+            }
         });
     </script>
-} *@
+
+}

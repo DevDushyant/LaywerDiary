@@ -23,13 +23,33 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> LoadAll()
+        public async Task<IActionResult> LoadAll(string seleDate)
         {
-            var response = await _mediator.Send(new GetCaseDetailsQuery() { CallingFrm = "HTD" });
+            if (seleDate == null)
+                seleDate = DateTime.Now.Date.ToString();
+            var response = await _mediator.Send(new GetCaseDetailsQuery()
+            {
+                CallingFrm = "HTD",
+                HearingDate = Convert.ToDateTime(seleDate)
+            });
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<HearingViewModel>>(response.Data);
                 return PartialView("_ViewAll", TodayCaseList(viewModel));
+            }
+            return null;
+        }
+        public async Task<JsonResult> LoadCaseData(string SDate)
+        {
+            var response = await _mediator.Send(new GetCaseDetailsQuery()
+            {
+                CallingFrm = "HTD",
+                HearingDate = Convert.ToDateTime(SDate)
+            });
+            if (response.Succeeded)
+            {
+                var viewModel = _mapper.Map<List<HearingViewModel>>(response.Data);
+                return Json(TodayCaseList(viewModel));
             }
             return null;
         }

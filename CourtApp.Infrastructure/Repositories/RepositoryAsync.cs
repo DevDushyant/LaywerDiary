@@ -42,7 +42,7 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<T> GetByIdAsync(int id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
-        }
+        }        
 
         public async Task<List<T>> GetPagedReponseAsync(int pageNumber, int pageSize)
         {

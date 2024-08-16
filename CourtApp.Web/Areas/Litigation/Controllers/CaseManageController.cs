@@ -3,13 +3,13 @@ using CourtApp.Application.Features.BookMasters.Command;
 using CourtApp.Application.Features.Case;
 using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.CaseProceeding;
+using CourtApp.Application.Features.Clients.Commands;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
+using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +21,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     [Area("Litigation")]
     public class CaseManageController : BaseController<CaseManageController>
     {
+        #region Case Management Area
         public IActionResult Index()
         {
             return View();
@@ -37,26 +38,21 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return null;
         }
 
+
         public async Task<IActionResult> CreateOrUpdateAsync(Guid id)
         {
             var ClientList = await _mediator.Send(new GetAllClientCachedQuery() { });
             var caseViewModel = new CaseViewModel();
             if (id == Guid.Empty)
             {
-                
                 caseViewModel.InstitutionDate = DateTime.Now;
                 caseViewModel.CourtTypes = await LoadCourtTypes();
-                //caseViewModel.CourtDistricts = await DdlLoadCourtDistricts(1);
-
                 caseViewModel.CaseNatures = await LoadCaseNature();
-                //caseViewModel.CaseKinds = await LoadCaseKinds();
-
-                //caseViewModel.CaseStages = await DdlCaseStages();
-                caseViewModel.FirstTitleList = FirstTtitleList();
-                caseViewModel.SecondTitleList = SecondTtitleList();
+                caseViewModel.FirstTitleList = await DdlFSTypes(1);
+                caseViewModel.SecondTitleList = await DdlFSTypes(2);
                 caseViewModel.Years = DdlYears();
                 caseViewModel.CaseStatusList = await DdlCaseStages();
-                caseViewModel.LinkedBy = DdlClient().Result;
+                caseViewModel.LinkedBy = await UserCaseTitle();
                 caseViewModel.Cadres = DdlCadres();
                 caseViewModel.Strengths = DdlStrength();
                 caseViewModel.States = await LoadStates();
@@ -64,7 +60,25 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
             else
             {
-                return View("_CreateOrEdit", caseViewModel);
+                var response = await _mediator.Send(new GetUserCaseDetailByIdQuery { CaseId=id});
+                if (response.Succeeded)
+                {
+                    var CaseDetail = _mapper.Map<CaseViewModel>(response.Data);
+                    CaseDetail.InstitutionDate = DateTime.Now;
+                    CaseDetail.CourtTypes = await LoadCourtTypes();
+                    CaseDetail.CaseNatures = await LoadCaseNature();
+                    CaseDetail.FirstTitleList = await DdlFSTypes(1);
+                    CaseDetail.SecondTitleList = await DdlFSTypes(2);
+                    CaseDetail.Years = DdlYears();
+                    CaseDetail.CaseStatusList = await DdlCaseStages();
+                    CaseDetail.LinkedBy = await UserCaseTitle();
+                    CaseDetail.Cadres = DdlCadres();
+                    CaseDetail.Strengths = DdlStrength();
+                    CaseDetail.States = await LoadStates();
+                    return View("_CreateOrEdit", caseViewModel);
+                }
+                return null;
+                
             }
         }
 
@@ -76,6 +90,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 if (Id == Guid.Empty)
                 {
                     ViewModel.CourtBenchId = ViewModel.BenchId == null ? ViewModel.CourtId.Value : ViewModel.BenchId.Value;
+
                     var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);
                     var result = await _mediator.Send(createCommand);
                     if (result.Succeeded)
@@ -114,6 +129,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 return new JsonResult(new { isValid = false, html = html });
             }
         }
+        #endregion
 
         #region Case Proceeding Area    
         public async Task<IActionResult> LoadCaseProceeding()
@@ -179,7 +195,6 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         //}
 
         #endregion
-
 
         #region Case History Resion
         public async Task<JsonResult> OnGetCaseHistory(Guid CaseId)
@@ -267,13 +282,54 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         #region Case Detail
         public async Task<IActionResult> GetCaseDetailAsync(Guid id)
         {
-            var response = await _mediator.Send(new GetCaseDetailInfoQuery() { CaseId=id});
+            var response = await _mediator.Send(new GetCaseDetailInfoQuery() { CaseId = id });
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<CaseDetailInfoViewModel>(response.Data);
                 return View(viewModel);
             }
-            return null;            
+            return null;
+        }
+        #endregion
+
+        #region Case and Client 
+        public async Task<JsonResult> OnGetClientInfo(Guid CaseId)
+        {
+            var ViewModel = new ClientViewModel();
+            ViewModel.CaseId = CaseId;
+            ViewModel.OppositCounsels = await DdlLawyerAsync();
+            ViewModel.Appearences = await DdlFSTypes(0);
+            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_ClientInfoDetail", ViewModel) });
+        }
+        [HttpPost]
+        public async Task<IActionResult> OnPostClientInfo(Guid id, ClientViewModel btViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                if (id == Guid.Empty)
+                {
+                    var createClientCommand = _mapper.Map<CreateClientCommand>(btViewModel);
+                    var result = await _mediator.Send(createClientCommand);
+                    if (result.Succeeded)
+                    {
+                        id = result.Data;
+                        var updateClientInfo = await _mediator.Send(new CaseClientInfoUpdateCommand()
+                        {
+                            ClientId = id,
+                            CaseId = btViewModel.CaseId,
+                        });
+                        _notify.Success($"Client with ID {result.Data} Created.");
+                    }
+                    else _notify.Error(result.Message);
+                    return RedirectToAction("CreateOrUpdateAsync");
+                }
+                return null;
+            }
+            else
+            {
+                var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel);
+                return new JsonResult(new { isValid = false, html = html });
+            }
         }
         #endregion
 

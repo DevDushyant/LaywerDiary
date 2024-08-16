@@ -6,8 +6,8 @@
     <div class="col-sm-12" style="padding:20px">
         @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Create)).Result.Succeeded)
         {
-            <a asp-area="Litigation" asp-controller="Title" asp-action="CreateOrUpdate" class="btn bg-success">
-                <i class="fa fa-plus-square"></i> Add New Title
+            <a onclick="jQueryModalGet('/lawyerdiary/title/OnGetFSCreateOrUpdate','Manage First & Second Title')" class="btn bg-success">
+                <i class="fa fa-plus-square"></i> Create
             </a>
         }
         <a id="reload" class="btn btn-primary text-white">
@@ -23,14 +23,14 @@
     <script src="~/js/site.js"></script>
     <script>
         $(document).ready(function () {
-            $("#tblUserCase").DataTable();
+            $("#tblFSTtitles").DataTable();
             loadData();
             $('#reload').on('click', function () {
                 loadData();
             });
         });
         function loadData() {
-            $('#viewAll').load('/Litigation/CaseManage/LoadAll');
+            $('#viewAll').load('/LawyerDiary/Title/LoadFSTitle');
         }
     </script>
 }

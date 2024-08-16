@@ -1,0 +1,56 @@
+﻿@{
+    ViewData["Title"] = localizer["Copying Register"];
+    // ViewData["Caption"] = localizer["User's Institution Register"];
+}
+
+<div class="card">
+    <div class="col-sm-12" style="padding:20px">
+        <div class="form-group row">
+            @* <div class="col-sm-3">
+            <input type="date" id="SelFrom" class="form-control">
+            </div>
+            <div class="col-sm-3">
+            <input type="date" id="SelTo" class="form-control">
+            </div> *@
+            <div class="col-sm-3">
+                <select id="DdlFilter" class="form-control select2bs4" asp-items="@Model.Filters"><option></option></select>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
+                    <button type="button" id="btnSearch" class="btn btn-success"><span><i class="fa fa-search"></i></span> Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="viewAll" class="card-body table-responsive">
+    </div>
+</div>
+@section Scripts
+{
+    <script src="~/js/site.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#DdlFilter").select2({
+                placeholder: "Select a filter",
+                theme: "bootstrap4",
+                escapeMarkup: function (m) {
+                    return m;
+                }
+            });
+            loadData(1);
+            $("#tblRegister").DataTable(
+                {
+                    "language": {
+                        "emptyTable": "Record is not there!"
+                    }
+                }
+            );
+        });
+        $("#btnSearch").on("click", function () {            
+            loadData($("#DdlFilter").val());
+        });
+        loadData = function (s) {
+            $('#viewAll').load('/Report/Register/LoadCopyingData?s=' + s);
+        }
+    </script>
+}

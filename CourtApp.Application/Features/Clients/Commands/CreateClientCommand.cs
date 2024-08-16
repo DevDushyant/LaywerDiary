@@ -6,24 +6,29 @@ using System.Threading;
 using System.Threading.Tasks;
 using CourtApp.Domain.Entities.LawyerDiary;
 using System;
+using CourtApp.Domain.Entities.Common;
+using CourtApp.Domain.Entities.Account;
 
 namespace CourtApp.Application.Features.Clients.Commands
 {
     public partial class CreateClientCommand : IRequest<Result<Guid>>
     {
-        public string FirstName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }
-        public string FatherName { get; set; }
-        public string Dob { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
         public string Email { get; set; }
+        public string Mobile { get; set; }
         public string OfficeEmail { get; set; }
         public string Phone { get; set; }
-        public string Mobile { get; set; }
-        public string Address { get; set; }
-        public int StateCode { get; set; }
-        public int DistrictCode { get; set; }
+        public string ReferalBy { get; set; }
+        public Guid AppearenceID { get; set; }
+        public Guid OppositCounselId { get; set; }
         public Guid CaseId { get; set; }
+        public ClientFee FeeDetail { get; set; }
+    }
+    public class ClientFee
+    {
+        public Decimal FeeSettled { get; set; }
+        public Decimal FeeAdvance { get; set; }
     }
 
     public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, Result<Guid>>
@@ -50,22 +55,9 @@ namespace CourtApp.Application.Features.Clients.Commands
         public async Task<Result<Guid>> Handle(CreateClientCommand request, CancellationToken cancellationToken)
         {
             var entity = _mapper.Map<ClientEntity>(request);
-            entity.State = _rStateMst.GetStateById(request.StateCode);
-            entity.District = _rDistrictMst.GetDistrictById(request.DistrictCode);
+            entity.CaseFee=_mapper.Map<CaseFeeEntity>(request.FeeDetail);
             await _clientRepository.InsertAsync(entity);
             await _unitOfWork.Commit(cancellationToken);
-            if (entity.Id != Guid.Empty)
-            {
-                var detail = await _repository.GetByIdAsync(request.CaseId);
-                if (detail == null)
-                    return Result<Guid>.Fail($"Case detail Not Found.");
-                else
-                {
-                    detail.ClientId = entity.Id;
-                    await _repository.UpdateAsync(detail);
-                    await _unitOfWork.Commit(cancellationToken);                    
-                }
-            }
             return Result<Guid>.Success(entity.Id);
         }
     }

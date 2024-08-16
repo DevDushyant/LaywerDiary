@@ -56,7 +56,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     {
                         Id = s.Id,
                         CaseTitle = s.CaseTitle,
-                        Works = s.Works
+                        Works = s.Works.Where(s => s.Selected == true).ToList()
                     });
                     var WorksDl = CaseDl.Select(s => s.Works);
                     List<Guid> WorkIds = new List<Guid>();
@@ -67,7 +67,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         }
                     if (WorkIds != null)
                     {
-                        var result = await _mediator.Send(new UpdateCWorkStatusCommand { CWorkId = WorkIds });
+                        var result = await _mediator.Send(new UpdateCWorkStatusCommand { CWorkId = WorkIds,Status=1 });
                         if (result.Succeeded) _notify.Information($"Case Work with ID {result.Data} Updated.");
                         else _notify.Error(result.Message);
                     }

@@ -63,6 +63,42 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.ToTable("AuditLogs");
                 });
 
+            modelBuilder.Entity("CourtApp.Domain.Entities.Account.CaseFeeEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("AdvanceAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<decimal>("SettledAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId")
+                        .IsUnique();
+
+                    b.ToTable("case_fee", "account");
+                });
+
             modelBuilder.Entity("CourtApp.Domain.Entities.Advocate.ActAmendedEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -551,9 +587,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<Guid?>("CaseDetailEntityId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CaseId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CaseNo")
                         .HasColumnType("text");
 
@@ -606,8 +639,8 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("CaseNo")
                         .HasColumnType("text");
 
-                    b.Property<string>("CaseStageCode")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("CaseStageId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("CaseTypeId")
                         .HasColumnType("uuid");
@@ -621,7 +654,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<int>("CisYear")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("ClientId")
+                    b.Property<Guid?>("ClientId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("CnrNumber")
@@ -640,11 +673,11 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<Guid>("FTitleId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("FirstTitle")
                         .HasColumnType("text");
-
-                    b.Property<int>("FirstTitleCode")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime>("InstitutionDate")
                         .HasColumnType("timestamp without time zone");
@@ -655,27 +688,33 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("LinkedCaseId")
+                    b.Property<Guid?>("LinkedCaseId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("NextDate")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<Guid>("STitleId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("SecondTitle")
                         .HasColumnType("text");
-
-                    b.Property<int>("SecoundTitleCode")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CaseCategoryId");
+
+                    b.HasIndex("CaseStageId");
 
                     b.HasIndex("CaseTypeId");
 
                     b.HasIndex("CourtBenchId");
 
                     b.HasIndex("CourtTypeId");
+
+                    b.HasIndex("FTitleId");
+
+                    b.HasIndex("STitleId");
 
                     b.ToTable("case_detail", "ld");
                 });
@@ -877,6 +916,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("Abbreviation")
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("AppliedOn")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<Guid>("CaseId")
                         .HasColumnType("uuid");
 
@@ -893,6 +935,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<DateTime?>("ReceivedOn")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Remark")
                         .HasColumnType("text");
 
@@ -905,7 +950,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<Guid>("WorkTypeId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("WorkingDate")
+                    b.Property<DateTime?>("WorkingDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
@@ -925,6 +970,12 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("AppearenceID")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -932,25 +983,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int?>("DistrictCode")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Dob")
-                        .HasColumnType("text");
-
                     b.Property<string>("Email")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FatherName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsRural")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Landmark")
                         .HasColumnType("text");
 
                     b.Property<string>("LastModifiedBy")
@@ -959,29 +992,27 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("LastName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("MiddleName")
-                        .HasColumnType("text");
-
                     b.Property<string>("Mobile")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.Property<string>("OfficeEmail")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("OppositCounselId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Phone")
                         .HasColumnType("text");
 
-                    b.Property<int?>("StateCode")
-                        .HasColumnType("integer");
+                    b.Property<string>("ReferalBy")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DistrictCode");
-
-                    b.HasIndex("StateCode");
+                    b.HasIndex("OppositCounselId");
 
                     b.ToTable("client", "ld");
                 });
@@ -1351,6 +1382,39 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.ToTable("m_expense_head", "ld");
                 });
 
+            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.FSTitleEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name_En")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name_Hn")
+                        .HasColumnType("text");
+
+                    b.Property<int>("TypeId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("m_fs_title", "ld");
+                });
+
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.LDBookEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1394,6 +1458,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1401,18 +1468,29 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EnrollNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("name")
-                        .IsRequired()
+                    b.Property<string>("LastName")
                         .HasColumnType("text");
 
-                    b.Property<int>("type")
-                        .HasColumnType("integer");
+                    b.Property<string>("MiddleName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Mobile")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -1764,6 +1842,17 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.ToTable("m_state");
                 });
 
+            modelBuilder.Entity("CourtApp.Domain.Entities.Account.CaseFeeEntity", b =>
+                {
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.ClientEntity", "Client")
+                        .WithOne("CaseFee")
+                        .HasForeignKey("CourtApp.Domain.Entities.Account.CaseFeeEntity", "ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+                });
+
             modelBuilder.Entity("CourtApp.Domain.Entities.Advocate.ActAmendedEntity", b =>
                 {
                     b.HasOne("CourtApp.Domain.Entities.Advocate.ActEntity", "Act")
@@ -1863,6 +1952,10 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CaseStageEntity", "CaseStage")
+                        .WithMany()
+                        .HasForeignKey("CaseStageId");
+
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.TypeOfCasesEntity", "CaseType")
                         .WithMany()
                         .HasForeignKey("CaseTypeId")
@@ -1881,13 +1974,31 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.FSTitleEntity", "FTitle")
+                        .WithMany()
+                        .HasForeignKey("FTitleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.FSTitleEntity", "STitle")
+                        .WithMany()
+                        .HasForeignKey("STitleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("CaseCategory");
+
+                    b.Navigation("CaseStage");
 
                     b.Navigation("CaseType");
 
                     b.Navigation("CourtBench");
 
                     b.Navigation("CourtType");
+
+                    b.Navigation("FTitle");
+
+                    b.Navigation("STitle");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseDocsEntity", b =>
@@ -1979,17 +2090,13 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.ClientEntity", b =>
                 {
-                    b.HasOne("CourtApp.Entities.Common.DistrictEntity", "District")
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.LawyerMasterEntity", "OppositCounsel")
                         .WithMany()
-                        .HasForeignKey("DistrictCode");
+                        .HasForeignKey("OppositCounselId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
-                        .WithMany()
-                        .HasForeignKey("StateCode");
-
-                    b.Navigation("District");
-
-                    b.Navigation("State");
+                    b.Navigation("OppositCounsel");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtBenchEntity", b =>
@@ -2218,6 +2325,11 @@ namespace CourtApp.Infrastructure.Migrations.App
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseDetailEntity", b =>
                 {
                     b.Navigation("CaseAgainstEntities");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.ClientEntity", b =>
+                {
+                    b.Navigation("CaseFee");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtMasterEntity", b =>

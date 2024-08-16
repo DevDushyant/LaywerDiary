@@ -1,14 +1,15 @@
 ﻿@{
-    ViewData["Title"] = localizer["Case Title List"];
-    ViewData["Caption"] = localizer["Case Title"];
+    ViewData["Title"] = localizer["Case Complete Title List"];
+    ViewData["Caption"] = localizer["Case Complete Title"];
 }
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
         @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Create)).Result.Succeeded)
         {
-            <a asp-area="Litigation" asp-controller="CaseManage" asp-action="CreateOrUpdate" class="btn bg-success">
-                <i class="fa fa-plus-square"></i> Create
+            <a onclick="jQueryModalGet('/LawyerDiary/Title/OnCreatOrUpdateTitle','Add New Complete Title')" class="btn bg-success">
+                <i class="fa fa-plus-square"></i> Add New Case Title
             </a>
+            
         }
         <a id="reload" class="btn btn-primary text-white">
             <i class="fa fas fa-bolt"></i>
@@ -30,7 +31,7 @@
             });
         });
         function loadData() {
-            $('#viewAll').load('/Litigation/CaseManage/LoadAll');
+            $('#viewAll').load('/LawyerDiary/Title/LoadAll');
         }
     </script>
 }

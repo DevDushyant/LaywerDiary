@@ -2,11 +2,10 @@
 <table id="tblClient" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th>Sno.</th>
-            <th>Name</th>
-            <th>Father Name</th>
-            <th>Mobile</th>
-            <th>Email</th>
+            <th style="width:5%">Sno.</th>
+            <th style="width:65%">Name</th>            
+            <th style="width:10%">Mobile</th>
+            <th style="width:20%">Email</th>
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Delete)).Result.Succeeded ||
             (AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Edit)).Result.Succeeded)
             {
@@ -22,14 +21,11 @@
         {
             <tr>
                 <td>
-                    @(count = count + 1)
+                    @(++count)
                 </td>
                 <td>
                     @bt.Name
-                </td>
-                <td>
-                    @bt.FatherName
-                </td>
+                </td>               
                 <td>
                     @bt.Mobile
                 </td>

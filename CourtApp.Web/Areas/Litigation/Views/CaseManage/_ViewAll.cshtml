@@ -3,13 +3,13 @@
     <thead>
         <tr>
             <th style="width:5%!important">Sno.</th>
-            <th style="width:15%!important">Court</th>
-            <th style="width:10%!important">Type</th>            
+            <th style="width:12%!important">Court</th>
+            <th style="width:10%!important">Type</th>
             <th style="width:10%!important">Number</th>
-            <th style="width:30%!important">Parties</th>            
+            <th style="width:30%!important">Parties</th>
             <th style="width:10%!important">Stage</th>
-            <th style="width:10%!important">Date</th>
-            <th style="width:10%!important">Actions</th>           
+            <th style="width:12%!important">Next Date</th>
+            <th style="width:10%!important">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -34,7 +34,7 @@
                 <td>
                     @string.Concat(bt.FirstTitle, " V/S ", bt.SecondTitle)
                 </td>
-                
+
                 <td>
                     @bt.CaseStage
                 </td>
@@ -42,40 +42,42 @@
             @bt.Status
             </td> *@
                 <td>
-                    @bt.NextHearingDate
+                    @if (bt.NextHearingDate != "01/01/0001")
+                        @bt.NextHearingDate
+
                 </td>
                 <td>
                     <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-history" title="See History"></a>
                     <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=@bt.Id', 'Upload Document')" class="fa fa-file" title="Upload Document"></a>
                     <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail" asp-route-id="@bt.Id" class="fa fa-eye" title="View Case Detail"></a>
                     @* <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="casestage" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
-                        <a href="javascript:$('#form_delete_@bt.Id').submit();" class="fas fa-trash-alt"></a>
-                    </form> *@
+                <a href="javascript:$('#form_delete_@bt.Id').submit();" class="fas fa-trash-alt"></a>
+                </form> *@
                 </td>
-               @*  @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
-                {
-                    <td text-right">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Action
-                            </button>
-                            <div class="dropdown-menu shadow animated--grow-in">
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Edit)).Result.Succeeded)
-                                {
-                                    <a onclick="jQueryModalGet('/LawyerDiary/casestage/OnGetCreateOrEdit?id=@bt.Id', 'Edit Brand')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
+                @*  @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+            {
+            <td text-right">
+            <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Action
+            </button>
+            <div class="dropdown-menu shadow animated--grow-in">
+            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Edit)).Result.Succeeded)
+            {
+            <a onclick="jQueryModalGet('/LawyerDiary/casestage/OnGetCreateOrEdit?id=@bt.Id', 'Edit Brand')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
 
-                                }
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded)
+            }
+            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded)
 
-                                {
-                                    <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="casestage" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
-                                        <a href="javascript:$('#form_delete_@bt.Id').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a>
-                                    </form>
-                                }
-                            </div>
-                        </div>
-                    </td>
-                } *@
+            {
+            <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="casestage" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
+            <a href="javascript:$('#form_delete_@bt.Id').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a>
+            </form>
+            }
+            </div>
+            </div>
+            </td>
+            } *@
             </tr>
         }
     </tbody>

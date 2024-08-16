@@ -15,6 +15,7 @@ namespace CourtApp.Application.DTOs.CaseDetails
         public string FirstTitle { get; set; }
         public string SecondTitle { get; set; }
         public string CourtType { get; set; }
+        public string CaseAbbretion { get; set; }
         public string CaseType { get; set; }
         public string CourtBench { get; set; }
         public string Stage { get; set; }

@@ -33,8 +33,8 @@ namespace CourtApp.Application.Features.CaseTitle
             {
                 Id = e.Id,
                 Case=e.Case.FirstTitle,
-                title=e.Title,
-                
+                Title=e.Title,
+                Type=e.TypeId==0?"First Title":"Second Title"                
             };
             var predicate = PredicateBuilder.True<CaseTitleEntity>();
             if (predicate != null)

@@ -12,6 +12,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
     {
         public Guid Id { get; set; }
         public string CaseTitle { get; set; }
+        public string WorkDate { get; set; }
         public List<WorkDt> Works { get; set; }
     }
 

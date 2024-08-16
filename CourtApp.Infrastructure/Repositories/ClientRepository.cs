@@ -32,8 +32,8 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<ClientEntity> GetByIdAsync(Guid clientId)
         {
             var Detail = await _repository.Entities
-                .Include(s => s.State)
-                .Include(d => d.District)
+                
+                
                 .Where(p => p.Id == clientId).FirstOrDefaultAsync();
             return Detail;
         }

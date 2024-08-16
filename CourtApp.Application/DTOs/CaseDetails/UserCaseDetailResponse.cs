@@ -14,7 +14,7 @@ namespace CourtApp.Application.DTOs.CaseDetails
         public string CaseType { get; set; }
         public Guid CaseCategoryId { get; set; }
         public string CaseCategory { get; set; }
-        public int CaseNo { get; set; }
+        public string CaseNo { get; set; }
         public int CaseYear { get; set; }
         public int CisNo { get; set; }
         public int CisYear { get; set; }
@@ -26,6 +26,7 @@ namespace CourtApp.Application.DTOs.CaseDetails
         public string NextDate { get; set; }
         public string CaseStageCode { get; set; }
         public string CaseStage { get; set; }
+        public string Appearence { get; set; }
         public Guid LinkedCaseId { get; set; }
         public Guid LinkedClientId { get; set; }
     }

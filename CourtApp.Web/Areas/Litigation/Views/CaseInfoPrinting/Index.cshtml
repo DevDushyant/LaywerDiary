@@ -1,0 +1,121 @@
+﻿@{
+    ViewData["Title"] = localizer["Generate Case Forms"];
+}
+<style>
+    .card {
+        width: 100%;
+    }
+
+    .card-header {
+        font-weight: bold;
+    }
+
+    .a4-size {
+        width: 210mm;
+        height: 297mm;        
+    }
+</style>
+@model FmpViewModel
+<section class="bg-light pt-5 pb-5 shadow-sm">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 mb-3 d-flex align-items-stretch" style="float:left;">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="text-left mb-9"><label id="lblHeader"></label></div>
+                        <div class="text-right mb-3"><a href="#" id="btnPrint" class="btn btn-primary">Print</a></div>
+                    </div>
+                    <div class="card-body">
+                        <div id="viewAll" class="card-body table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 mb-3 d-flex align-items-stretch" style="float:right">
+                <div class="card">
+                    <div class="card-header">Search Cases</div>
+                    <div class="card-body d-flex flex-column">
+                        <div class="px-0 py-0">
+                            <div class="global-font pt-1 px-0">
+                                Form Type
+                                <span class="global-font-error">*</span>
+                            </div>
+                            <div style="width:230px!important">
+                                <select class="form-control select2bs4" asp-for="@Model.FormTypeId" asp-items="@Model.FormTypes">
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="px-0 py-0">
+                            <div class="global-font pt-1 px-0">
+                                Select Cases
+                                <span class="global-font-error">*</span>
+                            </div>
+                            <div>
+                                <select class="form-control select2bs4" asp-for="@Model.CaseIds" asp-items="@Model.Cases">
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a id="btnSearch" class="btn bg-success">
+                            <i class="fa fa-search"></i> Generate
+                        </a>
+                        <a id="reload" class="btn btn-primary text-white">
+                            <i class="fa fas fa-reset"></i>
+                            Reset
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#FormTypeId").select2({
+                placeholder: "Select form type",
+                theme: "bootstrap4",
+                escapeMarkup: function (m) {
+                    return m;
+                }
+            });
+            $("#FormTypeId").on("change", function () {
+                $("#lblHeader").text($("#FormTypeId :selected").text())
+            });
+
+            $("#btnPrint").click(function () {                
+                printData();
+            })
+            function printData() {
+                var divToPrint = document.getElementById("printableArea");
+                newWin = window.open("");
+                newWin.document.write(divToPrint.outerHTML);
+                newWin.print();
+                newWin.close();
+            }
+
+            $("#CaseIds").select2({
+                placeholder: "Select cases",
+                theme: "bootstrap4",
+                escapeMarkup: function (m) {
+                    return m;
+                }
+            });
+
+            $("#btnSearch").on("click", function () {
+                var t = $("#FormTypeId").val();
+                var v = $("#CaseIds").val();
+                loadData(t, v);
+            });
+
+
+        });
+        function loadData(t, v) {
+            $('#viewAll').load('/Litigation/CaseInfoPrinting/LoadFormPrinting?type=' + t + "&Cases=" + v);
+        }
+    </script>
+}

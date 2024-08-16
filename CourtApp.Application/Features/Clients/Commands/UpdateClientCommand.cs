@@ -50,17 +50,12 @@ namespace CourtApp.Application.Features.Clients.Commands
                 return Result<Guid>.Fail($"Client Not Found.");
             else
             {                
-                client.FirstName = command.FirstName;
-                client.MiddleName = command.MiddleName;
-                client.LastName = command.LastName;
-                client.FatherName = command.FatherName;
-                client.Dob = command.Dob;
+               
                 client.Email = command.Email;
                 client.OfficeEmail = command.OfficeEmail;
                 client.Phone = command.Phone;
                 client.Mobile = command.Mobile;
-                client.State = _rStateMst.GetStateById(command.StateCode); ;
-                client.District = _rDistrictMst.GetDistrictById(command.DistrictCode);
+                
                 await _clientRepository.UpdateAsync(client);
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(client.Id);

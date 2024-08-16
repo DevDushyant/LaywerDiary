@@ -26,7 +26,10 @@
                     @bt.Type
                 </td>
                 <td>
-                    @bt.TitleDetail
+                    @bt.Name_En
+                </td>
+                <td>
+                    @bt.Name_Hn
                 </td>
                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                 {
@@ -38,13 +41,13 @@
                             <div class="dropdown-menu shadow animated--grow-in">
                                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                                 {
-                                    <a onclick="jQueryModalGet('/LawyerDiary/casestage/OnGetCreateOrEdit?id=@bt.Id', 'Edit Title')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
+                                    <a onclick="jQueryModalGet('/LawyerDiary/title/OnGetFSCreateOrUpdate?id=@bt.Id', 'Edit Title')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
 
                                 }
                                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded)
 
                                 {
-                                    <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="casestage" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
+                                    <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="Title" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
                                         <a href="javascript:$('#form_delete_@bt.Id').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a>
                                     </form>
                                 }

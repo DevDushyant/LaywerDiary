@@ -42,7 +42,7 @@ namespace CourtApp.Application.Features.CaseWork
                 WorkId = e.Work.Work.Id,
                 SubWork = e.Work.Name_En,
                 SubWId = e.Work.Id,
-                WDate = e.WorkingDate.ToString("dd/MM/yyyy"),
+                WDate = e.WorkingDate != null ? e.WorkingDate.Value.ToString("dd/MM/yyyy") : "",
                 Status = e.Status,
 
             };

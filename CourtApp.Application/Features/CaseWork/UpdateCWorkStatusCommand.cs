@@ -12,6 +12,7 @@ namespace CourtApp.Application.Features.CaseWork
     public class UpdateCWorkStatusCommand : IRequest<Result<Guid>>
     {
         public List<Guid> CWorkId { get; set; }
+        public int Status { get; set; }
     }
 
     public class UpdateCWorkStatusCommandHandler : IRequestHandler<UpdateCWorkStatusCommand, Result<Guid>>
@@ -33,7 +34,8 @@ namespace CourtApp.Application.Features.CaseWork
                     return Result<Guid>.Fail($"Case Work Id is not found.");
                 else
                 {
-                    cdEntityt.Status = 1;
+                    cdEntityt.Status = request.Status;
+                    cdEntityt.AppliedOn = DateTime.Now;
                     await _Repository.UpdateAsync(cdEntityt);
                 }
             }

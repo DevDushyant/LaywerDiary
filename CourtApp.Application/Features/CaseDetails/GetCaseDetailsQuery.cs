@@ -1,13 +1,16 @@
 ﻿using AspNetCoreHero.Results;
 using CourtApp.Application.Constants;
 using CourtApp.Application.DTOs.Case;
+using CourtApp.Application.DTOs.CaseDetails;
 using CourtApp.Application.Extensions;
 using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -32,38 +35,44 @@ namespace CourtApp.Application.Features.UserCase
     public class GetCaseDetailsQueryHandler : IRequestHandler<GetCaseDetailsQuery, PaginatedResult<CaseDetailResponse>>
     {
         private readonly ICourtTypeCacheRepository _RepoCourtType;
+        private readonly ICourtTypeRepository _RepoCrtType;
         private readonly ICaseStageCacheRepository _RepoStage;
         private readonly ICaseNatureCacheRepository _RepoNature;
         private readonly IUserCaseRepository _RepoCase;
+        private readonly ICaseProceedingRepository _RepoProceeding;
+        private readonly IFSTitleCacheRepository _RepoFSTitle;
+        private readonly ICourtBenchRepository _RepoCourtBench;
         public GetCaseDetailsQueryHandler(ICaseNatureCacheRepository repoNature,
             IUserCaseRepository repoCase, ICourtTypeCacheRepository RepoCourtType,
-            ICaseStageCacheRepository RepoStage)
+            ICaseStageCacheRepository RepoStage, ICaseProceedingRepository repoProceeding,
+            IFSTitleCacheRepository repoFSTitle, ICourtBenchRepository repoCourtBench, ICourtTypeRepository repoCrtType)
         {
             _RepoNature = repoNature;
             _RepoCase = repoCase;
             _RepoCourtType = RepoCourtType;
             _RepoStage = RepoStage;
+            _RepoProceeding = repoProceeding;
+            _RepoFSTitle = repoFSTitle;
+            _RepoCourtBench = repoCourtBench;
+            _RepoCrtType = repoCrtType;
         }
         public async Task<PaginatedResult<CaseDetailResponse>> Handle(GetCaseDetailsQuery request, CancellationToken cancellationToken)
         {
-
             Expression<Func<CaseDetailEntity, CaseDetailResponse>> expression = e => new CaseDetailResponse
             {
                 Id = e.Id,
+                FTitleType = e.FTitle.Name_En,
+                STitleType = e.FTitle.Name_En,
                 CaseTypeName = e.CaseType.Name_En,
                 CourtType = e.CourtType.CourtType,
                 CaseNumber = String.Concat(e.CaseNo, "/", e.CaseYear),
                 CourtName = e.CourtBench.CourtBench_En,
                 FirstTitle = e.FirstTitle,
                 SecondTitle = e.SecondTitle,
-                NextHearingDate = e.NextDate != Convert.ToDateTime("0001-01-01") ? e.NextDate.Value.ToString("dd/MM/yyyy") : "-",
-                CaseStage = e.CaseStageCode,
-                //CaseStage = StaticDropDownDictionaries.CaseStatus()
-                //.Where(w => w.Key.Equals(e.CaseStageCode))
-                //.Select(s => s.Value).FirstOrDefault(),
+                NextHearingDate = e.NextDate.HasValue == true ? e.NextDate.Value : default(DateTime),
+                CaseStage = e.CaseStage.CaseStage,
                 CaseTitle = e.FirstTitle + " V/S " + e.SecondTitle + "(" + e.CaseNo + "/" + e.CaseYear + ")",
             };
-
             var predicate = PredicateBuilder.True<CaseDetailEntity>();
             if (predicate != null)
             {
@@ -71,26 +80,39 @@ namespace CourtApp.Application.Features.UserCase
                     predicate = predicate.And(y => y.CaseYear == request.Year);
                 if (request.CaseNumber != string.Empty)
                     predicate = predicate.And(x => x.CaseNo == request.CaseNumber);
+            }
+            IQueryable<CaseProcedingEntity> proceedingData = _RepoProceeding.Entities;
+            if (request.HearingDate! != default(DateTime))
+                proceedingData = _RepoProceeding.Entities
+                    .Where(n => n.NextDate.Value == request.HearingDate);
 
-                if (request.CallingFrm == "HTD")
-                    predicate = predicate.And(d => d.NextDate.Value.Date == DateTime.Now.Date);
-                //if (request.CallingFrm == "BTD")
-                //  predicate = predicate.And(d => d.NextDate == null);
-
-            }
-            try
+            var td = _RepoCase.Entites.Where(predicate).Select(expression);
+            var dt = from cd in td
+                     let MaxDt = (from cp in proceedingData
+                                  where cp.CaseId == cd.Id
+                                  orderby cp.NextDate.Value descending
+                                  select cp.NextDate.Value).FirstOrDefault()
+                     select new CaseDetailResponse
+                     {
+                         Id = cd.Id,
+                         CourtName = cd.CourtName,
+                         Abbreviation = cd.Abbreviation,
+                         CaseTypeName = cd.CourtType,
+                         FTitleType = cd.FTitleType,
+                         FirstTitle = cd.FirstTitle,
+                         STitleType = cd.STitleType,
+                         SecondTitle = cd.SecondTitle,
+                         CaseStage = cd.CaseStage,
+                         CaseNumber = cd.CaseNumber,
+                         NextHearingDate = MaxDt,
+                         CaseTitle = cd.CaseTitle
+                     };
+            if (request.HearingDate! != default(DateTime))
             {
-                var dt = await _RepoCase.Entites
-                    .Where(predicate)
-                    .Select(expression)
-                    .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-                return dt;
+                var d = from e in dt where e.NextHearingDate == request.HearingDate select e;
+                return await d.ToPaginatedListAsync(request.PageNumber, request.PageSize);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-            return null;
+            return await dt.ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
     }
 }

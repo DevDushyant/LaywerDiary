@@ -16,7 +16,7 @@ namespace CourtApp.Application.Features.Clients.Queries.GetAllCached
     public class GetAllClientCachedQuery : IRequest<PaginatedResult<GetAllClientCachedResponse>>
     {
         public int PageNumber { get; set; }
-        public int PageSize { get; set; }        
+        public int PageSize { get; set; }
     }
 
     public class GetAllClientsCachedQueryHandler : IRequestHandler<GetAllClientCachedQuery, PaginatedResult<GetAllClientCachedResponse>>
@@ -35,13 +35,12 @@ namespace CourtApp.Application.Features.Clients.Queries.GetAllCached
             Expression<Func<ClientEntity, GetAllClientCachedResponse>> expression = e => new GetAllClientCachedResponse
             {
                 Id = e.Id,
-                Name=String.Concat(e.FirstName," ",e.MiddleName," ",e.LastName),
+                Name = e.Name,
                 Email = e.Email,
-                FatherName = e.FatherName,
-                Mobile = e.Mobile                
+                Mobile = e.Mobile
             };
             var predicate = PredicateBuilder.True<ClientEntity>();
-            var paginatedList = await _RepoClient.Clients                   
+            var paginatedList = await _RepoClient.Clients
                    .Select(expression)
                    .ToPaginatedListAsync(request.PageNumber, request.PageSize);
             return paginatedList;

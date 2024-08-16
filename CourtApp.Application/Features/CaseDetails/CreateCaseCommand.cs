@@ -6,6 +6,7 @@ using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,14 +22,14 @@ namespace CourtApp.Application.Features.Case
         public string CaseNo { get; set; }
         public int CaseYear { get; set; }
         public string FirstTitle { get; set; }
-        public int FirstTitleCode { get; set; }
+        public Guid FirstTitleCode { get; set; }
         public string SecondTitle { get; set; }
-        public int SecoundTitleCode { get; set; }
+        public Guid SecoundTitleCode { get; set; }
         public string CisNumber { get; set; }
         public int CisYear { get; set; }
         public string CnrNumber { get; set; }
         public DateTime? NextDate { get; set; }
-        public string CaseStageCode { get; set; }
+        public Guid CaseStageCode { get; set; }
         public Guid LinkedCaseId { get; set; }
         public Guid ClientId { get; set; }
         public ICollection<CaseAgainstEntityModel> AgainstCaseDetails { get; set; }
@@ -45,7 +46,7 @@ namespace CourtApp.Application.Features.Case
         public int? StrengthId { get; set; }
         public string CaseNo { get; set; }
         public int CaseYear { get; set; }
-        public int CisYear { get; set; }       
+        public int CisYear { get; set; }
         public string OfficerName { get; set; }
         public string Cadre { get; set; }
         public Guid? CourtDistrictId { get; set; }
@@ -97,9 +98,12 @@ namespace CourtApp.Application.Features.Case
         public async Task<Result<Guid>> Handle(CreateCaseCommand request, CancellationToken cancellationToken)
         {
             var entity = _mapper.Map<CaseDetailEntity>(request);
-            entity.CaseAgainstEntities= _mapper.Map<List<CaseDetailAgainstEntity>>(request.AgainstCaseDetails);
+            var isAdd = request.AgainstCaseDetails.Where(s => s.CaseNo != null);
+            if (isAdd.Count() > 0)
+                entity.CaseAgainstEntities = _mapper.Map<List<CaseDetailAgainstEntity>>(request.AgainstCaseDetails);
             var result = await _Repository.InsertAsync(entity);
             await _unitOfWork.Commit(cancellationToken);
+            return Result<Guid>.Success(entity.Id);
             //if (entity.Id != Guid.Empty)
             //{
             //    List<CaseDetailAgainstEntity> againstEntities = new List<CaseDetailAgainstEntity>();
@@ -126,7 +130,7 @@ namespace CourtApp.Application.Features.Case
             //    await _CaseAgainstRepo.InsertAsync(againstEntities);
             //    await _unitOfWork.Commit(cancellationToken);
             //}            
-            return Result<Guid>.Success(entity.Id);
+
         }
     }
 }

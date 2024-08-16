@@ -1,15 +1,10 @@
 ﻿using CourtApp.Application.Features.Clients.Commands;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.Clients.Queries.GetById;
-using CourtApp.Application.Features.CourtType.Query;
 using CourtApp.Application.Features.Queries.Districts;
-using CourtApp.Application.Features.Queries.States;
-using CourtApp.Application.Features.WorkMaster;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Client.Model;
-using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -41,7 +36,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (id == Guid.Empty)
             {
                 var ViewModel = new ClientViewModel();
-                //await BindDropdownAsync(ViewModel);
+                ViewModel.OppositCounsels =await DdlLawyerAsync();
+                ViewModel.Appearences = await DdlFSTypes(0);                
                 return View("_CreateOrEdit", ViewModel);
             }
             else
@@ -49,33 +45,14 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 var response = await _mediator.Send(new GetClientByIdQuery() { Id = id });
                 if (response.Succeeded)
                 {
-                    var districtList = await _mediator.Send(new GetDistrictQuery() { StateCode = response.Data.StateCode });
                     var ViewModel = _mapper.Map<ClientViewModel>(response.Data);
-                   // await BindDropdownAsync(ViewModel);
+                    ViewModel.OppositCounsels = await DdlLawyerAsync();
+                    ViewModel.Appearences = await DdlFSTypes(0);
                     return View("_CreateOrEdit", ViewModel);
                 }
                 return null;
             }
-        }
-        private async Task BindDropdownAsync(ClientViewModel ViewModel)
-        {
-
-            //var statelist = await _mediator.Send(new GetStateMasterQuery());
-            //if (statelist.Succeeded)
-            //{
-            //    var DdlStates = _mapper.Map<List<StateViewModel>>(statelist.Data);
-            //    ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
-            //}
-
-            //var DistrictList = await _mediator.Send(new GetDistrictQuery { StateCode = ViewModel.StateCode });
-            //if (DistrictList.Succeeded)
-            //{
-            //    var DdlDistrict = _mapper.Map<List<DistrictViewModel>>(DistrictList.Data);
-            //    ViewModel.Districts = new SelectList(DdlDistrict, nameof(DistrictViewModel.Code), nameof(DistrictViewModel.Name_En), null, null);
-
-            //}
-
-        }
+        }       
 
         [HttpPost]
         public async Task<IActionResult> OnPostCreateOrEdit(Guid id, ClientViewModel btViewModel)
@@ -152,7 +129,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             var ViewModel = new ClientViewModel();
             ViewModel.CaseId = CaseId;
-            await BindDropdownAsync(ViewModel);
+            ViewModel.OppositCounsels = await DdlLawyerAsync();
+            ViewModel.Appearences = await DdlFSTypes(0);
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
         }
     }

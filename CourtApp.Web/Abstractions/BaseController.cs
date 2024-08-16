@@ -11,6 +11,7 @@ using CourtApp.Application.Features.CourtMasters;
 using CourtApp.Application.Features.CourtType.Query;
 using CourtApp.Application.Features.DOType;
 using CourtApp.Application.Features.FSTitle;
+using CourtApp.Application.Features.Lawyer;
 using CourtApp.Application.Features.ProceedingHead;
 using CourtApp.Application.Features.ProceedingSubHead;
 using CourtApp.Application.Features.Queries.Districts;
@@ -21,6 +22,7 @@ using CourtApp.Application.Features.WorkMaster;
 using CourtApp.Application.Features.WorkMasterSub;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models;
+using CourtApp.Web.Areas.LawyerDiary.Models.Lawyer;
 using CourtApp.Web.Areas.LawyerDiary.Models.Title;
 using CourtApp.Web.Areas.Litigation.Models;
 using MediatR;
@@ -119,7 +121,7 @@ namespace CourtApp.Web.Abstractions
 
         public async Task<SelectList> UserCaseTitle()
         {
-            var response = await _mediator.Send(new GetCaseDetailsQuery());
+            var response = await _mediator.Send(new GetCaseDetailsQuery() { PageNumber = 1, PageSize = 5000 });
             var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
             return new SelectList(viewModel, nameof(GetCaseViewModel.Id), nameof(GetCaseViewModel.CaseTitle), null, null);
 
@@ -232,7 +234,7 @@ namespace CourtApp.Web.Abstractions
 
         public JsonResult DOCTypes()
         {
-            var dtcData = StaticDropDownDictionaries.DOTypes();            
+            var dtcData = StaticDropDownDictionaries.DOTypes();
             return Json(dtcData);
         }
 
@@ -255,6 +257,7 @@ namespace CourtApp.Web.Abstractions
         {
             return new SelectList(StaticDropDownDictionaries.Year(), "Key", "Value");
         }
+
         public SelectList FirstTtitleList()
         {
             return new SelectList(StaticDropDownDictionaries.FirstTitle(), "Key", "Value");
@@ -279,6 +282,10 @@ namespace CourtApp.Web.Abstractions
         public SelectList DdlStrength()
         {
             return new SelectList(StaticDropDownDictionaries.Stength().OrderBy(v => v.Key), "Key", "Value");
+        }
+        public SelectList FormPrintingTypes()
+        {
+            return new SelectList(StaticDropDownDictionaries.FormPrintingTypes(), "Key", "Value");
         }
 
 
@@ -308,6 +315,66 @@ namespace CourtApp.Web.Abstractions
             return new SelectList(ViewModel, nameof(FSTitleLViewModel.Id), nameof(FSTitleLViewModel.Name_En), null, null);
         }
         #endregion
+
+        #region Lawyer Master
+        public async Task<SelectList> DdlLawyerAsync()
+        {
+            var response = await _mediator.Send(new LawyerGetAllCacheQuery());
+            var ViewModel = _mapper.Map<List<LawyerLViewModel>>(response.Data);
+            return new SelectList(ViewModel, nameof(LawyerLViewModel.Id), nameof(LawyerLViewModel.Name), null, null);
+        }
+        #endregion
+
+        #region Generilize Dropdowns
+        public JsonResult SearchBy()
+        {
+            var years = StaticDropDownDictionaries.CaseSearchBy().OrderBy(o => o.Value);
+            List<DropDownSViewModel> dt = new List<DropDownSViewModel>();
+            foreach (var y in years)
+                dt.Add(new DropDownSViewModel { Id = y.Key, Name = y.Value });
+            return Json(dt);
+        }
+
+        public JsonResult DdJYears()
+        {
+            var years = StaticDropDownDictionaries.Year();
+            List<DropDownIViewModel> dt = new List<DropDownIViewModel>();
+            foreach (var y in years)
+                dt.Add(new DropDownIViewModel { Id = y.Key, Name = y.Value });
+            return Json(dt);
+        }
+        public async Task<JsonResult> GDdlDOTypes(int TypeId)
+        {
+            var response = await _mediator.Send(new GetAllDOTypeCachedQuery { TypeId = TypeId });
+            if (response.Succeeded)
+            {
+                var dt = _mapper.Map<List<DropDownGViewModel>>(response.Data);
+                return Json(dt);
+            }
+            return Json(null);
+        }
+        public async Task<JsonResult> GDdlStages()
+        {
+            var response = await _mediator.Send(new CaseStageCacheAllQuery());
+            if (response.Succeeded)
+            {
+                var dt = _mapper.Map<List<DropDownGViewModel>>(response.Data);
+                return Json(dt);
+            }
+            return Json(null);
+        }
+        public async Task<JsonResult> GDdlCaseCategory()
+        {
+            var response = await _mediator.Send(new GetQueryCaseCategory());
+            if (response.Succeeded)
+            {
+                var dt = _mapper.Map<List<DropDownGViewModel>>(response.Data);
+                return Json(dt);
+            }
+            return Json(null);
+        }
+        #endregion
+
 
     }
 }

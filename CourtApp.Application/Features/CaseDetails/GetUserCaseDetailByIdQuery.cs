@@ -31,8 +31,7 @@ namespace CourtApp.Application.Features.UserCase
             mappeddata.CaseCategory = detail.CaseCategory.Name_En;
             mappeddata.CourtBench = detail.CourtBench.CourtBench_En;
             mappeddata.CourtType = detail.CourtType.CourtType;
-            mappeddata.CaseType = detail.CaseType.Name_En;    
-            
+            mappeddata.CaseType = detail.CaseType.Name_En;
             return Result<UserCaseDetailResponse>.Success(mappeddata);
         }
     }

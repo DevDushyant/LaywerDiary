@@ -1,14 +1,10 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
 using CourtApp.Application.DTOs.CaseDetails;
-using CourtApp.Application.DTOs.CaseWorking;
-using CourtApp.Application.Features.BookMasters.Query;
-using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading;
@@ -50,15 +46,19 @@ namespace CourtApp.Application.Features.CaseDetails
                 chr.Id = request.CaseId;
                 chr.CaseNoYear = detail.CaseNo + "/" + detail.CaseYear;
                 chr.Title = detail.FirstTitle + " Vs " + detail.SecondTitle;
-                chr.CourtType = detail.CourtType!=null?detail.CourtType.CourtType:"";
-                chr.Court = detail.CourtBench != null ? detail.CourtBench.CourtBench_En:"";
+                chr.CourtType = detail.CourtType != null ? detail.CourtType.CourtType : "";
+                chr.Court = detail.CourtBench != null ? detail.CourtBench.CourtBench_En : "";
                 var caseWorks = await _CaseWorkRepo.GetWorkByCaseIdAsync(request.CaseId);
                 var cwdata = caseWorks
                     .Select(s => new CaseHistoryData
                     {
-                        Date = s.WorkingDate.ToString("dd/MM/yyyy"),
+                        Date = s.Status == 0 && s.WorkingDate != null ? s.WorkingDate.Value.ToString("dd/MM/yyyy")
+                        : s.Status == 1 && s.AppliedOn != null ? s.AppliedOn.Value.ToString("dd/MM/yyyy")
+                        : s.Status == 2 && s.ReceivedOn != null ? s.ReceivedOn.Value.ToString("dd/MM/yyyy") : "",
                         Stage = "",
-                        Activity = s.Work.Name_En,
+                        Activity = s.Status == 0 ? s.Work.Name_En
+                        : s.Status == 1 ? "Copying Applied"
+                        : s.Status == 2 ? "Copying Recieved" : "",
                         Type = "Work"
                     });
 
@@ -66,7 +66,7 @@ namespace CourtApp.Application.Features.CaseDetails
                 var cprocdt = cprocs.Where(w => w.CaseId == request.CaseId)
                     .Select(s => new CaseHistoryData
                     {
-                        Date = s.NextDate.ToString("dd/MM/yyyy"),
+                        Date = s.NextDate.Value.ToString("dd/MM/yyyy"),
                         Stage = s.Stage.CaseStage,
                         Activity = s.SubHead.Name_En,
                         Type = "Proceeding"

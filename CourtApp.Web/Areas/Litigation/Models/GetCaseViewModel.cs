@@ -8,6 +8,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string CaseTypeName { get; set; }
         public string CourtType { get; set; }
         public string CaseNumber { get; set; }       
+        public string CaseYear { get; set; }       
         public string NextHearingDate { get; set; }        
         public string CaseStage { get; set; }       
         public string Status { get; set; }  
@@ -15,5 +16,6 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string SecondTitle { get; set; }
         public string CourtName { get; set; }
         public string CaseTitle { get; set; }
+        public string Appearence { get; set; }
     }
 }

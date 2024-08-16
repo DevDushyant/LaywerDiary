@@ -4,6 +4,7 @@ using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace CourtApp.Application.Features.FSTitle
 {
     public class FSTitleCreateCommand : IRequest<Result<Guid>>
     {
-        public Guid Id { get; set; }        
+        public Guid Id { get; set; }
         public int TypeId { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
@@ -22,7 +23,7 @@ namespace CourtApp.Application.Features.FSTitle
         private readonly IFSTitleRepository _Repo;
         private readonly IMapper _mapper;
         private IUnitOfWork _uow { get; set; }
-        public FSTitleCreateCommandHandler(IFSTitleRepository _Repo, 
+        public FSTitleCreateCommandHandler(IFSTitleRepository _Repo,
             IMapper _mapper,
             IUnitOfWork _uow)
         {
@@ -32,10 +33,17 @@ namespace CourtApp.Application.Features.FSTitle
         }
         public async Task<Result<Guid>> Handle(FSTitleCreateCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<FSTitleEntity>(request);
-            await _Repo.InsertAsync(entity);
-            await _uow.Commit(cancellationToken);
-            return Result<Guid>.Success(entity.Id);
+            var isEntityCount = _Repo.Entities
+                .Where(w => w.Name_En.Equals(request.Name_En) && w.TypeId==request.TypeId)
+                .Count();
+            if (isEntityCount == 0)
+            {
+                var entity = _mapper.Map<FSTitleEntity>(request);
+                await _Repo.InsertAsync(entity);
+                await _uow.Commit(cancellationToken);
+                return Result<Guid>.Success(entity.Id);
+            }
+            return Result<Guid>.Fail("Entered Title is already exists!");
         }
     }
 }

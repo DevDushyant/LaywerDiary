@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using CourtApp.Application.DTOs.CaseTitleRes;
 using CourtApp.Application.DTOs.DOTypes;
 using CourtApp.Application.DTOs.FSTitle;
+using CourtApp.Application.Features.CaseTitle;
 using CourtApp.Application.Features.DOType;
 using CourtApp.Application.Features.FSTitle;
 using CourtApp.Domain.Entities.LawyerDiary;
@@ -17,7 +19,13 @@ namespace CourtApp.Application.Mappings
         public TitleMapping()
         {
             CreateMap<FSTitleEntity, FSTitleResponse>();            
+            CreateMap<FSTitleEntity, FSTitleByIdResponse>();            
             CreateMap<FSTitleCreateCommand, FSTitleEntity>();            
+            CreateMap<FSTitleUpdateCommand, FSTitleEntity>();   
+            
+            CreateMap<CreateCaseTitleCommand, CaseTitleEntity>();            
+            CreateMap<UpdateCaseTitleCommand, CaseTitleEntity>();            
+            CreateMap<CaseTitleEntity, CaseTitleByIdResponse>();            
         }
     }
 }

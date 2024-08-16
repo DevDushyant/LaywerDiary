@@ -38,15 +38,15 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string CaseNo { get; set; }
         public int CaseYear { get; set; }
         public string FirstTitle { get; set; }
-        public int FirstTitleCode { get; set; }
+        public Guid FirstTitleCode { get; set; }
         public string SecondTitle { get; set; }
-        public int SecoundTitleCode { get; set; }
+        public Guid SecoundTitleCode { get; set; }
         public string CisNumber { get; set; }
         public int? CisYear { get; set; }
         public string CnrNumber { get; set; }
         public DateTime? NextDate { get; set; }
-        public string CaseStageCode { get; set; }
-        public Guid LinkedCaseId { get; set; }        
+        public Guid? CaseStageCode { get; set; }
+        public Guid? LinkedCaseId { get; set; }  
         public Guid? CourtDistrictId { get; set; }
         public Guid? ComplexBenchId { get; set; }
         public List<CaseAgainstModel> AgainstCaseDetails { get; set; }

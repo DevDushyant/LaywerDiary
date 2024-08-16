@@ -16,5 +16,8 @@ namespace CourtApp.Web.Areas.Report.Models
         public string Court { get; set; }
         public string Title { get; set; }
         public string Remark { get; set; }
+        public bool Selected { get; set; }
+        public string AppliedOn { get; set; }
+        public string ReceivedOn { get; set; }
     }
 }

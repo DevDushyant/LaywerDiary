@@ -1,6 +1,4 @@
-﻿using CourtApp.Web.Areas.Client.Model;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
 
 namespace CourtApp.Web.Areas.Litigation.Models

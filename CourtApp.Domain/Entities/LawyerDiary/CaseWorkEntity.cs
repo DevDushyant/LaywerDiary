@@ -11,7 +11,9 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public Guid CaseId { get; set; }
         public Guid WorkTypeId { get; set; }
         public Guid WorkId { get; set; }
-        public DateTime WorkingDate { get; set; }
+        public DateTime? WorkingDate { get; set; }
+        public DateTime? AppliedOn { get; set; }
+        public DateTime? ReceivedOn { get; set; }
         public string Remark { get; set; }
         public int Status { get; set; }
         public string Abbreviation { get; set; }

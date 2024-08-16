@@ -10,10 +10,13 @@ namespace CourtApp.Web.Areas.LawyerDiary.Mappings
     {
         public ClientMapping()
         {
-            CreateMap<GetAllClientCachedResponse, GClientViewModel>().ReverseMap();
-            CreateMap<GetClientByIdResponse, ClientViewModel>().ReverseMap();
-            CreateMap<CreateClientCommand, ClientViewModel>().ReverseMap();
-            CreateMap<UpdateClientCommand, ClientViewModel>().ReverseMap();
+            CreateMap<GetAllClientCachedResponse, GClientViewModel>();
+            CreateMap<ClientFeeViewModel, ClientFee>();
+            CreateMap<ClientViewModel,CreateClientCommand>();
+
+            CreateMap<GetClientByIdResponse, ClientViewModel>();
+            CreateMap<CreateClientCommand, ClientViewModel>();
+            CreateMap<UpdateClientCommand, ClientViewModel>();
         }
     }
 }
