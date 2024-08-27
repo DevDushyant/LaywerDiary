@@ -1,8 +1,9 @@
 ﻿using AuditTrail.Abstrations;
+using CourtApp.Domain.Entities.LawyerDiary;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CourtApp.Domain.Entities.LawyerDiary
+namespace CourtApp.Domain.Entities.CaseDetails
 {
     [Table("r_case_working", Schema = "ld")]
     public class CaseWorkEntity : AuditableEntity

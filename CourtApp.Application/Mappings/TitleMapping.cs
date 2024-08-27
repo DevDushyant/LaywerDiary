@@ -5,6 +5,7 @@ using CourtApp.Application.DTOs.FSTitle;
 using CourtApp.Application.Features.CaseTitle;
 using CourtApp.Application.Features.DOType;
 using CourtApp.Application.Features.FSTitle;
+using CourtApp.Domain.Entities.CaseDetails;
 using CourtApp.Domain.Entities.LawyerDiary;
 using System;
 using System.Collections.Generic;

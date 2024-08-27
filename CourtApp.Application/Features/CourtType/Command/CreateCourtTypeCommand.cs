@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.CourtType.Command
 {
-    public class CreateCourtTypeCommand:IRequest<Result<Guid>>
+    public class CreateCourtTypeCommand : IRequest<Result<Guid>>
     {
         public string CourtType { get; set; }
     }
@@ -29,10 +29,18 @@ namespace CourtApp.Application.Features.CourtType.Command
         }
         public async Task<Result<Guid>> Handle(CreateCourtTypeCommand request, CancellationToken cancellationToken)
         {
-            var CourtType = _mapper.Map<CourtTypeEntity>(request);
-            await _Repository.InsertAsync(CourtType);
-            await _unitOfWork.Commit(cancellationToken);
-            return Result<Guid>.Success(CourtType.Id);
+            var IsExists = _Repository.CourtTypeEntities
+                .Where(c => c.CourtType.Contains(request.CourtType.Trim()))
+                .FirstOrDefault();
+            if (IsExists == null)
+            {
+                var CourtType = _mapper.Map<CourtTypeEntity>(request);
+                await _Repository.InsertAsync(CourtType);
+                await _unitOfWork.Commit(cancellationToken);
+                return Result<Guid>.Success(CourtType.Id);
+            }
+            else
+                return Result<Guid>.Fail($"{request.CourtType} is already exists.");
         }
     }
 }

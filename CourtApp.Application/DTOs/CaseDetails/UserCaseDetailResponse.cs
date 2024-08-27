@@ -6,6 +6,7 @@ namespace CourtApp.Application.DTOs.CaseDetails
     {
         public Guid Id { get; set; }
         public string InstitutionDate { get; set; }
+        public int StateId { get; set; }
         public Guid CourtBenchId { get; set; }
         public string CourtBench { get; set; }
         public Guid CourtTypeId { get; set; }
@@ -29,5 +30,6 @@ namespace CourtApp.Application.DTOs.CaseDetails
         public string Appearence { get; set; }
         public Guid LinkedCaseId { get; set; }
         public Guid LinkedClientId { get; set; }
+
     }
 }

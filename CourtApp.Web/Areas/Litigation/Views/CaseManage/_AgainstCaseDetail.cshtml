@@ -97,7 +97,7 @@
 
         <div class="form-group row ACourt">
             <div class="form-group row ">
-                <label class="col-md-2 col-form-label">@localizer["Court Complex"] (<span style="color:red">*</span>)</label>
+                <label class="col-md-2 col-form-label">@localizer["Court Complex"]</label>
                 <div class="col-md-4">
                     <div class="input-group">
                         <select class="form-control select2bs4" id="AgainstCourtComplexId_0" asp-for="AgainstCaseDetails[0].ComplexId" asp-items="@Model.ComplexBenchs">
@@ -107,7 +107,7 @@
                     <span asp-validation-for="AgainstCaseDetails[0].ComplexId" class="text-danger"></span>
                 </div>
 
-                <label class="col-md-2 col-form-label">@localizer["Court"] (<span style="color:red">*</span>)</label>
+                <label class="col-md-2 col-form-label">@localizer["Court"]</label>
                 <div class="col-md-4">
                     <div class="input-group">
                         <select class="form-control select2bs4" id="AgainstCourtId_0" asp-for="AgainstCaseDetails[0].CourtId" asp-items="@Model.Courts">
@@ -120,7 +120,7 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-md-2 col-form-label">@localizer["Case No/Year"] (<span style="color:red">*</span>)</label>
+            <label class="col-md-2 col-form-label">@localizer["Case No/Year"]</label>
             <div class="col-md-2">
                 <div class="input-group">
                     <input type="text" placeholder="Case Number" asp-for="AgainstCaseDetails[0].CaseNo" id="AgainstCaseNo_0" class="form-control" />
@@ -136,7 +136,7 @@
                 <span asp-validation-for="AgainstCaseDetails[0].CaseYear" class="text-danger"></span>
             </div>
 
-            <label class="col-md-2 col-form-label">@localizer["Case Category"] (<span style="color:red">*</span>)</label>
+            <label class="col-md-2 col-form-label">@localizer["Case Category"]</label>
             <div class="col-md-4">
                 <div class="input-group">
                     <select class="form-control select2bs4" id="AgainstCaseCategoryId_0" asp-for="AgainstCaseDetails[0].CaseCategoryId" asp-items="@Model.CaseNatures">
@@ -148,7 +148,7 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-md-2 col-form-label">@localizer["Case Type"] (<span style="color:red">*</span>)</label>
+            <label class="col-md-2 col-form-label">@localizer["Case Type"]</label>
             <div class="col-md-4">
                 <div class="input-group">
                     <select class="form-control select2bs4" id="AgainstCaseTypeId_0" asp-for="AgainstCaseDetails[0].CaseTypeId" asp-items="@Model.TypeOfCases">

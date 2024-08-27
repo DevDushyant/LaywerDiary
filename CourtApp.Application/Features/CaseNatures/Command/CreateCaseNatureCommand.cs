@@ -32,10 +32,18 @@ namespace CourtApp.Application.Features.CaseNatures.Command
         }
         public async Task<Result<Guid>> Handle(CreateCaseNatureCommand request, CancellationToken cancellationToken)
         {
-            var mappeddata = mapper.Map<NatureEntity>(request);
-            await repository.InsertAsync(mappeddata);
-            await _unitOfWork.Commit(cancellationToken);
-            return Result<Guid>.Success(mappeddata.Id);
+            var IsExists = repository.CaseNatures
+                .Where(c => c.Name_En.Contains(request.Name_En.Trim()))
+                .FirstOrDefault();
+            if (IsExists == null)
+            {
+                var mappeddata = mapper.Map<NatureEntity>(request);
+                await repository.InsertAsync(mappeddata);
+                await _unitOfWork.Commit(cancellationToken);
+                return Result<Guid>.Success(mappeddata.Id);
+            }
+            else
+                return Result<Guid>.Fail($"{request.Name_En} is already exists.");
         }
     }
 

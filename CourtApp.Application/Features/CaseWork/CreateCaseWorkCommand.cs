@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
 using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Domain.Entities.CaseDetails;
 using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using System;

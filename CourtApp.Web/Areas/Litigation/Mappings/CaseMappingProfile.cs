@@ -11,7 +11,7 @@ namespace CourtApp.Web.Areas.Litigation.Mappings
         public CaseMappingProfile()
         {
             CreateMap<CaseViewModel, CreateCaseCommand>()
-                .ForPath(d => d.CaseStageCode, s => s.MapFrom(src => src.CaseStageCode.Value))
+                .ForPath(d => d.CaseStageCode, s => s.MapFrom(src => src.CaseStageCode))
                 .ForPath(d => d.LinkedCaseId, s => s.MapFrom(src => src.LinkedCaseId.Value));
             CreateMap<CaseAgainstModel, CaseAgainstEntityModel>();
             CreateMap<CaseDetailResponse, GetCaseViewModel>()
@@ -21,6 +21,7 @@ namespace CourtApp.Web.Areas.Litigation.Mappings
             CreateMap<CaseDocumentModel, DocumentAttachmentModel>();
             CreateMap<CaseUploadedDocument, CaseDoc>();
             CreateMap<CaseDetailInfoDto, CaseDetailInfoViewModel>();
+            CreateMap<UserCaseDetailResponse,CaseViewModel>();
             //CreateMap<CommandDeleteCaseEntry, CaseViewModel>().ReverseMap();
             //CreateMap<ResponseGetAllCaseEntry, CaseViewModel>().ReverseMap();           
         }

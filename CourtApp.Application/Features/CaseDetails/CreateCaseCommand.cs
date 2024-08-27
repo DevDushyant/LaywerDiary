@@ -2,11 +2,12 @@
 using AutoMapper;
 using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Domain.Entities.CaseDetails;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,6 +33,7 @@ namespace CourtApp.Application.Features.Case
         public Guid CaseStageCode { get; set; }
         public Guid LinkedCaseId { get; set; }
         public Guid ClientId { get; set; }
+        public int StateId { get; set; }
         public ICollection<CaseAgainstEntityModel> AgainstCaseDetails { get; set; }
     }
     public class CaseAgainstEntityModel
@@ -97,40 +99,21 @@ namespace CourtApp.Application.Features.Case
         }
         public async Task<Result<Guid>> Handle(CreateCaseCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<CaseDetailEntity>(request);
-            var isAdd = request.AgainstCaseDetails.Where(s => s.CaseNo != null);
-            if (isAdd.Count() > 0)
-                entity.CaseAgainstEntities = _mapper.Map<List<CaseDetailAgainstEntity>>(request.AgainstCaseDetails);
-            var result = await _Repository.InsertAsync(entity);
-            await _unitOfWork.Commit(cancellationToken);
-            return Result<Guid>.Success(entity.Id);
-            //if (entity.Id != Guid.Empty)
-            //{
-            //    List<CaseDetailAgainstEntity> againstEntities = new List<CaseDetailAgainstEntity>();
-            //    foreach (var item in request.AgainstCaseDetails)
-            //    {
-            //        againstEntities.Add(new CaseDetailAgainstEntity
-            //        {
-            //            Id=Guid.NewGuid(),
-            //            CaseId = entity.Id,
-            //            Cadre = item.Cadre,                        
-            //            CaseNo = item.CaseNo,
-            //            CaseYear = item.CaseYear,
-            //            CisNo = item.CisNo,
-            //            CisYear = item.CisYear,
-            //            CnrNo = item.CnrNo,
-            //            CourtBenchId = item.CourtBenchId,
-            //            CourtTypeId = item.CourtTypeId,
-            //            ImpugedOrderDate = item.ImpugedOrderDate,
-            //            OfficerName = item.OfficerName,
-            //            StateId = item.StateId,
-            //            StrengthId = item.StrengthId
-            //        });
-            //    }
-            //    await _CaseAgainstRepo.InsertAsync(againstEntities);
-            //    await _unitOfWork.Commit(cancellationToken);
-            //}            
-
+            var isCaseExist = await _Repository.GetByCaseNoYearAsync(request.CaseNo, request.CaseYear);
+            if (isCaseExist == null)
+            {
+                var entity = _mapper.Map<CaseDetailEntity>(request);
+                var isAdd = request.AgainstCaseDetails.Where(s => s.CaseNo != null);
+                if (isAdd.Count() > 0)
+                    entity.CaseAgainstEntities = _mapper.Map<List<CaseDetailAgainstEntity>>(request.AgainstCaseDetails);
+                var result = await _Repository.InsertAsync(entity);
+                await _unitOfWork.Commit(cancellationToken);
+                return Result<Guid>.Success(entity.Id);
+            }
+            else
+                return Result<Guid>.Fail($"Case number and case year already exist.");
         }
+
+
     }
 }

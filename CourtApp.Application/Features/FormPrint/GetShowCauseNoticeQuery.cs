@@ -31,16 +31,17 @@ namespace CourtApp.Application.Features.FormPrint
             CaseTypeAbb.Add("Civil");
             CaseTypeAbb.Add("Writ");
             var Results = from c in _CaseRepo.Entites.Include(ct => ct.CaseType)
-                          .Where(w => request.CaseIds.Contains(w.Id) && CaseTypeAbb.Contains(w.CaseType.Abbreviation))
-                          join t in _TitleRepo.Titles on c.Id equals t.CaseId
+                          .Where(w => request.CaseIds.Contains(w.Id) && CaseTypeAbb.Contains(w.CaseCategory.Name_En))
+                          join t in _TitleRepo.Titles on c.Id equals t.CaseId into Titles
+                          from tt in Titles.DefaultIfEmpty()
                           select new ShowCauseNoticeResponse
                           {
                              Petitioner = c.FirstTitle,
                              Respondent = c.SecondTitle,
-                             FirstTitle = t.TypeId == 1 ? t.Title : "",
-                             SecondTitle = t.TypeId == 2 ? t.Title : "",
+                             FirstTitle = tt.TypeId == 1 ? tt.Title : "",
+                             SecondTitle = tt.TypeId == 2 ? tt.Title : "",
                              CaseNoYear = c.CaseNo + "/" + c.CaseYear,
-                             CaseType = c.CaseType.Name_En,                             
+                             CaseType = c.CaseCategory.Name_En,                             
                           };
             return Result<List<ShowCauseNoticeResponse>>.Success(Results.ToList());
         }

@@ -17,7 +17,7 @@ namespace CourtApp.Infrastructure.Migrations.App
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -383,6 +383,300 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.ToTable("m_part", "ad");
                 });
 
+            modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseDetailAgainstEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Cadre")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("CaseDetailEntityId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CaseNo")
+                        .HasColumnType("text");
+
+                    b.Property<int>("CaseYear")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CisNo")
+                        .HasColumnType("text");
+
+                    b.Property<int>("CisYear")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CnrNo")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CourtBenchId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CourtTypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ImpugedOrderDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("OfficerName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("StateId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StrengthId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CaseDetailEntityId");
+
+                    b.ToTable("case_detail_against", "ld");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CaseCategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CaseNo")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("CaseStageId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CaseTypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("CaseYear")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CisNumber")
+                        .HasColumnType("text");
+
+                    b.Property<int>("CisYear")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("ClientId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CnrNumber")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CourtBenchId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CourtTypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("FTitleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("FirstTitle")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("InstitutionDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid?>("LinkedCaseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("NextDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("STitleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("SecondTitle")
+                        .HasColumnType("text");
+
+                    b.Property<int>("StateId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CaseCategoryId");
+
+                    b.HasIndex("CaseStageId");
+
+                    b.HasIndex("CaseTypeId");
+
+                    b.HasIndex("CourtBenchId");
+
+                    b.HasIndex("CourtTypeId");
+
+                    b.HasIndex("FTitleId");
+
+                    b.HasIndex("STitleId");
+
+                    b.HasIndex("StateId");
+
+                    b.ToTable("case_detail", "ld");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseProcedingEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Abbreviation")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CaseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("HeadId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("NextDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Remark")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("StageId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SubHeadId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CaseId");
+
+                    b.HasIndex("HeadId");
+
+                    b.HasIndex("StageId");
+
+                    b.HasIndex("SubHeadId");
+
+                    b.ToTable("r_case_proceeding", "ld");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseTitleEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CaseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
+
+                    b.Property<int>("TypeId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CaseId");
+
+                    b.ToTable("case_titles", "ld");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseWorkEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Abbreviation")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("AppliedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("CaseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("ReceivedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Remark")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("WorkId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("WorkTypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("WorkingDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CaseId");
+
+                    b.HasIndex("WorkId");
+
+                    b.HasIndex("WorkTypeId");
+
+                    b.ToTable("r_case_working", "ld");
+                });
+
             modelBuilder.Entity("CourtApp.Domain.Entities.Common.BlockEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -545,6 +839,65 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.ToTable("m_ward");
                 });
 
+            modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.DraftingDetailEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CaseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("TemplateId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("case_petition_detail");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.FormBuilderEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnOrder(1);
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("FormName")
+                        .HasColumnType("text")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("m_frm_types");
+                });
+
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.BookTypeEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -573,150 +926,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.HasKey("Id");
 
                     b.ToTable("m_book_type", "ld");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseDetailAgainstEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Cadre")
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("CaseDetailEntityId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CaseNo")
-                        .HasColumnType("text");
-
-                    b.Property<int>("CaseYear")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CisNo")
-                        .HasColumnType("text");
-
-                    b.Property<int>("CisYear")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CnrNo")
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("CourtBenchId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CourtTypeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("ImpugedOrderDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("OfficerName")
-                        .HasColumnType("text");
-
-                    b.Property<int>("StateId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("StrengthId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CaseDetailEntityId");
-
-                    b.ToTable("case_detail_against", "ld");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseDetailEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CaseCategoryId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CaseNo")
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("CaseStageId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CaseTypeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("CaseYear")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CisNumber")
-                        .HasColumnType("text");
-
-                    b.Property<int>("CisYear")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("ClientId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CnrNumber")
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("CourtBenchId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CourtTypeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("FTitleId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("FirstTitle")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("InstitutionDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid?>("LinkedCaseId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("NextDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("STitleId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("SecondTitle")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CaseCategoryId");
-
-                    b.HasIndex("CaseStageId");
-
-                    b.HasIndex("CaseTypeId");
-
-                    b.HasIndex("CourtBenchId");
-
-                    b.HasIndex("CourtTypeId");
-
-                    b.HasIndex("FTitleId");
-
-                    b.HasIndex("STitleId");
-
-                    b.ToTable("case_detail", "ld");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseDocsEntity", b =>
@@ -790,57 +999,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.ToTable("m_case_kind", "ld");
                 });
 
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseProcedingEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Abbreviation")
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("CaseId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("HeadId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime>("NextDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Remark")
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("StageId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("SubHeadId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HeadId");
-
-                    b.HasIndex("StageId");
-
-                    b.HasIndex("SubHeadId");
-
-                    b.ToTable("r_case_proceeding", "ld");
-                });
-
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseStageEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -870,98 +1028,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.HasKey("Id");
 
                     b.ToTable("m_case_stage", "ld");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseTitleEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CaseId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
-
-                    b.Property<int>("TypeId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CaseId");
-
-                    b.ToTable("case_titles", "ld");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseWorkEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Abbreviation")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("AppliedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("CaseId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("ReceivedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Remark")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("WorkId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("WorkTypeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("WorkingDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CaseId");
-
-                    b.HasIndex("WorkId");
-
-                    b.HasIndex("WorkTypeId");
-
-                    b.ToTable("r_case_working", "ld");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.ClientEntity", b =>
@@ -1910,41 +1976,14 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Navigation("GazetteType");
                 });
 
-            modelBuilder.Entity("CourtApp.Domain.Entities.Common.BlockEntity", b =>
+            modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseDetailAgainstEntity", b =>
                 {
-                    b.HasOne("CourtApp.Entities.Common.DistrictEntity", "District")
-                        .WithMany("Blocks")
-                        .HasForeignKey("DistrictCode");
-
-                    b.Navigation("District");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.Common.CityEntity", b =>
-                {
-                    b.HasOne("CourtApp.Entities.Common.DistrictEntity", "District")
-                        .WithMany("Cities")
-                        .HasForeignKey("DistrictCode");
-
-                    b.Navigation("District");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.Common.WardEntity", b =>
-                {
-                    b.HasOne("CourtApp.Domain.Entities.Common.CityEntity", "city")
-                        .WithMany("Wards")
-                        .HasForeignKey("CityCode");
-
-                    b.Navigation("city");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseDetailAgainstEntity", b =>
-                {
-                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CaseDetailEntity", null)
+                    b.HasOne("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", null)
                         .WithMany("CaseAgainstEntities")
                         .HasForeignKey("CaseDetailEntityId");
                 });
 
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseDetailEntity", b =>
+            modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", b =>
                 {
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.NatureEntity", "CaseCategory")
                         .WithMany()
@@ -1986,6 +2025,12 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
+                        .WithMany()
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("CaseCategory");
 
                     b.Navigation("CaseStage");
@@ -1999,32 +2044,18 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Navigation("FTitle");
 
                     b.Navigation("STitle");
+
+                    b.Navigation("State");
                 });
 
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseDocsEntity", b =>
+            modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseProcedingEntity", b =>
                 {
-                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.DOTypeEntity", "DO")
+                    b.HasOne("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", "Case")
                         .WithMany()
-                        .HasForeignKey("DOId")
+                        .HasForeignKey("CaseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("DO");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseKindEntity", b =>
-                {
-                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtTypeEntity", "CourtType")
-                        .WithMany()
-                        .HasForeignKey("CourtTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CourtType");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseProcedingEntity", b =>
-                {
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.ProceedingHeadEntity", "Head")
                         .WithMany()
                         .HasForeignKey("HeadId")
@@ -2043,6 +2074,8 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Case");
+
                     b.Navigation("Head");
 
                     b.Navigation("Stage");
@@ -2050,9 +2083,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Navigation("SubHead");
                 });
 
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseTitleEntity", b =>
+            modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseTitleEntity", b =>
                 {
-                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CaseDetailEntity", "Case")
+                    b.HasOne("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", "Case")
                         .WithMany()
                         .HasForeignKey("CaseId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2061,9 +2094,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Navigation("Case");
                 });
 
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseWorkEntity", b =>
+            modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseWorkEntity", b =>
                 {
-                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CaseDetailEntity", "Case")
+                    b.HasOne("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", "Case")
                         .WithMany()
                         .HasForeignKey("CaseId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2086,6 +2119,172 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Navigation("Work");
 
                     b.Navigation("WorkType");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.Common.BlockEntity", b =>
+                {
+                    b.HasOne("CourtApp.Entities.Common.DistrictEntity", "District")
+                        .WithMany("Blocks")
+                        .HasForeignKey("DistrictCode");
+
+                    b.Navigation("District");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.Common.CityEntity", b =>
+                {
+                    b.HasOne("CourtApp.Entities.Common.DistrictEntity", "District")
+                        .WithMany("Cities")
+                        .HasForeignKey("DistrictCode");
+
+                    b.Navigation("District");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.Common.WardEntity", b =>
+                {
+                    b.HasOne("CourtApp.Domain.Entities.Common.CityEntity", "city")
+                        .WithMany("Wards")
+                        .HasForeignKey("CityCode");
+
+                    b.Navigation("city");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.DraftingDetailEntity", b =>
+                {
+                    b.OwnsMany("CourtApp.Domain.Entities.FormBuilder.FormFieldValueEntity", "FieldDetails", b1 =>
+                        {
+                            b1.Property<Guid>("DraftingDetailEntityId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            b1.Property<Guid>("Key")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Value")
+                                .HasColumnType("text");
+
+                            b1.HasKey("DraftingDetailEntityId", "Id");
+
+                            b1.ToTable("case_petition_detail");
+
+                            b1.ToJson("FieldDetails");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DraftingDetailEntityId");
+                        });
+
+                    b.Navigation("FieldDetails");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.FormBuilderEntity", b =>
+                {
+                    b.OwnsOne("CourtApp.Domain.Entities.FormBuilder.FormFieldsEntity", "FieldsDetails", b1 =>
+                        {
+                            b1.Property<Guid>("FormBuilderEntityId")
+                                .HasColumnType("uuid");
+
+                            b1.HasKey("FormBuilderEntityId");
+
+                            b1.ToTable("m_frm_types");
+
+                            b1.ToJson("FieldsDetails");
+
+                            b1.WithOwner()
+                                .HasForeignKey("FormBuilderEntityId");
+
+                            b1.OwnsMany("CourtApp.Domain.Entities.FormBuilder.FieldDetailsEntity", "Fields", b2 =>
+                                {
+                                    b2.Property<Guid>("FormFieldsEntityFormBuilderEntityId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("integer");
+
+                                    b2.Property<int>("DispOrder")
+                                        .HasColumnType("integer");
+
+                                    b2.Property<bool>("IsRequire")
+                                        .HasColumnType("boolean");
+
+                                    b2.Property<string>("Key")
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("Name")
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("Placeholder")
+                                        .HasColumnType("text");
+
+                                    b2.Property<int>("Type")
+                                        .HasColumnType("integer");
+
+                                    b2.HasKey("FormFieldsEntityFormBuilderEntityId", "Id");
+
+                                    b2.ToTable("m_frm_types");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("FormFieldsEntityFormBuilderEntityId");
+
+                                    b2.OwnsOne("CourtApp.Domain.Entities.FormBuilder.FieldSizeEntity", "FieldSize", b3 =>
+                                        {
+                                            b3.Property<Guid>("FieldDetailsEntityFormFieldsEntityFormBuilderEntityId")
+                                                .HasColumnType("uuid");
+
+                                            b3.Property<int>("FieldDetailsEntityId")
+                                                .HasColumnType("integer");
+
+                                            b3.Property<string>("Cols")
+                                                .HasColumnType("text");
+
+                                            b3.Property<string>("Max")
+                                                .HasColumnType("text");
+
+                                            b3.Property<string>("Min")
+                                                .HasColumnType("text");
+
+                                            b3.Property<string>("Rows")
+                                                .HasColumnType("text");
+
+                                            b3.HasKey("FieldDetailsEntityFormFieldsEntityFormBuilderEntityId", "FieldDetailsEntityId");
+
+                                            b3.ToTable("m_frm_types");
+
+                                            b3.WithOwner()
+                                                .HasForeignKey("FieldDetailsEntityFormFieldsEntityFormBuilderEntityId", "FieldDetailsEntityId");
+                                        });
+
+                                    b2.Navigation("FieldSize");
+                                });
+
+                            b1.Navigation("Fields");
+                        });
+
+                    b.Navigation("FieldsDetails");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseDocsEntity", b =>
+                {
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.DOTypeEntity", "DO")
+                        .WithMany()
+                        .HasForeignKey("DOId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DO");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseKindEntity", b =>
+                {
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtTypeEntity", "CourtType")
+                        .WithMany()
+                        .HasForeignKey("CourtTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CourtType");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.ClientEntity", b =>
@@ -2307,6 +2506,11 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Navigation("Parts");
                 });
 
+            modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", b =>
+                {
+                    b.Navigation("CaseAgainstEntities");
+                });
+
             modelBuilder.Entity("CourtApp.Domain.Entities.Common.CityEntity", b =>
                 {
                     b.Navigation("Wards");
@@ -2320,11 +2524,6 @@ namespace CourtApp.Infrastructure.Migrations.App
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.BookTypeEntity", b =>
                 {
                     b.Navigation("lDBookEntities");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseDetailEntity", b =>
-                {
-                    b.Navigation("CaseAgainstEntities");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.ClientEntity", b =>

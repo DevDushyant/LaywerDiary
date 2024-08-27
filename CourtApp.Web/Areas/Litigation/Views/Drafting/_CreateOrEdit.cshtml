@@ -1,0 +1,103 @@
+﻿@{
+    ViewData["Title"] = localizer["Petition Template"];
+    ViewData["Caption"] = localizer["Dynamic Petition Template"];
+}
+<style>
+    fieldset.scheduler-border {
+        border: 1px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;
+        margin: 0 0 1.5em 0 !important;
+        -webkit-box-shadow: 0px 0px 0px 0px #000;
+        box-shadow: 0px 0px 0px 0px #000;
+        width: 100% !important;
+    }
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width: auto;
+        padding: 0 10px;
+        border-bottom: none;
+    }
+</style>
+@model FormBuilderViewModel
+<form id="create-form" method="post" asp-controller="Drafting" asp-action="OnPostCreateOrEdit"
+      asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">@localizer["Case Title"]</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <select asp-for="CaseId" asp-items="@Model.Cases" class="form-control select2bs4"><option></option></select>
+                    </div>
+                    <span asp-validation-for="CaseId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">@localizer["Template Name"]</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <select asp-for="TemplateId" asp-items="@Model.Templates" class="form-control select2bs4"><option></option></select>
+                    </div>
+                    <span asp-validation-for="TemplateId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">@localizer["Template Fields"]</legend>
+                    <div class="card-body">
+                        <div id="FieldDetails" class="card-body table-responsive"></div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
+        <button type="submit" class="btn btn-success">Save</button>
+        <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
+    </div>
+</form>
+<script type="text/javascript" language=javascript>
+    $.validator.unobtrusive.parse(document);
+    $("#CaseId").select2({
+        placeholder: "Select a title",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    $("#TemplateId").select2({
+        placeholder: "Select a petition template",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    
+    $("#TemplateId").on("change", function () {
+        var input = {
+            TemplateId: $("#TemplateId").val(),
+            ViewModel: {
+                TemplateId: $("#TemplateId").val(),
+                CaseId: $("#CaseId").val()
+            }
+        };        
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetTemplateFields", "Drafting")',
+            data: input,
+            success: function (response) {
+              
+                $('#FieldDetails').html(response);
+            }
+        });       
+    });
+</script>

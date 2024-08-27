@@ -2,7 +2,7 @@
 using AspNetCoreHero.ThrowR;
 using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Domain.Entities.CaseDetails;
 using CourtApp.Infrastructure.CacheKeys;
 using Microsoft.Extensions.Caching.Distributed;
 using System;

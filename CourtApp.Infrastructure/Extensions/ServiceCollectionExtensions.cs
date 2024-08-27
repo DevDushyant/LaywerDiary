@@ -8,6 +8,11 @@ using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using CourtApp.Application.Interfaces.CacheRepositories.FormBuilder;
+using CourtApp.Infrastructure.CacheRepositories.FormBuilder;
+using CourtApp.Application.Interfaces.Repositories.FormBuilder;
+using CourtApp.Infrastructure.Repositories.DynamicForms;
+using CourtApp.Infrastructure.Repositories.FormBuilder;
 
 namespace CourtApp.Infrastructure.Extensions
 {
@@ -108,6 +113,14 @@ namespace CourtApp.Infrastructure.Extensions
             #region Lawyer Master Information
             services.AddTransient<ILawyerCacheRepository, LawyerCacheRepository>();
             services.AddTransient<ILawyerRepository, LawyerMasterRepository>();
+            #endregion
+
+            #region FormBuilder & Case Mapping
+            services.AddTransient<IFormBuilderCacheRepository, FormBuilderCacheRepository>();
+            services.AddTransient<IFormBuilderRepository, FormBuilderRepository>();
+
+            services.AddTransient<ICaseDraftingCacheRepository, CaseDraftingCacheRepository>();
+            services.AddTransient<ICaseDraftingRepository, CaseDraftingRepository>();
             #endregion
         }
     }

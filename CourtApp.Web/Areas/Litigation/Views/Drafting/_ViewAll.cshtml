@@ -1,0 +1,56 @@
+﻿@model IEnumerable<FormCaseMappingViewModel>
+<table id="tblFormCaseMappingDt" class="table table-striped" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Sr.</th>
+            <th>Title</th>
+            <th>Template</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int count = 0;
+        }
+        @foreach (var bt in Model)
+        {
+            <tr>
+                <td>
+                    @(++count)
+                </td>
+                <td>
+                    @bt.CaseTitle
+                </td>
+                <td>
+                    @bt.TemplateName
+                </td>
+                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+                {
+                    <td>
+                        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Edit)).Result.Succeeded)
+                        {
+                            <a onclick="jQueryModalGet('/Litigation/drafting/OnGetCreateOrEdit?id=@bt.Id','Edit Drafting Detail')"><i class="fas fa-pencil-alt"></i></a>
+
+                        }
+                        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Edit)).Result.Succeeded)
+                        {
+                            <a onclick="jQueryModalGet('/Litigation/drafting/OnGetCreateOrEdit?id=@bt.Id','Edit Drafting Detail')"><i class="fa fa-eye" aria-hidden="true"></i></a>
+
+                        }
+                        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded)
+                        {
+                            <form id="form_delete_@bt.Id" asp-area="Litigation" asp-controller="drafting" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
+                                <a href="javascript:$('#form_delete_@bt.Id').submit();"><i class="fas fa-trash-alt"></i></a>
+                            </form>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+    $(document).ready(function () {
+        $("#tblFormCaseMappingDt").DataTable();
+    });
+</script>

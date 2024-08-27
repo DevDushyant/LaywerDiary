@@ -1,5 +1,4 @@
 ﻿$(document).ready(function () {
-
     $("#StateId").select2({
         placeholder: "Select a state",
         theme: "bootstrap4",
@@ -287,6 +286,11 @@
     });
 
     $("#CourtTypeId").on("change", function () {
+        CourtTypeChange(this);
+    });
+
+    function CourtTypeChange(selectElement) {
+        var selectedValue = selectElement.value;
         $("#CaseCategoryId").empty();
         if ($("#CourtTypeId").val() === "b512e36f-0b6e-4a14-80d0-65266b2b320d" || $("#CourtTypeId").val() === "359acb34-7b8c-4fc8-a276-8b198ea5105c") {
             $('#divDistrictCourt').addClass('div_hide');
@@ -303,7 +307,7 @@
             BindDistrictCourt();
         }
         BindCaseCategory($("#CourtTypeId").val())
-    });
+    }
 
     $("#AgainstCourtTypeId_0").on("change", function () {       
         $("#AgainstCaseCategoryId_0").empty();
@@ -318,25 +322,7 @@
             BindAgainstDistrictCourt();
         }
         BindAgainstCaseCategory($("#AgainstCourtTypeId_0").val())
-    });
-
-    //$("#StateId").on('change', function () {
-    //    $("#CourtBenchId").empty();
-    //    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val() + "&ComplexId=00000000-0000-0000-0000-000000000000", function (data) {
-    //        $.each(data.Data, function (i, item) {
-    //            $("#CourtBenchId").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
-    //        });
-    //    });
-    //});
-
-    //$("#AgainstStateId_0").on('change', function () {
-    //    $("#AgainstCourtBenchId_0").empty();
-    //    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val() + "&ComplexId=00000000-0000-0000-0000-000000000000", function (data) {
-    //        $.each(data.Data, function (i, item) {
-    //            $("#AgainstCourtBenchId_0").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
-    //        });
-    //    });
-    //});
+    });    
 
     $("#CaseCategoryId").on('change', function () {
         $("#CaseTypeId").empty();

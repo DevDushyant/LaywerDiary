@@ -20,7 +20,8 @@
                 <label class="col-md-3 col-form-label">@localizer["District"]</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                        <select name="DistrictId" class="form-control select2bs4" id="DistrictId" asp-for="DistrictId" asp-items="@Model.Districts">
+                        <select  class="form-control select2bs4" asp-for="DistrictId" asp-items="@Model.Districts"
+                                onchange="clickMe()">
                             <option></option>
                         </select>
                     </div>
@@ -68,6 +69,7 @@
     </div>
 </form>
 <script type="text/javascript" language=javascript>
+    
     $.validator.unobtrusive.parse(document);   
     $("#StateId").select2({
         placeholder: "Select a state",
@@ -83,6 +85,7 @@
             return m;
         }
     });
+    
     $("#StateId").on("change", function () {
         $("#DistrictId").empty();       
         $.getJSON("/LawyerDiary/CourtDistrict/LoadDistricts?StateCode=" + $("#StateId").val(), function (data) {
@@ -91,4 +94,5 @@
             });
         });
     });
+    
 </script>

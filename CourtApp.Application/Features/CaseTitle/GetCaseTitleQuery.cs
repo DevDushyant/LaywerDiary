@@ -2,10 +2,11 @@
 using CourtApp.Application.DTOs.CaseTitle;
 using CourtApp.Application.Extensions;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Domain.Entities.CaseDetails;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -18,7 +19,8 @@ namespace CourtApp.Application.Features.CaseTitle
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public int TypeId { get; set; }
-        
+        public List<Guid> CaseIds { get; set; }
+
     }
     public class GetCaseTitleQueryHandler : IRequestHandler<GetCaseTitleQuery, PaginatedResult<CaseTitleResponse>>
     {
@@ -32,21 +34,23 @@ namespace CourtApp.Application.Features.CaseTitle
             Expression<Func<CaseTitleEntity, CaseTitleResponse>> expression = e => new CaseTitleResponse
             {
                 Id = e.Id,
-                Case=e.Case.FirstTitle,
-                Title=e.Title,
-                Type=e.TypeId==0?"First Title":"Second Title"                
+                Case = e.Case.FirstTitle,
+                Title = e.Title,
+                Type = e.TypeId == 0 ? "First Title" : "Second Title"
             };
             var predicate = PredicateBuilder.True<CaseTitleEntity>();
             if (predicate != null)
             {
                 if (request.TypeId != 0)
-                    predicate = predicate.And(y => y.TypeId == request.TypeId);               
+                    predicate = predicate.And(y => y.TypeId == request.TypeId);
+                if (request.CaseIds.Count > 0)
+                    predicate = predicate.And(y => request.CaseIds.Contains(y.CaseId));
 
             }
             try
             {
 
-                var paginatedList = await repository.Titles                   
+                var paginatedList = await repository.Titles
                     .Where(predicate)
                     .Select(expression)
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);

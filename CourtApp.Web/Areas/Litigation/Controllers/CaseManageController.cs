@@ -60,25 +60,24 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
             else
             {
-                var response = await _mediator.Send(new GetUserCaseDetailByIdQuery { CaseId=id});
+                var response = await _mediator.Send(new GetUserCaseDetailByIdQuery { CaseId = id });
                 if (response.Succeeded)
                 {
                     var CaseDetail = _mapper.Map<CaseViewModel>(response.Data);
-                    CaseDetail.InstitutionDate = DateTime.Now;
-                    CaseDetail.CourtTypes = await LoadCourtTypes();
+                    CaseDetail.States = await LoadStates();
+                    CaseDetail.CourtTypes = await LoadCourtTypes();                   
                     CaseDetail.CaseNatures = await LoadCaseNature();
-                    CaseDetail.FirstTitleList = await DdlFSTypes(1);
-                    CaseDetail.SecondTitleList = await DdlFSTypes(2);
                     CaseDetail.Years = DdlYears();
+                    CaseDetail.FirstTitleList = await DdlFSTypes(1);
+                    CaseDetail.SecondTitleList = await DdlFSTypes(2);                    
                     CaseDetail.CaseStatusList = await DdlCaseStages();
                     CaseDetail.LinkedBy = await UserCaseTitle();
                     CaseDetail.Cadres = DdlCadres();
-                    CaseDetail.Strengths = DdlStrength();
-                    CaseDetail.States = await LoadStates();
-                    return View("_CreateOrEdit", caseViewModel);
+                    CaseDetail.Strengths = DdlStrength();                    
+                    return View("_CreateOrEdit", CaseDetail);
                 }
                 return null;
-                
+
             }
         }
 
@@ -90,13 +89,23 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 if (Id == Guid.Empty)
                 {
                     ViewModel.CourtBenchId = ViewModel.BenchId == null ? ViewModel.CourtId.Value : ViewModel.BenchId.Value;
-
                     var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);
                     var result = await _mediator.Send(createCommand);
                     if (result.Succeeded)
                     {
-                        ViewModel.StatusMessage = "Record created successfully";
+                        ViewModel.StatusMessage = "Case created successfully!";
                         ViewModel.Id = result.Data;
+                        ViewModel.InstitutionDate = DateTime.Now;
+                        ViewModel.CourtTypes = await LoadCourtTypes();
+                        ViewModel.CaseNatures = await LoadCaseNature();
+                        ViewModel.FirstTitleList = await DdlFSTypes(1);
+                        ViewModel.SecondTitleList = await DdlFSTypes(2);
+                        ViewModel.Years = DdlYears();
+                        ViewModel.CaseStatusList = await DdlCaseStages();
+                        ViewModel.LinkedBy = await UserCaseTitle();
+                        ViewModel.Cadres = DdlCadres();
+                        ViewModel.Strengths = DdlStrength();
+                        ViewModel.States = await LoadStates();
                         _notify.Success($"Case created with ID {result.Data} Created.");
 
                     }
@@ -108,7 +117,20 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     var updateCommand = _mapper.Map<UpdateBookMasterCommand>(ViewModel);
                     var result = await _mediator.Send(updateCommand);
                     if (result.Succeeded)
+                    {
                         _notify.Information($"Book type with ID {result.Data} Updated.");
+                        ViewModel.InstitutionDate = DateTime.Now;
+                        ViewModel.CourtTypes = await LoadCourtTypes();
+                        ViewModel.CaseNatures = await LoadCaseNature();
+                        ViewModel.FirstTitleList = await DdlFSTypes(1);
+                        ViewModel.SecondTitleList = await DdlFSTypes(2);
+                        ViewModel.Years = DdlYears();
+                        ViewModel.CaseStatusList = await DdlCaseStages();
+                        ViewModel.LinkedBy = await UserCaseTitle();
+                        ViewModel.Cadres = DdlCadres();
+                        ViewModel.Strengths = DdlStrength();
+                        ViewModel.States = await LoadStates();
+                    }
                 }
                 return View("_CreateOrEdit", null);
 

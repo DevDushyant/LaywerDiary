@@ -1,5 +1,5 @@
 ﻿using CourtApp.Application.Features.Case;
-using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Domain.Entities.CaseDetails;
 using System;
 using System.Collections.Generic;
 using System.Linq;

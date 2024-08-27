@@ -1,5 +1,4 @@
-﻿using CourtApp.Domain.Entities.LawyerDiary;
-using CourtApp.Domain.Entities.LawyerDiary;
+﻿using CourtApp.Domain.Entities.CaseDetails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Interfaces.Repositories
 {
-   public interface IUserCaseRepository
+    public interface IUserCaseRepository
     {
         IQueryable<CaseDetailEntity> Entites { get; }
         Task<List<CaseDetailEntity>> GetListAsync();
@@ -16,5 +15,6 @@ namespace CourtApp.Application.Interfaces.Repositories
         Task<Guid> InsertAsync(CaseDetailEntity caseEntity);
         Task UpdateAsync(CaseDetailEntity caseEntity);
         Task DeleteAsync(CaseDetailEntity caseEntity);
+        Task<CaseDetailEntity> GetByCaseNoYearAsync(string No, int Year);
     }
 }

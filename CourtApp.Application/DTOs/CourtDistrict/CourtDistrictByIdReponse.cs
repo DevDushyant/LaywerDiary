@@ -14,5 +14,6 @@ namespace CourtApp.Application.DTOs.CourtDistrict
         public string Abbreviation { get; set; }
         public int StateId { get; set; }
         public int DistrictId { get; set; }
+        public int DistrictCode { get; set; }
     }
 }

@@ -1,0 +1,13 @@
+﻿namespace CourtApp.Domain.Entities.FormBuilder
+{
+    public class FieldDetailsEntity
+    {
+        public string Key { get; set; }
+        public string Name { get; set; }
+        public int Type { get; set; }       
+        public bool IsRequire { get; set; }
+        public int DispOrder { get; set; }
+        public string Placeholder { get; set; }       
+        public FieldSizeEntity FieldSize { get; set; }
+    }
+}

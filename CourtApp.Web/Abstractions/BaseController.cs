@@ -4,12 +4,14 @@ using CourtApp.Application.Constants;
 using CourtApp.Application.Features.CaseCategory;
 using CourtApp.Application.Features.CaseKinds.Query;
 using CourtApp.Application.Features.CaseStages.Query;
+using CourtApp.Application.Features.CaseTitle;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.CourtComplex;
 using CourtApp.Application.Features.CourtDistrict;
 using CourtApp.Application.Features.CourtMasters;
 using CourtApp.Application.Features.CourtType.Query;
 using CourtApp.Application.Features.DOType;
+using CourtApp.Application.Features.FormBuilder;
 using CourtApp.Application.Features.FSTitle;
 using CourtApp.Application.Features.Lawyer;
 using CourtApp.Application.Features.ProceedingHead;
@@ -372,6 +374,33 @@ namespace CourtApp.Web.Abstractions
                 return Json(dt);
             }
             return Json(null);
+        }
+
+        public async Task<JsonResult> GetCompTitlesByCases(List<Guid> caseIds)
+        {
+            var response = await _mediator.Send(new GetCaseTitleQuery() { CaseIds = caseIds });
+            if (response.Succeeded)
+            {
+                var dtl = response.Data;
+                string[] lines = dtl.First().Title.Split(
+                            new string[] { Environment.NewLine },
+                            StringSplitOptions.None
+);
+                var dt = _mapper.Map<List<DropDownGViewModel>>(response.Data);
+                return Json(dt);
+            }
+            return Json(null);
+        }
+
+        public async Task<SelectList> PetTemplates()
+        {
+            var response = await _mediator.Send(new GetFormBuilderCachedQuery());
+            if (response.Succeeded)
+            {
+                var dt =_mapper.Map<List<DropDownGViewModel>>(response.Data);
+                return new SelectList(dt, nameof(DropDownGViewModel.Id), nameof(DropDownGViewModel.Name), null, null);
+            }
+            return null;
         }
         #endregion
 

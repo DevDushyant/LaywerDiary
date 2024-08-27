@@ -16,6 +16,7 @@
         display: none;
     }
 
+
 </style>
 @model CaseViewModel
 <div class="card">
@@ -48,7 +49,8 @@
                         <label class="col-md-2 col-form-label">@localizer["Court Type"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-4">
                             <div class="input-group">
-                                <select class="form-control select2bs4" id="CourtTypeId" asp-for="CourtTypeId" asp-items="@Model.CourtTypes">
+                                <select class="form-control select2bs4" id="CourtTypeId" asp-for="CourtTypeId"
+                                        asp-items="@Model.CourtTypes" onchange="CourtTypeChange(this)">
                                     <option></option>
                                 </select>
                             </div>
@@ -225,14 +227,14 @@
                                 <input type="date" asp-for="NextDate" id="NextDate"  placeholder="dd/MM/yyyy" class="form-control">
                             </div>
                         </div>
-                        <label class="col-md-2 col-form-label">@localizer["Case Stage"]</label>
+                        <label class="col-md-2 col-form-label">@localizer["Case Stage"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-4">
                             <div class="input-group">
                                 <select class="form-control select2bs4" asp-for="CaseStageCode" asp-items="@Model.CaseStatusList">
                                     <option></option>
                                 </select>
                             </div>
-
+                            <span asp-validation-for="CaseStageCode" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -251,7 +253,7 @@
             </div>
             <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
                 <button type="submit" class="btn btn-success">Save</button>
-                <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetClientInfo?CaseId=@Model.Id','Add Client')" class="btn btn-outline-success">
+                <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetClientInfo?CaseId=@Model.Id','Add Client')" class="btn btn-outline-success" style="dis">
                     <i class="fa fa-plus-square"></i> Add Client
                 </a>
             </div>

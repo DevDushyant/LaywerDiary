@@ -1,6 +1,5 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Domain.Entities.LawyerDiary;
-
+using CourtApp.Domain.Entities.CaseDetails;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
@@ -28,19 +27,24 @@ namespace CourtApp.Infrastructure.Repositories
             await _distributedCache.RemoveAsync(CacheKeys.UserCaseCacheKeys.GetKey(objEntity.Id));
         }
 
-        public async Task<CaseDetailEntity> GetByIdAsync(Guid CaseUid)
+        public async Task<CaseDetailEntity> GetByCaseNoYearAsync(string No, int Year)
         {
             return await _repository
                 .Entities
-                .Where(w=>w.Id==CaseUid).FirstAsync();
-            //return await _repository
-            //    .Entities
-            //    .Include(ct => ct.CaseType)
-            //    .Include(c => c.CourtType)
-            //    .Include(c => c.CourtBench)
-            //    .Include(c => c.CaseCategory)
-            //    .Where(p => p.Id == CaseUid)
-            //    .FirstOrDefaultAsync();
+                .Where(w => w.CaseNo.Equals(No) && w.CaseYear==Year).FirstOrDefaultAsync();
+        }
+
+        public async Task<CaseDetailEntity> GetByIdAsync(Guid CaseUid)
+        {
+            return await _repository
+                .Entities     
+                .Include(c=>c.State)
+                .Include(c=>c.CaseCategory)
+                .Include(c=>c.CaseStage)
+                .Include(c=>c.CourtType)
+                .Include(c=>c.CourtBench)
+                .Include(c=>c.CaseType)
+                .Where(w=>w.Id==CaseUid).FirstAsync();            
         }
 
         public async Task<List<CaseDetailEntity>> GetListAsync()

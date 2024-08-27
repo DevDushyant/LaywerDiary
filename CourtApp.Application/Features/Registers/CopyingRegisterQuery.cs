@@ -8,8 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using CourtApp.Application.Extensions;
-using CourtApp.Domain.Entities.LawyerDiary;
 using System.Collections.Generic;
+using CourtApp.Domain.Entities.CaseDetails;
 namespace CourtApp.Application.Features.Registers
 {
     public class CopyingRegisterQuery : IRequest<PaginatedResult<CopyDisposalResponse>>

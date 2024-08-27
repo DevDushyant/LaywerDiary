@@ -1,4 +1,6 @@
-﻿using CourtApp.Domain.Entities.LawyerDiary;
+﻿using CourtApp.Domain.Entities.CaseDetails;
+using CourtApp.Domain.Entities.FormBuilder;
+using CourtApp.Domain.Entities.LawyerDiary;
 using CourtApp.Entities.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -41,6 +43,8 @@ namespace CourtApp.Application.Interfaces.Contexts
         DbSet<DOTypeEntity> DOTypeEntities { get; set; }
         DbSet<CaseDocsEntity> caseDocsEntities { get; set; }
         DbSet<FSTitleEntity> FSTitleEntities { get; set; }
+        DbSet<FormBuilderEntity> DynamicFrmBuilders { get; set; }
+        DbSet<DraftingDetailEntity> CaseTempMappings { get; set; }
 
     }
 }

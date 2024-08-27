@@ -22,17 +22,21 @@ namespace CourtApp.Application.Features.UserCase
         public GetUserCaseDetailByIdQueryHandler(IUserCaseRepository _CaseRepo, IMapper _mapper)
         {
             this._CaseRepo = _CaseRepo;
-            this._mapper = _mapper; 
+            this._mapper = _mapper;
         }
         public async Task<Result<UserCaseDetailResponse>> Handle(GetUserCaseDetailByIdQuery request, CancellationToken cancellationToken)
         {
             var detail = await _CaseRepo.GetByIdAsync(request.CaseId);
-            var mappeddata = _mapper.Map<UserCaseDetailResponse>(detail);
-            mappeddata.CaseCategory = detail.CaseCategory.Name_En;
-            mappeddata.CourtBench = detail.CourtBench.CourtBench_En;
-            mappeddata.CourtType = detail.CourtType.CourtType;
-            mappeddata.CaseType = detail.CaseType.Name_En;
-            return Result<UserCaseDetailResponse>.Success(mappeddata);
+            if (detail != null)
+            {
+                var mappeddata = _mapper.Map<UserCaseDetailResponse>(detail);
+                mappeddata.CaseCategory = detail.CaseCategory.Name_En;
+                mappeddata.CourtBench = detail.CourtBench.CourtBench_En;
+                mappeddata.CourtType = detail.CourtType.CourtType;
+                mappeddata.CaseType = detail.CaseType.Name_En;
+                return Result<UserCaseDetailResponse>.Success(mappeddata);
+            }
+            return null;
         }
     }
 }

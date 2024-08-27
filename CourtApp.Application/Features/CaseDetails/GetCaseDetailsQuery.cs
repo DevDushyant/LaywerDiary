@@ -5,7 +5,7 @@ using CourtApp.Application.DTOs.CaseDetails;
 using CourtApp.Application.Extensions;
 using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Domain.Entities.CaseDetails;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -87,11 +87,36 @@ namespace CourtApp.Application.Features.UserCase
                     .Where(n => n.NextDate.Value == request.HearingDate);
 
             var td = _RepoCase.Entites.Where(predicate).Select(expression);
-            var dt = from cd in td
-                     let MaxDt = (from cp in proceedingData
-                                  where cp.CaseId == cd.Id
-                                  orderby cp.NextDate.Value descending
-                                  select cp.NextDate.Value).FirstOrDefault()
+            IQueryable<CaseDetailResponse> fnldt;
+            if (proceedingData.Count() > 0)
+            {
+                fnldt = from cd in td
+                        let MaxDt = (from cp in proceedingData
+                                     where cp.CaseId == cd.Id
+                                     orderby cp.NextDate.Value descending
+                                     select cp.NextDate.Value).FirstOrDefault()
+                        select new CaseDetailResponse
+                        {
+                            Id = cd.Id,
+                            CourtName = cd.CourtName,
+                            Abbreviation = cd.Abbreviation,
+                            CaseTypeName = cd.CourtType,
+                            FTitleType = cd.FTitleType,
+                            FirstTitle = cd.FirstTitle,
+                            STitleType = cd.STitleType,
+                            SecondTitle = cd.SecondTitle,
+                            CaseStage = cd.CaseStage,
+                            CaseNumber = cd.CaseNumber,
+                            NextHearingDate = MaxDt,
+                            CaseTitle = cd.CaseTitle
+                        };
+            }
+            else
+            {
+                fnldt = from cd in td.Where(w => w.NextHearingDate == request.HearingDate)select cd;
+            }
+
+            var dt = from cd in fnldt
                      select new CaseDetailResponse
                      {
                          Id = cd.Id,
@@ -104,7 +129,7 @@ namespace CourtApp.Application.Features.UserCase
                          SecondTitle = cd.SecondTitle,
                          CaseStage = cd.CaseStage,
                          CaseNumber = cd.CaseNumber,
-                         NextHearingDate = MaxDt,
+                         NextHearingDate = cd.NextHearingDate,
                          CaseTitle = cd.CaseTitle
                      };
             if (request.HearingDate! != default(DateTime))

@@ -1,9 +1,11 @@
 ﻿using AuditTrail.Abstrations;
+using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Entities.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CourtApp.Domain.Entities.LawyerDiary
+namespace CourtApp.Domain.Entities.CaseDetails
 {
     [Table("case_detail", Schema = "ld")]
     public class CaseDetailEntity : AuditableEntity
@@ -11,6 +13,8 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         #region Mandatory Properties
         public new Guid Id { get; set; }
         public required DateTime InstitutionDate { get; set; }
+        public int StateId { get; set; }
+        public virtual StateEntity State { get; set; }
         public required Guid CourtTypeId { get; set; }
         public virtual CourtTypeEntity CourtType { get; set; }
         public required Guid CaseCategoryId { get; set; }
@@ -19,7 +23,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public virtual TypeOfCasesEntity CaseType { get; set; }
         public required Guid CourtBenchId { get; set; }
         public virtual CourtBenchEntity CourtBench { get; set; }
-        public required string CaseNo { get; set; }
+        public string CaseNo { get; set; }
         public required int CaseYear { get; set; }
         public required string FirstTitle { get; set; }
         public required Guid FTitleId { get; set; }
@@ -38,6 +42,6 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public Guid? LinkedCaseId { get; set; }
         public Guid? ClientId { get; set; }
         public ICollection<CaseDetailAgainstEntity> CaseAgainstEntities { get; set; } = new List<CaseDetailAgainstEntity>();
-        
+
     }
 }

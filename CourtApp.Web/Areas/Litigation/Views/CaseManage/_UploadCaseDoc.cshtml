@@ -66,9 +66,7 @@
         //         return m;
         //     }
         // });
-        $(document).on("change", ".doctypechange", function () {
-        //$(".doctypechange").on("change", function () {
-            debugger;
+        $(document).on("change", ".doctypechange", function () {       
             var id = $(this).attr('id').split("_")[1];
             BindDocument('Documents_' + id + '__DocId', $("#Documents_" + id + "__TypeId").val());
         });
@@ -134,35 +132,9 @@
             incval++;
         } else {
             alert("Please select all the fileds are required");
-        }
-      
+        }      
     }
-    // function addElement(e) {
-    //     debugger;
-    //     var trlength = $('#tblDocs tbody tr').length;
-    //     var clonedRow = $('#tblDocs tbody tr:last').clone();
-    //     clonedRow.find('select').each(function (i) {
-    //         if (i === 0) {
-    //             NameAtr = "Documents[" + trlength + "].TypeId";
-    //             IdAtr = "Documents_" + trlength + "__TypeId";
-    //             BindType(IdAtr);
-    //         }
-    //         if (i === 1) {
-    //             NameAtr = "Documents[" + trlength + "].DocId";
-    //             IdAtr = "Documents_" + trlength + "__DocId";                
-    //         }
-    //         if (i === 2) {
-    //             NameAtr = "Documents[" + trlength + "].Document";
-    //             IdAtr = "Documents_" + trlength + "__Document";
-    //         }
-    //         $(this).attr('name', NameAtr).attr('id', IdAtr);
-            
-    //     });
-    //     clonedRow.find('button').find('button').replaceWith(btn_add);
-    //     clonedRow.find('button.add-btn-repeat').replaceWith(btn_delete);
-    //     clonedRow.find("select").val("");
-    //     $('#tblDocs tbody').append(clonedRow);
-    // }
+    
     function BindType(ddl) {
         $.getJSON("/Litigation/casemanage/DOCTypes", function (data) {
             $("#" + ddl).empty();;

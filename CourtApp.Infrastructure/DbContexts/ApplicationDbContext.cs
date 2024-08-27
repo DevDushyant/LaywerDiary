@@ -12,6 +12,8 @@ using CourtApp.Domain.Entities.LawyerDiary;
 using CourtApp.Domain.Entities.Common;
 using AuditTrail.Abstrations;
 using System;
+using CourtApp.Domain.Entities.CaseDetails;
+using CourtApp.Domain.Entities.FormBuilder;
 namespace CourtApp.Infrastructure.DbContexts
 {
     public class ApplicationDbContext : AuditableContext, IApplicationDbContext
@@ -67,6 +69,8 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<DOTypeEntity> DOTypeEntities { get; set; }
         public DbSet<CaseDocsEntity> caseDocsEntities { get; set; }
         public DbSet<FSTitleEntity> FSTitleEntities { get; set; }
+        public DbSet<FormBuilderEntity> DynamicFrmBuilders { get; set; }
+        public DbSet<DraftingDetailEntity> CaseTempMappings { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -121,6 +125,26 @@ namespace CourtApp.Infrastructure.DbContexts
             builder.Entity<ClientEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
             builder.Entity<CaseDetailEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
             builder.Entity<LawyerMasterEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
+            #endregion
+
+            #region Converting Dynamic Form Builder Entity Fields in json format
+            builder.Entity<FieldSizeEntity>().HasNoKey();
+            builder.Ignore<FieldSizeEntity>();
+            builder.Entity<FormBuilderEntity>().OwnsOne(
+                f => f.FieldsDetails, d =>
+                {
+                    d.ToJson();
+                    d.OwnsMany(d => d.Fields)
+                    .OwnsOne(d => d.FieldSize);
+                }
+                );
+            builder.Entity<DraftingDetailEntity>().OwnsMany(
+                f => f.FieldDetails, d =>
+                {
+                    d.ToJson();
+                }
+                );
+
             #endregion
         }
     }

@@ -58,6 +58,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
 
         }
+
         public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
         {
             if (id == Guid.Empty)

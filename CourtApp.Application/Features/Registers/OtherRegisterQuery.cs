@@ -3,7 +3,7 @@ using CourtApp.Application.DTOs.CourtMaster;
 using CourtApp.Application.DTOs.Registers;
 using CourtApp.Application.Extensions;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Domain.Entities.CaseDetails;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
 using System;

@@ -1,5 +1,5 @@
 ﻿@model FSTitleMViewModel
-<form id="create-form" method="post" method="post" asp-controller="Title" asp-action="OnPostFSCreateOrUpdate" asp-route-Id="@Model.Id" enctype="multipart/form-data">
+<form id="create-form" method="post" asp-controller="Title" asp-action="OnPostFSCreateOrUpdate" asp-route-Id="@Model.Id" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">

@@ -45,7 +45,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public int? CisYear { get; set; }
         public string CnrNumber { get; set; }
         public DateTime? NextDate { get; set; }
-        public Guid? CaseStageCode { get; set; }
+        public Guid CaseStageCode { get; set; }
         public Guid? LinkedCaseId { get; set; }  
         public Guid? CourtDistrictId { get; set; }
         public Guid? ComplexBenchId { get; set; }

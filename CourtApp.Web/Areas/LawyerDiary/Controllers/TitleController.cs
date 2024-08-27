@@ -1,6 +1,7 @@
 ﻿using CourtApp.Application.Features.CaseTitle;
 using CourtApp.Application.Features.FSTitle;
 using CourtApp.Web.Abstractions;
+using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.LawyerDiary.Models.Title;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -34,7 +35,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 var viewModel = new TitleViewModel();
                 viewModel.Types = FSTypes();
-                viewModel.Cases =await UserCaseTitle();
+                viewModel.Cases = await UserCaseTitle();
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrUpdate", viewModel) });
             }
             else
@@ -160,7 +161,14 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     if (result.Succeeded)
                         _notify.Information($"First & Second with ID {result.Data} Updated.");
                 }
-                return await LoadFSDataAsync();
+                var response = await _mediator.Send(new FSTitleGetAllQuery());
+                if (response.Succeeded)
+                {
+                    var viewModel = _mapper.Map<List<FSTitleLViewModel>>(response.Data);
+                    var html = await _viewRenderer.RenderViewToStringAsync("_FSTitles", viewModel);
+                    return new JsonResult(new { isValid = true, html = html });
+                }
+                return null;
             }
             else
             {
@@ -175,14 +183,21 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             var deleteCommand = await _mediator.Send(new FSTitleDeleteCommand { Id = id });
             if (deleteCommand.Succeeded)
             {
-                _notify.Information($"Draft & Order with Id {id} Deleted.");
-                return await LoadFSDataAsync();
+                _notify.Information($"Title with Id {id} Deleted.");
+                var response = await _mediator.Send(new FSTitleGetAllQuery());
+                if (response.Succeeded)
+                {
+                    var viewModel = _mapper.Map<List<FSTitleLViewModel>>(response.Data);
+                    var html = await _viewRenderer.RenderViewToStringAsync("_FSTitles", viewModel);
+                    return new JsonResult(new { isValid = true, html = html });
+                }
             }
             else
             {
                 _notify.Error(deleteCommand.Message);
                 return null;
             }
+            return null;
         }
 
         private async Task<JsonResult> LoadFSDataAsync()

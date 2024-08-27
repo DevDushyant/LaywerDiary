@@ -57,15 +57,31 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="px-0 py-0">
+                            <div class="global-font pt-1 px-0">
+                                Select Title
+                                <span class="global-font-error">*</span>
+                            </div>
+                            <div>
+                                <select class="form-control select2bs4" asp-for="@Model.TitleIds" asp-items="@Model.Titles">
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="px-0 py-0">
+                            <a id="btnSearch" class="btn bg-success">
+                                <i class="fa fa-search"></i> Generate
+                            </a>
+                            <a id="reload" class="btn btn-primary text-white">
+                                <i class="fa fas fa-reset"></i>
+                                Reset
+                            </a>
+                        </div>
+
                     </div>
                     <div class="card-footer">
-                        <a id="btnSearch" class="btn bg-success">
-                            <i class="fa fa-search"></i> Generate
-                        </a>
-                        <a id="reload" class="btn btn-primary text-white">
-                            <i class="fa fas fa-reset"></i>
-                            Reset
-                        </a>
+                        
                     </div>
                 </div>
             </div>
@@ -100,6 +116,13 @@
 
             $("#CaseIds").select2({
                 placeholder: "Select cases",
+                theme: "bootstrap4",
+                escapeMarkup: function (m) {
+                    return m;
+                }
+            });
+            $("#TitleIds").select2({
+                placeholder: "Select title",
                 theme: "bootstrap4",
                 escapeMarkup: function (m) {
                     return m;
