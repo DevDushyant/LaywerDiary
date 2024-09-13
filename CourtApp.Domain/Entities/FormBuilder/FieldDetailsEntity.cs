@@ -1,8 +1,10 @@
-﻿namespace CourtApp.Domain.Entities.FormBuilder
+﻿using System;
+
+namespace CourtApp.Domain.Entities.FormBuilder
 {
     public class FieldDetailsEntity
     {
-        public string Key { get; set; }
+        public Guid Key { get; set; }
         public string Name { get; set; }
         public int Type { get; set; }       
         public bool IsRequire { get; set; }

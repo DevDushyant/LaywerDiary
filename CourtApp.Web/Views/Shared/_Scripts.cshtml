@@ -13,3 +13,53 @@
 <script src="~/lib/bootstrap/js/bootstrap-datepicker.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap-multiselect.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap-multiselect.min.js"></script>
+<script src="~/assets/ckeditor/ckeditor.js"></script>
+<script type="importmap">
+    {
+        "imports": {
+            @* "ckeditor5": "../../assets/vendor/ckeditor5.js",
+            "ckeditor5/": "../../assets/vendor/" *@
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.1.0/"
+        }
+    }
+</script>
+<script type="module">
+    import {
+        ClassicEditor,
+        Essentials,
+        Paragraph,
+        Bold,
+        Italic,
+        Font,
+        TextPartLanguage
+    } from 'ckeditor5';
+
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            plugins: [Essentials, Paragraph, Bold, Italic, Font, TextPartLanguage],
+            toolbar: [
+                'undo', 'redo', '|', 'bold', 'italic', '|',
+                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'textPartLanguage'
+            ],
+            language: {
+                textPartLanguage: [
+                    { title: 'English', languageCode: 'en' },
+                    { title: 'Hindi', languageCode: 'hi' }
+                ]
+            },
+            fontFamily: {
+                options: [
+                    'default',
+                    'Kruti Dev, sans-serif'
+                ]
+            },
+            fontFamily_defaultLabel: 'Kruti Dev'
+        })
+        .then(editor => {
+            window.editor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>

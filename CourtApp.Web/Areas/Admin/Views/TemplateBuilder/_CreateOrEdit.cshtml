@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = localizer["Manage Template"];
+    ViewData["Caption"] = localizer["Dynamically"];
+}
+
+<style>
+    .main-container {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .ck-editor__editable {
+        min-height: 300px;
+        max-height: 300px;
+    }
+
+</style>
+@model TemplateViewModel
+<form id="create-form" method="post" asp-controller="TemplateBuilder" asp-action="OnPostCreateOrEdit" asp-route-Id="@Model.Id" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">@localizer["Template Name"]</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <input type="text" placeholder="Please enter template name" asp-for="TemplateName" class="form-control" />
+                    </div>
+                    <span asp-validation-for="TemplateName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row ">
+                <label class="col-md-12 col-form-label">@localizer["TEMPLATE BODY DETAIL"]</label>
+            </div>
+            <div class="form-group row">
+                <div class="main-container">
+                    <textarea id="editor" asp-for="TemplateBody"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-3">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
+        <button type="submit" class="btn btn-success">Save</button>
+        <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
+    </div>
+</form>
+
+

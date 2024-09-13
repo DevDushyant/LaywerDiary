@@ -76,6 +76,7 @@
                                 <p>@localizer["Case Drafting"]</p>
                             </a>
                         </li>
+                       
                     </ul>
                 </li>
 
@@ -168,6 +169,12 @@
                                 <a is-active-route asp-area="Admin" asp-controller="GenerateForm" asp-action="index" class="nav-link">
                                     <i class="fa fa-wpforms nav-icon"></i>
                                     <p>@localizer["Form Builder"]</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a is-active-route asp-area="Admin" asp-controller="TemplateBuilder" asp-action="index" class="nav-link">
+                                    <i class="fa fa-file-archive-o" aria-hidden="true"></i>
+                                    <p>@localizer["Template Design"]</p>
                                 </a>
                             </li>
                         }

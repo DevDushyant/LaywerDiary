@@ -14,6 +14,9 @@ namespace CourtApp.Web.Areas.Admin.Mappings
         {
             CreateMap<FormBuilderResponseDto, GenFormAttrViewModel>();
             CreateMap<GenerateFormViewModel, CreateFormBuilderCommand>();
+            CreateMap<GenerateFormViewModel, UpdateFormBuilderCommand>();
+            CreateMap<FormBuilderResponseByIdDto,GenerateFormViewModel>();
+            CreateMap<FieldDetailsDto, FormFields>();
             CreateMap<FormViewModel, FormFieldsDto>();
             CreateMap<FormFields, FieldDetailsDto>();
             CreateMap<FieldLength, FieldSizeDto>();

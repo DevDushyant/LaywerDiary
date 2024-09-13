@@ -1,8 +1,10 @@
-﻿namespace CourtApp.Application.DTOs.FormBuilder
+﻿using System;
+
+namespace CourtApp.Application.DTOs.FormBuilder
 {
     public class FieldDetailsDto
     {
-        public string Key { get; set; }
+        public Guid Key { get; set; }
         public string Name { get; set; }
         public int Type { get; set; }
         public bool IsRequire { get; set; }

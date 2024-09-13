@@ -20,12 +20,13 @@
                                 <td>
                                     <input type="hidden" asp-for="@Model.FieldDetails[i].Key" />
                                     <label class="col-form-label">@(++count)</label>
-                                    
                                 </td>
                                 <td>
+                                    <input type="hidden" asp-for="@Model.FieldDetails[i].Name" />
                                     <label class="col-form-label">@localizer[@Model.FieldDetails[i].Name]</label>
                                 </td>
                                 <td>
+                                    <input type="hidden" asp-for="@Model.FieldDetails[i].Type" />
                                     <input class="form-control" type="@Model.FieldDetails[i].Type" asp-for="@Model.FieldDetails[i].Value" />
                                 </td>
                             </tr>

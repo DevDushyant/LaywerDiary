@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 
@@ -12,5 +13,8 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public Guid CaseId { get; set; }
         public SelectList Cases { get; set; }
         public List<FormProperties> FieldDetails { get; set; }
+
+        [TempData]
+        public string StatusMessage { get; set; }
     }    
 }

@@ -10,11 +10,11 @@ using System.Threading;
 using System.Threading.Tasks;
 namespace CourtApp.Application.Features.FormBuilder
 {
-    public class GetFormBuilderCachedByIdQuery : IRequest<Result<List<FieldDetailsDto>>>
+    public class GetFormBuilderCachedByIdQuery : IRequest<Result<FormBuilderResponseByIdDto>>
     {
         public Guid Id { get; set; }
     }
-    public class GetFormBuilderCachedByIdQueryHanlder : IRequestHandler<GetFormBuilderCachedByIdQuery, Result<List<FieldDetailsDto>>>
+    public class GetFormBuilderCachedByIdQueryHanlder : IRequestHandler<GetFormBuilderCachedByIdQuery, Result<FormBuilderResponseByIdDto>>
     {
         private readonly IMapper _mapper;
         private readonly IFormBuilderCacheRepository _repository;
@@ -23,18 +23,20 @@ namespace CourtApp.Application.Features.FormBuilder
             this._repository = _repository;
             this._mapper = _mapper;
         }
-        public async Task<Result<List<FieldDetailsDto>>> Handle(GetFormBuilderCachedByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<FormBuilderResponseByIdDto>> Handle(GetFormBuilderCachedByIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
                 var Dt = await _repository.GetByIdAsync(request.Id);
+                var result = _mapper.Map<FormBuilderResponseByIdDto>(Dt);
                 if (Dt != null && Dt.FieldsDetails != null)
                 {
                     var fields = Dt.FieldsDetails.Fields;
-                    var mappedDt = _mapper.Map<List<FieldDetailsDto>>(fields);                    
-                    return Result<List<FieldDetailsDto>>.Success(mappedDt);
+                    var mappedDt = _mapper.Map<List<FieldDetailsDto>>(fields);
+                    result.FieldDetails= mappedDt;
+                    return Result<FormBuilderResponseByIdDto>.Success(result);
                 }
-                return Result<List<FieldDetailsDto>>.Fail("No Record found");
+                return Result<FormBuilderResponseByIdDto>.Fail("No Record found");
             }
             catch (Exception ex)
             {

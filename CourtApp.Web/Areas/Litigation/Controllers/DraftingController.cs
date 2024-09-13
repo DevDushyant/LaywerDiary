@@ -24,7 +24,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 var viewModel = _mapper.Map<List<FormCaseMappingViewModel>>(response.Data);
                 return PartialView("_ViewAll", viewModel);
             }
-            return null;            
+            return null;
         }
         public async Task<IActionResult> GetTemplateFields(Guid TemplateId, FormBuilderViewModel ViewModel)
         {
@@ -34,13 +34,13 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             });
             if (response.Succeeded)
             {
-                var Dt = _mapper.Map<List<FormProperties>>(response.Data);
+                var fieldPropeties = response.Data.FieldDetails;
+                var Dt = _mapper.Map<List<FormProperties>>(fieldPropeties);
                 ViewModel.FieldDetails = Dt;
                 return PartialView("_FormFields", ViewModel);
             }
             return null;
         }
-
         public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
         {
             if (id == Guid.Empty)
@@ -56,40 +56,59 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
         }
 
+        public async Task<IActionResult> Petition(Guid id, FormBuilderViewModel ViewModel)
+        {
+            if (id == Guid.Empty)
+            {
+                ViewModel.Templates = await PetTemplates();
+                ViewModel.Cases = await UserCaseTitle();
+                return View("_CreateOrEdit", ViewModel);
+            }
+            else
+            {
+                var result = await _mediator.Send(new GetCaseDarftingCachedByIdQuery() { Id = id });
+                if (result.Succeeded)
+                {
+                    ViewModel = _mapper.Map<FormBuilderViewModel>(result.Data);
+                    ViewModel.Templates = await PetTemplates();
+                    ViewModel.Cases = await UserCaseTitle();
+                    ViewModel.FieldDetails = _mapper.Map<List<FormProperties>>(ViewModel.FieldDetails);
+                    return View("_CreateOrEdit", ViewModel);
+                }
+            }
+            return null;
+        }
+
         [HttpPost]
-        public async Task<JsonResult> OnPostCreateOrEdit(Guid id, FormBuilderViewModel ViewModel)
+        public async Task<IActionResult> OnPostCreateOrEdit(Guid id, FormBuilderViewModel ViewModel)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (id == Guid.Empty)
+                    if (id == Guid.Empty && TempData.ContainsKey("RecordExists") == false)
                     {
                         var Command = _mapper.Map<CreateCaseDraftingDetailCommand>(ViewModel);
                         var result = await _mediator.Send(Command);
                         if (result.Succeeded)
                             _notify.Success($"Case Drafting saved successfull!");
-                        else _notify.Error(result.Message);
+                        else
+                        {
+                            ViewModel.StatusMessage = result.Message;
+                            ModelState.AddModelError(string.Empty, result.Message);
+                            TempData["RecordExists"] = true;
+                        }
                     }
                     else
                     {
-                        // var court = _mapper.Map<UpdateCourtMasterCommand>(btViewModel);
-                        // var result = await _mediator.Send(court);
-                        //if (result.Succeeded) 
-                        _notify.Information($"Case kind with unique id  Updated.");
+                        var Command = _mapper.Map<UpdateCaseDraftingDetailCommand>(ViewModel);
+                        var result = await _mediator.Send(Command);
+                        if (result.Succeeded)
+                            _notify.Success($"Case drafting information is updated successfully!");
                     }
-                    var response = await _mediator.Send(new GetFormBuilderCachedQuery());
-                    if (response.Succeeded)
-                    {
-                        var viewModel = _mapper.Map<List<GenFormAttrViewModel>>(response.Data);
-                        var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                        return new JsonResult(new { isValid = true, html = html });
-                    }
-                    else
-                    {
-                        _notify.Error(response.Message);
-                        return null;
-                    }
+                    ViewModel.Cases = await UserCaseTitle();
+                    ViewModel.Templates = await PetTemplates();
+                    return View("_CreateOrEdit", ViewModel);
                 }
                 catch (Exception ex)
                 {

@@ -291,6 +291,20 @@ namespace CourtApp.Application.Constants
             };
             return _Str;
         }
+        public static Dictionary<int, string> FieldType()
+        {
+            var _Str = new Dictionary<int, string>
+            {
+                {1, "TextBox"},
+                {2, "TextArea"},
+                {3, "DatePicker"},
+                {4, "CheckBox"},
+                {5, "CheckBoxList"},
+                {6, "Select"},
+                {7, "FileUpload"}                
+            };
+            return _Str;
+        }
 
     }
 

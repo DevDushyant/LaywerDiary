@@ -23,81 +23,110 @@
 </style>
 @model FormBuilderViewModel
 <form id="create-form" method="post" asp-controller="Drafting" asp-action="OnPostCreateOrEdit"
-      asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
+      asp-route-id="@Model.Id" enctype="multipart/form-data">
+    @* <partial name="_StatusMessage" model="Model.StatusMessage" /> *@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
-                <label class="col-md-3 col-form-label">@localizer["Case Title"]</label>
-                <div class="col-md-9">
+                <label class="col-md-2 col-form-label">@localizer["Case Title"]</label>
+                <div class="col-md-4">
                     <div class="input-group">
                         <select asp-for="CaseId" asp-items="@Model.Cases" class="form-control select2bs4"><option></option></select>
                     </div>
                     <span asp-validation-for="CaseId" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-md-3 col-form-label">@localizer["Template Name"]</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <select asp-for="TemplateId" asp-items="@Model.Templates" class="form-control select2bs4"><option></option></select>
+                <label class="col-md-2 col-form-label">@localizer["Template Name"]</label>
+                <div class="col-md-4">
+                    <div class="input-group" id="Template">
+                        <select asp-for="TemplateId" asp-items="@Model.Templates"
+                                class="form-control select2bs4">
+                            <option></option>
+                        </select>
                     </div>
                     <span asp-validation-for="TemplateId" class="text-danger"></span>
                 </div>
             </div>
-
             <div class="form-group row">
                 <fieldset class="scheduler-border">
                     <legend class="scheduler-border">@localizer["Template Fields"]</legend>
                     <div class="card-body">
-                        <div id="FieldDetails" class="card-body table-responsive"></div>
+                        <div id="FieldDetails" class="card-body table-responsive">
+                            @if (Model.FieldDetails != null)
+                            {
+                                <partial name="_FormFields" model="Model" />
+                            }
+                        </div>
                     </div>
                 </fieldset>
-            </div>
-            <div class="form-group row">
-                <div class="col-md-3">
-                </div>
             </div>
         </div>
     </div>
 
     <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
         <button type="submit" class="btn btn-success">Save</button>
-        <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
+        <button type="button" id="btnCancel" class="btn btn-default close-button">Cancel</button>
     </div>
 </form>
-<script type="text/javascript" language=javascript>
-    $.validator.unobtrusive.parse(document);
-    $("#CaseId").select2({
-        placeholder: "Select a title",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-    $("#TemplateId").select2({
-        placeholder: "Select a petition template",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-    
-    $("#TemplateId").on("change", function () {
-        var input = {
-            TemplateId: $("#TemplateId").val(),
-            ViewModel: {
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            $("#CaseId").select2({
+                placeholder: "Select a title",
+                theme: "bootstrap4",
+                escapeMarkup: function (m) {
+                    return m;
+                }
+            });
+
+            $("#TemplateId").select2({
+                placeholder: "Select a petition template",
+                theme: "bootstrap4",
+                escapeMarkup: function (m) {
+                    return m;
+                }
+            });
+
+            $("#TemplateId").on("change", function () {
+                RenderFormElement();
+            });
+
+            var recordExists = '@TempData.Peek("RecordExists")';
+            if (recordExists) {
+                Swal.fire({
+                    title: 'Record Exists',
+                    text: 'A record with this template is already exists. Do you want to update it?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, update it!',
+                    cancelButtonText: 'No, cancel!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Handle the update logic here
+                        // For example, you can submit the form again with a different action
+                        $('#create-form').submit();
+                    }
+                });
+            }
+
+        });
+        function RenderFormElement() {
+            var input = {
                 TemplateId: $("#TemplateId").val(),
-                CaseId: $("#CaseId").val()
-            }
-        };        
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("GetTemplateFields", "Drafting")',
-            data: input,
-            success: function (response) {
-              
-                $('#FieldDetails').html(response);
-            }
-        });       
-    });
-</script>
+                ViewModel: {
+                    TemplateId: $("#TemplateId").val(),
+                    CaseId: $("#CaseId").val()
+                }
+            };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetTemplateFields", "Drafting")',
+                data: input,
+                success: function (response) {                    
+                    $('#FieldDetails').html(response);                    
+                }
+            });
+        }
+    </script>
+}

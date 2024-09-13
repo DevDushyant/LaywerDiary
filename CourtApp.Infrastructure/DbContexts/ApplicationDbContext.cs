@@ -14,6 +14,9 @@ using AuditTrail.Abstrations;
 using System;
 using CourtApp.Domain.Entities.CaseDetails;
 using CourtApp.Domain.Entities.FormBuilder;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 namespace CourtApp.Infrastructure.DbContexts
 {
     public class ApplicationDbContext : AuditableContext, IApplicationDbContext
@@ -119,7 +122,9 @@ namespace CourtApp.Infrastructure.DbContexts
             //builder.Entity<CaseEntity>().Property(p => p.Id).HasDefaultValueSql("uuid_generate_v4()");
             //builder.Entity<CourtFeeStructureEntity>().Property(p => p.UId).HasDefaultValueSql("uuid_generate_v4()");
             //builder.Entity<ProceedingHeadEntity>().Property(p => p.Id).HasDefaultValueSql("uuid_generate_v4()");
-
+            var converter = new ValueConverter<List<string>, string>(
+            v => JsonConvert.SerializeObject(v),
+            v => JsonConvert.DeserializeObject<List<string>>(v));
 
             #region Filter Data by Logged In User
             builder.Entity<ClientEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
@@ -145,6 +150,12 @@ namespace CourtApp.Infrastructure.DbContexts
                 }
                 );
 
+            builder.Entity<TemplateInfoEntity>().OwnsMany(
+                f => f.Tags, j =>
+                {
+                    j.ToJson();
+                }
+                );
             #endregion
         }
     }

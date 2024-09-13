@@ -19,16 +19,16 @@ namespace CourtApp.Web.Areas.Admin.Models
     public class FormFields
     {
         [Required]
-        public Guid Key { get; set; } =Guid.NewGuid();
+        public Guid Key { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
         public int Type { get; set; }
         public SelectList Types { get; set; }
-        public bool IsRequire { get; set; }
-        public int DispOrder { get; set; }
-        public string Placeholder { get; set; }
-        public FieldLength FieldSize { get; set; }
+        //public bool IsRequire { get; set; }
+        //public int DispOrder { get; set; }
+        //public string Placeholder { get; set; }
+        //public FieldLength FieldSize { get; set; }
     }
 
     public class FieldLength

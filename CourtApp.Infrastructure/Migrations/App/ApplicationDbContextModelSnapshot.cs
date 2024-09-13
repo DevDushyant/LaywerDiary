@@ -866,6 +866,10 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CaseId");
+
+                    b.HasIndex("TemplateId");
+
                     b.ToTable("case_petition_detail");
                 });
 
@@ -896,6 +900,36 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.HasKey("Id");
 
                     b.ToTable("m_frm_types");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.TemplateInfoEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("TemplateName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TemplatePath")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("m_template_info");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.BookTypeEntity", b =>
@@ -2150,6 +2184,18 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.DraftingDetailEntity", b =>
                 {
+                    b.HasOne("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", "Case")
+                        .WithMany()
+                        .HasForeignKey("CaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CourtApp.Domain.Entities.FormBuilder.FormBuilderEntity", "Template")
+                        .WithMany()
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsMany("CourtApp.Domain.Entities.FormBuilder.FormFieldValueEntity", "FieldDetails", b1 =>
                         {
                             b1.Property<Guid>("DraftingDetailEntityId")
@@ -2175,7 +2221,11 @@ namespace CourtApp.Infrastructure.Migrations.App
                                 .HasForeignKey("DraftingDetailEntityId");
                         });
 
+                    b.Navigation("Case");
+
                     b.Navigation("FieldDetails");
+
+                    b.Navigation("Template");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.FormBuilderEntity", b =>
@@ -2209,8 +2259,8 @@ namespace CourtApp.Infrastructure.Migrations.App
                                     b2.Property<bool>("IsRequire")
                                         .HasColumnType("boolean");
 
-                                    b2.Property<string>("Key")
-                                        .HasColumnType("text");
+                                    b2.Property<Guid>("Key")
+                                        .HasColumnType("uuid");
 
                                     b2.Property<string>("Name")
                                         .HasColumnType("text");
@@ -2263,6 +2313,33 @@ namespace CourtApp.Infrastructure.Migrations.App
                         });
 
                     b.Navigation("FieldsDetails");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.TemplateInfoEntity", b =>
+                {
+                    b.OwnsMany("CourtApp.Domain.Entities.FormBuilder.TemplateTags", "Tags", b1 =>
+                        {
+                            b1.Property<Guid>("TemplateInfoEntityId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("Tag")
+                                .HasColumnType("text");
+
+                            b1.HasKey("TemplateInfoEntityId", "Id");
+
+                            b1.ToTable("m_template_info");
+
+                            b1.ToJson("Tags");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TemplateInfoEntityId");
+                        });
+
+                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseDocsEntity", b =>

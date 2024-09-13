@@ -1,6 +1,9 @@
-﻿using AspNetCoreHero.ToastNotification.Abstractions;
+﻿using AspNetCoreHero.Results;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using AutoMapper;
+using Azure;
 using CourtApp.Application.Constants;
+using CourtApp.Application.Enums;
 using CourtApp.Application.Features.CaseCategory;
 using CourtApp.Application.Features.CaseKinds.Query;
 using CourtApp.Application.Features.CaseStages.Query;
@@ -22,6 +25,7 @@ using CourtApp.Application.Features.TypeOfCases.Query;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Application.Features.WorkMaster;
 using CourtApp.Application.Features.WorkMasterSub;
+using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.LawyerDiary.Models.Lawyer;
@@ -128,8 +132,6 @@ namespace CourtApp.Web.Abstractions
             return new SelectList(viewModel, nameof(GetCaseViewModel.Id), nameof(GetCaseViewModel.CaseTitle), null, null);
 
         }
-
-
         #endregion
 
         public async Task<JsonResult> LoadDistricts(int StateCode)
@@ -328,6 +330,49 @@ namespace CourtApp.Web.Abstractions
         #endregion
 
         #region Generilize Dropdowns
+        public JsonResult FieldType()
+        {
+            var years = StaticDropDownDictionaries.FieldType().OrderBy(o => o.Key);
+            List<DropDownSViewModel> dt = new List<DropDownSViewModel>();
+            foreach (var y in years)
+                dt.Add(new DropDownSViewModel { Id = y.Key.ToString(), Name = y.Value });
+            return Json(dt);
+        }
+
+        public async Task<SelectList> GetForms()
+        {
+            var response = await _mediator.Send(new GetFormBuilderCachedQuery());
+            if (response.Succeeded)
+            {
+                var fields = _mapper.Map<List<GenFormAttrViewModel>>(response.Data.OrderBy(o=>o.FormName));
+                return new SelectList(fields, nameof(GenFormAttrViewModel.Id), nameof(GenFormAttrViewModel.FormName), null, null); ;
+            }
+            return null;
+        }
+        public async Task<JsonResult> GetFormFieldsById(Guid id)
+        {
+            var response = await _mediator.Send(new GetFormBuilderCachedByIdQuery() { Id = id });
+            List<DropDownGViewModel> dt = new List<DropDownGViewModel>();
+            if (response.Succeeded)
+            {
+                var fields=response.Data.FieldDetails;
+                foreach (var y in fields)
+                    dt.Add(new DropDownGViewModel { Id = y.Key, Name = y.Name });
+            }
+            return Json(dt);
+        }
+        public async Task<JsonResult> TemplateFields(Guid TemplateId)
+        {
+            var response = await _mediator.Send(new GetTemplateInfoCachedByIdQuery() { Id = TemplateId });
+            List<DropDownSViewModel> dt = new List<DropDownSViewModel>();
+            if (response.Succeeded)
+            {
+                var fields = response.Data.Tags;
+                foreach (var y in fields)
+                    dt.Add(new DropDownSViewModel { Id = y.Tag, Name = y.Tag });
+            }
+            return Json(dt);
+        }
         public JsonResult SearchBy()
         {
             var years = StaticDropDownDictionaries.CaseSearchBy().OrderBy(o => o.Value);
@@ -336,7 +381,6 @@ namespace CourtApp.Web.Abstractions
                 dt.Add(new DropDownSViewModel { Id = y.Key, Name = y.Value });
             return Json(dt);
         }
-
         public JsonResult DdJYears()
         {
             var years = StaticDropDownDictionaries.Year();
@@ -375,7 +419,6 @@ namespace CourtApp.Web.Abstractions
             }
             return Json(null);
         }
-
         public async Task<JsonResult> GetCompTitlesByCases(List<Guid> caseIds)
         {
             var response = await _mediator.Send(new GetCaseTitleQuery() { CaseIds = caseIds });
@@ -391,19 +434,16 @@ namespace CourtApp.Web.Abstractions
             }
             return Json(null);
         }
-
         public async Task<SelectList> PetTemplates()
         {
             var response = await _mediator.Send(new GetFormBuilderCachedQuery());
             if (response.Succeeded)
             {
-                var dt =_mapper.Map<List<DropDownGViewModel>>(response.Data);
+                var dt = _mapper.Map<List<DropDownGViewModel>>(response.Data);
                 return new SelectList(dt, nameof(DropDownGViewModel.Id), nameof(DropDownGViewModel.Name), null, null);
             }
             return null;
         }
         #endregion
-
-
     }
 }

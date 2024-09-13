@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CourtApp.Application.DTOs.FormBuilder;
 using CourtApp.Application.Features.FormBuilder;
 using CourtApp.Domain.Entities.FormBuilder;
 using System;
@@ -15,6 +16,8 @@ namespace CourtApp.Application.Mappings
         {
             CreateMap<CreateCaseDraftingDetailCommand, DraftingDetailEntity>();
             CreateMap<TemplateFields, FormFieldValueEntity>();
+            CreateMap<FormFieldValueEntity, FormFieldDetailValue>();
+           
         }
     }
 }

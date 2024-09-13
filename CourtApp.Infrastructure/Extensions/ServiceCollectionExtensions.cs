@@ -121,6 +121,9 @@ namespace CourtApp.Infrastructure.Extensions
 
             services.AddTransient<ICaseDraftingCacheRepository, CaseDraftingCacheRepository>();
             services.AddTransient<ICaseDraftingRepository, CaseDraftingRepository>();
+
+            services.AddTransient<ITemplateInfoCacheRepository, TemplateInfoCacheRepository>();
+            services.AddTransient<ITemplateInfoRepository, TemplateInfoRepository>();
             #endregion
         }
     }

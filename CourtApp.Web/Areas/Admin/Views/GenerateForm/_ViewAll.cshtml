@@ -39,13 +39,11 @@
                             <div class="dropdown-menu shadow animated--grow-in">
                                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Edit)).Result.Succeeded)
                                 {
-                                    <a onclick="jQueryModalGet('/lawyerdiary/bookmaster/OnGetCreateOrEdit?id=@bt.Id','Edit Book Master')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
-
+                                    <a onclick="jQueryModalGet('/admin/generateform/OnGetCreateOrEdit?id=@bt.Id','Edit Book Master')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
                                 }
                                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded)
-
                                 {
-                                    <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="BookType" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
+                                    <form id="form_delete_@bt.Id" asp-area="admin" asp-controller="generateform" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
                                         <a href="javascript:$('#form_delete_@bt.Id').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a>
                                     </form>
                                 }
