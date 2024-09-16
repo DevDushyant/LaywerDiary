@@ -74,6 +74,7 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<FSTitleEntity> FSTitleEntities { get; set; }
         public DbSet<FormBuilderEntity> DynamicFrmBuilders { get; set; }
         public DbSet<DraftingDetailEntity> CaseTempMappings { get; set; }
+        public DbSet<FormTemplateMappingEntity> TempFormMappings { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -152,6 +153,18 @@ namespace CourtApp.Infrastructure.DbContexts
 
             builder.Entity<TemplateInfoEntity>().OwnsMany(
                 f => f.Tags, j =>
+                {
+                    j.ToJson();
+                }
+                );
+            builder.Entity<FormTemplateMappingEntity>().OwnsMany(
+                f => f.FieldsMapping, j =>
+                {
+                    j.ToJson();
+                }
+                );
+            builder.Entity<CaseTitleEntity>().OwnsMany(
+                f => f.CaseApplicants, j =>
                 {
                     j.ToJson();
                 }

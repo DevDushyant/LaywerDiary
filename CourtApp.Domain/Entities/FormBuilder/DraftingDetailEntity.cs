@@ -10,9 +10,11 @@ namespace CourtApp.Domain.Entities.FormBuilder
     {        
         public new Guid Id { get; set; }       
         public Guid CaseId { get; set; }        
-        public Guid TemplateId { get; set; }        
+        public Guid TemplateId { get; set; }
+        public Guid DraftingFormId { get; set; }
         public List<FormFieldValueEntity> FieldDetails { get; set; }
         public virtual CaseDetailEntity Case { get; set; }
-        public virtual FormBuilderEntity Template { get; set; }
+        public virtual FormBuilderEntity DraftingForm { get; set; }
+        public virtual TemplateInfoEntity Template { get; set; }
     }
 }

@@ -35,10 +35,11 @@ namespace CourtApp.Application.Features.FormBuilder
             var dt = _Repository.Entities.Where(w => w.Id == request.Id).FirstOrDefault();
             detail.CaseId = dt.CaseId;
             detail.TemplateId = dt.TemplateId;
+            detail.DraftingFormId=dt.DraftingFormId;
             detail.Id = request.Id;
             if (dt.FieldDetails != null)
             {
-                var fbr = await _FrmRepository.GetByIdAsync(dt.TemplateId);
+                var fbr = await _FrmRepository.GetByIdAsync(dt.DraftingFormId);
                 var frmDetails = fbr.FieldsDetails.Fields.ToList();
                 List<FormFieldDetailValue> fmr = new List<FormFieldDetailValue>();
                 foreach (var item in frmDetails)

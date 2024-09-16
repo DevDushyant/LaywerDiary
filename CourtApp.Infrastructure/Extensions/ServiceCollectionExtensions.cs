@@ -124,6 +124,8 @@ namespace CourtApp.Infrastructure.Extensions
 
             services.AddTransient<ITemplateInfoCacheRepository, TemplateInfoCacheRepository>();
             services.AddTransient<ITemplateInfoRepository, TemplateInfoRepository>();
+
+            services.AddTransient<IFormTempMappingRepository, FormTempMappingRepository>();
             #endregion
         }
     }

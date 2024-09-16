@@ -31,6 +31,8 @@ using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.LawyerDiary.Models.Lawyer;
 using CourtApp.Web.Areas.LawyerDiary.Models.Title;
 using CourtApp.Web.Areas.Litigation.Models;
+using DocumentFormat.OpenXml.Wordprocessing;
+using HtmlAgilityPack;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -38,10 +40,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Syncfusion.DocIO;
+using Syncfusion.DocIO.DLS;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Abstractions
@@ -344,7 +350,7 @@ namespace CourtApp.Web.Abstractions
             var response = await _mediator.Send(new GetFormBuilderCachedQuery());
             if (response.Succeeded)
             {
-                var fields = _mapper.Map<List<GenFormAttrViewModel>>(response.Data.OrderBy(o=>o.FormName));
+                var fields = _mapper.Map<List<GenFormAttrViewModel>>(response.Data.OrderBy(o => o.FormName));
                 return new SelectList(fields, nameof(GenFormAttrViewModel.Id), nameof(GenFormAttrViewModel.FormName), null, null); ;
             }
             return null;
@@ -355,7 +361,7 @@ namespace CourtApp.Web.Abstractions
             List<DropDownGViewModel> dt = new List<DropDownGViewModel>();
             if (response.Succeeded)
             {
-                var fields=response.Data.FieldDetails;
+                var fields = response.Data.FieldDetails;
                 foreach (var y in fields)
                     dt.Add(new DropDownGViewModel { Id = y.Key, Name = y.Name });
             }
@@ -434,7 +440,7 @@ namespace CourtApp.Web.Abstractions
             }
             return Json(null);
         }
-        public async Task<SelectList> PetTemplates()
+        public async Task<SelectList> GetDraftings()
         {
             var response = await _mediator.Send(new GetFormBuilderCachedQuery());
             if (response.Succeeded)
@@ -444,6 +450,60 @@ namespace CourtApp.Web.Abstractions
             }
             return null;
         }
+
+        public async Task<SelectList> GetTemplates()
+        {
+            var response = await _mediator.Send(new GetTemplateInfoQuery());
+            if (response.Succeeded)
+            {
+                var dt = _mapper.Map<List<DropDownGViewModel>>(response.Data);
+                return new SelectList(dt, nameof(DropDownGViewModel.Id), nameof(DropDownGViewModel.Name), null, null);
+            }
+            return null;
+        }
+        #endregion
+
+        #region Read File
+        public string ReadTemplate(string fPath, string fName)
+        {
+            string DirPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", "Templates");
+            string filePath = Path.Combine(DirPath, fName);
+            if (!System.IO.File.Exists(filePath))
+                return "File Not found";
+            string fileContent = string.Empty;
+            using (FileStream inputFileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                // Load the file stream into a Word document
+                using (WordDocument document = new WordDocument(inputFileStream, FormatType.Automatic))
+                {
+                    fileContent = document.GetText();
+                }
+            }
+            return fileContent;
+        }
+
+        public void ConvertHtmlToOpenXml(Body body, string htmlContent)
+        {
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(htmlContent);
+
+            foreach (var node in htmlDoc.DocumentNode.ChildNodes)
+            {
+                if (node.Name == "h1")
+                {
+                    var paragraph = new Paragraph(new Run(new Text(node.InnerText.Replace("&nbsp;", " "))));
+                    paragraph.ParagraphProperties = new ParagraphProperties(new ParagraphStyleId() { Val = "Heading1" });
+                    body.AppendChild(paragraph);
+                }
+                else if (node.Name == "p")
+                {
+                    var paragraph = new Paragraph(new Run(new Text(node.InnerText.Replace("&nbsp;", " "))));
+                    body.AppendChild(paragraph);
+                }                
+                // Add more HTML tag handling as needed
+            }
+        }
+       
         #endregion
     }
 }

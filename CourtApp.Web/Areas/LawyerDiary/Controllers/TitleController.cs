@@ -1,7 +1,6 @@
 ﻿using CourtApp.Application.Features.CaseTitle;
 using CourtApp.Application.Features.FSTitle;
 using CourtApp.Web.Abstractions;
-using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.LawyerDiary.Models.Title;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -34,7 +33,10 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             if (id == Guid.Empty)
             {
                 var viewModel = new TitleViewModel();
+                var ApplicantDetails = new List<ApplicantDetailViewModel>();
+                ApplicantDetails.Add(new ApplicantDetailViewModel { ApplicantNo = 1, ApplicantDetail = "" });
                 viewModel.Types = FSTypes();
+                viewModel.CaseApplicants = ApplicantDetails;
                 viewModel.Cases = await UserCaseTitle();
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrUpdate", viewModel) });
             }
@@ -58,8 +60,9 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 if (id == Guid.Empty)
                 {
-                    var cmd = _mapper.Map<CreateCaseTitleCommand>(model);
-                    var result = await _mediator.Send(cmd);
+                    var mapper = _mapper.Map<CreateCaseTitleCommand>(model);
+                    mapper.CaseApplicants = _mapper.Map<List<CaseApplicantDetail>>(model.CaseApplicants);
+                    var result = await _mediator.Send(mapper);
                     if (result.Succeeded)
                     {
                         id = result.Data;
@@ -75,11 +78,22 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     if (result.Succeeded)
                         _notify.Information($"Case Title ID {result.Data} Updated.");
                 }
-                return await LoadFSDataAsync();
+                var response = await _mediator.Send(new GetCaseTitleQuery());
+                if (response.Succeeded)
+                {
+                    var viewModel = _mapper.Map<List<TitleGetViewModel>>(response.Data);
+                    var chtml = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+                    return new JsonResult(new { isValid = true, html = chtml });
+                }
+                else
+                {
+                    _notify.Error(response.Message);
+                    return null;
+                }
             }
             else
             {
-                var html = await _viewRenderer.RenderViewToStringAsync("_CreateUpdateFSTitle", model);
+                var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrUpdate", model);
                 return new JsonResult(new { isValid = false, html = html });
             }
         }
@@ -87,11 +101,22 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         [HttpPost]
         public async Task<JsonResult> OnTitleDelete(Guid id)
         {
-            var deleteCommand = await _mediator.Send(new FSTitleDeleteCommand { Id = id });
+            var deleteCommand = await _mediator.Send(new DeleteCaseTitleCommand { Id = id });
             if (deleteCommand.Succeeded)
             {
-                _notify.Information($"Draft & Order with Id {id} Deleted.");
-                return await LoadFSDataAsync();
+                _notify.Information($"Complete title with Id {id} deleted successfully");
+                var response = await _mediator.Send(new GetCaseTitleQuery());
+                if (response.Succeeded)
+                {
+                    var viewModel = _mapper.Map<List<TitleGetViewModel>>(response.Data);
+                    var chtml = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+                    return new JsonResult(new { isValid = true, html = chtml });
+                }
+                else
+                {
+                    _notify.Error(response.Message);
+                    return null;
+                }
             }
             else
             {

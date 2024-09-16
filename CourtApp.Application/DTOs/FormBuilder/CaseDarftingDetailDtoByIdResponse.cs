@@ -8,6 +8,7 @@ namespace CourtApp.Application.DTOs.FormBuilder
         public Guid Id { get; set; }        
         public Guid CaseId { get; set; }
         public Guid TemplateId { get; set; }
+        public Guid DraftingFormId { get; set; }
         public List<FormFieldDetailValue> FieldDetails { get; set; }
     }
     public class FormFieldDetailValue: FieldDetailsDto

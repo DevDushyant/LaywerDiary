@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using CourtApp.Application.DTOs.CaseTitle;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 
@@ -11,6 +12,6 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models.Title
         public Guid CaseId { get; set; }
         public SelectList Types { get; set; }
         public int TypeId { get; set; }
-        public string Title { get; set; }
+        public List<ApplicantDetailViewModel> CaseApplicants { get; set; }
     }
 }

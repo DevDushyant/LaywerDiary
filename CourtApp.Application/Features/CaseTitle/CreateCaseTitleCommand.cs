@@ -11,11 +11,12 @@ using System.Threading.Tasks;
 namespace CourtApp.Application.Features.CaseTitle
 {
     public class CreateCaseTitleCommand : IRequest<Result<Guid>>
-    {            
-        public Guid CaseId { get; set; }        
+    {
+        public Guid CaseId { get; set; }
         public int TypeId { get; set; }
-        public string Title { get; set; }
+        public List<CaseApplicantDetail> CaseApplicants { get; set; }
     }
+    
     public class CreateCaseTitleCommandHandler : IRequestHandler<CreateCaseTitleCommand, Result<Guid>>
     {
         private readonly IMapper _mapper;
@@ -32,8 +33,9 @@ namespace CourtApp.Application.Features.CaseTitle
 
         }
         public async Task<Result<Guid>> Handle(CreateCaseTitleCommand request, CancellationToken cancellationToken)
-        {            
+        {
             var entity = _mapper.Map<CaseTitleEntity>(request);
+            entity.CaseApplicants = _mapper.Map<List<CaseApplicantDetailEntity>>(request.CaseApplicants);
             await _CaseTitleRepository.InsertAsync(entity);
             await _unitOfWork.Commit(cancellationToken);
             return Result<Guid>.Success(entity.Id);

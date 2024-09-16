@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CourtApp.Application.DTOs.CaseTitle;
+using System;
+using System.Collections.Generic;
 
 namespace CourtApp.Application.DTOs.CaseTitleRes
 {
@@ -8,5 +10,6 @@ namespace CourtApp.Application.DTOs.CaseTitleRes
         public  Guid CaseId { get; set; }
         public int TypeId { get; set; }
         public  string Title { get; set; }
+        public List<ApplicantDetailDto> CaseApplicants { get; set; }
     }
 }

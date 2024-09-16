@@ -35,8 +35,7 @@
         }
     });
 });
-$("#CourtTypeId").on("change", function () { 
-    debugger;
+$("#CourtTypeId").on("change", function () {    
     if ($("#CourtTypeId").val() === "b512e36f-0b6e-4a14-80d0-65266b2b320d" || $("#CourtTypeId").val() === "359acb34-7b8c-4fc8-a276-8b198ea5105c") {
         $('#c_district').addClass('div_hide');
         $('#d_court_Complex').addClass('div_hide');

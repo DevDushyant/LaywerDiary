@@ -34,8 +34,8 @@ namespace CourtApp.Application.Features.FormPrint
                           select new NoticeOfStayAppResponse {
                              Petitioner = c.FirstTitle,
                              Respondent = c.SecondTitle,
-                             FirstTitle = ct.TypeId == 1 ? ct.Title : "",
-                             SecondTitle = ct.TypeId == 2 ? ct.Title : "",
+                             //FirstTitle = ct.TypeId == 1 ? ct.Title : "",
+                             //SecondTitle = ct.TypeId == 2 ? ct.Title : "",
                              CaseNoYear = c.CaseNo + "/" + c.CaseYear,
                              CaseType = c.CaseType.Name_En
                           };               

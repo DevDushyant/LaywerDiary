@@ -1,5 +1,28 @@
 ﻿@model TitleViewModel
-<form id="create-form" method="post" method="post" asp-controller="Title" asp-action="OnCreatOrUpdateTitle" asp-route-Id="@Model.Id" enctype="multipart/form-data">
+<style>
+    .div_hide {
+        display: none
+    }
+
+    fieldset.scheduler-border {
+        border: 1px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;
+        margin: 0 0 1.5em 0 !important;
+        -webkit-box-shadow: 0px 0px 0px 0px #000;
+        box-shadow: 0px 0px 0px 0px #000;
+        width: 100% !important;
+    }
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width: auto;
+        padding: 0 10px;
+        border-bottom: none;
+    }
+</style>
+<form id="create-form" method="post" method="post" asp-controller="Title" asp-action="OnCreatOrUpdateTitle" asp-route-Id="@Model.Id" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
@@ -23,22 +46,42 @@
                         </select>
                     </div>
                 </div>
-            </div>
+            </div>           
             <div class="form-group row">
-                <label class="col-md-3 col-form-label">@localizer["Complete Title"]</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <textarea class="form-control" placeholder="Please enter complete title and address" asp-for="Title"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-md-3">
-                </div>
-            </div>
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">@localizer["Complete Title"]</legend>
+                    <table id="tblApplicant" border="1" style="width:100%!important">
+                        <thead>
+                            <tr>
+                                <th width="10%"><label class="col-form-label">Srno.</label></th>
+                                <th width="80%"><label class="col-form-label">Applicant Detail</label></th>
+                                <th width="10%"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="data-repeater">
+                            @for (int index = 0; index < Model.CaseApplicants.Count(); index++)
+                            {
+                                <tr class="kolom">
+                                    <td><input type="text" asp-for="CaseApplicants[index].ApplicantNo" value="@Model.CaseApplicants[index].ApplicantNo" style="width:50px;" class="form-control" /></td>
+                                    <td><textarea asp-for="CaseApplicants[index].ApplicantDetail" cols="1" rows="1" placeholder="Please enter applicant detail " class="form-control"></textarea></td>
+                                    <td class="btn-repeater">
+                                        @if (index == Model.CaseApplicants.Count() - 1)
+                                        {
+                                            <button class="add-btn-repeat btn btn-success" onclick="addElement($(this))" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" onclick="removeKolom($(this))" class="btn btn-warning"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>           
         </div>
     </div>
-
     <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
         <button type="submit" class="btn btn-success">Save</button>
         <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
@@ -61,4 +104,31 @@
             }
         });
     });
+    var btn_delete = '<button type="button" onclick="removeKolom($(this))" class="btn btn-warning"><i class="fa fa-trash" aria-hidden="true"></i></button>';
+    var btn_add = '<button class="add-btn-repeat btn btn-success" onclick="addElement($(this))" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button>';
+    var counter = 1;
+    function addElement(e) { 
+        debugger;
+        var trlength = $('#tblApplicant tbody tr').length;
+        var clonedRow = $('#tblApplicant tbody tr:last').clone();
+        clonedRow.find('input').each(function (i) {
+            NameAtr = "CaseApplicants[" + trlength + "].ApplicantNo";
+            IdAtr = "CaseApplicants_" + trlength + "__ApplicantNo";
+            $(this).attr('name', NameAtr).attr('id', IdAtr).val(trlength + 1);
+        });
+        clonedRow.find('textarea').each(function (i) {
+            NameAtr = "CaseApplicants[" + trlength + "].ApplicantDetail";
+            IdAtr = "CaseApplicants_" + trlength + "__ApplicantDetail";
+            $(this).attr('name', NameAtr).attr('id', IdAtr);
+        });
+
+        clonedRow.find('button').find('button').replaceWith(btn_add);
+        clonedRow.find('button.add-btn-repeat').replaceWith(btn_delete);
+        clonedRow.find("textarea").val("");
+        $('#tblApplicant tbody').append(clonedRow);           
+    }
+    function removeKolom(e) {        
+        e.parents('.kolom').remove();
+    }
+
 </script>

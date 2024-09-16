@@ -3,6 +3,7 @@ using System;
 using CourtApp.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CourtApp.Infrastructure.Migrations.App
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240914035601_App054")]
+    partial class App054
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -607,6 +610,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
+
                     b.Property<int>("TypeId")
                         .HasColumnType("integer");
 
@@ -852,9 +858,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("DraftingFormId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
@@ -867,8 +870,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.HasKey("Id");
 
                     b.HasIndex("CaseId");
-
-                    b.HasIndex("DraftingFormId");
 
                     b.HasIndex("TemplateId");
 
@@ -2157,34 +2158,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("CourtApp.Domain.Entities.CaseDetails.CaseApplicantDetailEntity", "CaseApplicants", b1 =>
-                        {
-                            b1.Property<Guid>("CaseTitleEntityId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer");
-
-                            b1.Property<string>("ApplicantDetail")
-                                .HasColumnType("text");
-
-                            b1.Property<int>("ApplicantNo")
-                                .HasColumnType("integer");
-
-                            b1.HasKey("CaseTitleEntityId", "Id");
-
-                            b1.ToTable("case_titles", "ld");
-
-                            b1.ToJson("CaseApplicants");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CaseTitleEntityId");
-                        });
-
                     b.Navigation("Case");
-
-                    b.Navigation("CaseApplicants");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseWorkEntity", b =>
@@ -2249,13 +2223,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CourtApp.Domain.Entities.FormBuilder.FormBuilderEntity", "DraftingForm")
-                        .WithMany()
-                        .HasForeignKey("DraftingFormId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CourtApp.Domain.Entities.FormBuilder.TemplateInfoEntity", "Template")
+                    b.HasOne("CourtApp.Domain.Entities.FormBuilder.FormBuilderEntity", "Template")
                         .WithMany()
                         .HasForeignKey("TemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2287,8 +2255,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                         });
 
                     b.Navigation("Case");
-
-                    b.Navigation("DraftingForm");
 
                     b.Navigation("FieldDetails");
 

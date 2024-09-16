@@ -38,8 +38,8 @@ namespace CourtApp.Application.Features.FormPrint
                           {
                              Petitioner = c.FirstTitle,
                              Respondent = c.SecondTitle,
-                             FirstTitle = tt.TypeId == 1 ? tt.Title : "",
-                             SecondTitle = tt.TypeId == 2 ? tt.Title : "",
+                             //FirstTitle = tt.TypeId == 1 ? tt.Title : "",
+                             //SecondTitle = tt.TypeId == 2 ? tt.Title : "",
                              CaseNoYear = c.CaseNo + "/" + c.CaseYear,
                              CaseType = c.CaseCategory.Name_En,                             
                           };

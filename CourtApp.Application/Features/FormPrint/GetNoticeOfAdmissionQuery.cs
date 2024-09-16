@@ -38,7 +38,7 @@ namespace CourtApp.Application.Features.FormPrint
                               CivilNoYear = c.CaseNo,
                               AgainstCourt = "",
                               Bench = c.CourtBench.CourtBench_En,
-                              CompleteTitle = ct.Title,
+                              //CompleteTitle = ct.Title,
                               TitleNo = 1,
                               Date = DateTime.UtcNow.Date.ToString("dd/MM/yyyy")
                           };

@@ -35,7 +35,8 @@ namespace CourtApp.Application.Features.FormBuilder
             {
                 Id = e.Id,
                 CaseTitle=e.Case.FirstTitle+" Vs "+e.Case.SecondTitle,
-                TemplateName=e.Template.FormName,
+                DraftingForm=e.DraftingForm.FormName,
+                TemplateName=e.Template.TemplateName,
             };            
             try
             {

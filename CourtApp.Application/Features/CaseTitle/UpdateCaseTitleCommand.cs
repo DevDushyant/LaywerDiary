@@ -1,24 +1,22 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
 using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Domain.Entities.CaseDetails;
 using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-
+using static CourtApp.Application.Constants.Permissions;
 namespace CourtApp.Application.Features.CaseTitle
 {
     public class UpdateCaseTitleCommand : IRequest<Result<Guid>>
     {
         public Guid Id { get; set; }
         public Guid CaseId { get; set; }
-        public int Type { get; set; }
-        public List<string> Title { get; set; }
+        public int TypeId { get; set; }
+        public List<CaseApplicantDetail> CaseApplicants { get; set; }
     }
     public class UpdateCaseTitleCommandHandler : IRequestHandler<UpdateCaseTitleCommand, Result<Guid>>
     {
@@ -42,11 +40,11 @@ namespace CourtApp.Application.Features.CaseTitle
                 return Result<Guid>.Fail($"Case title not found.");
             else
             {
-                TitleDetail.Case = _UserCaseRepo.GetByIdAsync(request.Id).Result;
-                //TitleDetail.BookType = _bookTypeRepo.GetByIdAsync(command.BookTypeId).Result;
-                //TitleDetail.Year = command.Year;
-                //await _Repository.UpdateAsync(book);
-                //await _unitOfWork.Commit(cancellationToken);
+                TitleDetail.CaseId = request.CaseId;
+                TitleDetail.TypeId = request.TypeId;
+                TitleDetail.CaseApplicants = _mapper.Map<List<CaseApplicantDetailEntity>>(request.CaseApplicants);
+                await _CaseTitleRepository.UpdateAsync(TitleDetail);
+                await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(TitleDetail.Id);
             }
         }

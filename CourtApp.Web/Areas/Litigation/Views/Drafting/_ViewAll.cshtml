@@ -4,7 +4,8 @@
         <tr>
             <th>Sr.</th>
             <th>Title</th>
-            <th>Template</th>
+            <th>Drafting Form</th>
+            <th>Linked Template</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -22,15 +23,22 @@
                     @bt.CaseTitle
                 </td>
                 <td>
+                    @bt.DraftingForm
+                </td>
+                <td>
                     @bt.TemplateName
                 </td>
                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                 {
                     <td>
-                        <a asp-area="Litigation" asp-controller="Drafting" asp-action="Petition" asp-route-id="@bt.Id">
+                        <a asp-area="Litigation" asp-controller="Drafting" asp-action="Petition" asp-route-id="@bt.Id" title="Edit Drafting">
                             <i class="fa fa-pencil-square-o"></i></a>
-                        <a onclick="jQueryModalGet('/Litigation/drafting/Petition?id=@bt.Id','Edit Drafting Detail')"><i class="fas fa-pencil-alt"></i></a>
-                        <a onclick="jQueryModalGet('/Litigation/drafting/OnGetCreateOrEdit?id=@bt.Id','View Drafting Detail')"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                            
+
+                        <a asp-area="Litigation" asp-controller="Drafting" asp-action="GetReport" asp-route-id="@bt.Id" title="Generate Report">
+                            <i class="fa fa-file-word-o"></i>
+                        </a>
+                        
                     </td>
                 }
             </tr>

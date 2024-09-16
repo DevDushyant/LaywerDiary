@@ -20,7 +20,10 @@ namespace CourtApp.Application.Mappings
 
             CreateMap<FormBuilderEntity, FormBuilderResponseByIdDto>();
             CreateMap<CreateTemplateInfoCommand, TemplateInfoEntity>();
-                        
+
+            CreateMap<CreateTemplateFormMappingCommand, FormTemplateMappingEntity>();
+            CreateMap<MappingDto, MappingEntity>();
+
         }
     }
 

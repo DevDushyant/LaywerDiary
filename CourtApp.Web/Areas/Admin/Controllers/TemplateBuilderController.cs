@@ -1,6 +1,9 @@
-﻿using CourtApp.Application.Features.FormBuilder;
+﻿using CourtApp.Application.Features.BookMasters.Command;
+using CourtApp.Application.Features.BookMasters.Query;
+using CourtApp.Application.Features.FormBuilder;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
+using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
 using Syncfusion.DocIO;
 using Syncfusion.DocIO.DLS;
@@ -109,6 +112,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             }
         }
 
+        #region Template Save and Read
         private string SaveTemplate(TemplateViewModel ViewModel)
         {
             // Create a new Word document
@@ -133,23 +137,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             document.Close();
             return folderPath + ";" + fileName;
         }
-        private string ReadTemplate(string fPath, string fName)
-        {
-            string DirPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", "Templates");
-            string filePath = Path.Combine(DirPath, fName);
-            if (!System.IO.File.Exists(filePath))
-                return "File Not found";
-            string fileContent = string.Empty;
-            using (FileStream inputFileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                // Load the file stream into a Word document
-                using (WordDocument document = new WordDocument(inputFileStream, FormatType.Automatic))
-                {
-                    fileContent = document.GetText();
-                }
-            }
-            return fileContent;
-        }
+        
         private List<string> GetTags(string TemplateBody)
         {
             List<string> tg = new List<string>();
@@ -160,7 +148,9 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             var Tags = tg.Distinct().ToList();
             return Tags;
         }
+        #endregion
 
+        #region Template and drafting form Field Mapping 
         public async Task<JsonResult> MapFields(Guid id)
         {
             var response = await _mediator.Send(new GetTemplateInfoCachedByIdQuery() { Id = id });
@@ -181,10 +171,42 @@ namespace CourtApp.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<JsonResult> OnPostMapping(Guid id, FormTemplateMapViewModel ViewModel)
         {
-            if (id == Guid.Empty)
+            if (ModelState.IsValid)
             {
+                if (id == Guid.Empty)
+                {
+                    var createCommand = _mapper.Map<CreateTemplateFormMappingCommand>(ViewModel);
+                    var mfields = _mapper.Map<List<MappingDto>>(ViewModel.Tags);
+                    createCommand.FieldsMapping = mfields;
+                    var result = await _mediator.Send(createCommand);
+                    if (result.Succeeded)
+                        _notify.Success($"Template form mapping saved successfully!");
+                    else _notify.Error(result.Message);
+                }
+                else
+                {
+
+                }
+                var response = await _mediator.Send(new GetTemplateInfoQuery());
+                if (response.Succeeded)
+                {
+                    var viewModel = _mapper.Map<List<TemplateDlViewModel>>(response.Data);
+                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+                    return new JsonResult(new { isValid = true, html = html });
+                }
+                else
+                {
+                    _notify.Error(response.Message);
+                    return null;
+                }
             }
-            return null;                
+            else
+            {
+                var html = await _viewRenderer.RenderViewToStringAsync("_TemplateFormMapping", ViewModel);
+                return new JsonResult(new { isValid = false, html = html });
+            }
+
         }
+        #endregion
     }
 }

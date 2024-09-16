@@ -4,6 +4,7 @@ using CourtApp.Application.DTOs.CaseTitleRes;
 using CourtApp.Application.DTOs.FSTitle;
 using CourtApp.Application.Features.CaseTitle;
 using CourtApp.Application.Features.FSTitle;
+using CourtApp.Domain.Entities.CaseDetails;
 using CourtApp.Web.Areas.LawyerDiary.Models.Title;
 namespace CourtApp.Web.Areas.LawyerDiary.Mappings
 {
@@ -17,11 +18,12 @@ namespace CourtApp.Web.Areas.LawyerDiary.Mappings
             CreateMap<FSTitleResponse, FSTitleLViewModel>();
 
             CreateMap<TitleViewModel, CreateCaseTitleCommand>();
+            CreateMap<ApplicantDetailViewModel, CaseApplicantDetail>();
             CreateMap<TitleViewModel, UpdateCaseTitleCommand>();
-            CreateMap<CaseTitleResponse, TitleGetViewModel>()
-                .ForPath(d => d.CaseDetail, s => s.MapFrom(s => s.Case));
-
+            CreateMap<CaseTitleResponse, TitleGetViewModel>();
+            CreateMap<ApplicantDetailDto, ApplicantDetailViewModel>();
             CreateMap<CaseTitleByIdResponse, TitleViewModel>();
+            CreateMap<CaseApplicantDetailEntity, ApplicantDetailDto>();
 
 
         }

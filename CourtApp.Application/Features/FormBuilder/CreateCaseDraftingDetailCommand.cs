@@ -17,6 +17,7 @@ namespace CourtApp.Application.Features.FormBuilder
     {
         public Guid CaseId { get; set; }
         public Guid TemplateId { get; set; }
+        public Guid DraftingFormId { get; set; }
         public List<TemplateFields> FieldDetails { get; set; }
     }
 

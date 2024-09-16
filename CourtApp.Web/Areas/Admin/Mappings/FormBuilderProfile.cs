@@ -22,6 +22,13 @@ namespace CourtApp.Web.Areas.Admin.Mappings
             CreateMap<FieldLength, FieldSizeDto>();
             CreateMap<FormBuilderResponseDto, DropDownGViewModel>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.FormName));
+
+            CreateMap<GetTemplateInfoDtoResponse, DropDownGViewModel>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.TemplateName));
+
+            CreateMap<Mapping, MappingDto>();
+            CreateMap<FormTemplateMapViewModel, CreateTemplateFormMappingCommand>();
+            
         }
     }
 }

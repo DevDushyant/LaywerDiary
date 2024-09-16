@@ -8,6 +8,8 @@ namespace CourtApp.Web.Areas.Litigation.Models
     public class FormBuilderViewModel
     {
         public Guid Id { get; set; }
+        public Guid DraftingFormId { get; set; }
+        public SelectList DraftingForms { get; set; }
         public Guid TemplateId { get; set; }
         public SelectList Templates { get; set; }
         public Guid CaseId { get; set; }

@@ -1,11 +1,15 @@
 ﻿using CourtApp.Application.Features.FormBuilder;
 using CourtApp.Web.Abstractions;
-using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using HtmlAgilityPack;
+
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
 {
@@ -46,7 +50,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (id == Guid.Empty)
             {
                 var ViewModel = new FormBuilderViewModel();
-                ViewModel.Templates = await PetTemplates();
+                ViewModel.DraftingForms = await GetDraftings();
+                ViewModel.Templates = await GetTemplates();
                 ViewModel.Cases = await UserCaseTitle();
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
             }
@@ -55,12 +60,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 return null;
             }
         }
-
         public async Task<IActionResult> Petition(Guid id, FormBuilderViewModel ViewModel)
         {
             if (id == Guid.Empty)
             {
-                ViewModel.Templates = await PetTemplates();
+                ViewModel.Templates = await GetTemplates();
+                ViewModel.DraftingForms = await GetDraftings();
                 ViewModel.Cases = await UserCaseTitle();
                 return View("_CreateOrEdit", ViewModel);
             }
@@ -70,7 +75,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 if (result.Succeeded)
                 {
                     ViewModel = _mapper.Map<FormBuilderViewModel>(result.Data);
-                    ViewModel.Templates = await PetTemplates();
+                    ViewModel.Templates = await GetTemplates();
+                    ViewModel.DraftingForms = await GetDraftings();
                     ViewModel.Cases = await UserCaseTitle();
                     ViewModel.FieldDetails = _mapper.Map<List<FormProperties>>(ViewModel.FieldDetails);
                     return View("_CreateOrEdit", ViewModel);
@@ -78,7 +84,6 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
             return null;
         }
-
         [HttpPost]
         public async Task<IActionResult> OnPostCreateOrEdit(Guid id, FormBuilderViewModel ViewModel)
         {
@@ -107,7 +112,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                             _notify.Success($"Case drafting information is updated successfully!");
                     }
                     ViewModel.Cases = await UserCaseTitle();
-                    ViewModel.Templates = await PetTemplates();
+                    ViewModel.Templates = await GetDraftings();
                     return View("_CreateOrEdit", ViewModel);
                 }
                 catch (Exception ex)
@@ -121,6 +126,52 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
                 return new JsonResult(new { isValid = false, html });
             }
+        }
+
+        public async Task<IActionResult> GetReport(Guid id)
+        {
+            if (id != Guid.Empty)
+            {
+                var response = await _mediator.Send(new GetCaseMappingDetailInfoQuery() { Id = id });
+                if (response.Succeeded)
+                {
+                    var dt = response.Data;
+                    var Content = ReadTemplate(dt.TemplatePath, dt.TemplateName);
+                    string FinalContent = string.Empty;
+                    foreach (var tg in dt.TagValues)
+                    {
+                        FinalContent = Content.Replace(tg.Key, tg.Value);
+                        Content = FinalContent;
+                    }
+                    // Create a memory stream to hold the document
+                    using (var stream = new MemoryStream())
+                    {
+                        // Create a Wordprocessing document
+                        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+                        {
+                            // Add a main document part
+                            var mainPart = document.AddMainDocumentPart();
+                            mainPart.Document = new Document();
+                            var body = mainPart.Document.AppendChild(new Body());
+
+                            // Add content to the document
+                            //var paragraph = body.AppendChild(new Paragraph());
+                            //var run = paragraph.AppendChild(new Run());
+                            //run.AppendChild(new Text("Hello, this is a sample Word document created using Open XML SDK."));
+                            //run.AppendChild(new Text(Content));
+
+                            // Save the document
+                            // Convert HTML to Open XML elements
+                            ConvertHtmlToOpenXml(body, Content);
+                            mainPart.Document.Save();
+                        }
+                        // Return the document as a file
+                        return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "GeneratedDocument.docx");
+                    }
+                }
+
+            }
+            return null;
         }
     }
 }
