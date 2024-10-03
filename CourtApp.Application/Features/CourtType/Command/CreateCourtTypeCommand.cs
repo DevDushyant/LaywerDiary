@@ -15,6 +15,7 @@ namespace CourtApp.Application.Features.CourtType.Command
     public class CreateCourtTypeCommand : IRequest<Result<Guid>>
     {
         public string CourtType { get; set; }
+        public string Abbreviation { get; set; }
     }
     public class CreateCourtTypeCommandHandler : IRequestHandler<CreateCourtTypeCommand, Result<Guid>>
     {

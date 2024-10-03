@@ -35,20 +35,22 @@
         }
     });
 });
-$("#CourtTypeId").on("change", function () {    
+$("#CourtTypeId").on("change", function () {
+      
     if ($("#CourtTypeId").val() === "b512e36f-0b6e-4a14-80d0-65266b2b320d" || $("#CourtTypeId").val() === "359acb34-7b8c-4fc8-a276-8b198ea5105c") {
         $('#c_district').addClass('div_hide');
         $('#d_court_Complex').addClass('div_hide');
         $('#d_high_court_name').removeClass('div_hide');
     }
     else {
+        console.log($("#CourtTypeId").val());  
         $('#c_district').addClass('div_hide');
         $('#d_court_Complex').addClass('div_hide');
         $('#c_district').removeClass('div_hide');
         $('#d_court_Complex').removeClass('div_hide');
         $('#d_high_court_name').addClass('div_hide');
     }
-    
+
     $.getJSON("/LawyerDiary/CourtMaster/LoadDistricts?StateCode=" + $("#StateCode").val(), function (data) {
         $("#DistrictCode").empty();
         $.each(data.Data, function (i, item) {
@@ -56,10 +58,10 @@ $("#CourtTypeId").on("change", function () {
         });
     });
 });
-$("#DistrictCode").on("change", function () {   
+$("#DistrictCode").on("change", function () {
     $.getJSON("/LawyerDiary/CourtMaster/LoadCourtDistrict?DistrictId=" + $("#DistrictCode").val(), function (data) {
-        $("#CourtDistrictId").empty();       
-        $.each(data.Data, function (i, item) {            
+        $("#CourtDistrictId").empty();
+        $.each(data.Data, function (i, item) {
             $("#CourtDistrictId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
         });
     });

@@ -36,10 +36,7 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<CourtMasterEntity> GetByIdAsync(Guid Id)
         {
             var DetailById = _repository.Entities
-                .Include(d=>d.CourtBenches)
-                //.Include(ct => ct.CourtType)
-                //.Include(st => st.State)
-                //.Include(d => d.District)
+                .Include(d=>d.CourtBenches)               
                 .Where(p => p.Id == Id).FirstOrDefaultAsync();
 
             return await DetailById;

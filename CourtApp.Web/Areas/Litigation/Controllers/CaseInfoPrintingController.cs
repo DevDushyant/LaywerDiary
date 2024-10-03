@@ -18,6 +18,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             FmpViewModel fmpViewModel = new FmpViewModel();
             fmpViewModel.FormTypes = FormPrintingTypes();
             fmpViewModel.Cases = await UserCaseTitle();
+            fmpViewModel.Titles = await UserCaseTitle();
             return View(fmpViewModel);
         }
 

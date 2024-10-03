@@ -1,4 +1,6 @@
 ﻿using AuditTrail.Abstrations;
+using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Entities.Common;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,5 +23,18 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public string CnrNo { get; set; }
         public string OfficerName { get; set; }
         public string Cadre { get; set; }
+        public virtual StateEntity State { get; set; }        
+        public virtual CourtTypeEntity CourtType { get; set; }               
+        public virtual CourtBenchEntity CourtBench { get; set; }
+        public virtual CaseDetailEntity CaseId { get; set; }
+        public Guid CaseCategoryId { get; set; }
+        public virtual NatureEntity CaseCategory { get; set; }
+        public Guid CaseTypeId { get; set; }
+        public virtual TypeOfCasesEntity CaseType { get; set; }
+        public Guid CourtComplexId { get; set; }
+        public virtual CourtComplexEntity CourtComplex { get; set; }
+
+        public required Guid CourtDistrictId { get; set; }
+        public virtual CourtDistrictEntity CourtDistrict { get; set; }
     }
 }

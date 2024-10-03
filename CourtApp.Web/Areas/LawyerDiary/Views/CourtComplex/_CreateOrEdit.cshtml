@@ -1,4 +1,4 @@
-﻿@{    
+﻿@{
     ViewData["Note"] = localizer["All (*) marked fields are mandatory!"];
 }
 @model CourtComplexViewModel
@@ -9,7 +9,7 @@
                 <label class="col-md-3 col-form-label">@localizer["State"]</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                        <select name="StateId" class="form-control select2bs4" id="StateId" asp-for="StateId" asp-items="@Model.States">
+                        <select  class="form-control select2bs4"  asp-for="StateId" asp-items="@Model.States">
                             <option></option>
                         </select>
                     </div>
@@ -20,7 +20,8 @@
                 <label class="col-md-3 col-form-label">@localizer["District"]</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                        <select name="DistrictId" class="form-control select2bs4" id="DistrictId" asp-for="DistrictId" asp-items="@Model.Districts">
+                        <select class="form-control select2bs4" asp-for="DistrictId"
+                                asp-items="@Model.Districts">
                             <option></option>
                         </select>
                     </div>
@@ -79,7 +80,7 @@
     </div>
 </form>
 <script type="text/javascript" language=javascript>
-    $.validator.unobtrusive.parse(document);   
+    $.validator.unobtrusive.parse(document);
     $("#StateId").select2({
         placeholder: "Select a state",
         theme: "bootstrap4",
@@ -103,8 +104,7 @@
     });
     $("#StateId").on("change", function () {
         $("#DistrictId").empty();
-        debugger;
-        $.getJSON("/LawyerDiary/CourtComplex/LoadDistricts?StateCode=" + $("#StateId").val(), function (data) {
+        $.getJSON("/LawyerDiary/CourtDistrict/LoadDistricts?StateCode=" + $("#StateId").val(), function (data) {
             $.each(data.Data, function (i, item) {
                 $("#DistrictId").append(`<option /><option value="${item.Code}">${item.Name_En}</option>`);
             });
@@ -112,7 +112,7 @@
     });
     $("#DistrictId").on("change", function () {
         $("#CourtDistrictId").empty();
-        debugger;
+
         $.getJSON("/LawyerDiary/CourtComplex/LoadCourtDistrict?DistrictId=" + $("#DistrictId").val(), function (data) {
             $.each(data.Data, function (i, item) {
                 $("#CourtDistrictId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);

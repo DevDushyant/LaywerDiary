@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace CourtApp.Web.Areas.Litigation.Models
@@ -25,6 +26,8 @@ namespace CourtApp.Web.Areas.Litigation.Models
 
         [DisplayName("Case No/Year")]
         public string CaseNoYear { get; set; }
+        public string CaseNo { get; set; }
+        public string CaseYear { get; set; }
 
         [DisplayName("Case Category")]
         public string CaseCategory { get; set; }
@@ -32,6 +35,9 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string CaseType { get; set; }
         [DisplayName("Cis No/Year")]
         public string CisNoYear { get; set; }
+
+        public string CisNo { get; set; }
+        public string CisYear { get; set; }
 
         [DisplayName("Cnr No")]
         public string CnrNo { get; set; }
@@ -53,7 +59,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         [DisplayName("Case Stage")]
         public string CaseStage { get; set; }
         public bool IsCaseAgainstDecision { get; set; }
-        //public List<AgainstCaseDecisionViewModel> AgainstCases { get; set; }
+        public List<AgainstCaseDecisionViewModel> AgainstCases { get; set; }
         //public ClientDetailViewModel ClientDetail { get; set; }
     }
 }

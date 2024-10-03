@@ -392,11 +392,17 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("Cadre")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("CaseDetailEntityId")
+                    b.Property<Guid>("CaseCategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CaseIdId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("CaseNo")
                         .HasColumnType("text");
+
+                    b.Property<Guid>("CaseTypeId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("CaseYear")
                         .HasColumnType("integer");
@@ -411,6 +417,12 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .HasColumnType("text");
 
                     b.Property<Guid>("CourtBenchId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CourtComplexId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CourtDistrictId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CourtTypeId")
@@ -430,7 +442,21 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CaseDetailEntityId");
+                    b.HasIndex("CaseCategoryId");
+
+                    b.HasIndex("CaseIdId");
+
+                    b.HasIndex("CaseTypeId");
+
+                    b.HasIndex("CourtBenchId");
+
+                    b.HasIndex("CourtComplexId");
+
+                    b.HasIndex("CourtDistrictId");
+
+                    b.HasIndex("CourtTypeId");
+
+                    b.HasIndex("StateId");
 
                     b.ToTable("case_detail_against", "ld");
                 });
@@ -471,6 +497,12 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<Guid>("CourtBenchId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("CourtComplexId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CourtDistrictId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("CourtTypeId")
                         .HasColumnType("uuid");
 
@@ -509,6 +541,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .HasColumnType("text");
 
                     b.Property<int>("StateId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StrengthId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -2044,9 +2079,67 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseDetailAgainstEntity", b =>
                 {
-                    b.HasOne("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", null)
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.NatureEntity", "CaseCategory")
+                        .WithMany()
+                        .HasForeignKey("CaseCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", "CaseId")
                         .WithMany("CaseAgainstEntities")
-                        .HasForeignKey("CaseDetailEntityId");
+                        .HasForeignKey("CaseIdId");
+
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.TypeOfCasesEntity", "CaseType")
+                        .WithMany()
+                        .HasForeignKey("CaseTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtBenchEntity", "CourtBench")
+                        .WithMany()
+                        .HasForeignKey("CourtBenchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtComplexEntity", "CourtComplex")
+                        .WithMany()
+                        .HasForeignKey("CourtComplexId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtDistrictEntity", "CourtDistrict")
+                        .WithMany()
+                        .HasForeignKey("CourtDistrictId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtTypeEntity", "CourtType")
+                        .WithMany()
+                        .HasForeignKey("CourtTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
+                        .WithMany()
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CaseCategory");
+
+                    b.Navigation("CaseId");
+
+                    b.Navigation("CaseType");
+
+                    b.Navigation("CourtBench");
+
+                    b.Navigation("CourtComplex");
+
+                    b.Navigation("CourtDistrict");
+
+                    b.Navigation("CourtType");
+
+                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", b =>

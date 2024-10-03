@@ -1,4 +1,4 @@
-﻿@{    
+﻿@{
     ViewData["Note"] = localizer["All (*) marked fields are mandatory!"];
 }
 @model CourtDistrictViewModel
@@ -20,8 +20,8 @@
                 <label class="col-md-3 col-form-label">@localizer["District"]</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                        <select  class="form-control select2bs4" asp-for="DistrictId" asp-items="@Model.Districts"
-                                onchange="clickMe()">
+                        <select class="form-control select2bs4" asp-for="DistrictId"
+                                asp-items="@Model.Districts">
                             <option></option>
                         </select>
                     </div>
@@ -69,8 +69,8 @@
     </div>
 </form>
 <script type="text/javascript" language=javascript>
-    
-    $.validator.unobtrusive.parse(document);   
+
+    $.validator.unobtrusive.parse(document);
     $("#StateId").select2({
         placeholder: "Select a state",
         theme: "bootstrap4",
@@ -85,14 +85,14 @@
             return m;
         }
     });
-    
+
     $("#StateId").on("change", function () {
-        $("#DistrictId").empty();       
+        $("#DistrictId").empty();
         $.getJSON("/LawyerDiary/CourtDistrict/LoadDistricts?StateCode=" + $("#StateId").val(), function (data) {
             $.each(data.Data, function (i, item) {
                 $("#DistrictId").append(`<option /><option value="${item.Code}">${item.Name_En}</option>`);
             });
         });
     });
-    
+
 </script>

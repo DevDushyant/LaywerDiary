@@ -32,7 +32,7 @@ namespace CourtApp.Application.Mappings
                 .ForPath(d => d.Name_En, opt => opt.MapFrom(src => src.Name_En));
 
             CreateMap<GetCourtMasterDataAllResponse, CourtMasterEntity>().ReverseMap();
-            CreateMap<CourtBenchResponse, CourtBenchEntity>();
+            CreateMap<CourtBenchResponse, CourtBenchEntity>().ReverseMap();
             
         }
     }

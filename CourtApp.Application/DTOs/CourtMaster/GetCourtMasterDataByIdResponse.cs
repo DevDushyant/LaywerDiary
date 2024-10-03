@@ -15,6 +15,7 @@ namespace CourtApp.Application.DTOs.CourtMaster
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
         public string Abbreviation { get; set; }
+        public bool IsHighCourt { get; set; }
         public virtual IList<CourtBenchEntity> CourtBenches { get; set; }
 
     }

@@ -10,6 +10,7 @@ using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.FlowAnalysis;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,10 +30,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new GetCaseDetailsQuery());
+            var response = await _mediator.Send(new GetCaseInfoQuery());
             if (response.Succeeded)
             {
-                var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
+                var viewModel = _mapper.Map<List<GetCaseInfoViewModel>>(response.Data);
                 return PartialView("_ViewAll", viewModel);
             }
             return null;
@@ -65,15 +66,18 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 {
                     var CaseDetail = _mapper.Map<CaseViewModel>(response.Data);
                     CaseDetail.States = await LoadStates();
-                    CaseDetail.CourtTypes = await LoadCourtTypes();                   
+                    CaseDetail.CourtTypes = await LoadCourtTypes();
+                    CaseDetail.Courts = await CourtSelectList(CaseDetail.CourtTypeId);
+
                     CaseDetail.CaseNatures = await LoadCaseNature();
+                    CaseDetail.TypeOfCases = await CaseTypes(CaseDetail.CaseCategoryId);
                     CaseDetail.Years = DdlYears();
                     CaseDetail.FirstTitleList = await DdlFSTypes(1);
-                    CaseDetail.SecondTitleList = await DdlFSTypes(2);                    
+                    CaseDetail.SecondTitleList = await DdlFSTypes(2);
                     CaseDetail.CaseStatusList = await DdlCaseStages();
                     CaseDetail.LinkedBy = await UserCaseTitle();
                     CaseDetail.Cadres = DdlCadres();
-                    CaseDetail.Strengths = DdlStrength();                    
+                    CaseDetail.Strengths = DdlStrength();
                     return View("_CreateOrEdit", CaseDetail);
                 }
                 return null;

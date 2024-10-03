@@ -19,6 +19,8 @@ namespace CourtApp.Application.Features.Case
         public Guid CourtTypeId { get; set; }
         public Guid CaseCategoryId { get; set; }
         public Guid CaseTypeId { get; set; }
+        public Guid CourtDistrictId { get; set; }
+        public Guid CourtComplexId { get; set; }
         public Guid CourtBenchId { get; set; }
         public string CaseNo { get; set; }
         public int CaseYear { get; set; }

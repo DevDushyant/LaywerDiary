@@ -9,5 +9,6 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
     {
         public Guid Id { get; set; }
         public string CourtType { get; set; }
+        public string Abbreviation { get; set; }
     }
 }

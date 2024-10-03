@@ -36,6 +36,7 @@ using HtmlAgilityPack;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.FlowAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -169,6 +170,20 @@ namespace CourtApp.Web.Abstractions
             });
             return Json(response);
         }
+        public async Task<SelectList> CourtSelectList(Guid CourtTypeId)
+        {
+            var response = await _mediator.Send(new GetCourtMasterAllQuery()
+            {
+                CourtTypeId = CourtTypeId
+
+            });
+            if (response.Succeeded)
+            {
+                var fields = _mapper.Map<List<CourtMasterViewModel>>(response.Data);
+                return new SelectList(fields, nameof(CourtMasterViewModel.Id), nameof(CourtMasterViewModel.CourtName), null, null); ;
+            }
+            return null;
+        }
         public async Task<JsonResult> LoadCourtType()
         {
             var response = await _mediator.Send(new GetCourtTypeQuery());
@@ -180,11 +195,28 @@ namespace CourtApp.Web.Abstractions
             var response = await _mediator.Send(new GetCourtComplexCacheQuery() { CourtDistrictId = CDistrictId });
             return Json(response);
         }
+        public async Task<SelectList> GetCourtComplex(Guid CourtDistrictId)
+        {
+            var response = await _mediator.Send(new GetCourtComplexQuery() { CourtDistrictId = CourtDistrictId });
+            var viewModel = _mapper.Map<List<CourtComplexViewModel>>(response.Data);
+            return new SelectList(viewModel, nameof(CourtComplexViewModel.Id), nameof(CourtComplexViewModel.Name_En), null, null);
+        }
+
         public async Task<JsonResult> LoadTypeOfCase(Guid natureId)
         {
             var caseType = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 100) { CategoryId = natureId });
             var data = Json(caseType);
             return data;
+        }
+        public async Task<SelectList> CaseTypes(Guid CategoryId)
+        {
+            var response = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 100) { CategoryId = CategoryId });
+            if (response.Succeeded)
+            {
+                var fields = _mapper.Map<List<TypeOfCasesViewModel>>(response.Data);
+                return new SelectList(fields, nameof(TypeOfCasesViewModel.Id), nameof(TypeOfCasesViewModel.CaseNature), null, null); ;
+            }
+            return null;
         }
         public async Task<JsonResult> LCCByCourtTypeStage(Guid CourtType, int StateId)
         {
@@ -499,11 +531,11 @@ namespace CourtApp.Web.Abstractions
                 {
                     var paragraph = new Paragraph(new Run(new Text(node.InnerText.Replace("&nbsp;", " "))));
                     body.AppendChild(paragraph);
-                }                
+                }
                 // Add more HTML tag handling as needed
             }
         }
-       
+
         #endregion
     }
 }

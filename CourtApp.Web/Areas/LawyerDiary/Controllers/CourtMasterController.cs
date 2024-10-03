@@ -1,4 +1,5 @@
-﻿using CourtApp.Application.Features.CourtMasters;
+﻿using CourtApp.Application.DTOs.CourtMaster;
+using CourtApp.Application.Features.CourtMasters;
 using CourtApp.Application.Features.CourtMasters.Command;
 using CourtApp.Application.Features.CourtType.Query;
 using CourtApp.Application.Features.Queries.Districts;
@@ -65,7 +66,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 var ViewModel = new CourtMasterViewModel();
                 ViewModel.CourtTypes = await LoadCourtTypes();
-                ViewModel.States = await LoadStates();                
+                ViewModel.States = await LoadStates();
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
             }
             else
@@ -74,7 +75,14 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 if (response.Succeeded)
                 {
                     var ViewModel = _mapper.Map<CourtMasterViewModel>(response.Data);
-                    await BindDropdownAsync(ViewModel);
+                    ViewModel.States = await LoadStates();
+                    ViewModel.CourtTypes = await LoadCourtTypes();
+                    ViewModel.Districts = await DdlLoadDistrict(ViewModel.StateCode);
+                    if (ViewModel.IsHighCourt != true)
+                    {
+                        ViewModel.CourtDistricts = await DdlLoadCourtDistricts(ViewModel.DistrictCode);
+                        ViewModel.CourtComplexes = await GetCourtComplex(ViewModel.CourtDistrictId.Value);
+                    }
                     return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
                 }
                 return null;
@@ -118,7 +126,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                             _notify.Success($"Case type with ID {result.Data} Created.");
                         else _notify.Error(result.Message);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         Console.WriteLine(ex.ToString());
                     };
@@ -126,6 +134,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 else
                 {
                     var court = _mapper.Map<UpdateCourtMasterCommand>(btViewModel);
+                    court.CBAddress = _mapper.Map<List<CourtBenchResponse>>(btViewModel.CourtBenches);
                     var result = await _mediator.Send(court);
                     if (result.Succeeded) _notify.Information($"Case kind with unique id {result.Data} Updated.");
                 }

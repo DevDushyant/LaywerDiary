@@ -4,6 +4,7 @@ using CourtApp.Application.DTOs.CaseDetails;
 using CourtApp.Application.Features.Case;
 using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Web.Areas.Litigation.Models;
+using System;
 namespace CourtApp.Web.Areas.Litigation.Mappings
 {
     public class CaseMappingProfile : Profile
@@ -12,7 +13,9 @@ namespace CourtApp.Web.Areas.Litigation.Mappings
         {
             CreateMap<CaseViewModel, CreateCaseCommand>()
                 .ForPath(d => d.CaseStageCode, s => s.MapFrom(src => src.CaseStageCode))
-                .ForPath(d => d.LinkedCaseId, s => s.MapFrom(src => src.LinkedCaseId.Value));
+                .ForPath(d => d.LinkedCaseId, s => s.MapFrom(src => src.LinkedCaseId.Value))
+                .ForPath(d => d.CourtComplexId, s => s.MapFrom(src => src.ComplexBenchId.Value))
+                .ForPath(d => d.CourtDistrictId, s => s.MapFrom(src => src.CourtDistrictId.Value));
             CreateMap<CaseAgainstModel, CaseAgainstEntityModel>();
             CreateMap<CaseDetailResponse, GetCaseViewModel>()
                 .ForPath(d => d.NextHearingDate, s => s.MapFrom(src => src.NextHearingDate.ToString("dd/MM/yyyy")));
@@ -21,7 +24,11 @@ namespace CourtApp.Web.Areas.Litigation.Mappings
             CreateMap<CaseDocumentModel, DocumentAttachmentModel>();
             CreateMap<CaseUploadedDocument, CaseDoc>();
             CreateMap<CaseDetailInfoDto, CaseDetailInfoViewModel>();
-            CreateMap<UserCaseDetailResponse,CaseViewModel>();
+            CreateMap<UserCaseDetailResponse,CaseViewModel>()
+               ;
+
+            CreateMap<GetCaseInfoDto, GetCaseInfoViewModel>();
+            CreateMap<AgainstCaseDetail, AgainstCaseDecisionViewModel>();
             //CreateMap<CommandDeleteCaseEntry, CaseViewModel>().ReverseMap();
             //CreateMap<ResponseGetAllCaseEntry, CaseViewModel>().ReverseMap();           
         }

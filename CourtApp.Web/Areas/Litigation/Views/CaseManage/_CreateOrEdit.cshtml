@@ -16,7 +16,6 @@
         display: none;
     }
 
-
 </style>
 @model CaseViewModel
 <div class="card">
@@ -113,22 +112,6 @@
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label">@localizer["Case No/Year"] (<span style="color:red">*</span>)</label>
-                        <div class="col-md-2">
-                            <div class="input-group">
-                                <input type="text" placeholder="Case Number" asp-for="CaseNo" name="CaseNo" id="CaseNo" class="form-control" />
-                            </div>
-                            <span asp-validation-for="CaseNo" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="input-group">
-                                <select name="CaseYear" class="form-control select2bs4" id="CaseYear" asp-for="CaseYear" asp-items="@Model.Years">
-                                    <option></option>
-                                </select>
-                            </div>
-                            <span asp-validation-for="CaseYear" class="text-danger"></span>
-                        </div>
-
                         <label class="col-md-2 col-form-label">@localizer["Case Category"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-4">
                             <div class="input-group">
@@ -138,9 +121,6 @@
                             </div>
                             <span asp-validation-for="CaseCategoryId" class="text-danger"></span>
                         </div>
-                    </div>
-
-                    <div class="form-group row">
                         <label class="col-md-2 col-form-label">@localizer["Case Type"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-4">
                             <div class="input-group">
@@ -150,31 +130,7 @@
                             </div>
                             <span asp-validation-for="CaseTypeId" class="text-danger"></span>
                         </div>
-
-                        <label class="col-md-2 col-form-label">@localizer["Cis No/Year"]</label>
-                        <div class="col-md-2">
-                            <div class="input-group">
-                                <input type="text" placeholder="CIS Number" asp-for="CisNumber" name="CisNumber" id="CisNumber" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="input-group">
-                                <select name="CisYear" class="form-control select2bs4" id="CisYear" asp-for="CisYear" asp-items="@Model.Years">
-                                    <option></option>
-                                </select>
-                            </div>
-                        </div>
                     </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-2 col-form-label">@localizer["Cnr No"]</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <input type="text" placeholder="Cnr number" asp-for="CnrNumber" name="CnrNumber" id="CnrNumber" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label"> Title First (<span style="color:red">*</span>)</label>
                         <div class="col-md-8">
@@ -216,17 +172,6 @@
                     </div>
 
                     <div class="form-group row">
-                        <div class="col-md-3">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-2 col-form-label">@localizer["Next Date"]</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <input type="date" asp-for="NextDate" id="NextDate"  placeholder="dd/MM/yyyy" class="form-control">
-                            </div>
-                        </div>
                         <label class="col-md-2 col-form-label">@localizer["Case Stage"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-4">
                             <div class="input-group">
@@ -236,12 +181,63 @@
                             </div>
                             <span asp-validation-for="CaseStageCode" class="text-danger"></span>
                         </div>
+                        <label class="col-md-2 col-form-label">@localizer["Case No/Year"]</label>
+                        <div class="col-md-2">
+                            <div class="input-group">
+                                <input type="text" placeholder="Case Number" asp-for="CaseNo" name="CaseNo" id="CaseNo" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="input-group">
+                                <select name="CaseYear" class="form-control select2bs4" id="CaseYear" asp-for="CaseYear" asp-items="@Model.Years">
+                                    <option></option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="CaseYear" class="text-danger"></span>
+                        </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label">@localizer["Linked With"]</label>                        
+                        <label class="col-md-2 col-form-label">@localizer["Cis No/Year"]</label>
+                        <div class="col-md-2">
+                            <div class="input-group">
+                                <input type="text" placeholder="CIS Number" asp-for="CisNumber" name="CisNumber" id="CisNumber" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="input-group">
+                                <select name="CisYear" class="form-control select2bs4" id="CisYear" asp-for="CisYear" asp-items="@Model.Years">
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
+                        <label class="col-md-2 col-form-label">@localizer["Cnr No"]</label>
                         <div class="col-md-4">
-                            <div class="input-group">                                
+                            <div class="input-group">
+                                <input type="text" placeholder="Cnr number" asp-for="CnrNumber" name="CnrNumber" id="CnrNumber" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label">@localizer["Next Date"]</label>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="date" asp-for="NextDate" id="NextDate" placeholder="dd/MM/yyyy" class="form-control">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label">@localizer["Linked With"]</label>
+                        <div class="col-md-4">
+                            <div class="input-group">
                                 <select class="form-control select2bs4" asp-for="LinkedCaseId" asp-items="@Model.LinkedBy">
                                     <option></option>
                                 </select>

@@ -30,9 +30,14 @@
                 </td>
                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                 {
+                    @* <td>
+                        <a onclick="jQueryModalGet('/lawyerdiary/Title/OnCreatOrUpdateTitle?id=@bt.Id','Edit Complete Title')"><i class="fas fa-pencil-alt"></i></a>
+                        <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="Title" method="post" asp-action="OnTitleDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)" style="margin-left: 20px !important;margin-top: -23px !important;">
+                            <a href="javascript:$('#form_delete_@bt.Id').submit();"><i class="fas fa-trash-alt"></i></a>
+                        </form>
+                    </td> *@
                     <td text-right">
-                        <a onclick="jQueryModalGet('/lawyerdiary/Title/OnCreatOrUpdateTitle?id=@bt.Id','Edit Complete Title')" ><i class="fas fa-pencil-alt"></i></a>
-                        @* <div class="btn-group">
+                        <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Action
                             </button>
@@ -50,7 +55,7 @@
                                     </form>
                                 }
                             </div>
-                        </div> *@
+                        </div>
                     </td>
                 }
             </tr>

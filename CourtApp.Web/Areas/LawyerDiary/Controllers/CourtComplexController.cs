@@ -46,7 +46,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 {
                     var ViewModel = _mapper.Map<CourtComplexViewModel>(response.Data);
                     ViewModel.States = await LoadStates();
-                    ViewModel.Districts = await DdlLoadDistrict(ViewModel.DistrictId);
+                    ViewModel.Districts = await DdlLoadDistrict(ViewModel.StateId);                    
                     ViewModel.CourtDistricts = await DdlLoadCourtDistricts(ViewModel.DistrictId);
                     return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
                 }

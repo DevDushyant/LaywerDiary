@@ -17,6 +17,10 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public virtual StateEntity State { get; set; }
         public required Guid CourtTypeId { get; set; }
         public virtual CourtTypeEntity CourtType { get; set; }
+        public Guid? CourtDistrictId { get; set; }
+        public virtual CourtDistrictEntity CourtDistrict { get; set; }
+        public Guid? CourtComplexId { get; set; }
+        public virtual CourtComplexEntity CourtComplex { get; set; }
         public required Guid CaseCategoryId { get; set; }
         public virtual NatureEntity CaseCategory { get; set; }
         public required Guid CaseTypeId { get; set; }
@@ -24,7 +28,8 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public required Guid CourtBenchId { get; set; }
         public virtual CourtBenchEntity CourtBench { get; set; }
         public string CaseNo { get; set; }
-        public required int CaseYear { get; set; }
+        public  int CaseYear { get; set; }
+        public  int StrengthId { get; set; }
         public required string FirstTitle { get; set; }
         public required Guid FTitleId { get; set; }
         public virtual FSTitleEntity FTitle { get; set; }

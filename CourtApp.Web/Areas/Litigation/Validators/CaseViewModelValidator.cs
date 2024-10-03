@@ -20,13 +20,13 @@ namespace CourtApp.Web.Areas.Litigation.Validators
                 .NotEmpty().WithMessage("Court type is required.")
                 .NotNull();
 
-            RuleFor(p => p.CaseNo)
-                .NotEmpty().WithMessage("Case number is required.")
-                .NotNull();
+            //RuleFor(p => p.CaseNo)
+            //    .NotEmpty().WithMessage("Case number is required.")
+            //    .NotNull();
 
-            RuleFor(p => p.CaseNo)
-               .NotEmpty().WithMessage("Year is required.")
-               .NotNull();
+            //RuleFor(p => p.CaseNo)
+            //   .NotEmpty().WithMessage("Year is required.")
+            //   .NotNull();
 
             RuleFor(p => p.CaseCategoryId)
               .NotEmpty().WithMessage("Case category is required.")

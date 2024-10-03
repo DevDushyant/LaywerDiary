@@ -29,11 +29,7 @@ namespace CourtApp.Application.Features.UserCase
             var detail = await _CaseRepo.GetByIdAsync(request.CaseId);
             if (detail != null)
             {
-                var mappeddata = _mapper.Map<UserCaseDetailResponse>(detail);
-                mappeddata.CaseCategory = detail.CaseCategory.Name_En;
-                mappeddata.CourtBench = detail.CourtBench.CourtBench_En;
-                mappeddata.CourtType = detail.CourtType.CourtType;
-                mappeddata.CaseType = detail.CaseType.Name_En;
+                var mappeddata = _mapper.Map<UserCaseDetailResponse>(detail);                
                 return Result<UserCaseDetailResponse>.Success(mappeddata);
             }
             return null;

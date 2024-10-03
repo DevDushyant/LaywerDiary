@@ -17,10 +17,12 @@ namespace CourtApp.Application.DTOs.CaseDetails
         public string CourtBench { get; set; }
         public string DistrictCourt { get; set; }
         public string CourtComplex { get; set; }
-        public string CaseNoYear { get; set; }
+        public string CaseNo { get; set; }
+        public string CaseYear { get; set; }
         public string CaseCategory { get; set; }        
         public string CaseType { get; set; }        
-        public string CisNoYear { get; set; }
+        public string CisNo { get; set; }
+        public string CisYear { get; set; }
         public string CnrNo { get; set; }       
         public string FirstTitle { get; set; }       
         public string FirstTitleDetail { get; set; }        
@@ -29,7 +31,7 @@ namespace CourtApp.Application.DTOs.CaseDetails
         public string NextDate { get; set; }        
         public string CaseStage { get; set; }
         public bool IsCaseAgainstDecision { get; set; }
-        //public List<AgainstCaseDecisionViewModel> AgainstCases { get; set; }
+        public List<AgainstCaseDetail> AgainstCases { get; set; }
         //public ClientDetailViewModel ClientDetail { get; set; }
     }
 }

@@ -30,6 +30,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     var PWorkCase = new CaseTitleWorkData();
                     PWorkCase.CaseTitle = item.CaseDetail;
                     PWorkCase.Id = item.CaseId;
+                    PWorkCase.WorkDate = item.WorkingDate!=null? item.WorkingDate.Value.ToString("dd/MM/yyyy"):"";
                     foreach (var w in item.AWorks)
                     {
                         var wt = new WorkDt();

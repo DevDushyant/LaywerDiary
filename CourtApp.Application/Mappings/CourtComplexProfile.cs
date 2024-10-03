@@ -5,13 +5,14 @@ using CourtApp.Domain.Entities.LawyerDiary;
 
 namespace CourtApp.Application.Mappings
 {
-    public class CourtComplexProfile:Profile
+    public class CourtComplexProfile : Profile
     {
         public CourtComplexProfile()
         {
-            CreateMap<CreateCourtComplexCommand,CourtComplexEntity>();
+            CreateMap<CreateCourtComplexCommand, CourtComplexEntity>();
             CreateMap<CourtComplexEntity, CourtComplexResponse>();
-            CreateMap<CourtComplexEntity, CourtComplexByIdResponse>();
+            CreateMap<CourtComplexEntity, CourtComplexByIdResponse>()
+                 .ForPath(d => d.DistrictId, opt => opt.MapFrom(src => src.DistrictCode));
         }
     }
 }

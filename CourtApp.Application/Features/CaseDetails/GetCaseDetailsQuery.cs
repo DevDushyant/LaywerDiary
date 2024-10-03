@@ -1,16 +1,12 @@
 ﻿using AspNetCoreHero.Results;
-using CourtApp.Application.Constants;
 using CourtApp.Application.DTOs.Case;
-using CourtApp.Application.DTOs.CaseDetails;
 using CourtApp.Application.Extensions;
 using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -65,7 +61,7 @@ namespace CourtApp.Application.Features.UserCase
                 STitleType = e.FTitle.Name_En,
                 CaseTypeName = e.CaseType.Name_En,
                 CourtType = e.CourtType.CourtType,
-                CaseNumber = String.Concat(e.CaseNo, "/", e.CaseYear),
+                CaseNumber = e.CaseNo==null? e.CaseYear.ToString(): String.Concat(e.CaseNo, "/", e.CaseYear),
                 CourtName = e.CourtBench.CourtBench_En,
                 FirstTitle = e.FirstTitle,
                 SecondTitle = e.SecondTitle,
@@ -86,7 +82,8 @@ namespace CourtApp.Application.Features.UserCase
                 proceedingData = _RepoProceeding.Entities
                     .Where(n => n.NextDate.Value == request.HearingDate);
 
-            var td = _RepoCase.Entites.Where(predicate).Select(expression);
+            var td = _RepoCase.Entites.Where(predicate)
+                .Select(expression);
             IQueryable<CaseDetailResponse> fnldt;
             if (proceedingData.Count() > 0)
             {
@@ -100,7 +97,7 @@ namespace CourtApp.Application.Features.UserCase
                             Id = cd.Id,
                             CourtName = cd.CourtName,
                             Abbreviation = cd.Abbreviation,
-                            CaseTypeName = cd.CourtType,
+                            CaseTypeName = cd.CaseTypeName,
                             FTitleType = cd.FTitleType,
                             FirstTitle = cd.FirstTitle,
                             STitleType = cd.STitleType,

@@ -1,15 +1,14 @@
-﻿@model IEnumerable<GetCaseViewModel>
+﻿@model IEnumerable<GetCaseInfoViewModel>
 <table id="tblUserCase" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
             <th style="width:5%!important">Sno.</th>
-            <th style="width:12%!important">Court</th>
-            <th style="width:10%!important">Type</th>
-            <th style="width:10%!important">Number</th>
-            <th style="width:30%!important">Parties</th>
+            <th style="width:15%!important">Court</th>
+            <th style="width:15%!important">Type</th>
+            <th style="width:37%!important">Case Detail</th>
             <th style="width:10%!important">Stage</th>
-            <th style="width:12%!important">Next Date</th>
-            <th style="width:10%!important">Actions</th>
+            <th style="width:13%!important">Next Date</th>
+            <th style="width:5%!important">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -23,18 +22,14 @@
                     @(count = count + 1)
                 </td>
                 <td>
-                    @bt.CourtName
+                    @bt.Court
                 </td>
                 <td>
-                    @bt.CaseTypeName
+                    @bt.CaseType
                 </td>
                 <td>
-                    @bt.CaseNumber
+                    @bt.CaseDetail
                 </td>
-                <td>
-                    @string.Concat(bt.FirstTitle, " V/S ", bt.SecondTitle)
-                </td>
-
                 <td>
                     @bt.CaseStage
                 </td>
@@ -42,9 +37,8 @@
             @bt.Status
             </td> *@
                 <td>
-                    @if (bt.NextHearingDate != "01/01/0001")
-                        @bt.NextHearingDate
-
+                    @if (bt.NextDate != "01/01/0001")
+                        @bt.NextDate
                 </td>
                 <td>
                     <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-history" title="See History"></a>
@@ -54,30 +48,6 @@
                 <a href="javascript:$('#form_delete_@bt.Id').submit();" class="fas fa-trash-alt"></a>
                 </form> *@
                 </td>
-                @*  @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
-            {
-            <td text-right">
-            <div class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Action
-            </button>
-            <div class="dropdown-menu shadow animated--grow-in">
-            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Edit)).Result.Succeeded)
-            {
-            <a onclick="jQueryModalGet('/LawyerDiary/casestage/OnGetCreateOrEdit?id=@bt.Id', 'Edit Brand')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
-
-            }
-            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded)
-
-            {
-            <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="casestage" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
-            <a href="javascript:$('#form_delete_@bt.Id').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a>
-            </form>
-            }
-            </div>
-            </div>
-            </td>
-            } *@
             </tr>
         }
     </tbody>

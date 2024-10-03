@@ -14,7 +14,8 @@ namespace CourtApp.Infrastructure.CacheRepositories
     {
         private readonly IDistributedCache _distributedCache;
         private readonly ICourtComplexRepository _repository;
-        public CourtComplexCacheRepository(IDistributedCache _distributedCache, ICourtComplexRepository _repository)
+        public CourtComplexCacheRepository(IDistributedCache _distributedCache, 
+            ICourtComplexRepository _repository)
         {
             this._repository = _repository;
             this._distributedCache = _distributedCache; 

@@ -20,7 +20,7 @@ namespace CourtApp.Application.Features.CourtComplex
         public int PageSize { get; set; }
         public int StateId { get; set; }
         public int DistrictId { get; set; }
-        public Guid CourDistrictId { get; set; }
+        public Guid CourtDistrictId { get; set; }
     }
     public class GetCourtComplexQueryHandler : IRequestHandler<GetCourtComplexQuery, PaginatedResult<CourtComplexResponse>>
     {
@@ -48,8 +48,8 @@ namespace CourtApp.Application.Features.CourtComplex
                     predicate = predicate.And(y => y.StateId == request.StateId);
                 if (request.DistrictId != 0)
                     predicate = predicate.And(x => x.DistrictCode == request.DistrictId);
-                if (request.CourDistrictId != Guid.Empty)
-                    predicate = predicate.And(x => x.CourtDistrictId == request.CourDistrictId);
+                if (request.CourtDistrictId != Guid.Empty)
+                    predicate = predicate.And(x => x.CourtDistrictId == request.CourtDistrictId);
             }
             try
             {

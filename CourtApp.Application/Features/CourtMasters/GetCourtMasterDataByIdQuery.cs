@@ -29,6 +29,7 @@ namespace CourtApp.Application.Features.CourtMasters
         {
             var data = await _repository.GetByIdAsync(request.Id);
             var mappeddata = mapper.Map<GetCourtMasterDataByIdResponse>(data);
+            mappeddata.IsHighCourt = mappeddata.CourtDistrictId != Guid.Empty ? false : true;
             return Result<GetCourtMasterDataByIdResponse>.Success(mappeddata);
         }
     }

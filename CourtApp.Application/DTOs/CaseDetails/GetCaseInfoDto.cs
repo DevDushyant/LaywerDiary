@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CourtApp.Application.DTOs.CaseDetails
+{
+    public class GetCaseInfoDto
+    {
+        public Guid Id { get; set; }
+        public string Court { get; set; }
+        public string CaseType { get; set; }
+        public string CaseStage { get; set; }
+        public string NextDate { get; set; }
+        public string CaseDetail { get; set; }
+    }
+}

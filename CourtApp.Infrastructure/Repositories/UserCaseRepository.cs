@@ -31,20 +31,37 @@ namespace CourtApp.Infrastructure.Repositories
         {
             return await _repository
                 .Entities
-                .Where(w => w.CaseNo.Equals(No) && w.CaseYear==Year).FirstOrDefaultAsync();
+                .Where(w => w.CaseNo.Equals(No) && w.CaseYear == Year).FirstOrDefaultAsync();
         }
 
-        public async Task<CaseDetailEntity> GetByIdAsync(Guid CaseUid)
+        public async Task<CaseDetailEntity> GetByIdAsync(Guid Id)
         {
             return await _repository
-                .Entities     
-                .Include(c=>c.State)
-                .Include(c=>c.CaseCategory)
-                .Include(c=>c.CaseStage)
-                .Include(c=>c.CourtType)
-                .Include(c=>c.CourtBench)
-                .Include(c=>c.CaseType)
-                .Where(w=>w.Id==CaseUid).FirstAsync();            
+               .Entities
+                .Include(d => d.CaseAgainstEntities)
+                .Where(w => w.Id == Id).FirstAsync();
+        }
+
+        public async Task<CaseDetailEntity> GetDetailAsync(Guid CaseUid)
+        {
+            return await _repository
+                .Entities
+                .Include(c => c.State)
+                .Include(c => c.CaseCategory)
+                .Include(c => c.CaseStage)
+                .Include(c => c.CourtType)
+                .Include(c => c.CourtBench)
+                .Include(c => c.CaseType)
+                .Include(t => t.FTitle)
+                .Include(t => t.STitle)
+                .Include(t => t.CourtDistrict)
+                .Include(d => d.CaseAgainstEntities).ThenInclude(c => c.CourtBench)
+                .Include(d => d.CaseAgainstEntities).ThenInclude(c => c.CourtType)
+                .Include(d => d.CaseAgainstEntities).ThenInclude(c => c.CaseCategory)
+                .Include(d => d.CaseAgainstEntities).ThenInclude(c => c.CourtComplex)
+                .Include(d => d.CaseAgainstEntities).ThenInclude(c => c.CaseType)
+                .Include(d => d.CaseAgainstEntities).ThenInclude(c => c.CourtDistrict)
+                .Where(w => w.Id == CaseUid).FirstAsync();
         }
 
         public async Task<List<CaseDetailEntity>> GetListAsync()

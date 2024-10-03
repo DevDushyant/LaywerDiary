@@ -1,0 +1,14 @@
+﻿using System;
+
+namespace CourtApp.Web.Areas.Litigation.Models
+{
+    public class GetCaseInfoViewModel
+    {
+        public Guid Id { get; set; }
+        public string Court { get; set; }
+        public string CaseType { get; set; }
+        public string CaseStage { get; set; }
+        public string NextDate { get; set; }
+        public string CaseDetail { get; set; }
+    }
+}

@@ -115,8 +115,7 @@ namespace CourtApp.Infrastructure.DbContexts
                 property.SetColumnType("decimal(18,2)");
             }
 
-            base.OnModelCreating(builder);
-            //builder.Entity<CourtMasterEntity>().Property(p => p.CourtComplexId).IsRequired(false);
+            base.OnModelCreating(builder);           
             //builder.Entity<CourtMasterEntity>().Property(p => p.CourtDistrictId).IsRequired(false);
             //builder.Entity<CourtMasterEntity>().Property(p => p.UId).HasDefaultValueSql("uuid_generate_v4()");
             //builder.Entity<ClientEntity>().Property(p => p.UId).HasDefaultValueSql("uuid_generate_v4()");

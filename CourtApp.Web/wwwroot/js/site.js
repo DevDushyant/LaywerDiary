@@ -54,7 +54,7 @@
             console.log(ex)
         }
     }
-    jQueryModalDelete = form => {
+    jQueryModalDelete = form => {        
         if (confirm('Are you sure to delete this record ?')) {
             try {
                 $.ajax({
