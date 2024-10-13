@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ProceedingSubHeadViewModel>
+﻿@* @model IEnumerable<ProceedingSubHeadViewModel> *@
+    @model PaginationViewModel<ProceedingSubHeadViewModel>
 <table id="tblProceedingSHead" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
@@ -13,8 +14,7 @@
         </tr>
     </thead>
     <tbody>
-
-        @foreach (var bt in Model)
+        @foreach (var bt in Model.Data)
         {
             <tr>
                 <td>
@@ -56,7 +56,18 @@
             </tr>
         }
     </tbody>
+
 </table>
+@* <nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="@Url.Action("LoadAll", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+            </li>
+        }
+    </ul>
+</nav> *@
 <script>
     $(document).ready(function () {
         $("#tblProceedingSHead").DataTable();

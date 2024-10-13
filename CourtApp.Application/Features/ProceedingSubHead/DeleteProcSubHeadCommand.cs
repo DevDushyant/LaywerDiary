@@ -1,5 +1,4 @@
 ﻿using AspNetCoreHero.Results;
-using CourtApp.Application.Features.ProceedingHead;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
 using System;
@@ -12,7 +11,7 @@ namespace CourtApp.Application.Features.ProceedingSubHead
     {
         public Guid Id { get; set; }
     }
-    public class DeleteProcSubHeadCommandHandler : IRequestHandler<DeleteProceedingHeadCommand, Result<Guid>>
+    public class DeleteProcSubHeadCommandHandler : IRequestHandler<DeleteProcSubHeadCommand, Result<Guid>>
     {
         private readonly IProceedingSubHeadRepository _Repository;
         private IUnitOfWork _unitOfWork { get; set; }
@@ -22,7 +21,7 @@ namespace CourtApp.Application.Features.ProceedingSubHead
             _unitOfWork = unitOfWork;
             this._Repository = repository;
         }
-        public async Task<Result<Guid>> Handle(DeleteProceedingHeadCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(DeleteProcSubHeadCommand request, CancellationToken cancellationToken)
         {
             var detail = await _Repository.GetByIdAsync(request.Id);
             await _Repository.DeleteAsync(detail);

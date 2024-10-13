@@ -99,6 +99,12 @@ namespace CourtApp.Web.Abstractions
             var CaseNatures = _mapper.Map<List<CaseNatureViewModel>>(response.Data);
             return new SelectList(CaseNatures, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.Name_En), null, null);
         }
+        public async Task<SelectList> ddlCaseCategory(Guid CourtTypeId)
+        {
+            var response = await _mediator.Send(new GetQueryCaseCategory());
+            var CaseNatures = _mapper.Map<List<CaseNatureViewModel>>(response.Data);
+            return new SelectList(CaseNatures, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.Name_En), null, null);
+        }
         public async Task<JsonResult> LoadCaseCategory(Guid CourtTypeId)
         {
             var response = await _mediator.Send(new GetQueryCaseCategory { CourtTypeId = CourtTypeId });

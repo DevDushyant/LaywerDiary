@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace CourtApp.Application.Features.WorkMaster
 {
@@ -38,22 +39,20 @@ namespace CourtApp.Application.Features.WorkMaster
             WorkMasterEntity entity = null;
             if (request.ActionType == ((int)ActionTypes.Add))
             {
+                var wmdt = _Repository.Entities
+                    .Where(x => x.Work_En.Equals(request.Work_En))
+                    .FirstOrDefault();
+                if (wmdt != null) return Result<Guid>.Fail("This work type is already exists!");
                 entity = _mapper.Map<WorkMasterEntity>(request);
                 await _Repository.InsertAsync(entity);
             }
             if (request.ActionType == ((int)ActionTypes.Update))
             {
-                entity = _Repository.GetByIdAsync(request.Id).Result;              
                 entity.Work_En = request.Work_En;
                 entity.Work_Hn = request.Work_Hn;
                 entity.Abbreviation = request.Abbreviation;
                 await _Repository.UpdateAsync(entity);
             }
-            //if (request.ActionType == ((int)ActionTypes.Update))
-            //{
-            //    entity = _Repository.GetByIdAsync(request.Id).Result;
-            //    await _Repository.DeleteAsync(entity);
-            //}
             await _unitOfWork.Commit(cancellationToken);
             return Result<Guid>.Success(entity.Id);
         }

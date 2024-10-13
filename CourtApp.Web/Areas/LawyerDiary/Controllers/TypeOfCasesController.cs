@@ -66,6 +66,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 {
                     var brandViewModel = _mapper.Map<TypeOfCasesViewModel>(response.Data);
                     await BindDropdownAsync(brandViewModel);
+                    brandViewModel.CaseNatures = await ddlCaseCategory(brandViewModel.CourtTypeId);
                     return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", brandViewModel) });
                 }
                 return null;

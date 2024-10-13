@@ -3,7 +3,6 @@ using CourtApp.Application.Features.WorkMaster;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,7 +94,6 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", viewModel);
                 return new JsonResult(new { isValid = false, html = html });
             }
-            return new JsonResult(new { isValid = false, html = "" });
         }
 
         [HttpPost]

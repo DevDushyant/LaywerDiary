@@ -6,7 +6,7 @@
                 <label class="col-md-3 col-form-label">@localizer["Head"]</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                        <select name="HeadId" class="form-control select2bs4" id="HeadId" asp-for="HeadId" asp-items="@Model.PHeads">
+                        <select  class="form-control select2bs4"  asp-for="HeadId" asp-items="@Model.PHeads">
                             <option></option>
                         </select>
                     </div>
@@ -49,8 +49,9 @@
     </div>
 </form>
 <script type="text/javascript" language=javascript>
+    $.validator.unobtrusive.parse(document);
     $(document).ready(function () {
-        $("#BookTypeId").select2({
+        $("#HeadId").select2({
             placeholder: "Select a book type",
             theme: "bootstrap4",
             escapeMarkup: function (m) {

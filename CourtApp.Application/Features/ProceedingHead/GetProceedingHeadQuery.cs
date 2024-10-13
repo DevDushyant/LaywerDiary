@@ -28,7 +28,6 @@ namespace CourtApp.Application.Features.ProceedingHead
             var Heads = await repository.GetListAsync();
             var HeadsDt = mapper.Map<List<GetProceedingHeadResponse>>(Heads);
             return Result<List<GetProceedingHeadResponse>>.Success(HeadsDt);
-
         }
     }
 

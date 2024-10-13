@@ -7,6 +7,7 @@ using CourtApp.Web.Abstractions;
 using CourtApp.Application.Features.ProceedingSubHead;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using CourtApp.Web.Models;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 {
@@ -18,24 +19,34 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             var model = new ProceedingSubHeadViewModel();
             return View(model);
         }
-        public async Task<IActionResult> LoadAllAsync()
+        public async Task<IActionResult> LoadAllAsync(int pageNumber, int pageSize)
         {
-            var response = await _mediator.Send(new GetProceedingSubHeadQuery());
+            var response = await _mediator.Send(new GetProceedingSubHeadQuery()
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            });
             if (response.Succeeded)
             {
-                var viewModel = _mapper.Map<List<ProceedingSubHeadViewModel>>(response.Data);
+                var result = _mapper.Map<List<ProceedingSubHeadViewModel>>(response.Data);
+                var viewModel = new PaginationViewModel<ProceedingSubHeadViewModel>();
+                viewModel.Data = result;
+                viewModel.HasPreviousPage = response.HasPreviousPage;
+                viewModel.HasNextPage = response.HasNextPage;
+                viewModel.TotalPages = response.TotalPages;
+                viewModel.TotalCount = response.TotalCount;
+                viewModel.PageSize = 10;
+                viewModel.PageNumber = 1;
                 return PartialView("_ViewAll", viewModel);
             }
             return null;
         }
         public async Task<JsonResult> OnGetCreateOrEdit(Guid Id)
         {
-            var pHeadList = await _mediator.Send(new GetProceedingHeadQuery());
             if (Id == Guid.Empty)
             {
                 var ViewModel = new ProceedingSubHeadViewModel();
-                var pHeadViewModel = _mapper.Map<List<ProceedingHeadViewModel>>(pHeadList.Data);
-                ViewModel.PHeads = new SelectList(pHeadViewModel, nameof(ProceedingHeadViewModel.Id), nameof(ProceedingHeadViewModel.Name_En), null, null);
+                ViewModel.PHeads = await DdlProcHeads();
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
             }
             else
@@ -43,10 +54,9 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 var response = await _mediator.Send(new GetProceedingSubHeadGetByIdQuery() { Id = Id });
                 if (response.Succeeded)
                 {
-                    var brandViewModel = _mapper.Map<ProceedingSubHeadViewModel>(response.Data);
-                    var pHeadViewModel = _mapper.Map<List<ProceedingHeadViewModel>>(pHeadList.Data);
-                    brandViewModel.PHeads = new SelectList(pHeadViewModel, nameof(ProceedingHeadViewModel.Id), nameof(ProceedingHeadViewModel.Name_En), null, null);
-                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", brandViewModel) });
+                    var ViewModel = _mapper.Map<ProceedingSubHeadViewModel>(response.Data);
+                    ViewModel.PHeads = await DdlProcHeads();
+                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
                 }
                 return null;
             }
@@ -91,7 +101,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", viewModel);
                 return new JsonResult(new { isValid = false, html = html });
-            }           
+            }
         }
 
         [HttpPost]

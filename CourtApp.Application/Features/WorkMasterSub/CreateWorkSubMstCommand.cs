@@ -4,13 +4,14 @@ using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.WorkMasterSub
 {
-    public class CreateWorkSubMstCommand:IRequest<Result<Guid>>
-    {        
+    public class CreateWorkSubMstCommand : IRequest<Result<Guid>>
+    {
         public Guid WorkId { get; set; }
         public required string Name_En { get; set; }
         public string Name_Hn { get; set; }
@@ -23,12 +24,17 @@ namespace CourtApp.Application.Features.WorkMasterSub
         private readonly IUnitOfWork unitOfWork;
         public CreateWorkSubMstCommandHandler(IWorkMasterSubRepository repository, IMapper mapper, IUnitOfWork unitOfWork)
         {
-            this.repository = repository;   
+            this.repository = repository;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
         }
         public async Task<Result<Guid>> Handle(CreateWorkSubMstCommand request, CancellationToken cancellationToken)
         {
+            var wsmdt =repository.Entities
+                       .Where(x => (x.WorkId == request.WorkId && x.Name_En.Equals(request.Name_En)) 
+                        || (x.Abbreviation.Equals(request.Abbreviation)))
+                        .FirstOrDefault();
+            if (wsmdt != null) return Result<Guid>.Fail("The provided detail already exist!");
             var mappeddata = mapper.Map<WorkMasterSubEntity>(request);
             await repository.InsertAsync(mappeddata);
             await unitOfWork.Commit(cancellationToken);

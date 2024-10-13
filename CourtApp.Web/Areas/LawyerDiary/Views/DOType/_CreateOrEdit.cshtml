@@ -5,8 +5,12 @@
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">@localizer["Type"]</label>
                 <div class="col-md-9">
-                    <select class="form-control select2bs4" asp-for="TypeId" asp-items="@Model.Types"> </select>
+                    <select class="form-control select2bs4" asp-for="TypeId" asp-items="@Model.Types"> 
+                        <option></option>
+                    </select>
+                    <span asp-validation-for="TypeId" class="text-danger"></span>
                 </div>
+                
             </div>
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">@localizer["Name"]</label>
@@ -30,4 +34,13 @@
 </form>
 <script type="text/javascript" language=javascript>
     $.validator.unobtrusive.parse(document);
+    $(document).ready(function () {
+        $("#TypeId").select2({
+            placeholder: "Select a type",
+            theme: "bootstrap4",
+            escapeMarkup: function (m) {
+                return m;
+            }
+        });
+    });
 </script>

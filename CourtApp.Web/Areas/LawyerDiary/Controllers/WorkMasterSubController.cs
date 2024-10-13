@@ -1,4 +1,5 @@
 ﻿using CourtApp.Application.Enums;
+using CourtApp.Application.Features.BookMasters.Query;
 using CourtApp.Application.Features.WorkMaster;
 using CourtApp.Application.Features.WorkMasterSub;
 using CourtApp.Web.Abstractions;
@@ -22,7 +23,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
         public async Task<IActionResult> LoadAllAsync()
         {
-            var response = await _mediator.Send(new GWorkSubMstQuery());
+            var response = await _mediator.Send(new GWorkSubMstQuery() { PageNumber=1,PageSize=1000});
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<WorkMasterSubViewModel>>(response.Data);
@@ -84,13 +85,22 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 {
                     var cmd = _mapper.Map<UpdateWorkSubMstCommand>(viewModel);                    
                     var result = await _mediator.Send(cmd);
-                    if (result.Succeeded)
-                    {
+                    if (result.Succeeded)                   
                         _notify.Information($"Work Master with ID {result.Data} Updated.");
-                        var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                        return new JsonResult(new { isValid = true, html = html });
-                    }
                 }
+                var response = await _mediator.Send(new GWorkSubMstQuery() { PageNumber = 1, PageSize = 1000 });
+                if (response.Succeeded)
+                {
+                    var dt = _mapper.Map<List<WorkMasterSubViewModel>>(response.Data);
+                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", dt);
+                    return new JsonResult(new { isValid = true, html = html });
+                }
+                else
+                {
+                    _notify.Error(response.Message);
+                    return null;
+                }
+
 
             }
             else
@@ -98,7 +108,6 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", viewModel);
                 return new JsonResult(new { isValid = false, html = html });
             }
-            return new JsonResult(new { isValid = false, html = "" });
         }
 
         [HttpPost]

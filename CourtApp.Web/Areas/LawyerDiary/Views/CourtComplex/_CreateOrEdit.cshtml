@@ -62,7 +62,7 @@
                 <label class="col-md-3 col-form-label">@localizer["Abbreviation"]</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                        <input type="text" placeholder="Please enter Abbreviation" asp-for="Abbreviation" name="Abbreviation" id="Name_Hn" class="form-control" />
+                        <input type="text" placeholder="Please enter Abbreviation" asp-for="Abbreviation" maxlength="4" class="form-control" />
                     </div>
                     <span asp-validation-for="Abbreviation" class="text-danger"></span>
                 </div>

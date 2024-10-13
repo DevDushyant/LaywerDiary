@@ -11,7 +11,7 @@ namespace CourtApp.Application.Features.ProceedingSubHead
     public class UpdateProcSubHeadCommand : IRequest<Result<Guid>>
     {
         public Guid Id { get; set; }
-        public Guid PHeadId { get; set; }
+        public Guid HeadId { get; set; }
         public int ActionType { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
@@ -35,7 +35,8 @@ namespace CourtApp.Application.Features.ProceedingSubHead
             {
                 detailById.Name_En = request.Name_En;
                 detailById.Name_Hn = request.Name_Hn;
-                detailById.HeadId = request.PHeadId;
+                detailById.HeadId = request.HeadId;
+                
                 await _Repository.UpdateAsync(detailById);
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(detailById.Id);

@@ -17,7 +17,7 @@ namespace CourtApp.Application.Mappings
         public ProceedingSubHeadProfile()
         {
             CreateMap<ProceedingSubHeadEntity, GetProcSubHeadResponse>();            
-            CreateMap<ProceedingSubHeadEntity, GetProceedingHeadResponse>();
+            CreateMap<ProceedingSubHeadEntity, GetProcSubHeadByIdResponse>();
             CreateMap<CreateProcSubHeadCommand, ProceedingSubHeadEntity>();
             CreateMap<UpdateProcSubHeadCommand, ProceedingSubHeadEntity>();
             CreateMap<DeleteProcSubHeadCommand, ProceedingSubHeadEntity>();

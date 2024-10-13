@@ -35,6 +35,10 @@ namespace CourtApp.Application.Features.CaseStages.Command
 
         public async Task<Result<Guid>> Handle(CreateCaseStageCommand request, CancellationToken cancellationToken)
         {
+            var entity = repository.QryEntities
+                .Where(w => w.Abbreviation.Equals(request) || w.CaseStage.Equals(request.CaseStage))
+                .FirstOrDefault();
+            if (entity != null) return Result<Guid>.Fail("The provided detail is already exist!");
             var mappeddata = mapper.Map<CaseStageEntity>(request);
             await repository.InsertAsync(mappeddata);
             await _unitOfWork.Commit(cancellationToken);

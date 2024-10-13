@@ -37,8 +37,7 @@ namespace CourtApp.Application.Features.ProceedingSubHead
                 Id = e.Id,               
                 Name_En = e.Name_En,
                 Name_Hn = e.Name_Hn,
-                Head=e.Head.Name_En
-                
+                Head=e.Head.Name_En                
             };
             var predicate = PredicateBuilder.True<ProceedingSubHeadEntity>();
             if (predicate != null)

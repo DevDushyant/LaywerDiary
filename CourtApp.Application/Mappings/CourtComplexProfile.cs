@@ -9,7 +9,8 @@ namespace CourtApp.Application.Mappings
     {
         public CourtComplexProfile()
         {
-            CreateMap<CreateCourtComplexCommand, CourtComplexEntity>();
+            CreateMap<CreateCourtComplexCommand, CourtComplexEntity>()
+                .ForPath(d => d.DistrictCode, opt => opt.MapFrom(src => src.DistrictId));
             CreateMap<CourtComplexEntity, CourtComplexResponse>();
             CreateMap<CourtComplexEntity, CourtComplexByIdResponse>()
                  .ForPath(d => d.DistrictId, opt => opt.MapFrom(src => src.DistrictCode));

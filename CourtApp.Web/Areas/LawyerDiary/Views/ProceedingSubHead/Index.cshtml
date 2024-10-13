@@ -25,13 +25,13 @@
     <script src="~/js/site.js"></script>
     <script>
         $(document).ready(function () {
-            loadData();
+            loadData(1, 1000);;
             $('#reload').on('click', function () {
-                loadData();
+                loadData(1,20);
             });
         });
-        function loadData() {
-            $('#viewAll').load('/LawyerDiary/ProceedingSubHead/LoadAll');
+        function loadData(pN,pS) {
+            $('#viewAll').load('/LawyerDiary/ProceedingSubHead/LoadAll?pageNumber=' + pN + '&pageSize='+pS+'');
         }
     </script>
 }

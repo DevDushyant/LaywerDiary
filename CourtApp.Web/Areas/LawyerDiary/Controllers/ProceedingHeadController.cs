@@ -54,7 +54,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 if (Id == Guid.Empty)
                 {
-                    var cmd = _mapper.Map<CreateProceedingHeadCommand>(viewModel);                    
+                    var cmd = _mapper.Map<CreateProceedingHeadCommand>(viewModel);
                     var result = await _mediator.Send(cmd);
                     if (result.Succeeded)
                     {
@@ -65,7 +65,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 }
                 else
                 {
-                    var cmd = _mapper.Map<UpdateProceedingHeadCommand>(viewModel);                   
+                    var cmd = _mapper.Map<UpdateProceedingHeadCommand>(viewModel);
                     var result = await _mediator.Send(cmd);
                     if (result.Succeeded) _notify.Information($"Proceeding Head with ID {result.Data} Updated.");
                 }
@@ -93,8 +93,9 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         [HttpPost]
         public async Task<JsonResult> OnPostDelete(Guid id)
         {
-            var deleteCommand = await _mediator.Send(new DeleteProceedingHeadCommand { Id = id});
-            
+
+            var deleteCommand = await _mediator.Send(new DeleteProceedingHeadCommand { Id = id });
+
             if (deleteCommand.Succeeded)
             {
                 _notify.Information($"Proceeding Head with ID {id} Deleted.");
@@ -116,6 +117,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 _notify.Error(deleteCommand.Message);
                 return null;
             }
+
         }
     }
 }

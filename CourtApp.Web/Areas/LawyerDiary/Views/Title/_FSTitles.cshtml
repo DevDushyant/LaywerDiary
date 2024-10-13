@@ -5,11 +5,7 @@
             <th>Sno.</th>
             <th>Type</th>
             <th>Title</th>
-            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded
-            || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
-            {
-                <th>Actions</th>
-            }
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -59,8 +55,8 @@
         }
     </tbody>
 </table>
-<script>
+@* <script>
     $(document).ready(function () {
         $("#tblFSTtitles").DataTable();
     });
-</script>
+</script> *@

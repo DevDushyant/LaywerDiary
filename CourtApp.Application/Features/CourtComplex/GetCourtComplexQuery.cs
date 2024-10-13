@@ -60,8 +60,7 @@ namespace CourtApp.Application.Features.CourtComplex
                     .Include(c => c.CourtDistrict)
                     .Where(predicate)
                     .Select(expression)
-                    .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-                paginatedList.TotalCount = repository.Entities.Count();
+                    .ToPaginatedListAsync(request.PageNumber, request.PageSize);                
                 return paginatedList;
             }
             catch (Exception ex)
