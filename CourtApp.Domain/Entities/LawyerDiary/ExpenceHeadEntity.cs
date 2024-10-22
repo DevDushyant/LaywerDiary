@@ -8,8 +8,6 @@ namespace CourtApp.Domain.Entities.LawyerDiary
     [Table("m_expense_head", Schema = "ld")]
     public class ExpenseHeadEntity : AuditableEntity
     {
-        public new Guid Id { get; set; }
-        [Required]
-        public string HeadName { get; set; }
+        public required string HeadName { get; set; }
     }
 }

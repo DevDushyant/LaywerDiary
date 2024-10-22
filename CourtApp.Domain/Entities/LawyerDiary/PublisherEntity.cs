@@ -9,7 +9,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
     [Table("m_publisher",Schema ="ld")]
     public class PublisherEntity : AuditableEntity
     {
-        public new Guid Id { get; set; }
+        
         [Required]
         public string PublicationName { get; set; }        
         public string PropriatorName { get; set; }

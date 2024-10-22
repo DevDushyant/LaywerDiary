@@ -7,7 +7,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
 {
     public class StateViewModel
     {
-        public int Code { get; set; }
+        public int Id { get; set; }
         public string Name_En { get; set; }
     }
 }

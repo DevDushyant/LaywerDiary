@@ -38,7 +38,7 @@ namespace CourtApp.Application.Features.CourtFeeStructure.Command
                 return Result<Guid>.Fail($"Fee structure detail Not Found.");
             else
             {               
-                detail.State.Code = request.StateCode;
+                detail.State.Id = request.StateCode;
                 detail.MaxValue = request.MaxValue;
                 detail.MinValue = request.MinValue;
                 detail.Rate = request.Rate;

@@ -35,8 +35,7 @@ namespace CourtApp.Application.Features.CaseCategory
             Expression<Func<NatureEntity, CaseCategoryResponse>> expression = e => new CaseCategoryResponse
             {
                 Id = e.Id,
-                CourtType = e.CourtType.CourtType,
-                StateName = e.State.Name_En,
+                CourtType = e.CourtType.CourtType,                
                 Name_En = e.Name_En,
                 Name_Hn = e.Name_Hn
             };
@@ -44,8 +43,8 @@ namespace CourtApp.Application.Features.CaseCategory
             if (request.CourtTypeId != Guid.Empty)
                 predicate = predicate.And(b => b.CourtTypeId == request.CourtTypeId);
 
-            if (request.StateCode != 0)
-                predicate = predicate.And(p => p.StateId == request.StateCode);
+            //if (request.StateCode != 0)
+            //    predicate = predicate.And(p => p.StateId == request.StateCode);
 
 
             var paginatedList = await repository.CaseNatures.Where(predicate)

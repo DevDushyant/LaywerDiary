@@ -36,7 +36,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             if (id == Guid.Empty)
             {
                 var ViewModel = new CourtFeeStructureViewModel();
-                ViewModel.States = new SelectList(stateViewModel, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
+                ViewModel.States = new SelectList(stateViewModel, nameof(StateViewModel.Id), nameof(StateViewModel.Name_En), null, null);
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
             }
             else
@@ -62,7 +62,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
             var statelist = await _mediator.Send(new GetStateMasterQuery());
             var stateViewModel = _mapper.Map<List<StateViewModel>>(statelist.Data);
-            ViewModel.States = new SelectList(stateViewModel, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
+            ViewModel.States = new SelectList(stateViewModel, nameof(StateViewModel.Id), nameof(StateViewModel.Name_En), null, null);
             return View(ViewModel);
         }
 

@@ -8,6 +8,7 @@ using CourtApp.Application.Features.ProceedingSubHead;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using CourtApp.Web.Models;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 {
@@ -84,11 +85,23 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     var result = await _mediator.Send(cmd);
                     if (result.Succeeded) _notify.Information($"Proceeding Head with ID {result.Data} Updated.");
                 }
-                var response = await _mediator.Send(new GetProceedingSubHeadQuery());
+                var response = await _mediator.Send(new GetProceedingSubHeadQuery()
+                {
+                    PageNumber = 1,
+                    PageSize = 1000
+                });
                 if (response.Succeeded)
                 {
-                    var btviewModel = _mapper.Map<List<ProceedingSubHeadViewModel>>(response.Data);
-                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", btviewModel);
+                    var result = _mapper.Map<List<ProceedingSubHeadViewModel>>(response.Data);
+                    var vm = new PaginationViewModel<ProceedingSubHeadViewModel>();
+                    vm.Data = result;
+                    vm.HasPreviousPage = response.HasPreviousPage;
+                    vm.HasNextPage = response.HasNextPage;
+                    vm.TotalPages = response.TotalPages;
+                    vm.TotalCount = response.TotalCount;
+                    vm.PageSize = 10;
+                    vm.PageNumber = 1;
+                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", vm);
                     return new JsonResult(new { isValid = true, html = html });
                 }
                 else
@@ -112,11 +125,23 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             if (deleteCommand.Succeeded)
             {
                 _notify.Information($"Proc sub Head with ID {id} Deleted.");
-                var response = await _mediator.Send(new GetProceedingSubHeadQuery());
+                var response = await _mediator.Send(new GetProceedingSubHeadQuery()
+                {
+                    PageNumber = 1,
+                    PageSize = 1000
+                });
                 if (response.Succeeded)
                 {
-                    var viewModel = _mapper.Map<List<ProceedingSubHeadViewModel>>(response.Data);
-                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+                    var result = _mapper.Map<List<ProceedingSubHeadViewModel>>(response.Data);
+                    var vm = new PaginationViewModel<ProceedingSubHeadViewModel>();
+                    vm.Data = result;
+                    vm.HasPreviousPage = response.HasPreviousPage;
+                    vm.HasNextPage = response.HasNextPage;
+                    vm.TotalPages = response.TotalPages;
+                    vm.TotalCount = response.TotalCount;
+                    vm.PageSize = 10;
+                    vm.PageNumber = 1;
+                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", vm);
                     return new JsonResult(new { isValid = true, html = html });
                 }
                 else

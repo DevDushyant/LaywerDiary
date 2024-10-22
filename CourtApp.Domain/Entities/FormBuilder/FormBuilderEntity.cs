@@ -7,8 +7,7 @@ namespace CourtApp.Domain.Entities.FormBuilder
     [Table("m_frm_types")]
     public class FormBuilderEntity : AuditableEntity
     {
-        [Column(Order = 1)]
-        public new Guid Id { get; set; }
+        
 
         [Column(Order = 2)]
         public string FormName { get; set; }

@@ -99,7 +99,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         [HttpPost]
         public async Task<JsonResult> OnPostDelete(Guid id)
         {
-            var deleteCommand = await _mediator.Send(new WorkMasterCommand { Id = id, ActionType = ((int)ActionTypes.Update) });
+            var deleteCommand = await _mediator.Send(new WorkMasterCommand { Id = id, ActionType = ((int)ActionTypes.Delete) });
             if (deleteCommand.Succeeded)
             {
                 _notify.Information($"Work Master  Masterwith ID {id} Deleted.");

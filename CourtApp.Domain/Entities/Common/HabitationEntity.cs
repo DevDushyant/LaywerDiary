@@ -7,15 +7,13 @@ using System.Collections.Generic;
 
 namespace CourtApp.Domain.Entities.Common
 {
-    [Table("m_habitation")]
-    [Index(nameof(Code), IsUnique = true)]
-    public class HabitationEntity : AuditableEntity
+    [Table("m_habitation")]   
+    public class HabitationEntity
     {
-        public int Code { get; set; }
+       
+        public int Id { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
-
-        [ForeignKey("VillageCode")]
         public virtual VillageEntity village { get; set; }
     }
 }

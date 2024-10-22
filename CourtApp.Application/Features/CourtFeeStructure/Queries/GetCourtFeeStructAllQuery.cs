@@ -43,7 +43,7 @@ namespace CourtApp.Application.Features.CourtFeeStructure.Queries
             };
             var predicate = PredicateBuilder.True<CourtFeeStructureEntity>();
             if (request.StateCode != 0)
-                predicate = predicate.And(b => b.State.Code == request.StateCode);
+                predicate = predicate.And(b => b.State.Id == request.StateCode);
 
             var datalist =  _repository.Entites;
             var dtlist =await datalist.Where(predicate)

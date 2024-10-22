@@ -26,9 +26,10 @@ namespace CourtApp.Web.Areas.LawyerDiary.Mappings
             CreateMap<UpdateCourtMasterCommand, CourtMasterViewModel>().ReverseMap();
             CreateMap<GetCourtMasterDataByIdResponse, CourtMasterViewModel>()
                 .ForPath(d => d.StateCode, opt => opt.MapFrom(src => src.StateId))
-                .ForPath(d => d.CourtName, opt => opt.MapFrom(src => src.Name_En));
+                /*.ForPath(d => d.CourtName, opt => opt.MapFrom(src => src.Name_En))*/;
             CreateMap<DeleteCourtMasterCommand, CourtMasterViewModel>().ReverseMap();
-            CreateMap<CourtBench, Application.DTOs.CourtMaster.CourtBenchResponse>();
+            CreateMap<CourtBench, Application.DTOs.CourtMaster.CourtBenchResponse>().ReverseMap();
+            CreateMap<GetCourtMasterDataAllResponse, CourtMasterListModel>().ReverseMap();
 
         }
     }

@@ -16,8 +16,7 @@ namespace CourtApp.Application.Features.CaseNatures.Command
     {
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
-        public Guid CourtTypeId { get; set; }
-        public int StateId { get; set; }
+        public Guid CourtTypeId { get; set; }        
     }
     public class CreateCaseNatureCommandHandler : IRequestHandler<CreateCaseNatureCommand, Result<Guid>>
     {
@@ -33,7 +32,7 @@ namespace CourtApp.Application.Features.CaseNatures.Command
         public async Task<Result<Guid>> Handle(CreateCaseNatureCommand request, CancellationToken cancellationToken)
         {
             var IsExists = repository.CaseNatures
-                .Where(c => c.Name_En.Contains(request.Name_En.Trim()))
+                .Where(c => c.Name_En.Contains(request.Name_En.Trim()) && c.CourtTypeId==request.CourtTypeId)
                 .FirstOrDefault();
             if (IsExists == null)
             {

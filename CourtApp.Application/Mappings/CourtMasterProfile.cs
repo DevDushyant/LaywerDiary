@@ -16,7 +16,7 @@ namespace CourtApp.Application.Mappings
         {
             CreateMap<CreateCourtMasterCommand, CourtMasterEntity>()
                 .ForPath(d => d.StateId, opt => opt.MapFrom(src => src.StateCode))
-                .ForPath(d => d.DistrictCode, opt => opt.MapFrom(src => src.DistrictCode))
+                //.ForPath(d => d.DistrictId, opt => opt.MapFrom(src => src.DistrictCode))
                 .ForPath(d => d.Name_En, opt => opt.MapFrom(src => src.CourtName))
                 //.ForPath(d => d.CourtTypeId, opt => opt.MapFrom(src => src.CourtTypeId))
                 //.ForPath(d => d.CourtDistrictId, opt => opt.MapFrom(src => src.CourtDistrictId))
@@ -28,7 +28,7 @@ namespace CourtApp.Application.Mappings
             CreateMap<CourtMasterEntity, GetCourtMasterDataByIdResponse>()
                 .ForPath(d => d.CourtTypeId, opt => opt.MapFrom(src => src.CourtTypeId))
                 .ForPath(d => d.StateId, opt => opt.MapFrom(src => src.StateId))
-                .ForPath(d => d.DistrictCode, opt => opt.MapFrom(src => src.DistrictCode))
+                //.ForPath(d => d.DistrictCode, opt => opt.MapFrom(src => src.DistrictId))
                 .ForPath(d => d.Name_En, opt => opt.MapFrom(src => src.Name_En));
 
             CreateMap<GetCourtMasterDataAllResponse, CourtMasterEntity>().ReverseMap();

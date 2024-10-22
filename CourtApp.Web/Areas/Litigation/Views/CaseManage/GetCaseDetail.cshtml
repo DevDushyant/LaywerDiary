@@ -23,8 +23,11 @@
     }
 </style>
 <div class="row">
-    <div class="col-sm-8"><h4>Case <b>Detail Information</b></h4></div>
-    <div class="col-sm-4">
+    <div class="col-sm-6"><h4>Case <b>Detail Information</b></h4></div>
+    <div class="col-sm-3 pull-right" >
+        @Html.ActionLink("Edit", "CreateOrUpdate", new { id = Model.Id })
+    </div>
+    <div class="col-sm-3">
         <button type="button" onclick="location.href='@Url.Action("index", "CaseManage")'" class="btn btn-info btn-style float-lg-right"><i class="fa fa-arrow-left"></i> Back to list</button>
     </div>
 </div>
@@ -73,25 +76,25 @@
                 @Html.DisplayFor(model => model.CourtBench)
             </dt>
         }
-        </dl>
+    </dl>
 
-        @if (!Model.IsHighCourt)
-        {
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.CourtComplex)
-                </dt>
-                <dd class="col-sm-4">
-                    @Html.DisplayFor(model => model.CourtComplex)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.CourtBench)
-                </dt>
-                <dd class="col-sm-4">
-                    @Html.DisplayFor(model => model.CourtBench)
-                </dd>
-            </dl>
-        }      
+    @if (!Model.IsHighCourt)
+    {
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CourtComplex)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.CourtComplex)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CourtBench)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.CourtBench)
+            </dd>
+        </dl>
+    }
 
     </dl>
 
@@ -286,7 +289,7 @@
                     </dt>
                     <dd class="col-sm-4">
                         @Html.DisplayFor(model => ag.DistrictCourt)
-                    </dd>                                     
+                    </dd>
                 }
                 else
                 {
@@ -300,7 +303,7 @@
             </dl>
             @if (!Model.IsHighCourt)
             {
-                 <dl class="row">
+                <dl class="row">
                     <dt class="col-sm-2">
                         @Html.DisplayNameFor(model => ag.CourtComplex)
                     </dt>
@@ -313,8 +316,8 @@
                     <dd class="col-sm-4">
                         @Html.DisplayFor(model => ag.CourtBench)
                     </dd>
-                 </dl>
-            
+                </dl>
+
             }
 
 
@@ -330,7 +333,7 @@
                 </dt>
                 <dd class="col-sm-4">
                     @Html.DisplayFor(model => ag.CaseYear)
-                </dd>               
+                </dd>
             </dl>
 
             <dl class="row">
@@ -376,7 +379,7 @@
                     @Html.DisplayFor(model => ag.Cadre)
                 </dd>
             </dl>
-            
+
         }
     </fieldset>
 }

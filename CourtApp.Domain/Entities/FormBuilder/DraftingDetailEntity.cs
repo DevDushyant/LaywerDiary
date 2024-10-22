@@ -8,7 +8,7 @@ namespace CourtApp.Domain.Entities.FormBuilder
     [Table("case_petition_detail")]
     public class DraftingDetailEntity : AuditableEntity
     {        
-        public new Guid Id { get; set; }       
+              
         public Guid CaseId { get; set; }        
         public Guid TemplateId { get; set; }
         public Guid DraftingFormId { get; set; }

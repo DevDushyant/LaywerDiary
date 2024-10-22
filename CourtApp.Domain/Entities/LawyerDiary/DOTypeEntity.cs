@@ -11,7 +11,6 @@ namespace CourtApp.Domain.Entities.LawyerDiary
     [Table("m_do_type", Schema = "ld")]
     public class DOTypeEntity : AuditableEntity
     {
-        public new Guid Id { get; set; }
         public int TypeId { get; set; }
         public string Name_En { get; set; }
     }

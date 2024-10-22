@@ -30,7 +30,7 @@ namespace CourtApp.Application.Features.Queries.Tools
             double Rate = 0, FixedAmount = 0, CalculativeAmount = 0, MinAmt = 0, MaxAmt = 0;
             CalculativeAmount = request.CalculativeAmount;
             if (request.StateCode != 0)
-                predicate = predicate.And(b => b.State.Code == request.StateCode);
+                predicate = predicate.And(b => b.State.Id == request.StateCode);
 
             if (request.CalculativeAmount != 0)
                 predicate = predicate.And(a => CalculativeAmount >= a.MinValue && CalculativeAmount <= a.MaxValue);

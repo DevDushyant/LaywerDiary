@@ -1,5 +1,4 @@
-﻿using Azure;
-using CourtApp.Application.Features.BookMasters.Command;
+﻿using CourtApp.Application.Features.BookMasters.Command;
 using CourtApp.Application.Features.Case;
 using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.CaseProceeding;
@@ -8,7 +7,9 @@ using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Client.Model;
+using CourtApp.Web.Areas.LawyerDiary.Validators;
 using CourtApp.Web.Areas.Litigation.Models;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using System;
@@ -44,6 +45,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             var ClientList = await _mediator.Send(new GetAllClientCachedQuery() { });
             var caseViewModel = new CaseViewModel();
+
             if (id == Guid.Empty)
             {
                 caseViewModel.InstitutionDate = DateTime.Now;
@@ -57,6 +59,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 caseViewModel.Cadres = DdlCadres();
                 caseViewModel.Strengths = DdlStrength();
                 caseViewModel.States = await LoadStates();
+                ViewBag.ActionType = "Create";
                 return View("_CreateOrEdit", caseViewModel);
             }
             else
@@ -65,10 +68,45 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 if (response.Succeeded)
                 {
                     var CaseDetail = _mapper.Map<CaseViewModel>(response.Data);
+                    if (CaseDetail.IsHighCourt == true)
+                    {
+                        CaseDetail.BenchId = CaseDetail.CourtBenchId;
+                        CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, Guid.Empty);
+                        CaseDetail.BenchId = CaseDetail.CourtBenchId;
+                        CaseDetail.Strengths = DdlStrength();
+                    }
+                    else
+                    {
+                        CaseDetail.CourtDistricts = await DdlLoadCourtDistricts(CaseDetail.StateId);
+                        CaseDetail.ComplexBenchs = await GetCourtComplex(CaseDetail.CourtDistrictId.Value);
+                        CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, CaseDetail.ComplexBenchId.Value);
+                        CaseDetail.CourtId = CaseDetail.CourtBenchId;
+                    }
+                    if (CaseDetail.AgainstCaseDetails.Count == 0)
+                        CaseDetail.AgainstCaseDetails = null;
+                    else
+                    {
+                        foreach (var item in CaseDetail.AgainstCaseDetails)
+                        {
+                            if (item.IsAgHighCourt == true)
+                            {
+
+                                CaseDetail.Courts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, Guid.Empty);
+                                CaseDetail.Strengths = DdlStrength();
+                            }
+                            else
+                            {
+                                CaseDetail.CourtDistricts = await DdlLoadCourtDistricts(item.StateId.Value);
+                                CaseDetail.ComplexBenchs = await GetCourtComplex(item.CourtDistrictId.Value);
+                                CaseDetail.Courts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, item.ComplexId.Value);
+                                CaseDetail.AgainstCaseDetails[0].CourtId=item.BenchId;
+                            }
+                        }
+                    }
+
+
                     CaseDetail.States = await LoadStates();
                     CaseDetail.CourtTypes = await LoadCourtTypes();
-                    CaseDetail.Courts = await CourtSelectList(CaseDetail.CourtTypeId);
-
                     CaseDetail.CaseNatures = await LoadCaseNature();
                     CaseDetail.TypeOfCases = await CaseTypes(CaseDetail.CaseCategoryId);
                     CaseDetail.Years = DdlYears();
@@ -77,7 +115,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     CaseDetail.CaseStatusList = await DdlCaseStages();
                     CaseDetail.LinkedBy = await UserCaseTitle();
                     CaseDetail.Cadres = DdlCadres();
-                    CaseDetail.Strengths = DdlStrength();
+
+                    ViewBag.ActionType = "Update";
                     return View("_CreateOrEdit", CaseDetail);
                 }
                 return null;
@@ -90,10 +129,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             if (ModelState.IsValid)
             {
+                ViewModel.CourtBenchId = ViewModel.BenchId == null ? ViewModel.CourtId.Value : ViewModel.BenchId.Value;
                 if (Id == Guid.Empty)
                 {
-                    ViewModel.CourtBenchId = ViewModel.BenchId == null ? ViewModel.CourtId.Value : ViewModel.BenchId.Value;
-                    var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);
+                    var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);                    
                     var result = await _mediator.Send(createCommand);
                     if (result.Succeeded)
                     {
@@ -118,7 +157,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 }
                 else
                 {
-                    var updateCommand = _mapper.Map<UpdateBookMasterCommand>(ViewModel);
+                    var updateCommand = _mapper.Map<UpdateCaseDetailCommand>(ViewModel);
                     var result = await _mediator.Send(updateCommand);
                     if (result.Succeeded)
                     {
@@ -134,10 +173,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         ViewModel.Cadres = DdlCadres();
                         ViewModel.Strengths = DdlStrength();
                         ViewModel.States = await LoadStates();
+                        ViewModel.StatusMessage = "Case information updated successfully!";
                     }
+                    return RedirectToAction("getcasedetail", new { id = Id });
                 }
                 return View("_CreateOrEdit", null);
-
             }
             else
             {

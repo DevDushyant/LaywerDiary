@@ -22,7 +22,8 @@ namespace CourtApp.Application.Mappings
                 .ForMember(d => d.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(d => d.Name_En, opt => opt.MapFrom(src => src.Name_En));
 
-            CreateMap<CreateTypeOfCasesCommand, TypeOfCasesEntity>().ReverseMap();
+            CreateMap<CreateTypeOfCasesCommand, TypeOfCasesEntity>()
+                .ReverseMap();
             CreateMap<UpdateTypeOfCasesCommand, TypeOfCasesEntity>().ReverseMap();
             CreateMap<DeleteTypeOfCasesCommand, TypeOfCasesEntity>().ReverseMap();
         }

@@ -30,12 +30,12 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 var DdlCourtTypes = _mapper.Map<List<CourtTypeViewModel>>(courtTypeList.Data);
                 ViewModel.CourtTypes = new SelectList(DdlCourtTypes, nameof(CourtTypeViewModel.Id), nameof(CourtTypeViewModel.CourtType), null, null); ;
             }
-            var statelist = await _mediator.Send(new GetStateMasterQuery());
-            if (statelist.Succeeded)
-            {
-                var DdlStates = _mapper.Map<List<StateViewModel>>(statelist.Data);
-                ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
-            }           
+            //var statelist = await _mediator.Send(new GetStateMasterQuery());
+            //if (statelist.Succeeded)
+            //{
+            //    var DdlStates = _mapper.Map<List<StateViewModel>>(statelist.Data);
+            //    ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Id), nameof(StateViewModel.Name_En), null, null);
+            //}           
 
         }
 

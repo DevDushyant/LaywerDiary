@@ -26,7 +26,7 @@ namespace CourtApp.Application.Features.CaseWork
         }
         public async Task<Result<Guid>> Handle(UpdateCWorkStatusCommand request, CancellationToken cancellationToken)
         {
-            var cdEntityt = new CaseWorkEntity();
+            var cdEntityt = new CaseWorkEntity() { CreatedBy = "" };
             foreach (var item in request.CWorkId)
             {
                 cdEntityt = await _Repository.GetByIdAsync(item);

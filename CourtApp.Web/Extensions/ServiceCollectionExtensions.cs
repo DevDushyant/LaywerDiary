@@ -69,14 +69,12 @@ namespace CourtApp.Web.Extensions
         {
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
             {
-                services.AddDbContext<IdentityContext>(options =>
-                    options.UseInMemoryDatabase("IdentityDb"));
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseInMemoryDatabase("ApplicationDb"));
+                services.AddDbContext<IdentityContext>(options =>options.UseInMemoryDatabase("IdentityDb"), ServiceLifetime.Transient);
+                services.AddDbContext<ApplicationDbContext>(options =>options.UseInMemoryDatabase("ApplicationDb"));
             }
             else
             {
-                services.AddDbContext<IdentityContext>(options => options.UseNpgsql(configuration.GetConnectionString("DbCnnection")));
+                services.AddDbContext<IdentityContext>(options => options.UseNpgsql(configuration.GetConnectionString("DbCnnection")), ServiceLifetime.Transient);
                 services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DbCnnection")));
             }
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>

@@ -14,7 +14,7 @@ namespace CourtApp.Application.Features.CourtComplex
     public class CreateCourtComplexCommand : IRequest<Result<Guid>>
     {
         public int StateId { get; set; }
-        public int DistrictId { get; set; }
+        //public int DistrictId { get; set; }
         public Guid CourtDistrictId { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }

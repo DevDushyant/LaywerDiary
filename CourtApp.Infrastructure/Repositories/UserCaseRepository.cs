@@ -39,6 +39,8 @@ namespace CourtApp.Infrastructure.Repositories
             return await _repository
                .Entities
                 .Include(d => d.CaseAgainstEntities)
+                    .ThenInclude(c => c.CourtType)
+                .Include(d => d.CourtType)
                 .Where(w => w.Id == Id).FirstAsync();
         }
 

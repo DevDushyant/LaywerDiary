@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using CourtApp.Application.DTOs.CaseDetails;
 
 namespace CourtApp.Application.Features.Case
 {
@@ -36,14 +37,18 @@ namespace CourtApp.Application.Features.Case
         public Guid LinkedCaseId { get; set; }
         public Guid ClientId { get; set; }
         public int StateId { get; set; }
-        public ICollection<CaseAgainstEntityModel> AgainstCaseDetails { get; set; }
+        public int StrengthId { get; set; }
+
+        public ICollection<UpseartAgainstCaseDto> AgainstCaseDetails { get; set; }
+
+        //public ICollection<CaseAgainstEntityModel> AgainstCaseDetails { get; set; }
     }
     public class CaseAgainstEntityModel
     {
         public Guid Id { get; set; }
         public DateTime ImpugedOrderDate { get; set; }
         public Guid CourtTypeId { get; set; }
-        public Guid CourtBenchId { get; set; }
+        public Guid? CourtBenchId { get; set; }
         public Guid CaseCategoryId { get; set; }
         public Guid CaseTypeId { get; set; }
         public int StateId { get; set; }
@@ -59,6 +64,8 @@ namespace CourtApp.Application.Features.Case
         public Guid? CourtId { get; set; }
         public string CisNumber { get; set; }
         public string CnrNumber { get; set; }
+        public bool IsAgHighCourt { get; set; }
+
     }
 
     public class CreateCaseManagmentCommandHandler : IRequestHandler<CreateCaseCommand, Result<Guid>>
@@ -101,13 +108,46 @@ namespace CourtApp.Application.Features.Case
         }
         public async Task<Result<Guid>> Handle(CreateCaseCommand request, CancellationToken cancellationToken)
         {
-            var isCaseExist = await _Repository.GetByCaseNoYearAsync(request.CaseNo, request.CaseYear);
+            var isCaseExist = await _Repository.GetByCaseNoYearAsync(request.CaseNo == null ? "" : request.CaseNo, request.CaseYear);
             if (isCaseExist == null)
             {
                 var entity = _mapper.Map<CaseDetailEntity>(request);
+                if (request.CourtBenchId == Guid.Empty)
+                    entity.CourtBenchId = null;
+                if (request.CourtDistrictId == Guid.Empty)
+                    entity.CourtDistrictId = null;
+                if (request.CourtComplexId == Guid.Empty)
+                    entity.CourtComplexId = null;
+
                 var isAdd = request.AgainstCaseDetails.Where(s => s.CaseNo != null);
                 if (isAdd.Count() > 0)
-                    entity.CaseAgainstEntities = _mapper.Map<List<CaseDetailAgainstEntity>>(request.AgainstCaseDetails);
+                {
+                    var agcs = new List<CaseDetailAgainstEntity>();
+                    foreach (var item in request.AgainstCaseDetails)
+                    {
+                        var ac = new CaseDetailAgainstEntity();
+                        ac.Id = new Guid();
+                        ac.ImpugedOrderDate = item.ImpugedOrderDate.Value;
+                        ac.CourtTypeId = item.CourtTypeId.Value;
+                        ac.CourtBenchId = item.CourtId.Value;
+                        ac.StateId = item.StateId.Value;
+                        ac.CaseYear = item.CaseYear.Value;
+                        ac.CaseNo = item.CaseNo;
+                        ac.CaseCategoryId = item.CaseCategoryId.Value;
+                        ac.CaseTypeId = item.CaseTypeId.Value;
+                        ac.StrengthId = item.StrengthId != null ? item.StrengthId.Value : 0;
+                        ac.OfficerName = item.OfficerName;
+                        ac.CisYear = item.CisYear.Value;
+                        ac.CisNo = item.CisNumber;                        
+                        ac.Cadre=item.Cadre;
+                        ac.CnrNo=item.CnrNumber;                        
+                        ac.CourtDistrictId = item.CourtDistrictId != Guid.Empty ? item.CourtDistrictId : null;
+                        ac.CourtComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null;
+                        agcs.Add(ac);
+                    }
+                    entity.CaseAgainstEntities = agcs;
+
+                }
                 var result = await _Repository.InsertAsync(entity);
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(entity.Id);

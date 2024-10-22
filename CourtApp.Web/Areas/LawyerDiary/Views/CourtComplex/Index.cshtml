@@ -6,7 +6,7 @@
     <div class="col-sm-12" style="padding:20px">
         @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Create)).Result.Succeeded)
         {
-            <a onclick="jQueryModalGet('/lawyerdiary/CourtComplex/OnGetCreateOrEdit','Create Court District')" class="btn bg-success">
+            <a onclick="jQueryModalGet('/lawyerdiary/CourtComplex/OnGetCreateOrEdit','Create Court Complex')" class="btn bg-success">
                 <i class="fa fa-plus-square"></i> Create
             </a>
         }

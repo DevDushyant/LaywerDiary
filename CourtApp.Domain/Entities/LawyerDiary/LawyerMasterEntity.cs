@@ -8,7 +8,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
     [Table("m_lawyer", Schema = "ld")]
     public class LawyerMasterEntity : AuditableEntity
     {        
-        public new Guid Id { get; set; }        
+           
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }

@@ -7,14 +7,11 @@ namespace CourtApp.Domain.Entities.LawyerDiary
 {
     [Table("m_nature", Schema = "ld")]
     public class NatureEntity : AuditableEntity
-    {       
-        public new Guid Id { get; set; }
+    {               
         public required string Name_En { get; set; }
         public string Name_Hn { get; set; }
-        public Guid CourtTypeId { get; set; }
-        public int StateId { get; set; }
+        public Guid CourtTypeId { get; set; }        
         public string Abbreviation { get; set; }
-        public virtual CourtTypeEntity CourtType { get; set; }
-        public virtual StateEntity State { get; set; }
+        public virtual CourtTypeEntity CourtType { get; set; }        
     }
 }

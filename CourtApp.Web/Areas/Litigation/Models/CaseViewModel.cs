@@ -50,12 +50,12 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public Guid? CourtDistrictId { get; set; }
         public Guid? ComplexBenchId { get; set; }
         public List<CaseAgainstModel> AgainstCaseDetails { get; set; }
-        public int? StateId { get; set; }
+        public int StateId { get; set; }
         public int? StrengthId { get; set; }
         public Guid? BenchId { get; set; }
         public Guid? CourtId { get; set; }
         #endregion   
-
+        public bool IsHighCourt { get; set; }
         [TempData]
         public string StatusMessage { get; set; }
     }    

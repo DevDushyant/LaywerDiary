@@ -13,13 +13,13 @@
             return m;
         }
     });
-    $("#DistrictCode").select2({
-        placeholder: "Select a district",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
+    //$("#DistrictCode").select2({
+    //    placeholder: "Select a district",
+    //    theme: "bootstrap4",
+    //    escapeMarkup: function (m) {
+    //        return m;
+    //    }
+    //});
     $("#CourtDistrictId").select2({
         placeholder: "Select a district court",
         theme: "bootstrap4",
@@ -36,8 +36,8 @@
     });
 });
 $("#CourtTypeId").on("change", function () {
-      
-    if ($("#CourtTypeId").val() === "b512e36f-0b6e-4a14-80d0-65266b2b320d" || $("#CourtTypeId").val() === "359acb34-7b8c-4fc8-a276-8b198ea5105c") {
+    
+    if ($("#CourtTypeId option:selected").text() === "High Court") {
         $('#c_district').addClass('div_hide');
         $('#d_court_Complex').addClass('div_hide');
         $('#d_high_court_name').removeClass('div_hide');
@@ -50,13 +50,19 @@ $("#CourtTypeId").on("change", function () {
         $('#d_court_Complex').removeClass('div_hide');
         $('#d_high_court_name').addClass('div_hide');
     }
-
-    $.getJSON("/LawyerDiary/CourtMaster/LoadDistricts?StateCode=" + $("#StateCode").val(), function (data) {
-        $("#DistrictCode").empty();
+    $.getJSON("/LawyerDiary/CourtMaster/LoadCourtDistrictByState?StateId=" + $("#StateCode").val(), function (data) {
+        $("#CourtDistrictId").empty();
         $.each(data.Data, function (i, item) {
-            $("#DistrictCode").append(`<option /><option value="${item.Code}">${item.Name_En}</option>`);
+            $("#CourtDistrictId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
         });
     });
+
+    //$.getJSON("/LawyerDiary/CourtMaster/LoadDistricts?StateCode=" + $("#StateCode").val(), function (data) {
+    //    $("#DistrictCode").empty();
+    //    $.each(data.Data, function (i, item) {
+    //        $("#DistrictCode").append(`<option /><option value="${item.Code}">${item.Name_En}</option>`);
+    //    });
+    //});
 });
 $("#DistrictCode").on("change", function () {
     $.getJSON("/LawyerDiary/CourtMaster/LoadCourtDistrict?DistrictId=" + $("#DistrictCode").val(), function (data) {

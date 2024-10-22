@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 namespace CourtApp.Domain.Entities.Common
 {
     [Table("m_city")]
-    [Index(nameof(Code), IsUnique = true)]
-    public class CityEntity:AuditableEntity
+    public class CityEntity
     {
-        public int Code { get; set; }
+       
+        public int Id { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
-        [ForeignKey("DistrictCode")]
+        public int DistrictId { get; set; }
         public virtual DistrictEntity District { get; set; }
         public ICollection<WardEntity> Wards { get; set; }
     }

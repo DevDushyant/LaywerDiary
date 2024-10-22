@@ -7,7 +7,7 @@ namespace CourtApp.Domain.Entities.FormBuilder
     [Table("m_temp_frm_mapping")]
     public class FormTemplateMappingEntity : AuditableEntity
     {
-        public new Guid  Id { get; set; }
+        
         public Guid TemplateId { get; set; }
         public Guid FormId { get; set; }
         public List<MappingEntity> FieldsMapping { get; set; }

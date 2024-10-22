@@ -7,14 +7,13 @@ using System.Collections.Generic;
 
 namespace CourtApp.Domain.Entities.Common
 {
-    [Table("m_ward")]
-    [Index(nameof(Code), IsUnique = true)]
-    public class WardEntity : AuditableEntity
+    [Table("m_ward")]   
+    public class WardEntity
     {
-        public int Code { get; set; }
+        public int Id { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
-        [ForeignKey("CityCode")]
+        public int CityId { get; set; }
         public virtual CityEntity city { get; set; }
     }
 }

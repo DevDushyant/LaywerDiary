@@ -17,10 +17,11 @@ namespace CourtApp.Application.Features.CourtMasters.Command
     {
         public Guid CourtTypeId { get; set; }
         public string CourtName { get; set; }
-        public int DistrictCode { get; set; }
+        //public int DistrictCode { get; set; }
         public int StateCode { get; set; }
         public Guid CourtDistrictId { get; set; }
         public Guid CourtComplexId { get; set; }
+
         public List<CourtBenchResponse> CourtBenches { get; set; }
     }
 
@@ -47,10 +48,31 @@ namespace CourtApp.Application.Features.CourtMasters.Command
         }
         public async Task<Result<Guid>> Handle(CreateCourtMasterCommand request, CancellationToken cancellationToken)
         {
-            var mappeddata = mapper.Map<CourtMasterEntity>(request);
-            await repository.InsertAsync(mappeddata);
-            await _unitOfWork.Commit(cancellationToken);         
-            return Result<Guid>.Success(mappeddata.Id);
+            var entity = mapper.Map<CourtMasterEntity>(request);
+            entity.CourtComplexId = request.CourtComplexId != Guid.Empty ? request.CourtComplexId : null;
+            entity.CourtDistrictId = request.CourtDistrictId != Guid.Empty ? request.CourtDistrictId : null;
+            await repository.InsertAsync(entity);
+            await _unitOfWork.Commit(cancellationToken);
+            return Result<Guid>.Success(entity.Id);
+            //if (request.CourtBenches != null && request.CourtBenches.Count > 0)
+            //{
+            //    foreach (var entity in request.CourtBenches)
+            //    {
+            //        CourtMasterEntity ent = new CourtMasterEntity();
+            //        ent.Name_En = entity.CourtBench_En;
+            //        ent.Name_Hn = entity.CourtBench_Hn;
+            //        ent.StateId = request.StateCode;
+            //        ent.CourtComplexId = request.CourtComplexId != Guid.Empty ? request.CourtComplexId : null;
+            //        ent.CourtDistrictId = request.CourtDistrictId != Guid.Empty ? request.CourtDistrictId : null;
+            //        ent.CourtTypeId = request.CourtTypeId;
+            //        ent.Abbreviation = ent.Abbreviation;
+            //        await repository.InsertAsync(ent);
+            //        await _unitOfWork.Commit(cancellationToken);
+            //        return Result<Guid>.Success(ent.Id);
+            //    }                
+            //}
+            return Result<Guid>.Fail("Court/Bench information not provided");
+
         }
     }
 }

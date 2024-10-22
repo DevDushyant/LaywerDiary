@@ -24,9 +24,7 @@
                 <td>
                     @bt.Name_En
                 </td>
-                <td>
-                    @bt.Name_Hn
-                </td>
+               
                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                 {
                     <td text-right">

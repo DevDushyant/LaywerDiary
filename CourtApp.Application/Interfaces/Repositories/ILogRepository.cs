@@ -9,6 +9,6 @@ namespace CourtApp.Application.Interfaces.Repositories
     {
         Task<List<AuditLogResponse>> GetAuditLogsAsync(string userId);
 
-        Task AddLogAsync(string action, string userId);
+        Task AddLogAsync(string action, string userId,string tableName, string pk);
     }
 }

@@ -19,7 +19,7 @@ namespace CourtApp.Application.Features.CourtDistrict
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public int StateId { get; set; }
-        public int DistrictId { get; set; }
+        //public int DistrictId { get; set; }
     }
     public class GetCourtDistrictQueryHandler : IRequestHandler<GetCourtDistrictQuery, PaginatedResult<CourtDistrictReponse>>
     {
@@ -34,7 +34,7 @@ namespace CourtApp.Application.Features.CourtDistrict
             {
                 Id = e.Id,
                 Abbreviation = e.Abbreviation,
-                DistrictName = e.District.Name_En,
+                //DistrictName = e.District.Name_En,
                 Name_En = e.Name_En,
                 Name_Hn = e.Name_Hn,
                 StateName = e.State.Name_En
@@ -44,8 +44,8 @@ namespace CourtApp.Application.Features.CourtDistrict
             {
                 if (request.StateId != 0)
                     predicate = predicate.And(y => y.StateId == request.StateId);
-                if (request.DistrictId != 0)
-                    predicate = predicate.And(x => x.DistrictCode == request.DistrictId);
+                //if (request.DistrictId != 0)
+                //    predicate = predicate.And(x => x.DistrictCode == request.DistrictId);
 
             }
             try
@@ -53,7 +53,7 @@ namespace CourtApp.Application.Features.CourtDistrict
 
                 var paginatedList = await repository.Entities
                     .Include(c => c.State)
-                    .Include(c => c.District)
+                    //.Include(c => c.District)
                     .Where(predicate)
                     .Select(expression)
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);

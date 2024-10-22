@@ -17,6 +17,7 @@ using CourtApp.Domain.Entities.FormBuilder;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Reflection.Emit;
 namespace CourtApp.Infrastructure.DbContexts
 {
     public class ApplicationDbContext : AuditableContext, IApplicationDbContext
@@ -115,8 +116,19 @@ namespace CourtApp.Infrastructure.DbContexts
                 property.SetColumnType("decimal(18,2)");
             }
 
-            base.OnModelCreating(builder);           
-            //builder.Entity<CourtMasterEntity>().Property(p => p.CourtDistrictId).IsRequired(false);
+            base.OnModelCreating(builder);
+
+            builder.Entity<CourtMasterEntity>()
+            .HasOne(e => e.CourtComplex)
+            .WithMany()
+            .HasForeignKey(e => e.CourtComplexId)
+            .IsRequired(false); // Make the foreign key optional
+
+            builder.Entity<CourtMasterEntity>()
+                .HasOne(e => e.CourtDistrict)
+                .WithMany()
+                .HasForeignKey(e => e.CourtDistrictId)
+                .IsRequired(false); // Make the foreign key optional
             //builder.Entity<CourtMasterEntity>().Property(p => p.UId).HasDefaultValueSql("uuid_generate_v4()");
             //builder.Entity<ClientEntity>().Property(p => p.UId).HasDefaultValueSql("uuid_generate_v4()");
             //builder.Entity<CaseEntity>().Property(p => p.Id).HasDefaultValueSql("uuid_generate_v4()");

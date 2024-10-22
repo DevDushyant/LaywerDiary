@@ -11,7 +11,7 @@ namespace CourtApp.Domain.Entities.CaseDetails
     public class CaseDetailEntity : AuditableEntity
     {
         #region Mandatory Properties
-        public new Guid Id { get; set; }
+        
         public required DateTime InstitutionDate { get; set; }
         public int StateId { get; set; }
         public virtual StateEntity State { get; set; }
@@ -25,7 +25,7 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public virtual NatureEntity CaseCategory { get; set; }
         public required Guid CaseTypeId { get; set; }
         public virtual TypeOfCasesEntity CaseType { get; set; }
-        public required Guid CourtBenchId { get; set; }
+        public Guid? CourtBenchId { get; set; }
         public virtual CourtBenchEntity CourtBench { get; set; }
         public string CaseNo { get; set; }
         public  int CaseYear { get; set; }

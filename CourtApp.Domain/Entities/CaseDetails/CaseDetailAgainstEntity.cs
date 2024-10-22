@@ -11,10 +11,34 @@ namespace CourtApp.Domain.Entities.CaseDetails
     public class CaseDetailAgainstEntity
     {
         public Guid Id { get; set; }
+        public Guid CaseId { get; set; }
+        public virtual CaseDetailEntity Case { get; set; }
         public DateTime ImpugedOrderDate { get; set; }
-        public Guid CourtTypeId { get; set; }
-        public Guid CourtBenchId { get; set; }
         public int StateId { get; set; }
+        public virtual StateEntity State { get; set; }
+        public Guid CourtTypeId { get; set; }
+        public virtual CourtTypeEntity CourtType { get; set; }
+
+        /// <summary>
+        /// Will be use when the court type is High Court.
+        /// </summary>
+        public Guid? CourtBenchId { get; set; }
+        public virtual CourtBenchEntity CourtBench { get; set; }
+
+        /// <summary>
+        /// Will be use when the court type Other than High Court.
+        /// </summary>
+        public Guid? CourtDistrictId { get; set; }
+        public virtual CourtDistrictEntity CourtDistrict { get; set; }
+
+        public Guid? CourtComplexId { get; set; }
+        public virtual CourtComplexEntity CourtComplex { get; set; }
+
+        public Guid CaseCategoryId { get; set; }
+        public virtual NatureEntity CaseCategory { get; set; }
+        public Guid CaseTypeId { get; set; }
+        public virtual TypeOfCasesEntity CaseType { get; set; }
+
         public int StrengthId { get; set; }
         public string CaseNo { get; set; }
         public int CaseYear { get; set; }
@@ -23,18 +47,5 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public string CnrNo { get; set; }
         public string OfficerName { get; set; }
         public string Cadre { get; set; }
-        public virtual StateEntity State { get; set; }        
-        public virtual CourtTypeEntity CourtType { get; set; }               
-        public virtual CourtBenchEntity CourtBench { get; set; }
-        public virtual CaseDetailEntity CaseId { get; set; }
-        public Guid CaseCategoryId { get; set; }
-        public virtual NatureEntity CaseCategory { get; set; }
-        public Guid CaseTypeId { get; set; }
-        public virtual TypeOfCasesEntity CaseType { get; set; }
-        public Guid CourtComplexId { get; set; }
-        public virtual CourtComplexEntity CourtComplex { get; set; }
-
-        public required Guid CourtDistrictId { get; set; }
-        public virtual CourtDistrictEntity CourtDistrict { get; set; }
     }
 }

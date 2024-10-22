@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CourtApp.Application.DTOs.Logs;
 using AuditTrail.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CourtApp.Infrastructure.Repositories
 {
@@ -25,13 +26,15 @@ namespace CourtApp.Infrastructure.Repositories
             _dateTimeService = dateTimeService;
         }
 
-        public async Task AddLogAsync(string action, string userId)
+        public async Task AddLogAsync(string action, string userId, string tableName, string pk)
         {
             var audit = new Audit()
             {
                 Type = action,
                 UserId = userId,
-                DateTime = _dateTimeService.NowUtc
+                DateTime = _dateTimeService.NowUtc,
+                PrimaryKey = pk,
+                TableName = tableName
             };
             await _repository.AddAsync(audit);
         }

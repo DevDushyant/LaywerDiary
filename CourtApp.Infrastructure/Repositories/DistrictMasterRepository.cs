@@ -28,7 +28,7 @@ namespace CourtApp.Infrastructure.Repositories
 
         public async Task<List<DistrictEntity>> GetDistrictListByStateAsync(int StateCode)
         {
-            return await _repository.Entities.Where(st=>st.State.Code==StateCode).ToListAsync();
+            return await _repository.Entities.Where(st=>st.State.Id ==StateCode).ToListAsync();
         }
     }
 }

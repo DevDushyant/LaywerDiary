@@ -7,8 +7,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
 {
     [Table("m_court_type",Schema ="ld")]
     public class CourtTypeEntity : AuditableEntity
-    {
-        public new Guid Id { get; set; }
+    {        
         [Required]
         public string CourtType { get; set; }
         public string Abbreviation { get; set; }

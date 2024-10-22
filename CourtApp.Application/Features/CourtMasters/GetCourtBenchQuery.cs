@@ -51,7 +51,7 @@ namespace CourtApp.Application.Features.CourtMasters
             var dt = _CourtMasterRepo.GetListAsync().Result
                 .Where(w => w.StateId == request.StateId && w.CourtTypeId == request.CourtTypeId).ToList();
             if (request.CourtTypeId != Guid.Empty && request.CourtId != Guid.Empty)
-                CourtMasterId = dt.Where(w => w.CourtComplexId == request.CourtId)
+                CourtMasterId = dt
                     .Select(s => s.Id).FirstOrDefault();
             else
                 CourtMasterId = dt.Select(s => s.Id).FirstOrDefault();

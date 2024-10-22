@@ -7,7 +7,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
     [Table("m_proceeding_sub_head", Schema = "ld")]
     public class ProceedingSubHeadEntity : AuditableEntity
     {
-        public new Guid Id { get; set; }        
+               
         public Guid HeadId { get; set; } 
         public required string Name_En { get; set; }
         public string Name_Hn { get; set; }

@@ -12,8 +12,8 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
         public string StateName { get; set; }
         public string DistrictName { get; set; }
         public int StateId { get; set; }
-        public int DistrictId { get; set; }
+        //public int DistrictId { get; set; }
         public SelectList States { get; set; }
-        public SelectList Districts { get; set; }
+        //public SelectList Districts { get; set; }
     }
 }

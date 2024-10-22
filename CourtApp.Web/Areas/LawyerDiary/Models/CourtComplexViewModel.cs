@@ -6,7 +6,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
     public class CourtComplexViewModel
     {
         public SelectList States { get; set; }
-        public SelectList Districts { get; set; }
+        //public SelectList Districts { get; set; }
         public SelectList CourtDistricts { get; set; }
         public Guid Id { get; set; }
         public string Name_En { get; set; }
@@ -16,7 +16,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
         public string CDistrictName { get; set; }
         public string Abbreviation { get; set; }
         public int StateId { get; set; }
-        public int DistrictId { get; set; }
+        //public int DistrictId { get; set; }
         public Guid CourtDistrictId { get; set; }
         
     }

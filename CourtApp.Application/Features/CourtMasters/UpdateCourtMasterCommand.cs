@@ -60,7 +60,7 @@ namespace CourtApp.Application.Features.CourtMasters.Command
                 detail.CourtTypeId = request.CourtTypeId;
                 detail.CourtComplexId=request.CourtComplexId;
                 detail.CourtDistrictId=request.CourtDistrictId;
-                detail.DistrictCode=request.DistrictCode;                              
+                //detail.DistrictId=request.DistrictCode;                              
                 detail.StateId=request.StateCode;
                 detail.LastModifiedOn = DateTime.Now;
                 detail.CourtBenches=_mapper.Map<List<CourtBenchEntity>>(request.CBAddress);

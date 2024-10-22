@@ -8,7 +8,7 @@ namespace CourtApp.Domain.Entities.CaseDetails
     [Table("r_case_proceeding", Schema = "ld")]
     public class CaseProcedingEntity : AuditableEntity
     {
-        public new Guid Id { get; set; }
+        
         public Guid CaseId { get; set; }
         public Guid HeadId { get; set; }
         public Guid SubHeadId { get; set; }

@@ -13,7 +13,7 @@ namespace CourtApp.Application.Features.CourtDistrict
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
         public int StateId { get; set; }
-        public int DistrictId { get; set; }
+        //public int DistrictId { get; set; }
         public string Abbreviation { get; set; }
     }
     public class UpdateCourtDistrictCommandHandler : IRequestHandler<UpdateCourtDistrictCommand, Result<Guid>>
@@ -35,7 +35,7 @@ namespace CourtApp.Application.Features.CourtDistrict
                 return Result<Guid>.Fail($"Court District not found.");
             else
             {                
-                detailById.DistrictCode=command.DistrictId;
+                //detailById.DistrictCode=command.DistrictId;
                 detailById.StateId=command.StateId;                
                 detailById.Name_En=command.Name_En;
                 detailById.Name_Hn=command.Name_Hn;  

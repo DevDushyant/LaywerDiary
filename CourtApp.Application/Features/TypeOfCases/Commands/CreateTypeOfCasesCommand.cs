@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.Typeofcasess.Commands
 {
-    public class CreateTypeOfCasesCommand:IRequest<Result<Guid>>
+    public class CreateTypeOfCasesCommand : IRequest<Result<Guid>>
     {
         public Guid NatureId { get; set; }
         public Guid CourtTypeId { get; set; }
@@ -29,7 +29,7 @@ namespace CourtApp.Application.Features.Typeofcasess.Commands
         private readonly ICaseNatureRepository caseNatureRepository;
         private IUnitOfWork _unitOfWork { get; set; }
 
-        public CreateCaseKindCommandHandler(ITypeOfCasesRepository repository, 
+        public CreateCaseKindCommandHandler(ITypeOfCasesRepository repository,
             IMapper mapper, IUnitOfWork _unitOfWork, ICaseNatureRepository caseNatureRepository)
         {
             this.repository = repository;
@@ -39,9 +39,12 @@ namespace CourtApp.Application.Features.Typeofcasess.Commands
         }
         public async Task<Result<Guid>> Handle(CreateTypeOfCasesCommand request, CancellationToken cancellationToken)
         {
+            var isExist = repository.QryEntities
+                .Where(w => (w.Abbreviation.Equals(request.Abbreviation.Trim()) ||
+                w.Name_En.Equals(request.Name_En.Trim())) && w.CourtTypeId==request.CourtTypeId).FirstOrDefault();
+            if (isExist != null)
+                return Result<Guid>.Fail("The given information is already exist");
             var mappeddata = mapper.Map<TypeOfCasesEntity>(request);
-            var nature = caseNatureRepository.GetByIdAsync(request.NatureId).Result;
-            mappeddata.Nature = nature;
             await repository.InsertAsync(mappeddata);
             await _unitOfWork.Commit(cancellationToken);
             return Result<Guid>.Success(mappeddata.Id);

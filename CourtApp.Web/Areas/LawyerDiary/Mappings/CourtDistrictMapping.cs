@@ -11,7 +11,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Mappings
         {
             CreateMap<CourtDistrictReponse, CourtDistrictViewModel>();
             CreateMap<CourtDistrictByIdReponse, CourtDistrictViewModel>()
-                .ForPath(d => d.DistrictId, sr => sr.MapFrom(s => s.DistrictCode));
+                /*.ForPath(d => d.DistrictId, sr => sr.MapFrom(s => s.DistrictCode))*/;
             CreateMap<CourtDistrictViewModel, CreateCourtDistrictCommand>();
             CreateMap<CourtDistrictViewModel, UpdateCourtDistrictCommand>();
         }

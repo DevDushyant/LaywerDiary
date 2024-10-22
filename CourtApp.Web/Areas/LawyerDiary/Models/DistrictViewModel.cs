@@ -2,7 +2,7 @@
 {
     public class DistrictViewModel
     {
-        public int Code { get; set; }
+        public int Id { get; set; }
         public string Name_En { get; set; }
     }
 }

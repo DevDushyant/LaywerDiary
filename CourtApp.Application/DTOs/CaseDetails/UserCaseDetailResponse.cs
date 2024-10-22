@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CourtApp.Application.Features.Case;
+using System;
 using System.Collections.Generic;
 
 namespace CourtApp.Application.DTOs.CaseDetails
@@ -25,11 +26,13 @@ namespace CourtApp.Application.DTOs.CaseDetails
         public Guid? LinkedCaseId { get; set; }
         public Guid? CourtDistrictId { get; set; }
         public Guid? ComplexBenchId { get; set; }
-        //public List<CaseAgainstModel> AgainstCaseDetails { get; set; }
+        public List<CaseAgainstEntityModel> AgainstCaseDetails { get; set; }
+        public bool IsHighCourt { get; set; }
         public int? StateId { get; set; }
         public int? StrengthId { get; set; }
         public Guid? BenchId { get; set; }
         public Guid? CourtId { get; set; }
+        public Guid CourtComplexId { get; set; }
 
     }
 }

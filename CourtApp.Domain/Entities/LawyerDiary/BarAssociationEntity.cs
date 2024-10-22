@@ -7,6 +7,6 @@ namespace CourtApp.Entities.LawyerDiary
     [Table("m_barassociation", Schema = "ld")]
     public class BarAssociationEntity : AuditableEntity
     {
-        public new Guid Id { get; set; }
+        
     }
 }

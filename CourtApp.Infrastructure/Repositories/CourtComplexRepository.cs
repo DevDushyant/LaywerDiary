@@ -33,7 +33,7 @@ namespace CourtApp.Infrastructure.Repositories
         {
             var DetailById = _repository.Entities
                .Include(d => d.State)
-               .Include(d => d.District)
+               //.Include(d => d.District)
                .Include(d => d.CourtDistrict)
                .Where(p => p.Id == Id).FirstOrDefaultAsync();
             return await DetailById;

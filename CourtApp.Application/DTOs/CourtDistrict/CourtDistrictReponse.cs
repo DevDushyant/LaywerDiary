@@ -13,6 +13,6 @@ namespace CourtApp.Application.DTOs.CourtDistrict
         public string Name_Hn { get; set; }
         public string Abbreviation { get; set; }
         public string StateName { get; set; }
-        public string DistrictName { get; set; }
+        /*public string DistrictName { get; set; }*/
     }
 }

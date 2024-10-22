@@ -11,7 +11,6 @@ namespace CourtApp.Application.DTOs.CaseCategory
         public Guid Id { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
-        public string CourtType { get; set; }
-        public string StateName { get; set; }
+        public string CourtType { get; set; }        
     }
 }

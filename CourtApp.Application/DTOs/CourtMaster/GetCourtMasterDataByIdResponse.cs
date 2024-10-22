@@ -13,6 +13,7 @@ namespace CourtApp.Application.DTOs.CourtMaster
         public Guid CourtDistrictId { get; set; }
         public Guid CourtComplexId { get; set; }
         public string Name_En { get; set; }
+        public string Address { get; set; }
         public string Name_Hn { get; set; }
         public string Abbreviation { get; set; }
         public bool IsHighCourt { get; set; }

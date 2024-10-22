@@ -17,18 +17,16 @@ namespace CourtApp.Infrastructure.Migrations.App
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("AuditTrail.Models.Audit", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("AffectedColumns")
                         .HasColumnType("text");
@@ -101,11 +99,9 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             modelBuilder.Entity("CourtApp.Domain.Entities.Advocate.ActAmendedEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("ActID")
                         .HasColumnType("uuid");
@@ -135,11 +131,9 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             modelBuilder.Entity("CourtApp.Domain.Entities.Advocate.ActBookEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("ActId")
                         .HasColumnType("uuid");
@@ -194,7 +188,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<int>("ActNumber")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("ActTypeId")
+                    b.Property<Guid>("ActTypeId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("ActYear")
@@ -234,7 +228,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<int?>("PageNo")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("PartId")
+                    b.Property<Guid>("PartId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("PublishedGazeteDate")
@@ -243,7 +237,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<int>("SubActNumber")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("SubjectId")
+                    b.Property<Guid>("SubjectId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -259,11 +253,9 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             modelBuilder.Entity("CourtApp.Domain.Entities.Advocate.ActRepealedEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("ActID")
                         .HasColumnType("uuid");
@@ -395,7 +387,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<Guid>("CaseCategoryId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CaseIdId")
+                    b.Property<Guid>("CaseId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("CaseNo")
@@ -416,13 +408,13 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("CnrNo")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("CourtBenchId")
+                    b.Property<Guid?>("CourtBenchId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CourtComplexId")
+                    b.Property<Guid?>("CourtComplexId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CourtDistrictId")
+                    b.Property<Guid?>("CourtDistrictId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CourtTypeId")
@@ -444,7 +436,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasIndex("CaseCategoryId");
 
-                    b.HasIndex("CaseIdId");
+                    b.HasIndex("CaseId");
 
                     b.HasIndex("CaseTypeId");
 
@@ -494,7 +486,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("CnrNumber")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("CourtBenchId")
+                    b.Property<Guid?>("CourtBenchId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("CourtComplexId")
@@ -555,6 +547,10 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.HasIndex("CaseTypeId");
 
                     b.HasIndex("CourtBenchId");
+
+                    b.HasIndex("CourtComplexId");
+
+                    b.HasIndex("CourtDistrictId");
 
                     b.HasIndex("CourtTypeId");
 
@@ -717,24 +713,8 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Code")
+                    b.Property<int>("DistrictId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int?>("DistrictCode")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name_En")
                         .HasColumnType("text");
@@ -744,10 +724,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
-
-                    b.HasIndex("DistrictCode");
+                    b.HasIndex("DistrictId");
 
                     b.ToTable("m_block");
                 });
@@ -760,24 +737,8 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Code")
+                    b.Property<int>("DistrictId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int?>("DistrictCode")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name_En")
                         .HasColumnType("text");
@@ -787,10 +748,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
-
-                    b.HasIndex("DistrictCode");
+                    b.HasIndex("DistrictId");
 
                     b.ToTable("m_city");
                 });
@@ -836,24 +794,8 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CityCode")
+                    b.Property<int>("CityId")
                         .HasColumnType("integer");
-
-                    b.Property<int>("Code")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name_En")
                         .HasColumnType("text");
@@ -863,10 +805,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CityCode");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
+                    b.HasIndex("CityId");
 
                     b.ToTable("m_ward");
                 });
@@ -914,8 +853,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnOrder(1);
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -1231,9 +1169,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("DistrictCode")
-                        .HasColumnType("integer");
-
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
@@ -1252,8 +1187,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.HasKey("Id");
 
                     b.HasIndex("CourtDistrictId");
-
-                    b.HasIndex("DistrictCode");
 
                     b.HasIndex("StateId");
 
@@ -1276,9 +1209,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("DistrictCode")
-                        .HasColumnType("integer");
-
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
@@ -1296,8 +1226,6 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DistrictCode");
-
                     b.HasIndex("StateId");
 
                     b.ToTable("m_court_district", "ld");
@@ -1309,15 +1237,15 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CourtFeeTypeId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("FeeTypeId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
@@ -1330,7 +1258,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourtFeeTypeId");
+                    b.HasIndex("FeeTypeId");
 
                     b.ToTable("m_court_fee", "ld");
                 });
@@ -1366,10 +1294,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<double>("Rate")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("StateCode")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("StateId")
+                    b.Property<int>("StateId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -1415,10 +1340,10 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("Abbreviation")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("CourtComplexId")
+                    b.Property<Guid?>("CourtComplexId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CourtDistrictId")
+                    b.Property<Guid?>("CourtDistrictId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CourtTypeId")
@@ -1430,9 +1355,6 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("DistrictCode")
-                        .HasColumnType("integer");
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
@@ -1451,9 +1373,11 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourtTypeId");
+                    b.HasIndex("CourtComplexId");
 
-                    b.HasIndex("DistrictCode");
+                    b.HasIndex("CourtDistrictId");
+
+                    b.HasIndex("CourtTypeId");
 
                     b.HasIndex("StateId");
 
@@ -1535,7 +1459,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("HeadName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("LastModifiedBy")
@@ -1588,7 +1511,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("BookTypeId")
+                    b.Property<Guid>("BookTypeId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -1604,7 +1527,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid?>("PublisherId")
+                    b.Property<Guid>("PublisherId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Year")
@@ -1695,14 +1618,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("Name_Hn")
                         .HasColumnType("text");
 
-                    b.Property<int>("StateId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CourtTypeId");
-
-                    b.HasIndex("StateId");
 
                     b.ToTable("m_nature", "ld");
                 });
@@ -1818,9 +1736,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("Abbreviation")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("CaseCategoryId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("CourtTypeId")
                         .HasColumnType("uuid");
 
@@ -1843,19 +1758,14 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("Name_Hn")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("NatureId")
+                    b.Property<Guid>("NatureId")
                         .HasColumnType("uuid");
-
-                    b.Property<int>("StateId")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CourtTypeId");
 
                     b.HasIndex("NatureId");
-
-                    b.HasIndex("StateId");
 
                     b.ToTable("m_c_type", "ld");
                 });
@@ -1933,24 +1843,11 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             modelBuilder.Entity("CourtApp.Entities.Common.DistrictEntity", b =>
                 {
-                    b.Property<int>("Code")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp without time zone");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name_En")
                         .HasColumnType("text");
@@ -1958,15 +1855,12 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("Name_Hn")
                         .HasColumnType("text");
 
-                    b.Property<int?>("StateCode")
+                    b.Property<int>("StateId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Code");
+                    b.HasKey("Id");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
-
-                    b.HasIndex("StateCode");
+                    b.HasIndex("StateId");
 
                     b.ToTable("m_district");
                 });
@@ -1979,22 +1873,6 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Code")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<string>("Name_En")
                         .HasColumnType("text");
 
@@ -2002,9 +1880,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
 
                     b.ToTable("m_state");
                 });
@@ -2042,15 +1917,21 @@ namespace CourtApp.Infrastructure.Migrations.App
                 {
                     b.HasOne("CourtApp.Domain.Entities.Advocate.ActTypeEntity", "ActType")
                         .WithMany()
-                        .HasForeignKey("ActTypeId");
+                        .HasForeignKey("ActTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CourtApp.Domain.Entities.Advocate.PartEntity", "Part")
                         .WithMany()
-                        .HasForeignKey("PartId");
+                        .HasForeignKey("PartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CourtApp.Domain.Entities.Common.SubjectEntity", "Subject")
                         .WithMany("Acts")
-                        .HasForeignKey("SubjectId");
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ActType");
 
@@ -2085,9 +1966,11 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", "CaseId")
+                    b.HasOne("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", "Case")
                         .WithMany("CaseAgainstEntities")
-                        .HasForeignKey("CaseIdId");
+                        .HasForeignKey("CaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.TypeOfCasesEntity", "CaseType")
                         .WithMany()
@@ -2097,21 +1980,15 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtBenchEntity", "CourtBench")
                         .WithMany()
-                        .HasForeignKey("CourtBenchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourtBenchId");
 
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtComplexEntity", "CourtComplex")
                         .WithMany()
-                        .HasForeignKey("CourtComplexId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourtComplexId");
 
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtDistrictEntity", "CourtDistrict")
                         .WithMany()
-                        .HasForeignKey("CourtDistrictId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourtDistrictId");
 
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtTypeEntity", "CourtType")
                         .WithMany()
@@ -2125,9 +2002,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CaseCategory");
+                    b.Navigation("Case");
 
-                    b.Navigation("CaseId");
+                    b.Navigation("CaseCategory");
 
                     b.Navigation("CaseType");
 
@@ -2162,9 +2039,15 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtBenchEntity", "CourtBench")
                         .WithMany()
-                        .HasForeignKey("CourtBenchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourtBenchId");
+
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtComplexEntity", "CourtComplex")
+                        .WithMany()
+                        .HasForeignKey("CourtComplexId");
+
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtDistrictEntity", "CourtDistrict")
+                        .WithMany()
+                        .HasForeignKey("CourtDistrictId");
 
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtTypeEntity", "CourtType")
                         .WithMany()
@@ -2197,6 +2080,10 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Navigation("CaseType");
 
                     b.Navigation("CourtBench");
+
+                    b.Navigation("CourtComplex");
+
+                    b.Navigation("CourtDistrict");
 
                     b.Navigation("CourtType");
 
@@ -2311,7 +2198,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                 {
                     b.HasOne("CourtApp.Entities.Common.DistrictEntity", "District")
                         .WithMany("Blocks")
-                        .HasForeignKey("DistrictCode");
+                        .HasForeignKey("DistrictId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("District");
                 });
@@ -2320,7 +2209,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                 {
                     b.HasOne("CourtApp.Entities.Common.DistrictEntity", "District")
                         .WithMany("Cities")
-                        .HasForeignKey("DistrictCode");
+                        .HasForeignKey("DistrictId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("District");
                 });
@@ -2329,7 +2220,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                 {
                     b.HasOne("CourtApp.Domain.Entities.Common.CityEntity", "city")
                         .WithMany("Wards")
-                        .HasForeignKey("CityCode");
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("city");
                 });
@@ -2584,12 +2477,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CourtApp.Entities.Common.DistrictEntity", "District")
-                        .WithMany()
-                        .HasForeignKey("DistrictCode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
                         .WithMany()
                         .HasForeignKey("StateId")
@@ -2598,61 +2485,55 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.Navigation("CourtDistrict");
 
-                    b.Navigation("District");
-
                     b.Navigation("State");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtDistrictEntity", b =>
                 {
-                    b.HasOne("CourtApp.Entities.Common.DistrictEntity", "District")
-                        .WithMany()
-                        .HasForeignKey("DistrictCode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
                         .WithMany()
                         .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("District");
 
                     b.Navigation("State");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtFeeEntity", b =>
                 {
-                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtFeeTypeEntity", "CourtFeeType")
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtFeeTypeEntity", "FeeType")
                         .WithMany()
-                        .HasForeignKey("CourtFeeTypeId")
+                        .HasForeignKey("FeeTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CourtFeeType");
+                    b.Navigation("FeeType");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtFeeStructureEntity", b =>
                 {
                     b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
                         .WithMany()
-                        .HasForeignKey("StateId");
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("State");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtMasterEntity", b =>
                 {
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtComplexEntity", "CourtComplex")
+                        .WithMany()
+                        .HasForeignKey("CourtComplexId");
+
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtDistrictEntity", "CourtDistrict")
+                        .WithMany()
+                        .HasForeignKey("CourtDistrictId");
+
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtTypeEntity", "CourtType")
                         .WithMany()
                         .HasForeignKey("CourtTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CourtApp.Entities.Common.DistrictEntity", "District")
-                        .WithMany()
-                        .HasForeignKey("DistrictCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2662,9 +2543,11 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CourtType");
+                    b.Navigation("CourtComplex");
 
-                    b.Navigation("District");
+                    b.Navigation("CourtDistrict");
+
+                    b.Navigation("CourtType");
 
                     b.Navigation("State");
                 });
@@ -2673,11 +2556,15 @@ namespace CourtApp.Infrastructure.Migrations.App
                 {
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.BookTypeEntity", "BookType")
                         .WithMany("lDBookEntities")
-                        .HasForeignKey("BookTypeId");
+                        .HasForeignKey("BookTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.PublisherEntity", "Publisher")
                         .WithMany("lDBookEntities")
-                        .HasForeignKey("PublisherId");
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("BookType");
 
@@ -2692,15 +2579,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
-                        .WithMany()
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("CourtType");
-
-                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.ProceedingSubHeadEntity", b =>
@@ -2724,19 +2603,13 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.NatureEntity", "Nature")
                         .WithMany()
-                        .HasForeignKey("NatureId");
-
-                    b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
-                        .WithMany()
-                        .HasForeignKey("StateId")
+                        .HasForeignKey("NatureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CourtType");
 
                     b.Navigation("Nature");
-
-                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.WorkMasterSubEntity", b =>
@@ -2754,7 +2627,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                 {
                     b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
                         .WithMany("Districts")
-                        .HasForeignKey("StateCode");
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("State");
                 });

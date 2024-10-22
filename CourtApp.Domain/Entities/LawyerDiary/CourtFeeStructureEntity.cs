@@ -9,14 +9,11 @@ namespace CourtApp.Domain.Entities.LawyerDiary
     [Table("m_court_fee_structure", Schema = "ld")]
     public class CourtFeeStructureEntity : AuditableEntity
     {
-        public new Guid Id { get; set; }
         public Double MinValue { get; set; }
         public Double MaxValue { get; set; }
         public Double Rate { get; set; }
-        public Double FixAmount { get; set; }
-
-        [ForeignKey("StateCode")]
-        public int StateCode { get; set; }
+        public Double FixAmount { get; set; }        
+        public int StateId { get; set; }
         public virtual StateEntity State { get; set; }
     }
 }

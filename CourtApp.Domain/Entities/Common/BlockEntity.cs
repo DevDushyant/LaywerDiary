@@ -6,14 +6,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourtApp.Domain.Entities.Common
 {
-    [Table("m_block")]
-    [Index(nameof(Code), IsUnique = true)]
-    public class BlockEntity : AuditableEntity
-    {
-        public int Code { get; set; }
+    [Table("m_block")]   
+    public class BlockEntity
+    {        
+        public required int Id { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
-        [ForeignKey("DistrictCode")]
+        public int DistrictId { get; set; }
         public virtual DistrictEntity District { get; set; }
     }
 }

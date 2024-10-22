@@ -53,6 +53,11 @@ namespace CourtApp.Application.Features.WorkMaster
                 entity.Abbreviation = request.Abbreviation;
                 await _Repository.UpdateAsync(entity);
             }
+            if (request.ActionType == ((int)ActionTypes.Delete))
+            {
+                var dt =await _Repository.GetByIdAsync(request.Id);
+                await _Repository.DeleteAsync(dt);
+            }
             await _unitOfWork.Commit(cancellationToken);
             return Result<Guid>.Success(entity.Id);
         }

@@ -37,7 +37,7 @@ namespace CourtApp.Application.Features.CaseWork
         {
             foreach (var work in request.WorkId)
             {
-                var mpDt = new CaseWorkEntity();
+                var mpDt = new CaseWorkEntity() { CreatedBy = "" };
                 mpDt.Id = Guid.NewGuid();
                 mpDt.CaseId = request.CaseId;
                 mpDt.WorkTypeId = request.WorkTypeId;

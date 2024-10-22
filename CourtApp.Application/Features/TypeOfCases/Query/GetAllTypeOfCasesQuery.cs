@@ -22,7 +22,7 @@ namespace CourtApp.Application.Features.TypeOfCases.Query
         public int PageSize { get; set; }
         public Guid CategoryId { get; set; }
         public Guid CourtTypeId { get; set; }
-        public int StateId { get; set; }
+        //public int StateId { get; set; }
         public GetAllTypeOfCasesQuery(int pagenumber, int pagesize)
         {
             PageNumber = pagenumber;
@@ -47,15 +47,15 @@ namespace CourtApp.Application.Features.TypeOfCases.Query
                Name_Hn=e.Name_Hn,
                Abbreviation=e.Abbreviation,
                CourtTypeName=e.CourtType.CourtType,
-               StateName=e.State.Name_En
+               //StateName=e.State.Name_En
             };
             var predicate = PredicateBuilder.True<TypeOfCasesEntity>();
 
             if (request.CategoryId != Guid.Empty)
                 predicate = predicate.And(b => b.Nature.Id==request.CategoryId);
 
-            if (request.StateId != 0)
-                predicate = predicate.And(b => b.StateId == request.StateId);
+            //if (request.StateId != 0)
+            //    predicate = predicate.And(b => b.StateId == request.StateId);
 
             if (request.CourtTypeId != Guid.Empty)
                 predicate = predicate.And(b => b.CourtTypeId == request.CourtTypeId);
@@ -63,7 +63,7 @@ namespace CourtApp.Application.Features.TypeOfCases.Query
             {
                 var paginatedList = await _repository.QryEntities
                     .Include(c => c.CourtType)
-                    .Include(c => c.State)
+                    //.Include(c => c.State)
                     .Include(c => c.Nature)
                     .Where(predicate)
                     .Select(expression)

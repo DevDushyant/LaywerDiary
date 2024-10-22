@@ -14,6 +14,8 @@ namespace CourtApp.Application.Features.Logs.Commands.AddActivityLog
     {
         public string Action { get; set; }
         public string userId { get; set; }
+        public string tableName { get; set; }
+        public string Pk { get; set; }
     }
 
     public class AddActivityLogCommandHandler : IRequestHandler<AddActivityLogCommand, Result<int>>
@@ -30,7 +32,7 @@ namespace CourtApp.Application.Features.Logs.Commands.AddActivityLog
 
         public async Task<Result<int>> Handle(AddActivityLogCommand request, CancellationToken cancellationToken)
         {
-            await _repo.AddLogAsync(request.Action, request.userId);
+            await _repo.AddLogAsync(request.Action, request.userId,request.tableName,request.Pk);
             await _unitOfWork.Commit(cancellationToken);
             return Result<int>.Success(1);
         }

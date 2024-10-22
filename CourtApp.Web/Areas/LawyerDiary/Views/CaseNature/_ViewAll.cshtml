@@ -3,7 +3,7 @@
     <thead>
         <tr>
             <th>Court Type</th>
-            <th>State</th>
+            @* <th>State</th> *@
             <th>Case Category</th>
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded
             || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
@@ -20,9 +20,9 @@
                 <td>
                     @bt.CourtType
                 </td>
-                <td>
+                @* <td>
                     @bt.StateName
-                </td>
+                </td> *@
                 <td>
                     @bt.Name_En
                 </td>

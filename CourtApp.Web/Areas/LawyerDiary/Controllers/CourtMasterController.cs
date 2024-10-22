@@ -46,17 +46,17 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             if (statelist.Succeeded)
             {
                 var DdlStates = _mapper.Map<List<StateViewModel>>(statelist.Data);
-                ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
+                ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Id), nameof(StateViewModel.Name_En), null, null);
 
             }
 
-            var DistrictList = await _mediator.Send(new GetDistrictQuery { StateCode = ViewModel.StateCode });
-            if (DistrictList.Succeeded)
-            {
-                var DdlDistrict = _mapper.Map<List<DistrictViewModel>>(DistrictList.Data);
-                ViewModel.Districts = new SelectList(DdlDistrict, nameof(DistrictViewModel.Code), nameof(DistrictViewModel.Name_En), null, null);
+            //var DistrictList = await _mediator.Send(new GetDistrictQuery { StateCode = ViewModel.StateCode });
+            //if (DistrictList.Succeeded)
+            //{
+            //    var DdlDistrict = _mapper.Map<List<DistrictViewModel>>(DistrictList.Data);
+            //    ViewModel.Districts = new SelectList(DdlDistrict, nameof(DistrictViewModel.Id), nameof(DistrictViewModel.Name_En), null, null);
 
-            }
+            //}
 
         }
 
@@ -77,10 +77,10 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     var ViewModel = _mapper.Map<CourtMasterViewModel>(response.Data);
                     ViewModel.States = await LoadStates();
                     ViewModel.CourtTypes = await LoadCourtTypes();
-                    ViewModel.Districts = await DdlLoadDistrict(ViewModel.StateCode);
+                    //ViewModel.Districts = await DdlLoadDistrict(ViewModel.StateCode);
                     if (ViewModel.IsHighCourt != true)
                     {
-                        ViewModel.CourtDistricts = await DdlLoadCourtDistricts(ViewModel.DistrictCode);
+                        ViewModel.CourtDistricts = await DdlLoadCourtDistricts(ViewModel.StateCode);
                         ViewModel.CourtComplexes = await GetCourtComplex(ViewModel.CourtDistrictId.Value);
                     }
                     return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });

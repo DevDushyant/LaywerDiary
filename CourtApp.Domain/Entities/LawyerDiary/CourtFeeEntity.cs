@@ -9,11 +9,8 @@ namespace CourtApp.Domain.Entities.LawyerDiary
     [Table("m_court_fee", Schema = "ld")]
     public class CourtFeeEntity : AuditableEntity
     {
-        public new Guid Id { get; set; }
-        [Required]
-        [ForeignKey("CourtFeeTypeId")]
-        public virtual CourtFeeTypeEntity CourtFeeType { get; set; }
-        [Required]
+        public Guid FeeTypeId { get; set; }       
+        public virtual CourtFeeTypeEntity FeeType { get; set; }        
         public float Value { get; set; }        
     }
 }

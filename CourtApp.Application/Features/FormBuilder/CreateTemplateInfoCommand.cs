@@ -44,7 +44,7 @@ namespace CourtApp.Application.Features.FormBuilder
                     return Result<Guid>.Fail($"The given template info is already exists.");
                 else
                 {                   
-                    var entity = new TemplateInfoEntity();
+                    var entity = new TemplateInfoEntity() { CreatedBy = "" };
                     List<TemplateTagsEntity> tdel = new List<TemplateTagsEntity>();
                     entity.TemplateName = request.TemplateName;
                     entity.TemplatePath  = request.TemplatePath;                    

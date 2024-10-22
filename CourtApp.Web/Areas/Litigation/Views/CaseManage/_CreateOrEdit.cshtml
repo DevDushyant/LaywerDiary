@@ -22,14 +22,13 @@
     <div class="col-sm-12" style="padding:20px">
         <partial name="_StatusMessage" model="Model.StatusMessage" />
         <form id="create-form" method="post" asp-controller="CaseManage" asp-action="OnPostCreateOrEdit" asp-route-Id="@Model.Id" enctype="multipart/form-data">
-            <input type="hidden" value="@Model.Id" />
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label">@localizer["Institution Date"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-4">
                             <div class="input-group">
-                                <input type="date" asp-for="InstitutionDate" name="InstitutionDate" id="InstitutionDate" value="@DateTime.Now.ToString("MM/dd/yyyy")" class="form-control">
+                                <input type="date" asp-for="InstitutionDate" class="form-control">
                             </div>
                             <span asp-validation-for="InstitutionDate" class="text-danger"></span>
                         </div>
@@ -43,73 +42,145 @@
                             <span asp-validation-for="StateId" class="text-danger"></span>
                         </div>
                     </div>
-
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label">@localizer["Court Type"] (<span style="color:red">*</span>)</label>
                         <div class="col-md-4">
                             <div class="input-group">
-                                <select class="form-control select2bs4" id="CourtTypeId" asp-for="CourtTypeId"
+                                <select class="form-control select2bs4" asp-for="CourtTypeId"
                                         asp-items="@Model.CourtTypes">
                                     <option></option>
                                 </select>
                             </div>
                             <span asp-validation-for="CourtTypeId" class="text-danger"></span>
                         </div>
-                        <label class="col-md-2 col-form-label highCourt">@localizer["Bench"] (<span style="color:red">*</span>)</label>
-                        <div class="col-md-4 highCourt">
-                            <div class="input-group">
-                                <select class="form-control select2bs4" id="BenchId" asp-for="BenchId" asp-items="@Model.Courts">
-                                    <option></option>
-                                </select>
-                            </div>
-                        </div>
-                        <label class="col-md-2 col-form-label Court">@localizer["Court District"] (<span style="color:red">*</span>)</label>
-                        <div class="col-md-4 Court">
-                            <div class="input-group">
-                                <select class="form-control select2bs4" id="CourtDistrictId" asp-for="CourtDistrictId" asp-items="@Model.CourtDistricts">
-                                    <option></option>
-                                </select>
-                            </div>
-                            <span asp-validation-for="CourtDistrictId" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group row highCourt">
-                        <div class="form-group row ">
-                            <label class="col-md-2 col-form-label">@localizer["Strength"]</label>
-                            <div class="col-md-4">
+                        @if (@Model.Id == Guid.Empty)
+                        {
+                            <label class="col-md-2 col-form-label highCourt">@localizer["Bench"] (<span style="color:red">*</span>)</label>
+                            <div class="col-md-4 highCourt">
                                 <div class="input-group">
-                                    <select class="form-control select2bs4" id="StrengthId" asp-for="StrengthId" asp-items="@Model.Strengths">
+                                    <select class="form-control select2bs4" asp-for="BenchId"
+                                            asp-items="@Model.Courts">
                                         <option></option>
                                     </select>
                                 </div>
-                                <span asp-validation-for="StrengthId" class="text-danger"></span>
+                                <span asp-validation-for="BenchId" class="text-danger"></span>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group row Court">
-                        <div class="form-group row ">
-                            <label class="col-md-2 col-form-label">@localizer["Court Complex"] (<span style="color:red">*</span>)</label>
-                            <div class="col-md-4">
+                            <label class="col-md-2 col-form-label Court">@localizer["Court District"] (<span style="color:red">*</span>)</label>
+                            <div class="col-md-4 Court">
                                 <div class="input-group">
-                                    <select class="form-control select2bs4" id="ComplexBenchId" asp-for="ComplexBenchId" asp-items="@Model.ComplexBenchs">
-                                        <option></option>
-                                    </select>
-                                </div>
-                                <span asp-validation-for="ComplexBenchId" class="text-danger"></span>
-                            </div>
-                            <label class="col-md-2 col-form-label">@localizer["Court"] (<span style="color:red">*</span>)</label>
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                    <select class="form-control select2bs4" id="CourtId" asp-for="CourtId" asp-items="@Model.Courts">
+                                    <select class="form-control select2bs4" id="CourtDistrictId" asp-for="CourtDistrictId" asp-items="@Model.CourtDistricts">
                                         <option></option>
                                     </select>
                                 </div>
                             </div>
-                        </div>
+                        }
+                        else
+                        {
+                            if (Model.IsHighCourt != true)
+                            {
+                                <label class="col-md-2 col-form-label">@localizer["Court District"] (<span style="color:red">*</span>)</label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control select2bs4" asp-for="CourtDistrictId" asp-items="@Model.CourtDistricts">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <label class="col-md-2 col-form-label">@localizer["Bench"] (<span style="color:red">*</span>)</label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control select2bs4" asp-for="BenchId"
+                                                asp-items="@Model.Courts">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="BenchId" class="text-danger"></span>
+                                </div>
+                            }
+                        }
 
                     </div>
+
+                    @if (@Model.Id == Guid.Empty)
+                    {
+                        <div class="form-group row highCourt">
+                            <div class="form-group row ">
+                                <label class="col-md-2 col-form-label">@localizer["Strength"]</label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control select2bs4" asp-for="StrengthId"
+                                                asp-items="@Model.Strengths">
+                                            <option></option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row Court">
+                            <div class="form-group row ">
+                                <label class="col-md-2 col-form-label">@localizer["Court Complex"] (<span style="color:red">*</span>)</label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control select2bs4" asp-for="ComplexBenchId" asp-items="@Model.ComplexBenchs">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="ComplexBenchId" class="text-danger"></span>
+                                </div>
+                                <label class="col-md-2 col-form-label">@localizer["Court"] (<span style="color:red">*</span>)</label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control select2bs4" id="CourtId" asp-for="CourtId" asp-items="@Model.Courts">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        if (Model.IsHighCourt != true)
+                        {
+                            <div class="form-group row">
+                                <label class="col-md-2 col-form-label">@localizer["Court Complex"] (<span style="color:red">*</span>)</label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control select2bs4" asp-for="ComplexBenchId" asp-items="@Model.ComplexBenchs">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <label class="col-md-2 col-form-label">@localizer["Court"] (<span style="color:red">*</span>)</label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control select2bs4" asp-for="CourtId" asp-items="@Model.Courts">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group row">
+                                <label class="col-md-2 col-form-label">@localizer["Strength"]</label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control select2bs4" asp-for="StrengthId"
+                                                asp-items="@Model.Strengths">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    }
 
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label">@localizer["Case Category"] (<span style="color:red">*</span>)</label>
@@ -193,7 +264,6 @@
                                     <option></option>
                                 </select>
                             </div>
-                            <span asp-validation-for="CaseYear" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -247,6 +317,7 @@
                     <partial name="_AgainstCaseDetail" model="Model" />
                 </div>
             </div>
+            
             <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
                 <button type="submit" class="btn btn-success">Save</button>
                 <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetClientInfo?CaseId=@Model.Id','Add Client')" class="btn btn-outline-success" style="dis">
@@ -258,6 +329,7 @@
 </div>
 @section Scripts
 {
+
     <script src="~/js/litigation/managecase.js"></script>
 }
 

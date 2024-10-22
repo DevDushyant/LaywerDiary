@@ -42,7 +42,7 @@ namespace CourtApp.Application.Features.CaseDetails
             {
                 foreach (var item in request.Documents)
                 {
-                    CaseDocsEntity ce = new CaseDocsEntity();
+                    CaseDocsEntity ce = new CaseDocsEntity() { CreatedBy="" };
                     ce.CaseId = request.CaseId;
                     ce.DOTypeId = item.TypeId;
                     ce.DOId = item.DocId;

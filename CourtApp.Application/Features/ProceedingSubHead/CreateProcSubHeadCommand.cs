@@ -32,10 +32,16 @@ namespace CourtApp.Application.Features.ProceedingSubHead
         }
         public async Task<Result<Guid>> Handle(CreateProcSubHeadCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<ProceedingSubHeadEntity>(request);
-            await _Repository.InsertAsync(entity);
-            await _unitOfWork.Commit(cancellationToken);
-            return Result<Guid>.Success(entity.Id);
+            var isExist=_Repository.Entities
+                .Where(w=>w.Name_En.Equals(request.Name_En) && w.HeadId==request.HeadId).FirstOrDefault();
+            if (isExist == null)
+            {
+                var entity = _mapper.Map<ProceedingSubHeadEntity>(request);
+                await _Repository.InsertAsync(entity);
+                await _unitOfWork.Commit(cancellationToken);
+                return Result<Guid>.Success(entity.Id);
+            }
+            return Result<Guid>.Fail("Given name is already exist");
         }
     }
 }

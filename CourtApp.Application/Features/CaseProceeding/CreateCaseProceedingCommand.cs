@@ -37,7 +37,7 @@ namespace CourtApp.Application.Features.CaseProceeding
             List<CaseProcedingEntity> mappingEntity = new List<CaseProcedingEntity>();
             foreach (var subHeadId in request.ProceedingsIds)
             {
-                var mpDt = new CaseProcedingEntity();
+                var mpDt = new CaseProcedingEntity() { CreatedBy = "" };
                 mpDt.Id = Guid.NewGuid();
                 mpDt.CaseId = request.CaseId;
                 mpDt.SubHeadId = subHeadId;

@@ -3,6 +3,7 @@ using AspNetCoreHero.ToastNotification.Abstractions;
 using AutoMapper;
 using Azure;
 using CourtApp.Application.Constants;
+using CourtApp.Application.DTOs.CourtMaster;
 using CourtApp.Application.Enums;
 using CourtApp.Application.Features.CaseCategory;
 using CourtApp.Application.Features.CaseKinds.Query;
@@ -73,7 +74,7 @@ namespace CourtApp.Web.Abstractions
         {
             var response = await _mediator.Send(new GetStateMasterQuery());
             var ViewModel = _mapper.Map<List<StateViewModel>>(response.Data);
-            return new SelectList(ViewModel, nameof(StateViewModel.Code), nameof(StateViewModel.Name_En), null, null);
+            return new SelectList(ViewModel, nameof(StateViewModel.Id), nameof(StateViewModel.Name_En), null, null);
         }
         public async Task<SelectList> LoadCourtTypes()
         {
@@ -81,9 +82,9 @@ namespace CourtApp.Web.Abstractions
             var CaseKind = _mapper.Map<List<CourtTypeViewModel>>(response.Data);
             return new SelectList(CaseKind, nameof(CourtTypeViewModel.Id), nameof(CourtTypeViewModel.CourtType), null, null);
         }
-        public async Task<SelectList> DdlLoadCourtDistricts(int DistrictId)
+        public async Task<SelectList> DdlLoadCourtDistricts(int StateID)
         {
-            var districts = await _mediator.Send(new GetCourtDistrictQuery() { DistrictId = DistrictId });
+            var districts = await _mediator.Send(new GetCourtDistrictQuery() { StateId = StateID });
             var districtViewModel = _mapper.Map<List<CourtDistrictViewModel>>(districts.Data);
             return new SelectList(districtViewModel, nameof(CourtDistrictViewModel.Id), nameof(CourtDistrictViewModel.Name_En), null, null);
         }
@@ -123,7 +124,7 @@ namespace CourtApp.Web.Abstractions
         {
             var districts = await _mediator.Send(new GetDistrictQuery() { StateCode = StateCode });
             var districtViewModel = _mapper.Map<List<DistrictViewModel>>(districts.Data);
-            return new SelectList(districtViewModel, nameof(DistrictViewModel.Code), nameof(DistrictViewModel.Name_En), null, null);
+            return new SelectList(districtViewModel, nameof(DistrictViewModel.Id), nameof(DistrictViewModel.Name_En), null, null);
         }
         public async Task<SelectList> DdlCaseStages()
         {
@@ -153,9 +154,9 @@ namespace CourtApp.Web.Abstractions
             var data = Json(districts);
             return data;
         }
-        public async Task<JsonResult> LoadCourtDistrict(int DistrictId)
+        public async Task<JsonResult> LoadCourtDistrict(int StateId)
         {
-            var districts = await _mediator.Send(new GetCourtDistrictQuery() { DistrictId = DistrictId });
+            var districts = await _mediator.Send(new GetCourtDistrictQuery() { StateId = StateId });
             var data = Json(districts);
             return data;
         }
@@ -186,7 +187,7 @@ namespace CourtApp.Web.Abstractions
             if (response.Succeeded)
             {
                 var fields = _mapper.Map<List<CourtMasterViewModel>>(response.Data);
-                return new SelectList(fields, nameof(CourtMasterViewModel.Id), nameof(CourtMasterViewModel.CourtName), null, null); ;
+                return new SelectList(fields, nameof(CourtMasterViewModel.Id), nameof(CourtMasterViewModel.District), null, null); ;
             }
             return null;
         }
@@ -244,6 +245,17 @@ namespace CourtApp.Web.Abstractions
             var dt = await _mediator.Send(new GetCourtBenchQuery(1, 100) { StateId = StateId, CourtTypeId = CourtTypeId, CourtId = ComplexId });
             var data = Json(dt);
             return data;
+        }
+
+        public async Task<SelectList>LoadBenches(Guid CourtTypeId, int StateId, Guid ComplexId)
+        {
+            var dt = await _mediator.Send(new GetCourtBenchQuery(1, 100) { StateId = StateId, CourtTypeId = CourtTypeId, CourtId = ComplexId });
+            if (dt.Succeeded)
+            {
+                var fields = dt.Data;
+                return new SelectList(fields, nameof(CourtBenchResponse.Id), nameof(CourtBenchResponse.CourtBench_En), null, null); ;
+            }
+            return null;
         }
 
         #region Case Proceeding & Sub Proceeding

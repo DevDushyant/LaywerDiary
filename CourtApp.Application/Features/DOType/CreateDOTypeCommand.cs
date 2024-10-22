@@ -33,6 +33,8 @@ namespace CourtApp.Application.Features.DOType
         }
         public async Task<Result<Guid>> Handle(CreateDOTypeCommand request, CancellationToken cancellationToken)
         {
+            var info = _Repo.Entities.Where(w=>w.TypeId==request.TypeId && w.Name_En.Equals(request.Name_En)).FirstOrDefault();
+            if (info != null) return Result<Guid>.Fail("Supplied info already exists");
             var entity = _mapper.Map<DOTypeEntity>(request);
             await _Repo.InsertAsync(entity);
             await _unitOfWork.Commit(cancellationToken);

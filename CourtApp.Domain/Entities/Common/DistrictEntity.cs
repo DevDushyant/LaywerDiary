@@ -8,16 +8,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourtApp.Entities.Common
 {
-    [Table("m_district")]
-    [Index(nameof(Code), IsUnique = true)]
-    public class DistrictEntity : AuditableEntity
+    [Table("m_district")]    
+    public class DistrictEntity
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Code { get; set; }
+       
+        public int Id { get; set; }
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
-
-        [ForeignKey("StateCode")]
+        public int StateId { get; set; }
         public virtual StateEntity State { get; set; }
         public ICollection<BlockEntity> Blocks { get; set; }
         public ICollection<CityEntity> Cities { get; set; }

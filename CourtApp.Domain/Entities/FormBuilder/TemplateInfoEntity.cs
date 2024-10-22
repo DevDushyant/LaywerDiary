@@ -7,7 +7,7 @@ namespace CourtApp.Domain.Entities.FormBuilder
     [Table("m_template_info")]
     public class TemplateInfoEntity:AuditableEntity
     {
-        public new Guid Id { get; set; }
+       
         public string TemplateName { get; set; }
         public string TemplatePath { get; set; }
         public List<TemplateTagsEntity> Tags { get; set; }

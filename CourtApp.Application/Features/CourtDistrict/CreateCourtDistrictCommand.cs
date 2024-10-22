@@ -18,7 +18,7 @@ namespace CourtApp.Application.Features.CourtDistrict
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
         public int StateId { get; set; }
-        public int DistrictId { get; set; }
+        //public int DistrictId { get; set; }
         public string Abbreviation { get; set; }
     }
     public class CreateCourtDistrictCommandHandler : IRequestHandler<CreateCourtDistrictCommand, Result<Guid>>
@@ -35,6 +35,9 @@ namespace CourtApp.Application.Features.CourtDistrict
         }
         public async Task<Result<Guid>> Handle(CreateCourtDistrictCommand request, CancellationToken cancellationToken)
         {
+            var IsExist = repository.Entities.Where(w => w.StateId == request.StateId && w.Abbreviation.Equals(request.Abbreviation)).FirstOrDefault();
+            if (IsExist != null)
+                return Result<Guid>.Fail("The given abbreviation is already exists!");
             var bookType = mapper.Map<CourtDistrictEntity>(request);
             await repository.InsertAsync(bookType);
             await _unitOfWork.Commit(cancellationToken);

@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using System.Linq;
 using System.Data;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
 namespace CourtApp.Application.Features.CaseDetails
@@ -53,33 +54,40 @@ namespace CourtApp.Application.Features.CaseDetails
                     .Include(cs => cs.CaseStage)
                     .Include(c => c.CourtBench)
                     .Where(predicate);
-                var caseIds = cases.Select(c => c.Id).ToList();
-                var maxNextDates = _ProcRepo.Entities
-                                    .Where(w => caseIds.Contains(w.CaseId))
-                                    .GroupBy(x => x.CaseId)
-                                    .Select(g => new
-                                    {
-                                        CaseId = g.Key,
-                                        MaxNextDate = g.Max(x => x.NextDate)
-                                    });
-                var query = from e in cases
-                            join md in maxNextDates on e.Id equals md.CaseId into maxDates
-                            from md in maxDates.DefaultIfEmpty()
-                            select new GetCaseInfoDto
-                            {
-                                Id = e.Id,
-                                CaseType = e.CaseType.Name_En,
-                                Court = e.CourtBench.CourtBench_En,
-                                CaseStage = e.CaseStage.CaseStage,
-                                CaseDetail = e.FirstTitle + " V/S " + e.SecondTitle + "(" + e.CaseNo + "/" + e.CaseYear + ")",
-                                NextDate = e.NextDate != null && e.NextDate.HasValue ? e.NextDate.Value.ToString("dd/MM/yyyy")
-                                           : md.MaxNextDate != null && md.MaxNextDate.HasValue ? md.MaxNextDate.Value.ToString("dd/MM/yyyy")
-                                           : ""
+                //if (cases.Count() > 0)
+                //{
+                    var caseIds = cases.Select(c => c.Id).ToList();
+                    var maxNextDates = _ProcRepo.Entities
+                                        .Where(w => caseIds.Contains(w.CaseId))
+                                        .GroupBy(x => x.CaseId)
+                                        .Select(g => new
+                                        {
+                                            CaseId = g.Key,
+                                            MaxNextDate = g.Max(x => x.NextDate)
+                                        });
+                    var query = from e in cases
+                                join md in maxNextDates on e.Id equals md.CaseId into maxDates
+                                from md in maxDates.DefaultIfEmpty()
+                                select new GetCaseInfoDto
+                                {
+                                    Id = e.Id,
+                                    CaseType = e.CaseType.Name_En,
+                                    Court = e.CourtBench.CourtBench_En,
+                                    CaseStage = e.CaseStage.CaseStage,
+                                    CaseDetail = e.FirstTitle + " V/S " + e.SecondTitle + "(" + e.CaseNo + "/" + e.CaseYear + ")",
+                                    NextDate = e.NextDate != null && e.NextDate.HasValue ? e.NextDate.Value.ToString("dd/MM/yyyy")
+                                               : md.MaxNextDate != null && md.MaxNextDate.HasValue ? md.MaxNextDate.Value.ToString("dd/MM/yyyy")
+                                               : ""
 
-                            };
-                var result = await query.ToPaginatedListAsync(request.PageNumber, request.PageSize);
-                
-                return result;
+                                };
+
+                    var result = await query.ToPaginatedListAsync(request.PageNumber, request.PageSize);
+
+                    return result;
+                //}
+                //IQueryable<GetCaseInfoDto> rs = null;
+                //return await rs.ToPaginatedListAsync(request.PageNumber, request.PageSize);
+
             }
             catch (Exception ex)
             {

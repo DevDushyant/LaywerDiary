@@ -10,7 +10,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
     [Table("client", Schema = "ld")]    
     public class ClientEntity : AuditableEntity
     {
-        public new Guid Id { get; set; }
+        
         public string Name { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }
@@ -21,6 +21,6 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public Guid AppearenceID { get; set; }
         public Guid OppositCounselId { get; set; }       
         public virtual LawyerMasterEntity OppositCounsel { get; set; }        
-        public virtual CaseFeeEntity CaseFee { get; set; }=new CaseFeeEntity();
+        public virtual CaseFeeEntity CaseFee { get; set; }
     }
 }
