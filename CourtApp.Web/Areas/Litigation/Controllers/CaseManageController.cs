@@ -1,4 +1,5 @@
-﻿using CourtApp.Application.Features.BookMasters.Command;
+﻿using CourtApp.Application.DTOs.CaseDetails;
+using CourtApp.Application.Features.BookMasters.Command;
 using CourtApp.Application.Features.Case;
 using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.CaseProceeding;
@@ -43,8 +44,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
         public async Task<IActionResult> CreateOrUpdateAsync(Guid id)
         {
+            bool showHighCourt = false;
+            bool AgIsHighCourt = false;
+            ViewBag.Id = id.ToString();    
             var ClientList = await _mediator.Send(new GetAllClientCachedQuery() { });
-            var caseViewModel = new CaseViewModel();
+            var caseViewModel = new CaseUpseartViewModel();
 
             if (id == Guid.Empty)
             {
@@ -60,6 +64,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 caseViewModel.Strengths = DdlStrength();
                 caseViewModel.States = await LoadStates();
                 ViewBag.ActionType = "Create";
+                ViewBag.ShowHighCourt = showHighCourt;
+                ViewBag.AgIsHighCourt = AgIsHighCourt;
                 return View("_CreateOrEdit", caseViewModel);
             }
             else
@@ -67,25 +73,25 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 var response = await _mediator.Send(new GetUserCaseDetailByIdQuery { CaseId = id });
                 if (response.Succeeded)
                 {
-                    var CaseDetail = _mapper.Map<CaseViewModel>(response.Data);
+                    var CaseDetail = _mapper.Map<CaseUpseartViewModel>(response.Data);
                     if (CaseDetail.IsHighCourt == true)
                     {
-                        CaseDetail.BenchId = CaseDetail.CourtBenchId;
                         CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, Guid.Empty);
-                        CaseDetail.BenchId = CaseDetail.CourtBenchId;
                         CaseDetail.Strengths = DdlStrength();
+                        showHighCourt = true;
                     }
                     else
                     {
                         CaseDetail.CourtDistricts = await DdlLoadCourtDistricts(CaseDetail.StateId);
                         CaseDetail.ComplexBenchs = await GetCourtComplex(CaseDetail.CourtDistrictId.Value);
-                        CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, CaseDetail.ComplexBenchId.Value);
-                        CaseDetail.CourtId = CaseDetail.CourtBenchId;
+                        CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, CaseDetail.ComplexId.Value);
+
                     }
                     if (CaseDetail.AgainstCaseDetails.Count == 0)
                         CaseDetail.AgainstCaseDetails = null;
                     else
                     {
+                        
                         foreach (var item in CaseDetail.AgainstCaseDetails)
                         {
                             if (item.IsAgHighCourt == true)
@@ -93,18 +99,20 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
                                 CaseDetail.Courts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, Guid.Empty);
                                 CaseDetail.Strengths = DdlStrength();
+                                AgIsHighCourt = true;
                             }
                             else
                             {
                                 CaseDetail.CourtDistricts = await DdlLoadCourtDistricts(item.StateId.Value);
                                 CaseDetail.ComplexBenchs = await GetCourtComplex(item.CourtDistrictId.Value);
                                 CaseDetail.Courts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, item.ComplexId.Value);
-                                CaseDetail.AgainstCaseDetails[0].CourtId=item.BenchId;
+                                CaseDetail.AgainstCaseDetails[0].CourtId = item.CourtId;
                             }
                         }
+                        
                     }
-
-
+                    ViewBag.ShowHighCourt = showHighCourt;
+                    ViewBag.AgIsHighCourt = AgIsHighCourt;
                     CaseDetail.States = await LoadStates();
                     CaseDetail.CourtTypes = await LoadCourtTypes();
                     CaseDetail.CaseNatures = await LoadCaseNature();
@@ -115,7 +123,6 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     CaseDetail.CaseStatusList = await DdlCaseStages();
                     CaseDetail.LinkedBy = await UserCaseTitle();
                     CaseDetail.Cadres = DdlCadres();
-
                     ViewBag.ActionType = "Update";
                     return View("_CreateOrEdit", CaseDetail);
                 }
@@ -125,14 +132,16 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> OnPostCreateOrEdit(Guid Id, CaseViewModel ViewModel)
+        public async Task<IActionResult> OnPostCreateOrEdit(Guid Id, CaseUpseartViewModel ViewModel)
         {
+            bool showHighCourt = false;
+            bool AgIsHighCourt = false;
             if (ModelState.IsValid)
-            {
-                ViewModel.CourtBenchId = ViewModel.BenchId == null ? ViewModel.CourtId.Value : ViewModel.BenchId.Value;
+            {                
                 if (Id == Guid.Empty)
                 {
-                    var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);                    
+                    var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);
+                    createCommand.AgainstCaseDetails = _mapper.Map<List<UpseartAgainstCaseDto>>(ViewModel.AgainstCaseDetails);
                     var result = await _mediator.Send(createCommand);
                     if (result.Succeeded)
                     {
@@ -153,11 +162,14 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
                     }
                     else _notify.Error(result.Message);
+                    ViewBag.ShowHighCourt = showHighCourt;
+                    ViewBag.AgIsHighCourt = AgIsHighCourt;
                     return View("_CreateOrEdit", ViewModel);
                 }
                 else
                 {
                     var updateCommand = _mapper.Map<UpdateCaseDetailCommand>(ViewModel);
+                    updateCommand.AgainstCaseDetails = _mapper.Map<List<UpseartAgainstCaseDto>>(ViewModel.AgainstCaseDetails);
                     var result = await _mediator.Send(updateCommand);
                     if (result.Succeeded)
                     {
@@ -175,8 +187,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         ViewModel.States = await LoadStates();
                         ViewModel.StatusMessage = "Case information updated successfully!";
                     }
+                    ViewBag.ShowHighCourt = showHighCourt;
+                    ViewBag.AgIsHighCourt = AgIsHighCourt;
                     return RedirectToAction("getcasedetail", new { id = Id });
                 }
+                ViewBag.ShowHighCourt = showHighCourt;
+                ViewBag.AgIsHighCourt = AgIsHighCourt;
                 return View("_CreateOrEdit", null);
             }
             else
@@ -191,6 +207,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 ViewModel.Years = DdlYears();
                 ViewModel.CaseStatusList = DdlCaseStatus();
                 ViewModel.LinkedBy = DdlClient().Result;
+                ViewBag.ShowHighCourt = showHighCourt;
+                ViewBag.AgIsHighCourt = AgIsHighCourt;
                 var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
                 return new JsonResult(new { isValid = false, html = html });
             }

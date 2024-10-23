@@ -41,7 +41,7 @@ namespace CourtApp.Infrastructure.Repositories
         {
             await _repository.BulkInsert(Entity);
             await _distributedCache.RemoveAsync(AppCacheKeys.CourtComplexKey);
-            return Entity.Select(s => s.Id).FirstOrDefault();
+            return Entity.Select(s => s.CaseId).FirstOrDefault();
         }
 
         public Task UpdateAsync(List<CaseDetailAgainstEntity> Entity)

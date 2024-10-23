@@ -46,7 +46,7 @@ namespace CourtApp.Application.Features.CaseDetails
                 ct.CisYear = detail.CisYear.ToString();
                 ct.CnrNo = detail.CnrNumber;
                 ct.DistrictCourt = detail.CourtDistrict!=null? detail.CourtDistrict.Name_En:"";
-                ct.CourtComplex = detail.CourtComplex!=null?detail.CourtComplex.Name_En:"";
+                ct.CourtComplex = detail.Complex !=null?detail.Complex.Name_En :"";
                 ct.NextDate = detail.NextDate != null ? detail.NextDate.Value.ToString("dd/MM/yyyy") : "";
                 var againstDetail = detail.CaseAgainstEntities;
                 if (againstDetail != null && againstDetail.Count > 0)
@@ -69,7 +69,7 @@ namespace CourtApp.Application.Features.CaseDetails
                             Cadre = item.Cadre != null ? item.Cadre : "",
                             OfficerName = item.OfficerName != null ? item.OfficerName:"",
                             CaseCategory = item.CaseCategory != null ? item.CaseCategory.Name_En : "",
-                            CourtComplex = item.CourtComplex != null ? item.CourtComplex.Name_En : "",
+                            CourtComplex = item.Complex != null ? item.Complex.Name_En : "",
                             CaseType = item.CaseType != null ? item.CaseType.Name_En : "",
                             DistrictCourt = item.CourtDistrict != null ? item.CourtDistrict.Name_En : "",
                         });

@@ -3,11 +3,12 @@
     <thead>
         <tr>
             <th style="width:5%!important">Sno.</th>
-            <th style="width:15%!important">Court</th>
+            <th style="width:10%!important">Court</th>
+            <th style="width:10%!important">Court</th>
             <th style="width:15%!important">Type</th>
-            <th style="width:37%!important">Case Detail</th>
+            <th style="width:40%!important">Case Detail</th>
             <th style="width:10%!important">Stage</th>
-            <th style="width:13%!important">Next Date</th>
+            <th style="width:5%!important">Next Date</th>
             <th style="width:5%!important">Actions</th>
         </tr>
     </thead>
@@ -20,6 +21,9 @@
             <tr>
                 <td>
                     @(count = count + 1)
+                </td>
+                <td>
+                    @bt.CourtType
                 </td>
                 <td>
                     @bt.Court

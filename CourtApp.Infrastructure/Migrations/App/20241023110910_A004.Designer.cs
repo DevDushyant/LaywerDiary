@@ -3,6 +3,7 @@ using System;
 using CourtApp.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CourtApp.Infrastructure.Migrations.App
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241023110910_A004")]
+    partial class A004
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -492,6 +495,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<Guid>("CourtBenchId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("CourtComplexId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid?>("CourtDistrictId")
                         .HasColumnType("uuid");
 
@@ -546,9 +552,9 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasIndex("CaseTypeId");
 
-                    b.HasIndex("ComplexId");
-
                     b.HasIndex("CourtBenchId");
+
+                    b.HasIndex("CourtComplexId");
 
                     b.HasIndex("CourtDistrictId");
 
@@ -2039,15 +2045,15 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtComplexEntity", "Complex")
-                        .WithMany()
-                        .HasForeignKey("ComplexId");
-
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtBenchEntity", "CourtBench")
                         .WithMany()
                         .HasForeignKey("CourtBenchId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtComplexEntity", "CourtComplex")
+                        .WithMany()
+                        .HasForeignKey("CourtComplexId");
 
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtDistrictEntity", "CourtDistrict")
                         .WithMany()
@@ -2083,9 +2089,9 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.Navigation("CaseType");
 
-                    b.Navigation("Complex");
-
                     b.Navigation("CourtBench");
+
+                    b.Navigation("CourtComplex");
 
                     b.Navigation("CourtDistrict");
 

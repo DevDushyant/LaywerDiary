@@ -50,6 +50,7 @@ namespace CourtApp.Application.Features.CaseDetails
             {
                 var cases = _repository
                     .Entites
+                     .Include(ct => ct.CourtType)
                     .Include(ct => ct.CaseType)
                     .Include(cs => cs.CaseStage)
                     .Include(c => c.CourtBench)
@@ -71,6 +72,7 @@ namespace CourtApp.Application.Features.CaseDetails
                                 select new GetCaseInfoDto
                                 {
                                     Id = e.Id,
+                                    CourtType=e.CourtType.CourtType.ToString(),
                                     CaseType = e.CaseType.Name_En,
                                     Court = e.CourtBench.CourtBench_En,
                                     CaseStage = e.CaseStage.CaseStage,

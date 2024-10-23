@@ -6,7 +6,11 @@ namespace CourtApp.Web.Areas.Litigation.Models
     public class CaseAgainstModel
     {
         #region Common Properties
-        public Guid? Id { get; set; }
+        /// <summary>
+        /// This field is linked with CaseDetail Entity. 
+        /// And one case may have multiple against case.
+        /// </summary>
+        public Guid? CaseId { get; set; }
         public DateTime? ImpugedOrderDate { get; set; }
         public Guid? CourtTypeId { get; set; }
         public Guid? CaseCategoryId { get; set; }
@@ -17,8 +21,9 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public int? CisYear { get; set; }
         public string OfficerName { get; set; }
         public string Cadre { get; set; }
-        public string CisNumber { get; set; }
-        public string CnrNumber { get; set; }
+        public string CisNo { get; set; }
+        public string CnrNo { get; set; }      
+        
         #endregion
 
         #region Other than High Court Propeties
@@ -28,8 +33,8 @@ namespace CourtApp.Web.Areas.Litigation.Models
         #endregion
 
         #region HighCourt Properties
-        public Guid? BenchId { get; set; }
         public int? StrengthId { get; set; }
+        public Guid? BenchId { get; set; }
         #endregion
         public bool IsAgHighCourt { get; set; }
 

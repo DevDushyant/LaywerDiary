@@ -58,5 +58,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public bool IsHighCourt { get; set; }
         [TempData]
         public string StatusMessage { get; set; }
-    }    
+
+        
+    }
 }

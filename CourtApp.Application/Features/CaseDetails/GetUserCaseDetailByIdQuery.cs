@@ -32,38 +32,45 @@ namespace CourtApp.Application.Features.UserCase
             if (detail != null)
             {
                 var mappeddata = _mapper.Map<UserCaseDetailResponse>(detail);
-                if (detail.CourtType.Abbreviation == "HICT") mappeddata.IsHighCourt = true;
+                if (detail.CourtType.Abbreviation == "HICT")
+                {
+                    mappeddata.IsHighCourt = true;
+                    mappeddata.BenchId = detail.CourtBenchId;
+                }
+                else
+                    mappeddata.CourtId = detail.CourtBenchId;
 
                 if (detail.CaseAgainstEntities != null && detail.CaseAgainstEntities.Count > 0)
                 {
-                    var agl = new List<CaseAgainstEntityModel>();
+                    var agl = new List<UpseartAgainstCaseDto>();
                     foreach (var item in detail.CaseAgainstEntities)
                     {
-                        var agc = new CaseAgainstEntityModel();
-
-                        agc.Id = item.Id;
-                        agc.AgainstBenchId = item.CourtBenchId;
+                        var agc = new UpseartAgainstCaseDto();
                         agc.ImpugedOrderDate = item.ImpugedOrderDate;
                         agc.StateId = item.StateId;
-                        agc.CourtTypeId = item.CourtTypeId;
+                        agc.CourtTypeId = item.CourtTypeId;                        
                         if (item.CourtType.Abbreviation == "HICT")
+                        {
                             agc.IsAgHighCourt = true;
+                            agc.BenchId = item.CourtBenchId;
+                        }
+                        else
+                            agc.CourtId = item.CourtBenchId;
                         agc.CourtDistrictId = item.CourtDistrictId != null ? item.CourtDistrictId : Guid.Empty;
-                        agc.ComplexId = item.CourtComplexId != null ? item.CourtComplexId : Guid.Empty;
+                        agc.ComplexId = item.ComplexId != null ? item.ComplexId : Guid.Empty;
                         agc.Cadre = item.Cadre;
                         agc.CaseNo = item.CaseNo;
                         agc.CaseCategoryId = item.CaseCategoryId;
                         agc.CaseTypeId = item.CaseTypeId;
                         agc.CaseYear = item.CaseYear;
-                        agc.CisNumber = item.CisNo;
+                        agc.CisNo = item.CisNo;
                         agc.CisYear = item.CisYear;
-                        agc.CnrNumber = item.CnrNo;
+                        agc.CnrNo = item.CnrNo;
                         agc.OfficerName = item.OfficerName;
                         agc.StrengthId = item.StrengthId;
-                        agc.CourtId = item.CourtBenchId != null ? item.CourtBenchId : Guid.Empty;
-                        agl.Add(agc);                        
+                        agl.Add(agc);
                     }
-                    mappeddata.AgainstCaseDetails=agl;
+                    mappeddata.AgainstCaseDetails = agl;
                 }
                 //mappeddata.AgainstCaseDetails = _mapper.Map<List<CaseAgainstEntityModel>>(detail.CaseAgainstEntities);
                 return Result<UserCaseDetailResponse>.Success(mappeddata);

@@ -20,6 +20,6 @@
     <Compile Remove="Entities\Common\AuditEntity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="audit-trail" Version="1.1.4" />
+    <PackageReference Include="audit-trail" Version="1.1.5" />
   </ItemGroup>
 </Project>

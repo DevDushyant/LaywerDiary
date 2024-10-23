@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AspNetCoreHero.Extensions.Caching" Version="1.1.0" />
-    <PackageReference Include="audit-trail" Version="1.1.4" />
+    <PackageReference Include="audit-trail" Version="1.1.5" />
     <PackageReference Include="EFCore.BulkExtensions" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">

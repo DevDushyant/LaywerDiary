@@ -32,7 +32,7 @@ namespace CourtApp.Application.Features.FormPrint
                        .Where(w => request.CaseIds.Contains(w.Id))
                         join p in _wRepo.Entities on cd.Id equals p.CaseId into CProcs
                         from cpd in CProcs.DefaultIfEmpty()
-                        join ac in _wAgainstRepo.Entities on cd.Id equals ac.Id into AgCases
+                        join ac in _wAgainstRepo.Entities on cd.Id equals ac.CaseId into AgCases
                         from acc in AgCases.DefaultIfEmpty()
                         select new PermissionSlipResponse
                         {

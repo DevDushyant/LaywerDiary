@@ -16,32 +16,40 @@ namespace CourtApp.Application.Features.Case
 {
     public class CreateCaseCommand : IRequest<Result<Guid>>
     {
+        #region Common Properties Among all Court Type
         public DateTime InstitutionDate { get; set; }
+        public int StateId { get; set; }
         public Guid CourtTypeId { get; set; }
         public Guid CaseCategoryId { get; set; }
         public Guid CaseTypeId { get; set; }
-        public Guid CourtDistrictId { get; set; }
-        public Guid CourtComplexId { get; set; }
-        public Guid CourtBenchId { get; set; }
         public string CaseNo { get; set; }
-        public int CaseYear { get; set; }
+        public int? CaseYear { get; set; }
         public string FirstTitle { get; set; }
-        public Guid FirstTitleCode { get; set; }
+        public Guid FTitleId { get; set; }
         public string SecondTitle { get; set; }
-        public Guid SecoundTitleCode { get; set; }
+        public Guid STitleId { get; set; }
         public string CisNumber { get; set; }
         public int CisYear { get; set; }
         public string CnrNumber { get; set; }
         public DateTime? NextDate { get; set; }
-        public Guid CaseStageCode { get; set; }
-        public Guid LinkedCaseId { get; set; }
-        public Guid ClientId { get; set; }
-        public int StateId { get; set; }
-        public int StrengthId { get; set; }
+        public Guid? CaseStageId { get; set; }
+        public Guid? LinkedCaseId { get; set; }
+        public Guid? ClientId { get; set; }
+        public List<UpseartAgainstCaseDto> AgainstCaseDetails { get; set; }
+        #endregion
 
-        public ICollection<UpseartAgainstCaseDto> AgainstCaseDetails { get; set; }
+        #region Other than High Court Propeties
+        public Guid? CourtDistrictId { get; set; }
+        public Guid? ComplexId { get; set; }
+        public Guid? CourtId { get; set; }
 
-        //public ICollection<CaseAgainstEntityModel> AgainstCaseDetails { get; set; }
+        #endregion
+
+        #region HighCourt Properties        
+        public int? StrengthId { get; set; }
+        public Guid? BenchId { get; set; }
+        #endregion
+
     }
     public class CaseAgainstEntityModel
     {
@@ -108,16 +116,15 @@ namespace CourtApp.Application.Features.Case
         }
         public async Task<Result<Guid>> Handle(CreateCaseCommand request, CancellationToken cancellationToken)
         {
-            var isCaseExist = await _Repository.GetByCaseNoYearAsync(request.CaseNo == null ? "" : request.CaseNo, request.CaseYear);
+            var isCaseExist = await _Repository.GetByCaseNoYearAsync(request.CaseNo == null ? "" : request.CaseNo, request.CaseYear.Value);
             if (isCaseExist == null)
             {
                 var entity = _mapper.Map<CaseDetailEntity>(request);
-                if (request.CourtBenchId == Guid.Empty)
-                    entity.CourtBenchId = null;
+                entity.CourtBenchId = request.BenchId != null ? request.BenchId.Value : request.CourtId.Value;
                 if (request.CourtDistrictId == Guid.Empty)
                     entity.CourtDistrictId = null;
-                if (request.CourtComplexId == Guid.Empty)
-                    entity.CourtComplexId = null;
+                if (request.ComplexId == Guid.Empty)
+                    entity.ComplexId = null;
 
                 var isAdd = request.AgainstCaseDetails.Where(s => s.CaseNo != null);
                 if (isAdd.Count() > 0)
@@ -125,11 +132,10 @@ namespace CourtApp.Application.Features.Case
                     var agcs = new List<CaseDetailAgainstEntity>();
                     foreach (var item in request.AgainstCaseDetails)
                     {
-                        var ac = new CaseDetailAgainstEntity();
-                        ac.Id = new Guid();
+                        var ac = new CaseDetailAgainstEntity();                       
                         ac.ImpugedOrderDate = item.ImpugedOrderDate.Value;
                         ac.CourtTypeId = item.CourtTypeId.Value;
-                        ac.CourtBenchId = item.CourtId.Value;
+                        ac.CourtBenchId = item.CourtId!=null? item.CourtId.Value:item.BenchId.Value;
                         ac.StateId = item.StateId.Value;
                         ac.CaseYear = item.CaseYear.Value;
                         ac.CaseNo = item.CaseNo;
@@ -138,11 +144,11 @@ namespace CourtApp.Application.Features.Case
                         ac.StrengthId = item.StrengthId != null ? item.StrengthId.Value : 0;
                         ac.OfficerName = item.OfficerName;
                         ac.CisYear = item.CisYear.Value;
-                        ac.CisNo = item.CisNumber;                        
+                        ac.CisNo = item.CisNo;                        
                         ac.Cadre=item.Cadre;
-                        ac.CnrNo=item.CnrNumber;                        
+                        ac.CnrNo=item.CnrNo;                        
                         ac.CourtDistrictId = item.CourtDistrictId != Guid.Empty ? item.CourtDistrictId : null;
-                        ac.CourtComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null;
+                        ac.ComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null;
                         agcs.Add(ac);
                     }
                     entity.CaseAgainstEntities = agcs;
