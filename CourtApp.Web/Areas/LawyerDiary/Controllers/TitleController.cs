@@ -37,7 +37,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 ApplicantDetails.Add(new ApplicantDetailViewModel { ApplicantNo = 1, ApplicantDetail = "" });
                 viewModel.Types = FSTypes();
                 viewModel.CaseApplicants = ApplicantDetails;
-                viewModel.Cases = await UserCaseTitle();
+                viewModel.Cases = await UserCaseTitle(Guid.Empty);
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrUpdate", viewModel) });
             }
             else
@@ -47,7 +47,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 {
                     var ViewModel = _mapper.Map<TitleViewModel>(response.Data);
                     ViewModel.Types = FSTypes();
-                    ViewModel.Cases = await UserCaseTitle();
+                    ViewModel.Cases = await UserCaseTitle(Guid.Empty);
                     return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrUpdate", ViewModel) });
                 }
                 return null;

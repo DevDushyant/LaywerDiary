@@ -103,6 +103,19 @@
                 $("#lblHeader").text($("#FormTypeId :selected").text())
             });
 
+            $("#CaseIds").on("change", function () {
+                $("#TitleIds").empty();
+                $.getJSON("/Litigation/CaseInfoPrinting/GetCompTitlesByCases?caseIds=" + $("#CaseIds").val(), function (data) {
+                    console.log(data);
+                    $.each(data, function (i, item) {
+                        console.log(item.Name);
+                        $("#TitleIds").append(`<option /><option value="${item.Id}">${item.Name}</option>`);
+                    });
+                });
+            });
+
+
+
             $("#btnPrint").click(function () {                
                 printData();
             })
@@ -132,13 +145,15 @@
             $("#btnSearch").on("click", function () {
                 var t = $("#FormTypeId").val();
                 var v = $("#CaseIds").val();
-                loadData(t, v);
+                var title = $("#TitleIds").val();               
+                loadData(t, v,title);
             });
 
 
         });
-        function loadData(t, v) {
-            $('#viewAll').load('/Litigation/CaseInfoPrinting/LoadFormPrinting?type=' + t + "&Cases=" + v);
+        function loadData(t, v,title) {
+
+            $('#viewAll').load('/Litigation/CaseInfoPrinting/LoadFormPrinting?type=' + t + "&Cases=" + v + "&AppNo=" + title);
         }
     </script>
 }

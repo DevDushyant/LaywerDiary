@@ -144,5 +144,13 @@ namespace CourtApp.Application.Constants
             public const string Edit = "Permissions.Death.Edit";
             public const string Delete = "Permissions.Death.Delete";           
         }
+
+        public static class Titles
+        {
+            public const string View = "Permissions.Titles.View";
+            public const string Create = "Permissions.Titles.Create";
+            public const string Edit = "Permissions.Titles.Edit";
+            public const string Delete = "Permissions.Titles.Delete";
+        }
     }
 }

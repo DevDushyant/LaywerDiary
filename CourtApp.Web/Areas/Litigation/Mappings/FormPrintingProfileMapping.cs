@@ -15,6 +15,7 @@ namespace CourtApp.Web.Areas.Litigation.Mappings
             CreateMap<NoticeOfStayAppResponse, NoticeOfStayApplication>();
             CreateMap<NoticeOfAdmissionResponse, NoticeAdmissionViewModel>();
             CreateMap<CopyingAppResponse, CopyingAppViewModel>();
+            CreateMap<ApplicantDetailDto, ApplicantDetailViewModel>();
             
         }
     }

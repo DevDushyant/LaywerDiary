@@ -21,7 +21,7 @@ namespace CourtApp.Application.Features.Clients.Commands
         public string Phone { get; set; }
         public string ReferalBy { get; set; }
         public Guid AppearenceID { get; set; }
-        public Guid OppositCounselId { get; set; }
+        public Guid? OppositCounselId { get; set; }
         public Guid CaseId { get; set; }
         public ClientFee FeeDetail { get; set; }
     }

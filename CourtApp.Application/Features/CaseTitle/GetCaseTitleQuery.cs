@@ -38,7 +38,7 @@ namespace CourtApp.Application.Features.CaseTitle
             Expression<Func<CaseTitleEntity, CaseTitleResponse>> expression = e => new CaseTitleResponse
             {
                 Id = e.Id,
-                CaseDetail = e.Case.FirstTitle+" Vs "+e.Case.SecondTitle,
+                CaseDetail = e.Case.FirstTitle + " V/S " + e.Case.SecondTitle + "(" + e.Case.CaseNo + "/" + e.Case.CaseYear + ")",
                 Type = e.TypeId == 1 ? "First Title" : "Second Title",
                 CaseApplicantDetails = e.CaseApplicants
                 .Select(s => new ApplicantDetailDto

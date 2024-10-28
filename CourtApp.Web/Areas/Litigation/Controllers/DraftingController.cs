@@ -52,7 +52,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 var ViewModel = new FormBuilderViewModel();
                 ViewModel.DraftingForms = await GetDraftings();
                 ViewModel.Templates = await GetTemplates();
-                ViewModel.Cases = await UserCaseTitle();
+                ViewModel.Cases = await UserCaseTitle(Guid.Empty);
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
             }
             else
@@ -66,7 +66,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 ViewModel.Templates = await GetTemplates();
                 ViewModel.DraftingForms = await GetDraftings();
-                ViewModel.Cases = await UserCaseTitle();
+                ViewModel.Cases = await UserCaseTitle(Guid.Empty);
                 return View("_CreateOrEdit", ViewModel);
             }
             else
@@ -77,7 +77,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     ViewModel = _mapper.Map<FormBuilderViewModel>(result.Data);
                     ViewModel.Templates = await GetTemplates();
                     ViewModel.DraftingForms = await GetDraftings();
-                    ViewModel.Cases = await UserCaseTitle();
+                    ViewModel.Cases = await UserCaseTitle(Guid.Empty);
                     ViewModel.FieldDetails = _mapper.Map<List<FormProperties>>(ViewModel.FieldDetails);
                     return View("_CreateOrEdit", ViewModel);
                 }
@@ -111,7 +111,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         if (result.Succeeded)
                             _notify.Success($"Case drafting information is updated successfully!");
                     }
-                    ViewModel.Cases = await UserCaseTitle();
+                    ViewModel.Cases = await UserCaseTitle(Guid.Empty);
                     ViewModel.Templates = await GetDraftings();
                     return View("_CreateOrEdit", ViewModel);
                 }

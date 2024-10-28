@@ -7,6 +7,13 @@
             return m;
         }
     });
+    $("#ClientId").select2({
+        placeholder: "Select a client",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
     $("#AgStateId").select2({
         placeholder: "Select a state",
         theme: "bootstrap4",
@@ -223,7 +230,7 @@
         }
     });
 
-    $("#CaseStageCode").select2({
+    $("#CaseStageId").select2({
         placeholder: "Select a case stage",
         theme: "bootstrap4",
         escapeMarkup: function (m) {

@@ -46,5 +46,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         /// Second Title Complete Address
         /// </summary>
         public string SAddress { get; set; }
+
+        public List<ApplicantDetailViewModel> Applicants { get; set; }
     }
 }

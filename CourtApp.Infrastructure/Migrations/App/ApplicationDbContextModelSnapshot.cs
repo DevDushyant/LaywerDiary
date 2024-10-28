@@ -546,6 +546,8 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasIndex("CaseTypeId");
 
+                    b.HasIndex("ClientId");
+
                     b.HasIndex("ComplexId");
 
                     b.HasIndex("CourtBenchId");
@@ -597,7 +599,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("Remark")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("StageId")
+                    b.Property<Guid?>("StageId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("SubHeadId")
@@ -1106,7 +1108,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("OfficeEmail")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("OppositCounselId")
+                    b.Property<Guid?>("OppositCounselId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Phone")
@@ -2039,6 +2041,10 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.ClientEntity", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId");
+
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtComplexEntity", "Complex")
                         .WithMany()
                         .HasForeignKey("ComplexId");
@@ -2083,6 +2089,8 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.Navigation("CaseType");
 
+                    b.Navigation("Client");
+
                     b.Navigation("Complex");
 
                     b.Navigation("CourtBench");
@@ -2101,7 +2109,7 @@ namespace CourtApp.Infrastructure.Migrations.App
             modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseProcedingEntity", b =>
                 {
                     b.HasOne("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", "Case")
-                        .WithMany()
+                        .WithMany("CaseProcEntities")
                         .HasForeignKey("CaseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2114,9 +2122,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CaseStageEntity", "Stage")
                         .WithMany()
-                        .HasForeignKey("StageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StageId");
 
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.ProceedingSubHeadEntity", "SubHead")
                         .WithMany()
@@ -2455,9 +2461,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                 {
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.LawyerMasterEntity", "OppositCounsel")
                         .WithMany()
-                        .HasForeignKey("OppositCounselId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OppositCounselId");
 
                     b.Navigation("OppositCounsel");
                 });
@@ -2655,6 +2659,8 @@ namespace CourtApp.Infrastructure.Migrations.App
             modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", b =>
                 {
                     b.Navigation("CaseAgainstEntities");
+
+                    b.Navigation("CaseProcEntities");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.Common.CityEntity", b =>

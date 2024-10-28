@@ -12,7 +12,7 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public Guid CaseId { get; set; }
         public Guid HeadId { get; set; }
         public Guid SubHeadId { get; set; }
-        public Guid StageId { get; set; }
+        public Guid? StageId { get; set; }
         public DateTime? NextDate { get; set; }
         public string Remark { get; set; }
         public string Abbreviation { get; set; }

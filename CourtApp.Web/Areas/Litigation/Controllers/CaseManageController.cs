@@ -46,10 +46,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             bool showHighCourt = false;
             bool AgIsHighCourt = false;
-            ViewBag.Id = id.ToString();    
-            var ClientList = await _mediator.Send(new GetAllClientCachedQuery() { });
-            var caseViewModel = new CaseUpseartViewModel();
+            ViewBag.Id = id.ToString();
 
+            var caseViewModel = new CaseUpseartViewModel();
+            caseViewModel.ClientId = TempData["ClientId"] != null ? (Guid)TempData["ClientId"] : Guid.Empty;
             if (id == Guid.Empty)
             {
                 caseViewModel.InstitutionDate = DateTime.Now;
@@ -59,13 +59,14 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 caseViewModel.SecondTitleList = await DdlFSTypes(2);
                 caseViewModel.Years = DdlYears();
                 caseViewModel.CaseStatusList = await DdlCaseStages();
-                caseViewModel.LinkedBy = await UserCaseTitle();
+                caseViewModel.LinkedBy = await UserCaseTitle(Guid.Empty);
                 caseViewModel.Cadres = DdlCadres();
                 caseViewModel.Strengths = DdlStrength();
                 caseViewModel.States = await LoadStates();
                 ViewBag.ActionType = "Create";
                 ViewBag.ShowHighCourt = showHighCourt;
                 ViewBag.AgIsHighCourt = AgIsHighCourt;
+                caseViewModel.ClientList = await DdlClient();
                 return View("_CreateOrEdit", caseViewModel);
             }
             else
@@ -74,6 +75,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 if (response.Succeeded)
                 {
                     var CaseDetail = _mapper.Map<CaseUpseartViewModel>(response.Data);
+                    CaseDetail.ClientList = await DdlClient();
                     if (CaseDetail.IsHighCourt == true)
                     {
                         CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, Guid.Empty);
@@ -91,9 +93,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         CaseDetail.AgainstCaseDetails = null;
                     else
                     {
-                        
+
                         foreach (var item in CaseDetail.AgainstCaseDetails)
                         {
+                            item.CaseId = id;
                             if (item.IsAgHighCourt == true)
                             {
 
@@ -109,7 +112,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                                 CaseDetail.AgainstCaseDetails[0].CourtId = item.CourtId;
                             }
                         }
-                        
+
                     }
                     ViewBag.ShowHighCourt = showHighCourt;
                     ViewBag.AgIsHighCourt = AgIsHighCourt;
@@ -121,7 +124,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     CaseDetail.FirstTitleList = await DdlFSTypes(1);
                     CaseDetail.SecondTitleList = await DdlFSTypes(2);
                     CaseDetail.CaseStatusList = await DdlCaseStages();
-                    CaseDetail.LinkedBy = await UserCaseTitle();
+                    CaseDetail.LinkedBy = await UserCaseTitle(id);                    
                     CaseDetail.Cadres = DdlCadres();
                     ViewBag.ActionType = "Update";
                     return View("_CreateOrEdit", CaseDetail);
@@ -137,7 +140,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             bool showHighCourt = false;
             bool AgIsHighCourt = false;
             if (ModelState.IsValid)
-            {                
+            {
                 if (Id == Guid.Empty)
                 {
                     var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);
@@ -154,7 +157,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         ViewModel.SecondTitleList = await DdlFSTypes(2);
                         ViewModel.Years = DdlYears();
                         ViewModel.CaseStatusList = await DdlCaseStages();
-                        ViewModel.LinkedBy = await UserCaseTitle();
+                        ViewModel.LinkedBy = await UserCaseTitle(Guid.Empty);
                         ViewModel.Cadres = DdlCadres();
                         ViewModel.Strengths = DdlStrength();
                         ViewModel.States = await LoadStates();
@@ -181,7 +184,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         ViewModel.SecondTitleList = await DdlFSTypes(2);
                         ViewModel.Years = DdlYears();
                         ViewModel.CaseStatusList = await DdlCaseStages();
-                        ViewModel.LinkedBy = await UserCaseTitle();
+                        ViewModel.LinkedBy = await UserCaseTitle(Id);
                         ViewModel.Cadres = DdlCadres();
                         ViewModel.Strengths = DdlStrength();
                         ViewModel.States = await LoadStates();

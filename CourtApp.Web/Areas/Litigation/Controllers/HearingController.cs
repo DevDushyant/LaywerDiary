@@ -1,11 +1,8 @@
-﻿using Azure;
-using CourtApp.Application.Features.CaseDetails;
+﻿using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.CaseProceeding;
-
 using CourtApp.Application.Features.CaseWork;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
-
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;

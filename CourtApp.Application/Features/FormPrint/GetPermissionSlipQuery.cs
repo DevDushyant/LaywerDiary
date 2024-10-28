@@ -28,22 +28,27 @@ namespace CourtApp.Application.Features.FormPrint
         }
         public async Task<Result<List<PermissionSlipResponse>>> Handle(GetPermissionSlipQuery request, CancellationToken cancellationToken)
         {
-            var Cases = from cd in _CaseRepo.Entites
-                       .Where(w => request.CaseIds.Contains(w.Id))
-                        join p in _wRepo.Entities on cd.Id equals p.CaseId into CProcs
-                        from cpd in CProcs.DefaultIfEmpty()
-                        join ac in _wAgainstRepo.Entities on cd.Id equals ac.CaseId into AgCases
-                        from acc in AgCases.DefaultIfEmpty()
-                        select new PermissionSlipResponse
+
+            var Cases = _CaseRepo.Entites
+                        .Include(a => a.CaseAgainstEntities)
+                        .Include(p => p.CaseProcEntities)
+                        .Where(w => request.CaseIds.Contains(w.Id))
+                        .Select(cd => new PermissionSlipResponse
                         {
                             NoYear = cd.CaseNo + "/" + cd.CaseYear,
                             CaseType = cd.CaseType.Name_En,
                             Title = cd.FirstTitle + " Vs " + cd.SecondTitle,
                             DoP = cd.InstitutionDate.ToString("dd/MM/yyyy"),
-                            MatterGo = cd.CaseStage.CaseStage,
-                            DoI = acc.ImpugedOrderDate.ToString(),
-                            NextDate = cpd.NextDate != null ? cpd.NextDate.Value.ToString("dd/MM/yyyy") : ""
-                        };
+                            MatterGo = cd.CaseStage != null ? cd.CaseStage.CaseStage : "",
+                            DoI = cd.CaseAgainstEntities != null && cd.CaseAgainstEntities.Any() ? cd.CaseAgainstEntities.FirstOrDefault().ImpugedOrderDate.ToString("dd/MM/yyyy") : "",
+                            NextDate = cd.NextDate.HasValue && cd.CaseProcEntities.Any()
+                                        ? cd.CaseProcEntities.Max(p => p.NextDate.HasValue ? p.NextDate.Value : DateTime.MinValue) > cd.NextDate.Value
+                                        ? cd.CaseProcEntities.Max(p => p.NextDate.HasValue ? p.NextDate.Value : DateTime.MinValue).ToString("dd/MM/yyyy")
+                                        : cd.NextDate.Value.ToString("dd/MM/yyyy")
+                                        : cd.NextDate.HasValue
+                                        ? cd.NextDate.Value.ToString("dd/MM/yyyy")
+                                        : cd.CaseProcEntities.Max(p => p.NextDate.HasValue ? p.NextDate.Value : DateTime.MinValue).ToString("dd/MM/yyyy")
+                        }).ToList();
 
             return Result<List<PermissionSlipResponse>>.Success(Cases.ToList());
         }

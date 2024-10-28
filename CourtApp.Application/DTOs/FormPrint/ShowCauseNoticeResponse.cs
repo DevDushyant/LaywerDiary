@@ -1,4 +1,6 @@
-﻿namespace CourtApp.Application.DTOs.FormPrint
+﻿using System.Collections.Generic;
+
+namespace CourtApp.Application.DTOs.FormPrint
 {
     public class ShowCauseNoticeResponse
     {
@@ -40,5 +42,8 @@
         /// Second Title Complete Address
         /// </summary>
         public string SAddress { get; set; }
+
+        public List<ApplicantDetailDto> Applicants { get; set; }
     }
+
 }

@@ -71,6 +71,7 @@ namespace CourtApp.Application.Features.CaseDetails
             {
                 detail.InstitutionDate = request.InstitutionDate;
                 detail.StateId = request.StateId;
+                detail.ClientId = request.ClientId!=null? request.ClientId.Value:null;
                 detail.CourtTypeId = request.CourtTypeId;
                 detail.CourtBenchId = request.BenchId != null ? request.BenchId.Value : request.CourtId.Value;
                 detail.CourtDistrictId = request.CourtDistrictId != Guid.Empty ? request.CourtDistrictId : null;
@@ -91,6 +92,7 @@ namespace CourtApp.Application.Features.CaseDetails
                 detail.SecondTitle = request.SecondTitle;
                 detail.StrengthId = request.StrengthId != null ? request.StrengthId.Value : 0;
                 detail.CaseTypeId = request.CaseTypeId;
+                detail.LinkedCaseId=request.LinkedCaseId!=null? request.LinkedCaseId.Value:null;
                 if (request.AgainstCaseDetails.Count > 0)
                 {
                     foreach (var item in request.AgainstCaseDetails)

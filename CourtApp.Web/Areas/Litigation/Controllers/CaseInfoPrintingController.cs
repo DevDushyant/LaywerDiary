@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static CourtApp.Application.Constants.Permissions;
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
 {
@@ -17,20 +18,20 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             FmpViewModel fmpViewModel = new FmpViewModel();
             fmpViewModel.FormTypes = FormPrintingTypes();
-            fmpViewModel.Cases = await UserCaseTitle();
-            fmpViewModel.Titles = await UserCaseTitle();
+            fmpViewModel.Cases = await UserCaseTitle(Guid.Empty);
+            fmpViewModel.Titles = await UserCaseTitle(Guid.Empty);
             return View(fmpViewModel);
         }
 
-        public async Task<IActionResult> LoadFormPrinting(string type, string Cases)
+        public async Task<IActionResult> LoadFormPrinting(string type, List<Guid> Cases, string AppNo)
         {
-            List<Guid> CaseIds = new List<Guid>();
-            if (!string.IsNullOrEmpty(Cases))
+            //List<Guid> CaseIds = new List<Guid>();
+            if (Cases != null && Cases.Count > 0)
             {
-                CaseIds = Cases.Split(',').Select(Guid.Parse).ToList();
+                //CaseIds = Cases.Split(',').Select(Guid.Parse).ToList();
                 if (type == "FINS") //Inspection form 
                 {
-                    var response = await _mediator.Send(new GetInspectionQuery() { CaseIds = CaseIds });
+                    var response = await _mediator.Send(new GetInspectionQuery() { CaseIds = Cases });
                     if (response.Succeeded)
                     {
                         var viewmodel = _mapper.Map<List<InspectionViewModel>>(response.Data);
@@ -42,7 +43,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
                 else if (type == "FPRS") //permission slip need to modify logic for template
                 {
-                    var response = await _mediator.Send(new GetPermissionSlipQuery() { CaseIds = CaseIds });
+                    var response = await _mediator.Send(new GetPermissionSlipQuery() { CaseIds = Cases });
                     if (response.Succeeded)
                     {
                         var viewmodel = _mapper.Map<List<PermissionSlipDataModel>>(response.Data);
@@ -54,7 +55,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
                 else if (type == "COPA") //Copying application
                 {
-                    var response = await _mediator.Send(new GetCopyingAppQuery() { CaseIds = CaseIds });
+                    var response = await _mediator.Send(new GetCopyingAppQuery() { CaseIds = Cases });
                     if (response.Succeeded)
                     {
                         var viewmodel = _mapper.Map<List<CopyingAppViewModel>>(response.Data);
@@ -66,7 +67,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
                 else if (type == "FNOA") //Notice of admission or civil admission
                 {
-                    var response = await _mediator.Send(new GetNoticeOfAdmissionQuery() { CaseIds = CaseIds });
+                    var response = await _mediator.Send(new GetNoticeOfAdmissionQuery() { CaseIds = Cases });
                     if (response.Succeeded)
                     {
                         var viewmodel = _mapper.Map<List<NoticeAdmissionViewModel>>(response.Data);
@@ -89,7 +90,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
                 else if (type == "FNSA") //Notice of stay application
                 {
-                    var response = await _mediator.Send(new GetNoticeOfStayAppQuery() { CaseIds = CaseIds });
+                    var response = await _mediator.Send(new GetNoticeOfStayAppQuery() { CaseIds = Cases });
                     if (response.Succeeded)
                     {
                         var viewmodel = _mapper.Map<List<NoticeOfStayApplication>>(response.Data);
@@ -101,13 +102,13 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
                 else if (type == "FNSC") //Notice of show cause
                 {
-                    var response = await _mediator.Send(new GetShowCauseNoticeQuery() { CaseIds = CaseIds });
+                    var response = await _mediator.Send(new GetShowCauseNoticeQuery() { CaseIds = Cases, ApplicantNo = AppNo });
                     if (response.Succeeded)
                     {
                         var viewmodel = _mapper.Map<List<ShowCauseViewModel>>(response.Data);
                         FmpShowCauseViewModel fmpViewModel = new FmpShowCauseViewModel();
-                        var WritCases = viewmodel.Where(x => x.CaseType == "Writ");
-                        var CivilCases = viewmodel.Where(x => x.CaseType == "Civil");
+                        var WritCases = viewmodel.Where(x => x.CaseType.ToLower().Contains("writ"));
+                        var CivilCases = viewmodel.Where(x => x.CaseType.ToLower().Contains("civil"));
                         if (WritCases.Count() > 0)
                         {
                             fmpViewModel.ShowCauses = WritCases.ToList();
@@ -121,7 +122,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
                     }
                 }
-               
+
                 else
                     return null;
 

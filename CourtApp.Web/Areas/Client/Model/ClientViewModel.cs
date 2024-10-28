@@ -23,7 +23,7 @@ namespace CourtApp.Web.Areas.Client.Model
         public string ReferalBy { get; set; }
         public Guid AppearenceID { get; set; }
         public SelectList Appearences { get; set; } //it will be Title FIrst union title secound
-        public Guid OppositCounselId { get; set; }
+        public Guid? OppositCounselId { get; set; }
         public SelectList OppositCounsels { get; set; }
         public ClientFeeViewModel FeeDetail { get; set; }
         #endregion

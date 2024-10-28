@@ -33,8 +33,10 @@
 @model CaseUpseartViewModel
 <div class="form-group row">
     <fieldset class="scheduler-border">
-        <input type="hidden" id="AgainstId" asp-for="AgainstCaseDetails[0].CaseId" />
+        <input type="hidden" asp-for="AgainstCaseDetails[0].CaseId" />
+
         <legend class="scheduler-border">Against Case Decision For</legend>
+
         <div class="form-group row">
             <label class="col-md-2 col-form-label">@localizer["Impuged order date"]</label>
             <div class="col-md-4">
@@ -89,6 +91,7 @@
                 </div>
             </div>
         </div>
+
         <div class="form-group row ACourt">
             <div class="form-group row ">
                 <label class="col-md-2 col-form-label">@localizer["Court Complex"]</label>
@@ -115,249 +118,109 @@
                 </div>
             </div>
         </div>
-        @* @if (@Model.Id == Guid.Empty)
-        {
-        <label class="col-md-2 col-form-label AhighCourt">@localizer["Bench"] (<span style="color:red">*</span>)</label>
-        <div class="col-md-4 AhighCourt">
-        <div class="input-group">
-        <select class="form-control select2bs4" id="AgBenchId"
-        asp-for="AgainstCaseDetails[0].BenchId"
-        asp-items="@Model.Courts">
-        <option></option>
-        </select>
-        </div>
-        </div>
-        <label class="col-md-2 col-form-label ACourt">@localizer["Court District"]</label>
-        <div class="col-md-4 ACourt">
-        <div class="input-group">
-        <select class="form-control select2bs4" id="AgCourtDistrictId"
-        asp-for="AgainstCaseDetails[0].CourtDistrictId"
-        asp-items="@Model.CourtDistricts">
-        <option></option>
-        </select>
-        </div>
-        </div>
-        }
-        else
-        {
-        if (Model.AgainstCaseDetails != null && Model.AgainstCaseDetails[0].IsAgHighCourt != true)
-        {
-        <label class="col-md-2 col-form-label">@localizer["Court District"] (<span style="color:red">*</span>)</label>
-        <div class="col-md-4">
-        <div class="input-group">
-        <select class="form-control select2bs4" id="AgCourtDistrictId"
-        asp-for="AgainstCaseDetails[0].CourtDistrictId"
-        asp-items="@Model.CourtDistricts">
-        <option></option>
-        </select>
-        </div>
-        </div>
-        }
-        else
-        {
-        <label class="col-md-2 col-form-label">@localizer["Bench"]</label>
-        <div class="col-md-4">
-        <div class="input-group">
-        <select class="form-control select2bs4" id="AgBenchId"
-        asp-for="AgainstCaseDetails[0].BenchId"
-        asp-items="@Model.CourtDistricts">
-        <option></option>
-        </select>
-        </div>
-        </div>
-        }
-        } *@
-</div>
-@* @if (@Model.Id == Guid.Empty)
-        {
-            <div class="form-group row AhighCourt">
-                <div class="form-group row ">
-                    <label class="col-md-2 col-form-label">@localizer["Strength"]</label>
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <select class="form-control select2bs4" id="AgStrengthId"
-                                    asp-for="AgainstCaseDetails[0].StrengthId"
-                                    asp-items="@Model.Strengths">
-                                <option></option>
-                            </select>
-                        </div>
 
-                    </div>
+        <div class="form-group row">
+            <label class="col-md-2 col-form-label">@localizer["Case No/Year"]</label>
+            <div class="col-md-2">
+                <div class="input-group">
+                    <input type="text" placeholder="Case Number"
+                           asp-for="AgainstCaseDetails[0].CaseNo"
+                           id="AgCaseNo" class="form-control" />
+                </div>
+
+            </div>
+            <div class="col-md-2">
+                <div class="input-group">
+                    <select class="form-control select2bs4"
+                            id="AgCaseYear"
+                            asp-for="AgainstCaseDetails[0].CaseYear"
+                            asp-items="@Model.Years">
+                        <option></option>
+                    </select>
                 </div>
             </div>
-            <div class="form-group row ACourt">
-                <div class="form-group row ">
-                    <label class="col-md-2 col-form-label">@localizer["Court Complex"]</label>
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <select class="form-control select2bs4"
-                                    id="AgComplexId"
-                                    asp-for="AgainstCaseDetails[0].ComplexId"
-                                    asp-items="@Model.ComplexBenchs">
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
-                    <label class="col-md-2 col-form-label">@localizer["Court"]</label>
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <select class="form-control select2bs4"
-                                    id="AgCourtId"
-                                    asp-for="AgainstCaseDetails[0].CourtId"
-                                    asp-items="@Model.Courts">
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
+
+            <label class="col-md-2 col-form-label">@localizer["Case Category"]</label>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <select class="form-control select2bs4"
+                            id="AgCaseCategoryId"
+                            asp-for="AgainstCaseDetails[0].CaseCategoryId"
+                            asp-items="@Model.CaseNatures">
+                        <option></option>
+                    </select>
                 </div>
             </div>
-        }
-        else
-        {
-            if (Model.AgainstCaseDetails != null && Model.AgainstCaseDetails[0].IsAgHighCourt != true)
-            {
-                <div class="form-group row">
-                    <label class="col-md-2 col-form-label">@localizer["Court Complex"]</label>
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <select class="form-control select2bs4"
-                                    id="AgComplexId"
-                                    asp-for="AgainstCaseDetails[0].ComplexId"
-                                    asp-items="@Model.ComplexBenchs">
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
-                    <label class="col-md-2 col-form-label">@localizer["Court"]</label>
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <select class="form-control select2bs4"
-                                    id="AgCourtId"
-                                    asp-for="AgainstCaseDetails[0].CourtId"
-                                    asp-items="@Model.Courts">
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-2 col-form-label">@localizer["Case Type"]</label>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <select class="form-control select2bs4"
+                            id="AgCaseTypeId"
+                            asp-for="AgainstCaseDetails[0].CaseTypeId"
+                            asp-items="@Model.TypeOfCases">
+                        <option></option>
+                    </select>
                 </div>
-            }
-            else
-            {
-                <div class="form-group row">
-                    <label class="col-md-2 col-form-label">@localizer["Strength"]</label>
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <select class="form-control select2bs4"
-                                    id="AgStrengthId"
-                                    asp-for="AgainstCaseDetails[0].StrengthId"
-                                    asp-items="@Model.Strengths">
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
+            </div>
+
+            <label class="col-md-2 col-form-label">@localizer["Cis No/Year"]</label>
+            <div class="col-md-2">
+                <div class="input-group">
+                    <input type="text" placeholder="CIS Number"
+                           asp-for="AgainstCaseDetails[0].CisNo"
+                           id="AgCisNo"
+                           class="form-control" />
                 </div>
-            }
-        } *@
-
-<div class="form-group row">
-    <label class="col-md-2 col-form-label">@localizer["Case No/Year"]</label>
-    <div class="col-md-2">
-        <div class="input-group">
-            <input type="text" placeholder="Case Number"
-                   asp-for="AgainstCaseDetails[0].CaseNo"
-                   id="AgCaseNo" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <div class="input-group">
+                    <select class="form-control select2bs4"
+                            id="AgCisYear"
+                            asp-for="AgainstCaseDetails[0].CisYear"
+                            asp-items="@Model.Years">
+                        <option></option>
+                    </select>
+                </div>
+            </div>
         </div>
 
-    </div>
-    <div class="col-md-2">
-        <div class="input-group">
-            <select class="form-control select2bs4"
-                    id="AgCaseYear"
-                    asp-for="AgainstCaseDetails[0].CaseYear"
-                    asp-items="@Model.Years">
-                <option></option>
-            </select>
+        <div class="form-group row">
+            <label class="col-md-2 col-form-label">@localizer["Cnr No"]</label>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" placeholder="Cnr number"
+                           asp-for="AgainstCaseDetails[0].CnrNo"
+                           id="AgCnrNo"
+                           class="form-control" />
+                </div>
+            </div>
         </div>
-    </div>
 
-    <label class="col-md-2 col-form-label">@localizer["Case Category"]</label>
-    <div class="col-md-4">
-        <div class="input-group">
-            <select class="form-control select2bs4"
-                    id="AgCaseCategoryId"
-                    asp-for="AgainstCaseDetails[0].CaseCategoryId"
-                    asp-items="@Model.CaseNatures">
-                <option></option>
-            </select>
+        <div class="form-group row">
+            <label class="col-md-2 col-form-label">@localizer["Officer Name"]</label>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" asp-for="AgainstCaseDetails[0].OfficerName"
+                           id="AgOfficerName"
+                           placeholder="Proceeding officer"
+                           class="form-control">
+                </div>
+            </div>
+            <label class="col-md-2 col-form-label">@localizer["Cadre"]</label>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <select class="form-control select2bs4"
+                            id="AgCadreId"
+                            asp-for="AgainstCaseDetails[0].Cadre" asp-items="@Model.Cadres">
+                        <option></option>
+                    </select>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-
-<div class="form-group row">
-    <label class="col-md-2 col-form-label">@localizer["Case Type"]</label>
-    <div class="col-md-4">
-        <div class="input-group">
-            <select class="form-control select2bs4"
-                    id="AgCaseTypeId"
-                    asp-for="AgainstCaseDetails[0].CaseTypeId"
-                    asp-items="@Model.TypeOfCases">
-                <option></option>
-            </select>
-        </div>
-    </div>
-
-    <label class="col-md-2 col-form-label">@localizer["Cis No/Year"]</label>
-    <div class="col-md-2">
-        <div class="input-group">
-            <input type="text" placeholder="CIS Number"
-                   asp-for="AgainstCaseDetails[0].CisNo"
-                   id="AgCisNo"
-                   class="form-control" />
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="input-group">
-            <select class="form-control select2bs4"
-                    id="AgCisYear"
-                    asp-for="AgainstCaseDetails[0].CisYear"
-                    asp-items="@Model.Years">
-                <option></option>
-            </select>
-        </div>
-    </div>
-</div>
-
-<div class="form-group row">
-    <label class="col-md-2 col-form-label">@localizer["Cnr No"]</label>
-    <div class="col-md-4">
-        <div class="input-group">
-            <input type="text" placeholder="Cnr number"
-                   asp-for="AgainstCaseDetails[0].CnrNo"
-                   id="AgCnrNo"
-                   class="form-control" />
-        </div>
-    </div>
-</div>
-<div class="form-group row">
-    <label class="col-md-2 col-form-label">@localizer["Officer Name"]</label>
-    <div class="col-md-4">
-        <div class="input-group">
-            <input type="text" asp-for="AgainstCaseDetails[0].OfficerName"
-                   id="AgOfficerName"
-                   placeholder="Proceeding officer"
-                   class="form-control">
-        </div>
-    </div>
-    <label class="col-md-2 col-form-label">@localizer["Cadre"]</label>
-    <div class="col-md-4">
-        <div class="input-group">
-            <select class="form-control select2bs4"
-                    id="AgCadreId"
-                    asp-for="AgainstCaseDetails[0].Cadre" asp-items="@Model.Cadres">
-                <option></option>
-            </select>
-        </div>
-    </div>
-</div>
     </fieldset>
 </div>
+
+

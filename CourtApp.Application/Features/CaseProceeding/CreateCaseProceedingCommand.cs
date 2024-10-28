@@ -16,8 +16,8 @@ namespace CourtApp.Application.Features.CaseProceeding
         public Guid CaseId { get; set; }
         public Guid ProceedingTypeId { get; set; }
         public List<Guid> ProceedingsIds { get; set; }
-        public Guid StageId { get; set; }
-        public DateTime NextDate { get; set; }
+        public Guid? StageId { get; set; }
+        public DateTime? NextDate { get; set; }
         public string Remark { get; set; }
     }
 
@@ -42,8 +42,8 @@ namespace CourtApp.Application.Features.CaseProceeding
                 mpDt.CaseId = request.CaseId;
                 mpDt.SubHeadId = subHeadId;
                 mpDt.HeadId = request.ProceedingTypeId;
-                mpDt.StageId = request.StageId;
-                mpDt.NextDate = request.NextDate;
+                mpDt.StageId = request.StageId!=null? request.StageId:null;
+                mpDt.NextDate = request.NextDate!=null? request.NextDate:null;
                 mpDt.Remark = request.Remark;
                 await _Repository.AddAsync(mpDt);
             }

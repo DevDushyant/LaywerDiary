@@ -3,6 +3,7 @@ using AutoMapper;
 using CourtApp.Application.DTOs.CaseDetails;
 using CourtApp.Application.DTOs.FormPrint;
 using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -37,23 +38,29 @@ namespace CourtApp.Application.Features.FormPrint
         }
         public async Task<Result<List<InspectionResponse>>> Handle(GetInspectionQuery request, CancellationToken cancellationToken)
         {
-            var Cases = from cd in _CaseRepo.Entites.Where(w => request.CaseIds.Contains(w.Id))
-                        join cl in _ClientRepo.Clients on cd.Id equals cl.Id into clientDetails
-                        from c in clientDetails.DefaultIfEmpty()
-                        join f in _AppeareceRepo.Entities on c.AppearenceID equals f.Id into Appearnce
-                        from a in Appearnce.DefaultIfEmpty()
-                        join p in _wRepo.Entities on cd.Id equals p.CaseId into CProcs
-                        from cpd in CProcs.DefaultIfEmpty()
-                        select new InspectionResponse
-                        {
-                            Title = cd.FirstTitle + " Vs " + cd.SecondTitle,
-                            NoYear = cd.CaseNo + "/" + cd.CaseYear,
-                            CaseType = cd.CaseType.Name_En,
-                            CourtType = cd.CourtType.CourtType,
-                            CourtName = cd.CourtBench.CourtBench_En,
-                            Appearence = a.Name_En,
-                            NextDate = cpd.NextDate != null ? cpd.NextDate.Value.ToString("dd/MM/yyyy") : ""
-                        };
+            
+            var Cases = _CaseRepo.Entites
+                       .Include(a => a.CaseAgainstEntities)
+                       .Include(p => p.CaseProcEntities)
+                       .Include(c => c.CourtType)
+                       .Include(c => c.CourtBench)
+                       .Include(c => c.FTitle)
+                       .Where(w => request.CaseIds.Contains(w.Id))
+                       .Select(cd => new InspectionResponse
+                       {
+                           NoYear = cd.CaseNo + "/" + cd.CaseYear,
+                           CaseType = cd.CaseType.Name_En,
+                           Title = cd.FirstTitle + " Vs " + cd.SecondTitle,                           
+                           CourtName = cd.CourtBench.CourtBench_En,
+                           Appearence = cd.FTitle.Name_En,
+                           NextDate = cd.NextDate.HasValue && cd.CaseProcEntities.Any()
+                                       ? cd.CaseProcEntities.Max(p => p.NextDate.HasValue ? p.NextDate.Value : DateTime.MinValue) > cd.NextDate.Value
+                                       ? cd.CaseProcEntities.Max(p => p.NextDate.HasValue ? p.NextDate.Value : DateTime.MinValue).ToString("dd/MM/yyyy")
+                                       : cd.NextDate.Value.ToString("dd/MM/yyyy")
+                                       : cd.NextDate.HasValue
+                                       ? cd.NextDate.Value.ToString("dd/MM/yyyy")
+                                       : cd.CaseProcEntities.Max(p => p.NextDate.HasValue ? p.NextDate.Value : DateTime.MinValue).ToString("dd/MM/yyyy")
+                       }).ToList();
             return Result<List<InspectionResponse>>.Success(Cases.ToList());
         }
     }

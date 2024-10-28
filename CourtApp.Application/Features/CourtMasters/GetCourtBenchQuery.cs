@@ -5,6 +5,7 @@ using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,8 +49,9 @@ namespace CourtApp.Application.Features.CourtMasters
             };
             var predicate = PredicateBuilder.True<CourtBenchEntity>();
             Guid CourtMasterId = Guid.Empty;
-            var dt = _CourtMasterRepo.GetListAsync().Result
-                .Where(w => w.StateId == request.StateId && w.CourtTypeId == request.CourtTypeId).ToList();
+            var dt = _CourtMasterRepo.Entities                
+                .Where(w => w.StateId == request.StateId && w.CourtTypeId == request.CourtTypeId)
+                .ToList();
             if (request.CourtTypeId != Guid.Empty && request.CourtId != Guid.Empty)
                 CourtMasterId = dt
                     .Select(s => s.Id).FirstOrDefault();

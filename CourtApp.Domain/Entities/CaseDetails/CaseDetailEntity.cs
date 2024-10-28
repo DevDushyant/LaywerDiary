@@ -11,7 +11,7 @@ namespace CourtApp.Domain.Entities.CaseDetails
     public class CaseDetailEntity : AuditableEntity
     {
         #region Common Properties Among all Court Type
-        public  DateTime InstitutionDate { get; set; }
+        public DateTime InstitutionDate { get; set; }
         public int StateId { get; set; }
         public Guid CourtTypeId { get; set; }
 
@@ -23,7 +23,7 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public Guid CaseCategoryId { get; set; }
         public Guid CaseTypeId { get; set; }
         public string CaseNo { get; set; }
-        public int CaseYear { get; set; }        
+        public int CaseYear { get; set; }
         public string FirstTitle { get; set; }
         public Guid FTitleId { get; set; }
         public string SecondTitle { get; set; }
@@ -59,6 +59,10 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public virtual CourtComplexEntity Complex { get; set; }
         public virtual CaseStageEntity CaseStage { get; set; }
         public ICollection<CaseDetailAgainstEntity> CaseAgainstEntities { get; set; } = new List<CaseDetailAgainstEntity>();
+        public ICollection<CaseProcedingEntity> CaseProcEntities { get; set; }
+        public ICollection<CaseTitleEntity> Titles { get; set; }
+        public ClientEntity Client { get; set; }
+
         #endregion
     }
 }

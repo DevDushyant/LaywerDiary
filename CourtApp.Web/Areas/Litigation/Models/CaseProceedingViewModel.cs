@@ -14,8 +14,8 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public Guid CaseId { get; set; }
         public Guid ProceedingTypeId { get; set; }
         public List<Guid> ProceedingsIds { get; set; }        
-        public Guid StageId { get; set; }
-        public DateTime NextDate { get; set; }
+        public Guid? StageId { get; set; }
+        public DateTime? NextDate { get; set; }
         public string Remark { get; set; }
     }
 }

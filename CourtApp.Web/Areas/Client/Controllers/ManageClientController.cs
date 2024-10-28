@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static CourtApp.Application.Constants.Permissions;
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
 {
@@ -36,9 +37,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (id == Guid.Empty)
             {
                 var ViewModel = new ClientViewModel();
-                ViewModel.OppositCounsels =await DdlLawyerAsync();
-                ViewModel.Appearences = await DdlFSTypes(0);                
-                return View("_CreateOrEdit", ViewModel);
+                ViewModel.OppositCounsels = await DdlLawyerAsync();
+                ViewModel.Appearences = await DdlFSTypes(0);
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
+                //return View("_CreateOrEdit", ViewModel);
             }
             else
             {
@@ -48,11 +50,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     var ViewModel = _mapper.Map<ClientViewModel>(response.Data);
                     ViewModel.OppositCounsels = await DdlLawyerAsync();
                     ViewModel.Appearences = await DdlFSTypes(0);
-                    return View("_CreateOrEdit", ViewModel);
+                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
+                    //return View("_CreateOrEdit", ViewModel);
                 }
                 return null;
             }
-        }       
+        }
 
         [HttpPost]
         public async Task<IActionResult> OnPostCreateOrEdit(Guid id, ClientViewModel btViewModel)
@@ -66,8 +69,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     if (result.Succeeded)
                     {
                         id = result.Data;
+                        TempData["ClientId"] = id;
                         _notify.Success($"Client with ID {result.Data} Created.");
                         btViewModel.StatusMessage = "Record created successfully";
+                        return RedirectToAction("CreateOrUpdate", "CaseManage", new { area = "Litigation"});
                     }
                     else _notify.Error(result.Message);
                     return View("_CreateOrEdit", btViewModel);

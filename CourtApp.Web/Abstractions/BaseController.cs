@@ -6,6 +6,7 @@ using CourtApp.Application.Constants;
 using CourtApp.Application.DTOs.CourtMaster;
 using CourtApp.Application.Enums;
 using CourtApp.Application.Features.CaseCategory;
+using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.CaseKinds.Query;
 using CourtApp.Application.Features.CaseStages.Query;
 using CourtApp.Application.Features.CaseTitle;
@@ -139,12 +140,11 @@ namespace CourtApp.Web.Abstractions
             return new SelectList(viewModel, nameof(GClientViewModel.Id), nameof(GClientViewModel.Name), null, null);
         }
 
-        public async Task<SelectList> UserCaseTitle()
+        public async Task<SelectList> UserCaseTitle(Guid? CaseId)
         {
-            var response = await _mediator.Send(new GetCaseDetailsQuery() { PageNumber = 1, PageSize = 5000 });
-            var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
-            return new SelectList(viewModel, nameof(GetCaseViewModel.Id), nameof(GetCaseViewModel.CaseTitle), null, null);
-
+            var response = await _mediator.Send(new GetCaseInfoQuery() { PageNumber = 1, PageSize = 5000 });
+            var viewModel = _mapper.Map<List<GetCaseInfoViewModel>>(CaseId != null && CaseId != Guid.Empty ? response.Data.Where(w => w.Id != CaseId.Value) : response.Data);
+            return new SelectList(viewModel, nameof(GetCaseInfoViewModel.Id), nameof(GetCaseInfoViewModel.CaseDetail), null, null);
         }
         #endregion
 
@@ -247,7 +247,7 @@ namespace CourtApp.Web.Abstractions
             return data;
         }
 
-        public async Task<SelectList>LoadBenches(Guid CourtTypeId, int StateId, Guid ComplexId)
+        public async Task<SelectList> LoadBenches(Guid CourtTypeId, int StateId, Guid ComplexId)
         {
             var dt = await _mediator.Send(new GetCourtBenchQuery(1, 100) { StateId = StateId, CourtTypeId = CourtTypeId, CourtId = ComplexId });
             if (dt.Succeeded)
@@ -480,13 +480,17 @@ namespace CourtApp.Web.Abstractions
             var response = await _mediator.Send(new GetCaseTitleQuery() { CaseIds = caseIds });
             if (response.Succeeded)
             {
-                var dtl = response.Data;
-                string[] lines = dtl.First().Title.Split(
-                            new string[] { Environment.NewLine },
-                            StringSplitOptions.None
-);
-                var dt = _mapper.Map<List<DropDownGViewModel>>(response.Data);
-                return Json(dt);
+                var dtl = response.Data.FirstOrDefault();
+                var titles = new List<DropDownSViewModel>();
+                foreach (var item in dtl.CaseApplicantDetails)
+                {
+                    DropDownSViewModel d = new DropDownSViewModel();
+                    d.Id = item.ApplicantNo.ToString();
+                    d.Name = item.ApplicantDetail;
+                    titles.Add(d);
+                };
+                var fn = titles.Distinct().OrderBy(o => o.Name).ToList();
+                return Json(fn);
             }
             return Json(null);
         }

@@ -17,4 +17,9 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string Id { get; set; }
         public string Name { get; set; }
     }
+    public class DdISViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
 }

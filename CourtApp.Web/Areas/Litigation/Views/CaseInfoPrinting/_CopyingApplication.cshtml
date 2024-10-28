@@ -20,7 +20,7 @@
             <br />
             <strong>@cd.FirstTitle</strong> &ensp;&ensp;&ensp;&ensp;&ensp; Versus &ensp;&ensp;&ensp;&ensp;&ensp;<strong>@cd.SecondTitle</strong>
             <br /><br />
-            Decided/Fixed for hearing on  @(cd.DisposalDate == "" ? cd.NextDate : cd.DisposalDate)  By the Court of  Hon' ble <strong>@cd.CourtType @cd.Court</strong>
+            Decided/Fixed for hearing on  <strong>@( cd.DisposalDate=="" ? cd.NextDate : cd.DisposalDate)</strong>  By the Court of  Hon' ble <strong>@cd.CourtType @cd.Court</strong>
             <br /><br />
             &ensp;Kindly grant one Certified Copy of the paper named in the following list from the record of
             The above mentioned case for which I tender copying sheets of the value of Rs

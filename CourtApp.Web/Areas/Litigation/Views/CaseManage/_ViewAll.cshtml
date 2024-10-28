@@ -2,14 +2,14 @@
 <table id="tblUserCase" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th style="width:5%!important">Sno.</th>
+            <th style="width:2%!important">Sno.</th>
             <th style="width:10%!important">Court</th>
             <th style="width:10%!important">Court</th>
             <th style="width:15%!important">Type</th>
-            <th style="width:40%!important">Case Detail</th>
+            <th style="width:35%!important">Case Detail</th>
             <th style="width:10%!important">Stage</th>
-            <th style="width:5%!important">Next Date</th>
-            <th style="width:5%!important">Actions</th>
+            <th style="width:12%!important">Next Date</th>
+            <th style="width:3%!important">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -48,9 +48,7 @@
                     <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-history" title="See History"></a>
                     <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=@bt.Id', 'Upload Document')" class="fa fa-file" title="Upload Document"></a>
                     <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail" asp-route-id="@bt.Id" class="fa fa-eye" title="View Case Detail"></a>
-                    @* <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="casestage" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
-                <a href="javascript:$('#form_delete_@bt.Id').submit();" class="fas fa-trash-alt"></a>
-                </form> *@
+                        
                 </td>
             </tr>
         }

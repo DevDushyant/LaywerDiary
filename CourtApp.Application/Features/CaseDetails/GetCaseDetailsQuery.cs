@@ -110,7 +110,7 @@ namespace CourtApp.Application.Features.UserCase
             }
             else
             {
-                fnldt = from cd in td.Where(w => w.NextHearingDate == request.HearingDate)select cd;
+                fnldt = from cd in td.Where(w => w.NextHearingDate.Date == request.HearingDate.Date)select cd;
             }
 
             var dt = from cd in fnldt
@@ -131,7 +131,7 @@ namespace CourtApp.Application.Features.UserCase
                      };
             if (request.HearingDate! != default(DateTime))
             {
-                var d = from e in dt where e.NextHearingDate == request.HearingDate select e;
+                var d = from e in dt where e.NextHearingDate.Date == request.HearingDate.Date select e;
                 return await d.ToPaginatedListAsync(request.PageNumber, request.PageSize);
             }
             return await dt.ToPaginatedListAsync(request.PageNumber, request.PageSize);
