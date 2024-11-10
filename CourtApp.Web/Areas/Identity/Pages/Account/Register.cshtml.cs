@@ -1,6 +1,8 @@
 ﻿using CourtApp.Application.DTOs.Mail;
 using CourtApp.Application.Enums;
+using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Application.Interfaces.Shared;
+using CourtApp.Domain.Entities.LawyerDiary;
 using CourtApp.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +17,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Identity.Pages.Account
@@ -26,12 +29,13 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IMailService _emailSender;
-
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IMailService emailSender)
+            IMailService emailSender,
+            ILawyerRepository lawyerRepository,
+            IUnitOfWork uow)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -69,7 +73,7 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
             [Display(Name = "Mobile No")]
             public string Mobile { get; set; }
 
-            
+
             [Display(Name = "Website")]
             public string Website { get; set; }
 
@@ -111,11 +115,11 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                     Email = Input.Email,
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
-                    EnrollmentNo=Input.EnrollmentNo,
-                    Mobile=Input.Mobile,
-                    Website=Input.Website,
-                    Telephone=Input.Telephone,
-                    Address=Input.Address
+                    EnrollmentNo = Input.EnrollmentNo,
+                    Mobile = Input.Mobile,
+                    Website = Input.Website,
+                    Telephone = Input.Telephone,
+                    Address = Input.Address
 
                 };
                 var result = await _userManager.CreateAsync(user, "123Pa$$word!");
@@ -133,7 +137,7 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                     var mailRequest = new MailRequest
                     {
                         Body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
-                        From = "info@codewithmukesh.com",
+                        From = "info@sparo.com",
                         To = Input.Email,
                         Subject = "Confirm Registration"
                     };

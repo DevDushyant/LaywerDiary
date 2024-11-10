@@ -8,7 +8,7 @@ namespace CourtApp.Infrastructure.CacheKeys
 {
     public class LawyerMasterCacheKeys
     {
-        public static string ListKey => "LawyerMasterList";
+        public static string ListKey => "LawyerMasterList";       
         public static string GetKey(Guid Id) => $"LawyerMaster-{Id}";
         public static string GetDetailsKey(Guid Id) => $"LawyerMasterDetails-{Id}";
     }

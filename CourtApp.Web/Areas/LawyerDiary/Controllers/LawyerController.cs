@@ -1,10 +1,20 @@
-﻿using CourtApp.Application.Features.Lawyer;
+﻿using AspNetCoreHero.Results;
+using CourtApp.Application.Features.Lawyer;
+using CourtApp.Application.Features.UserCase;
+using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
+using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.LawyerDiary.Models.Lawyer;
+using CourtApp.Web.Areas.Litigation.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto.Macs;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers
@@ -12,13 +22,18 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
     [Area("LawyerDiary")]
     public class LawyerController : BaseController<LawyerController>
     {
+        private readonly UserManager<ApplicationUser> _userManager;
+        public LawyerController(UserManager<ApplicationUser> _userManager)
+        {
+            this._userManager = _userManager;
+        }
         public IActionResult Index()
         {
             return View();
         }
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new LawyerGetAllQuery());
+            var response = await _mediator.Send(new LawyerGetAllQuery() { PageNumber = 1, PageSize = 5000 });
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<LawyerLViewModel>>(response.Data);
@@ -111,5 +126,23 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 return null;
             }
         }
+
+        #region Bring Case Detail By Lawyer 
+        public async Task<IActionResult> GetCaseByLawyer()
+        {
+            var ViewModel = new BringCaseViewModel();
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            var allUsersExceptCurrentUser = await _userManager.Users.Where(a => a.Id != currentUser.Id && a.EnrollmentNo != null).ToListAsync();
+            var model = _mapper.Map<IEnumerable<UserViewModel>>(allUsersExceptCurrentUser);
+            ViewModel.Lawyers = new SelectList(model, nameof(UserViewModel.Id), nameof(UserViewModel.FirstName), null, null); ;
+            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_BringCaseDetail", ViewModel) });
+        }
+        [HttpPost]
+        public IActionResult OnPostCaseByLawyer(BringCaseViewModel vmodel)
+        {           
+            _notify.Success("Case detail fetched!");
+            return RedirectToAction("BindLawyerCaseDetail", "CaseManage", new { area = "Litigation",id=vmodel.CaseId });
+        }
+        #endregion
     }
 }

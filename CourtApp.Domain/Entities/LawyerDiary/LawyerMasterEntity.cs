@@ -7,8 +7,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
 {
     [Table("m_lawyer", Schema = "ld")]
     public class LawyerMasterEntity : AuditableEntity
-    {        
-           
+    {                
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
@@ -16,5 +15,6 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public string Mobile { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
+        public string UserId { get; set; }
     }
 }

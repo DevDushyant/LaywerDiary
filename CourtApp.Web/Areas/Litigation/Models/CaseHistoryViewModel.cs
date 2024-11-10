@@ -16,6 +16,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
     {
         public string Type { get; set; }
         public string Date { get; set; }
+        public string NextDate { get; set; }
         public string Stage { get; set; }
         public string Activity { get; set; }
     }

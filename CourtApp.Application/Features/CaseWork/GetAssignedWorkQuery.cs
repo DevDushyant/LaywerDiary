@@ -14,6 +14,7 @@ using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace CourtApp.Application.Features.CaseWork
 {
@@ -27,67 +28,103 @@ namespace CourtApp.Application.Features.CaseWork
     public class GetAssignedWorkQueryHandler : IRequestHandler<GetAssignedWorkQuery, Result<List<AssignedWorkToCaseResponse>>>
     {
         private readonly ICaseWorkRepository _Repository;
-        public GetAssignedWorkQueryHandler(ICaseWorkRepository _Repository)
+        private readonly ICaseProceedingRepository _ProcRepo;
+        private readonly IWorkMasterSubRepository _SWRepo;
+        public GetAssignedWorkQueryHandler(ICaseWorkRepository _Repository,
+            ICaseProceedingRepository _ProcRepo,
+            IWorkMasterRepository wRepo,
+            IWorkMasterSubRepository sWRepo)
         {
             this._Repository = _Repository;
+            this._ProcRepo = _ProcRepo;
+            _SWRepo = sWRepo;
         }
         public async Task<Result<List<AssignedWorkToCaseResponse>>> Handle(GetAssignedWorkQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<CaseWorkEntity, CaseWorkDto>> expression = e => new CaseWorkDto
+            var CaseWorkDetail = await _ProcRepo.GetListAsync();
+            if (CaseWorkDetail.Any())
             {
-                Id = e.Id,
-                CaseId = e.Case.Id,
-                CaseTitle = e.Case.FirstTitle + " V/S " + e.Case.SecondTitle + "(" + e.Case.CaseNo + "/" + e.Case.CaseYear + ")",
-                Work = e.Work.Work.Work_En,
-                WorkId = e.Work.Work.Id,
-                SubWork = e.Work.Name_En,
-                SubWId = e.Work.Id,
-                WDate = e.WorkingDate != null ? e.WorkingDate.Value.ToString("dd/MM/yyyy") : "",
-                Status = e.Status,
-
-            };
-            var predicate = PredicateBuilder.True<CaseWorkEntity>();
-            if (request.CaseId != Guid.Empty)
-                predicate = predicate.And(b => b.CaseId == request.CaseId);
-            try
-            {
-
-                var rData = _Repository.Entities.Where(predicate)
-                    .Select(expression)
-                    .Where(w=>w.Status==0)
-                    .ToList();
-                
-                var CaseDetail = rData.Select(c => new { CId = c.CaseId, CDetail = c.CaseTitle })
-                    .Distinct().ToList();
-
-                List<AssignedWorkToCaseResponse> dtl = new List<AssignedWorkToCaseResponse>();
-                foreach (var cd in CaseDetail)
+                List<AssignedWorkToCaseResponse> awc = new List<AssignedWorkToCaseResponse>();
+                foreach (var c in CaseWorkDetail.Distinct())
                 {
-                    AssignedWorkToCaseResponse assigned = new AssignedWorkToCaseResponse();
-                    assigned.CaseDetail = cd.CDetail;
-                    assigned.CaseId = cd.CId;
-                    List<AssignedWork> Works = new List<AssignedWork>();
-                    foreach (var w in rData)
-                    {                        
-                        if (cd.CId == w.CaseId)
-                        {
-                            var asW = new AssignedWork();
-                            asW.Id = w.Id;
-                            asW.WorkId = w.SubWId;
-                            asW.WorkDetail = w.Work + " - " + w.SubWork;                            
-                            Works.Add(asW);
-                        }
+                    AssignedWorkToCaseResponse a = new AssignedWorkToCaseResponse();
+                    a.CaseId = c.CaseId;
+                    a.CaseDetail = c.Case.FirstTitle + " " + c.Case.SecondTitle + " (" + c.Case.CaseYear + "/" + c.Case.CaseNo + ")";
+                    a.AWorks = new List<AssignedWork>();
+                    a.LastWorkingDate = c.ProcWork.LastWorkingDate != null ? c.ProcWork.LastWorkingDate.Value.ToString("dd-MM-yyyy") : "";
+                    foreach (var w in c.ProcWork.Works.Where(s => s.Status == 0))
+                    {
+                        AssignedWork aw = new AssignedWork();
+                        aw.Id = c.Id;
+                        aw.WorkId = w.WorkId;
+                        var swork = await _SWRepo.GetByIdAsync(w.WorkId);
+                        aw.WorkDetail = swork!=null? swork.Work.Work_En + " - " + swork.Name_En:"";
+                        a.AWorks.Add(aw);
                     }
-                    assigned.AWorks = Works;
-                    dtl.Add(assigned);
-                }               
-                return Result<List<AssignedWorkToCaseResponse>>.Success(dtl);
+                    awc.Add(a);
+                }
+                var workc = awc.Select(s => s.AWorks.Count).FirstOrDefault();
+                if (workc != 0)
+                    return Result<List<AssignedWorkToCaseResponse>>.Success(awc);
+                else
+                    return Result<List<AssignedWorkToCaseResponse>>.Success();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return null;
-            }
+            return null;
+            //Expression<Func<CaseWorkEntity, CaseWorkDto>> expression = e => new CaseWorkDto
+            //{
+            //    Id = e.Id,
+            //    CaseId = e.Case.Id,
+            //    CaseTitle = e.Case.FirstTitle + " V/S " + e.Case.SecondTitle + "(" + e.Case.CaseNo + "/" + e.Case.CaseYear + ")",
+            //    Work = e.Work.Work.Work_En,
+            //    WorkId = e.Work.Work.Id,
+            //    SubWork = e.Work.Name_En,
+            //    SubWId = e.Work.Id,
+            //    WDate = e.WorkingDate != null ? e.WorkingDate.Value.ToString("dd/MM/yyyy") : "",
+            //    Status = e.Status,
+
+            //};
+            //var predicate = PredicateBuilder.True<CaseWorkEntity>();
+            //if (request.CaseId != Guid.Empty)
+            //    predicate = predicate.And(b => b.CaseId == request.CaseId);
+            //try
+            //{
+
+            //    var rData = _Repository.Entities.Where(predicate)
+            //        .Select(expression)
+            //        .Where(w=>w.Status==0)
+            //        .ToList();
+
+            //    var CaseDetail = rData.Select(c => new { CId = c.CaseId, CDetail = c.CaseTitle })
+            //        .Distinct().ToList();
+
+            //    List<AssignedWorkToCaseResponse> dtl = new List<AssignedWorkToCaseResponse>();
+            //    foreach (var cd in CaseDetail)
+            //    {
+            //        AssignedWorkToCaseResponse assigned = new AssignedWorkToCaseResponse();
+            //        assigned.CaseDetail = cd.CDetail;
+            //        assigned.CaseId = cd.CId;
+            //        List<AssignedWork> Works = new List<AssignedWork>();
+            //        foreach (var w in rData)
+            //        {                        
+            //            if (cd.CId == w.CaseId)
+            //            {
+            //                var asW = new AssignedWork();
+            //                asW.Id = w.Id;
+            //                asW.WorkId = w.SubWId;
+            //                asW.WorkDetail = w.Work + " - " + w.SubWork;                            
+            //                Works.Add(asW);
+            //            }
+            //        }
+            //        assigned.AWorks = Works;
+            //        dtl.Add(assigned);
+            //    }               
+            //    return Result<List<AssignedWorkToCaseResponse>>.Success(dtl);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex);
+            //    return null;
+            //}
         }
     }
 }

@@ -18,6 +18,7 @@ namespace CourtApp.Application.Mappings
             CreateMap<WorkMasterSubEntity, WorkSubMasterResponse>();
             CreateMap<WorkMasterSubEntity, WorkSubMasterByIdResponse>();
             CreateMap<CreateWorkSubMstCommand, WorkMasterSubEntity>();
+            
         }
     }
 }

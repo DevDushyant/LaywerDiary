@@ -22,6 +22,7 @@ namespace CourtApp.Application.Features.Registers
         public DateTime ToDt { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public string UserId { get; set; }
     }
     public class OtherRegisterQueryHandler : IRequestHandler<OtherRegisterQuery, PaginatedResult<OtherRegisterResponse>>
     {

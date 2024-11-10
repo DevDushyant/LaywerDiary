@@ -21,16 +21,17 @@
                                 <tr>
                                     <td>
                                         <input type="hidden" asp-for="@Model.CaseList[i].Id" />
+                                        
                                         @(count = count + 1)
                                     </td>
                                     <td>
                                         <input type="hidden" asp-for="@Model.CaseList[i].CaseTitle" />
                                         @Model.CaseList[i].CaseTitle
                                     </td>
-                                    <td>
+                                    <td class="fa-pull-right">
                                         <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@Model.CaseList[i].Id', 'See History')" class="btn bg-success "> <i class="fa fa-history"></i>History</a>
-                                        <a onclick="jQueryModalGet('/Litigation/hearing/CaseProceeding?CaseId=@Model.CaseList[i].Id', 'Case Proceeding')" class="btn bg-success"> <i class="fa fa-plus-square"></i> Proceeding</a>
-                                        <a onclick="jQueryModalGet('/Litigation/hearing/AssignWorkCase?CaseId=@Model.CaseList[i].Id', 'Case Working')" class="btn bg-success"> <i class="fa fa-plus-square"></i> Work</a>
+                                        <a onclick="jQueryModalGet('/Litigation/hearing/CaseProceeding?CaseId=@Model.CaseList[i].Id', 'Case Proceeding')" class="btn bg-success"> <i class="fa fa-plus-square"></i> Proceeding/Working</a>
+                                        @* <a onclick="jQueryModalGet('/Litigation/hearing/AssignWorkCase?CaseId=@Model.CaseList[i].Id', 'Case Working')" class="btn bg-success"> <i class="fa fa-plus-square"></i> Work</a> *@
                                         @* <div class="form-check m-1">
                                     <input asp-for="@Model.CaseList[i].Selected" class="form-check-input" />
                                     </div> *@

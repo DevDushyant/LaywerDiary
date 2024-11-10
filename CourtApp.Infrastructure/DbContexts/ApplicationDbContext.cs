@@ -89,7 +89,7 @@ namespace CourtApp.Infrastructure.DbContexts
                         break;
 
                     case EntityState.Modified:
-                        entry.Entity.LastModifiedOn = _dateTime.NowUtc;
+                        entry.Entity.LastModifiedOn = entry.Entity.LastModifiedOn!=null? entry.Entity.LastModifiedOn: _dateTime.NowUtc;
                         entry.Entity.LastModifiedBy = _authenticatedUser.UserId;
                         break;
 
@@ -139,9 +139,9 @@ namespace CourtApp.Infrastructure.DbContexts
             v => JsonConvert.DeserializeObject<List<string>>(v));
 
             #region Filter Data by Logged In User
-            builder.Entity<ClientEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
-            builder.Entity<CaseDetailEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
-            builder.Entity<LawyerMasterEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
+            //builder.Entity<ClientEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
+            //builder.Entity<CaseDetailEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
+            //builder.Entity<LawyerMasterEntity>().HasQueryFilter(u => u.CreatedBy == _authenticatedUser.UserId);
             #endregion
 
             #region Converting Dynamic Form Builder Entity Fields in json format
@@ -180,6 +180,13 @@ namespace CourtApp.Infrastructure.DbContexts
                     j.ToJson();
                 }
                 );
+            builder.Entity<CaseProcedingEntity>().OwnsOne(
+               f => f.ProcWork, j =>
+               {
+                   j.ToJson();
+                   j.OwnsMany(d => d.Works);
+               }
+               );
             #endregion
         }
     }

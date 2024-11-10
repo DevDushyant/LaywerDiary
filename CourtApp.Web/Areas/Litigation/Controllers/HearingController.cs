@@ -2,8 +2,10 @@
 using CourtApp.Application.Features.CaseProceeding;
 using CourtApp.Application.Features.CaseWork;
 using CourtApp.Application.Features.UserCase;
+using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Litigation.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 {
     [Area("Litigation")]
     public class HearingController : BaseController<HearingController>
-    {
+    {       
+
         #region Case Hearing 
         public IActionResult Index()
         {
@@ -22,13 +25,16 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
         public async Task<IActionResult> LoadAll(string seleDate)
         {
+           
             if (seleDate == null)
                 seleDate = DateTime.Now.Date.ToString();
             var response = await _mediator.Send(new GetCaseDetailsQuery()
             {
                 CallingFrm = "HTD",
-                HearingDate = Convert.ToDateTime(seleDate)
+                HearingDate = Convert.ToDateTime(seleDate),
+                UserId= CurrentUser.Id
             });
+            TempData["SelectedDate"] = seleDate;
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<HearingViewModel>>(response.Data);
@@ -41,7 +47,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new GetCaseDetailsQuery()
             {
                 CallingFrm = "HTD",
-                HearingDate = Convert.ToDateTime(SDate)
+                HearingDate = Convert.ToDateTime(SDate),
+                UserId = CurrentUser.Id
             });
             if (response.Succeeded)
             {
@@ -56,7 +63,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         #region Bring Today Hearing Case
         public async Task<JsonResult> GetCaseHearing()
         {
-            var response = await _mediator.Send(new GetCaseDetailsQuery() { CallingFrm = "BTD" });
+            var response = await _mediator.Send(new GetCaseDetailsQuery() { CallingFrm = "BTD", UserId = CurrentUser.Id });
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
@@ -101,7 +108,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             var ViewModel = new CaseWorkingViewModel();
             ViewModel.WorkTypes = await DdlWorks();
-            ViewModel.CaseId = CaseId;
+            //ViewModel.CaseId = CaseId;
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_AssignWork", ViewModel) });
         }
 
@@ -124,10 +131,35 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         #region Today's Proceeding to the case
         public async Task<JsonResult> CaseProceeding(Guid CaseId)
         {
+            var SelectedDate = TempData["SelectedDate"].ToString();
+            TempData.Keep();
+            var ProcExDt = await _mediator.Send(new GetCaseProceedingByIdQuery()
+            {
+                CaseId = CaseId,
+                SelectedDate = Convert.ToDateTime(SelectedDate)
+            });
             var model = new CaseProceedingViewModel();
             model.CaseId = CaseId;
-            model.ProceedingTypes = await DdlProcHeads();
-            model.Stages = await DdlCaseStages();
+            model.IsUpdate = false;
+            if (ProcExDt.Succeeded && ProcExDt.Data != null)
+            {
+                model = _mapper.Map<CaseProceedingViewModel>(ProcExDt.Data);
+                model.ProceedingTypes = await DdlProcHeads();
+                model.Proceedings = await DdlSubProc(model.HeadId);
+                model.ProcWork.WorkTypes = await DdlWorks();
+                var WorkTypeId = model.ProcWork.Workdt.Select(s => s.WorkTypeId).FirstOrDefault();
+                model.ProcWork.Works = await DdlSubWork(WorkTypeId.Value);
+                model.Stages = await DdlCaseStages();
+                model.IsUpdate = true;
+            }
+            else
+            {
+                var wmodel = new CaseWorkingViewModel();
+                wmodel.WorkTypes = await DdlWorks();
+                model.ProceedingTypes = await DdlProcHeads();
+                model.Stages = await DdlCaseStages();
+                model.ProcWork = wmodel;
+            }
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", model) });
         }
 
@@ -136,14 +168,32 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             if (ModelState.IsValid)
             {
-                var cmd = _mapper.Map<CreateCaseProceedingCommand>(model);
-                var result = await _mediator.Send(cmd);
-                if (result.Succeeded)
-                    _notify.Success($"Case proceeding with ID {result.Data} Created.");
-                else _notify.Error(result.Message);
+                if (model.IsUpdate)
+                {
+                    var up = _mapper.Map<UpdateCaseProceedingCommand>(model);
+                    bool hasValues = up.ProcWork.GetType().GetProperties()
+                                       .Any(prop => prop.GetValue(up.ProcWork) != null);
+                    if (!hasValues)
+                        up.ProcWork = null;
+                    var result = await _mediator.Send(up);
+                    if (result.Succeeded)
+                        _notify.Success($"Case proceeding with ID {result.Data} Updated.");
+                }
+                else
+                {
+                    var cmd = _mapper.Map<CreateCaseProceedingCommand>(model);
+                    cmd.ProceedingDate = Convert.ToDateTime(TempData["SelectedDate"].ToString());
+                    bool hasValues = cmd.ProcWork.GetType().GetProperties()
+                                       .Any(prop => prop.GetValue(cmd.ProcWork) != null);
+                    if (!hasValues)
+                        cmd.ProcWork = null;
+                    var result = await _mediator.Send(cmd);
+                    if (result.Succeeded)
+                        _notify.Success($"Case proceeding with ID {result.Data} Created.");
+                }
             }
-            return RedirectToAction("Index");
-            #endregion
+            return RedirectToAction("Index");           
         }
+        #endregion
     }
 }

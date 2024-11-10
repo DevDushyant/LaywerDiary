@@ -9,8 +9,7 @@ namespace CourtApp.Application.Interfaces.CacheRepositories
 {
     public interface ILawyerCacheRepository
     {
-        Task<List<LawyerMasterEntity>> GetCachedListAsync();
-
+        Task<List<LawyerMasterEntity>> GetCachedListAsync();        
         Task<LawyerMasterEntity> GetByIdAsync(Guid Id);
     }
 }

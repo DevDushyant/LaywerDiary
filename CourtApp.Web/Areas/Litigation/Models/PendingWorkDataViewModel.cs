@@ -20,6 +20,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
     {
         public Guid Id { get; set; }
         public string Work { get; set; }
+        public Guid WorkId { get; set; }
         public bool Selected { get; set; }
     }
 }

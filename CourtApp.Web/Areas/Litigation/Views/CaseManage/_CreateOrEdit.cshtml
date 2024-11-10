@@ -1,9 +1,14 @@
 ﻿@{
     ViewData["Title"] = localizer["Add New Case"];
+    ViewData["PopupTitle"] = localizer["Select Case information for copying data"];
+    ViewData["Text"] = "Bring Case";
+    ViewData["Url"] = "/LawyerDiary/Lawyer/GetCaseByLawyer";
     ViewData["Caption"] = localizer["Manage Case"];
     ViewData["Note"] = localizer["All (*) marked fields are mandatory! If client not exist in the dropdown or new client please add client first before moving next!"];
 }
-<style>
+<style>    
+
+
     .div_hide {
         display: none
     }
@@ -21,6 +26,7 @@
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
         <partial name="_StatusMessage" model="Model.StatusMessage" />
+        <input type="hidden" asp-for="@Model.LCaseId" />
         <form id="create-form" method="post" asp-controller="CaseManage" asp-action="OnPostCreateOrEdit" asp-route-Id="@Model.Id" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-12">
@@ -177,7 +183,7 @@
                     </div>
 
                     <div class="form-group row">
-                        <div class="col-md-12" style="margin-left:50%"><strong>VS</strong></div>
+                        <div class="col-md-12" style="margin-left:50%"><i class="fa-solid fa-up-long"></i><strong>VS </strong></div>
                     </div>
 
                     <div class="form-group row">
@@ -285,7 +291,7 @@
             </div>
 
             <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
-                <button type="submit" class="btn btn-success">Save</button>
+                <button type="submit" class="btn btn-success">@ViewBag.ActionType</button>
                 @* <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetClientInfo?CaseId=@Model.Id','Add Client')" class="btn btn-outline-success" style="dis">
                 <i class="fa fa-plus-square"></i> Add Client
                 </a> *@
@@ -298,7 +304,9 @@
 
     <script src="~/js/litigation/managecase.js"></script>
     <script>
-        $(document).ready(function () {            
+        $(document).ready(function () {
+            $("#hypButton").css("display", "block");
+            $("#hypRepeatButton").css("display", "block");
             var showHighCourt = @((bool)ViewBag.ShowHighCourt ? "true" : "false");
             var AgIsHighCourt = @((bool)ViewBag.AgIsHighCourt ? "true" : "false");
             var CaseId = "@(ViewBag.Id)";
@@ -322,6 +330,7 @@
                     $('.ACourt').css('display', 'block');
                 }
             }
+
         });
     </script>
 

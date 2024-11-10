@@ -37,7 +37,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (id == Guid.Empty)
             {
                 var ViewModel = new ClientViewModel();
-                ViewModel.OppositCounsels = await DdlLawyerAsync();
+                //ViewModel.OppositCounsels = await ddlSharableByName("lawyer");
                 ViewModel.Appearences = await DdlFSTypes(0);
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
                 //return View("_CreateOrEdit", ViewModel);

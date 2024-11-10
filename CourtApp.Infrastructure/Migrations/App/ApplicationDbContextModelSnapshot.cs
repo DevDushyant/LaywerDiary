@@ -514,6 +514,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime>("InstitutionDate")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<Guid?>("LCaseId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
@@ -571,9 +574,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Abbreviation")
-                        .HasColumnType("text");
-
                     b.Property<Guid>("CaseId")
                         .HasColumnType("uuid");
 
@@ -596,8 +596,8 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime?>("NextDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Remark")
-                        .HasColumnType("text");
+                    b.Property<DateTime?>("ProceedingDate")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid?>("StageId")
                         .HasColumnType("uuid");
@@ -1584,6 +1584,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("Mobile")
                         .HasColumnType("text");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("m_lawyer", "ld");
@@ -2130,9 +2133,63 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.OwnsOne("CourtApp.Domain.Entities.CaseDetails.ProceedingWorkEntity", "ProcWork", b1 =>
+                        {
+                            b1.Property<Guid>("CaseProcedingEntityId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime?>("LastWorkingDate")
+                                .HasColumnType("timestamp without time zone");
+
+                            b1.HasKey("CaseProcedingEntityId");
+
+                            b1.ToTable("r_case_proceeding", "ld");
+
+                            b1.ToJson("ProcWork");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CaseProcedingEntityId");
+
+                            b1.OwnsMany("CourtApp.Domain.Entities.CaseDetails.ProcWorkEntity", "Works", b2 =>
+                                {
+                                    b2.Property<Guid>("ProceedingWorkEntityCaseProcedingEntityId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("integer");
+
+                                    b2.Property<DateTime>("AppliedOn")
+                                        .HasColumnType("timestamp without time zone");
+
+                                    b2.Property<DateTime>("ReceivedOn")
+                                        .HasColumnType("timestamp without time zone");
+
+                                    b2.Property<int>("Status")
+                                        .HasColumnType("integer");
+
+                                    b2.Property<Guid>("WorkId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<Guid>("WorkTypeId")
+                                        .HasColumnType("uuid");
+
+                                    b2.HasKey("ProceedingWorkEntityCaseProcedingEntityId", "Id");
+
+                                    b2.ToTable("r_case_proceeding", "ld");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("ProceedingWorkEntityCaseProcedingEntityId");
+                                });
+
+                            b1.Navigation("Works");
+                        });
+
                     b.Navigation("Case");
 
                     b.Navigation("Head");
+
+                    b.Navigation("ProcWork");
 
                     b.Navigation("Stage");
 
@@ -2142,7 +2199,7 @@ namespace CourtApp.Infrastructure.Migrations.App
             modelBuilder.Entity("CourtApp.Domain.Entities.CaseDetails.CaseTitleEntity", b =>
                 {
                     b.HasOne("CourtApp.Domain.Entities.CaseDetails.CaseDetailEntity", "Case")
-                        .WithMany()
+                        .WithMany("Titles")
                         .HasForeignKey("CaseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2661,6 +2718,8 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Navigation("CaseAgainstEntities");
 
                     b.Navigation("CaseProcEntities");
+
+                    b.Navigation("Titles");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.Common.CityEntity", b =>

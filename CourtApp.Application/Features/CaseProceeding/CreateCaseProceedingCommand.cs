@@ -1,5 +1,6 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
+using CourtApp.Application.DTOs.CaseProceedings;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
 using MediatR;
@@ -14,11 +15,14 @@ namespace CourtApp.Application.Features.CaseProceeding
     public class CreateCaseProceedingCommand : IRequest<Result<Guid>>
     {
         public Guid CaseId { get; set; }
-        public Guid ProceedingTypeId { get; set; }
-        public List<Guid> ProceedingsIds { get; set; }
+        public Guid HeadId { get; set; }
+        public Guid SubHeadId { get; set; }
         public Guid? StageId { get; set; }
         public DateTime? NextDate { get; set; }
         public string Remark { get; set; }
+        public ProceedingWorkDto ProcWork { get; set; }
+        public DateTime? ProceedingDate { get; set; }
+
     }
 
     public class CreateCaseProceedingCommandHandler : IRequestHandler<CreateCaseProceedingCommand, Result<Guid>>
@@ -34,21 +38,24 @@ namespace CourtApp.Application.Features.CaseProceeding
         }
         public async Task<Result<Guid>> Handle(CreateCaseProceedingCommand request, CancellationToken cancellationToken)
         {
-            List<CaseProcedingEntity> mappingEntity = new List<CaseProcedingEntity>();
-            foreach (var subHeadId in request.ProceedingsIds)
-            {
-                var mpDt = new CaseProcedingEntity() { CreatedBy = "" };
-                mpDt.Id = Guid.NewGuid();
-                mpDt.CaseId = request.CaseId;
-                mpDt.SubHeadId = subHeadId;
-                mpDt.HeadId = request.ProceedingTypeId;
-                mpDt.StageId = request.StageId!=null? request.StageId:null;
-                mpDt.NextDate = request.NextDate!=null? request.NextDate:null;
-                mpDt.Remark = request.Remark;
-                await _Repository.AddAsync(mpDt);
-            }
+            //List<CaseProcedingEntity> mappingEntity = new List<CaseProcedingEntity>();
+            //foreach (var subHeadId in request.ProceedingsIds)
+            //{
+            //    var mpDt = new CaseProcedingEntity() { CreatedBy = "" };
+            //    mpDt.Id = Guid.NewGuid();
+            //    mpDt.CaseId = request.CaseId;
+            //    mpDt.SubHeadId = subHeadId;
+            //    mpDt.HeadId = request.ProceedingTypeId;
+            //    mpDt.StageId = request.StageId!=null? request.StageId:null;
+            //    mpDt.NextDate = request.NextDate!=null? request.NextDate:null;
+            //    mpDt.Remark = request.Remark;
+            //    await _Repository.AddAsync(mpDt);
+            //}
+            var entity = _mapper.Map<CaseProcedingEntity>(request);
+            entity.ProceedingDate = request.ProceedingDate;
+            await _Repository.AddAsync(entity);
             await _unitOfWork.Commit(cancellationToken);
-            return Result<Guid>.Success(mappingEntity.Select(s => s.CaseId).FirstOrDefault()); ;
+            return Result<Guid>.Success(entity.Id); ;
         }
     }
 }

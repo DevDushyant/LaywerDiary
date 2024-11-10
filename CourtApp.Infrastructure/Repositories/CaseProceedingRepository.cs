@@ -34,16 +34,49 @@ namespace CourtApp.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<CaseProcedingEntity> GetByIdAsync(Guid CaseId)
+        public async Task<CaseProcedingEntity> GetByIdAsync(Guid CaseId, DateTime? SelDate)
         {
-            return  _repository.Entities.Where(w=>w.CaseId==CaseId).FirstOrDefault();
+            if (SelDate != null)
+            {
+                var data = await _repository
+                    .Entities
+                    .Include(t => t.ProcWork)
+                    .ThenInclude(s => s.Works)
+                    .Where(w => w.CaseId == CaseId && w.ProceedingDate.Value.Date == SelDate.Value.Date)
+                    .FirstOrDefaultAsync();
+                return data;
+            }
+            else
+            {
+                var data = await _repository
+                        .Entities
+                        .Include(t => t.ProcWork)
+                        .ThenInclude(s => s.Works)
+                        .Where(w => w.CaseId == CaseId && w.NextDate != null)
+                        .OrderByDescending(w => w.NextDate)
+                        .FirstOrDefaultAsync();
+                return data;
+            }
+        }
+
+        public async Task<CaseProcedingEntity> GetDetailById(Guid Id)
+        {
+            var data = await _repository
+                .Entities
+                .Include(t => t.ProcWork)
+                .ThenInclude(s => s.Works)
+                .Where(w => w.Id == Id)
+                .FirstOrDefaultAsync();
+            return data;
         }
 
         public async Task<List<CaseProcedingEntity>> GetListAsync()
         {
-            var data = await _repository.Entities
-                .Include(w => w.SubHead)
-                .ToListAsync();
+            var data = await _repository
+                 .Entities
+                 .Include(t => t.ProcWork)
+                 .Include(s => s.Case)
+                 .ToListAsync();
             return data;
         }
 
@@ -64,9 +97,10 @@ namespace CourtApp.Infrastructure.Repositories
             return Entity.Select(s => s.CaseId).FirstOrDefault();
         }
 
-        public Task UpdateAsync(List<CaseProcedingEntity> Entity)
+        public async Task UpdateAsync(CaseProcedingEntity Entity)
         {
-            throw new NotImplementedException();
+            await _repository.UpdateAsync(Entity);
+            await _distributedCache.RemoveAsync(AppCacheKeys.ProcHeadKey);
         }
     }
 }

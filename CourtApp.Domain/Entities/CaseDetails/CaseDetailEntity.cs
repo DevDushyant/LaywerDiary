@@ -33,8 +33,18 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public string CnrNumber { get; set; }
         public DateTime? NextDate { get; set; }
         public Guid? CaseStageId { get; set; }
+        /// <summary>
+        /// This property will be use, when two case running parrelly.
+        /// </summary>
         public Guid? LinkedCaseId { get; set; }
         public Guid? ClientId { get; set; }
+
+        /// <summary>
+        /// Lower case court Id will be usefull for maintaining the history of the case.
+        /// Ex. District court case has been disposed, and the party want to apply in upper case 
+        /// So lower case Id and upper case id will be linked.
+        /// </summary>
+        public Guid? LCaseId { get; set; }
         #endregion
 
         #region Other than High Court Propeties

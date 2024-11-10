@@ -35,6 +35,7 @@ namespace CourtApp.Application.Features.Case
         public Guid? CaseStageId { get; set; }
         public Guid? LinkedCaseId { get; set; }
         public Guid? ClientId { get; set; }
+        public Guid? LCaseId { get; set; }
         public List<UpseartAgainstCaseDto> AgainstCaseDetails { get; set; }
         #endregion
 

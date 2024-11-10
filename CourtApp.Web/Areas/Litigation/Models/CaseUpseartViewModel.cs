@@ -28,6 +28,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public Guid? CaseStageId { get; set; }
         public Guid? LinkedCaseId { get; set; }
         public Guid? ClientId { get; set; }
+        public Guid? LCaseId { get; set; }
         public List<CaseAgainstModel> AgainstCaseDetails { get; set; }
         #endregion
 

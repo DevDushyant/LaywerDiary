@@ -21,27 +21,51 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new GetAssignedWorkQuery { PageSize = 10, PageNumber = 1 });
             if (response.Succeeded)
             {
-                var viewModel = _mapper.Map<List<CaseWorkingViewModel>>(response.Data);
                 var model = new PendingWorkDataViewModel();
                 List<CaseTitleWorkData> work = new List<CaseTitleWorkData>();
                 List<WorkDt> wdt = new List<WorkDt>();
-                foreach (var item in viewModel)
+                if (response.Data!=null)
                 {
-                    var PWorkCase = new CaseTitleWorkData();
-                    PWorkCase.CaseTitle = item.CaseDetail;
-                    PWorkCase.Id = item.CaseId;
-                    PWorkCase.WorkDate = item.WorkingDate!=null? item.WorkingDate.Value.ToString("dd/MM/yyyy"):"";
-                    foreach (var w in item.AWorks)
+                    foreach (var cd in response.Data)
                     {
-                        var wt = new WorkDt();
-                        wt.Work = w.WorkDetail;
-                        wt.Id = w.Id;
-                        wdt.Add(wt);
+                        var PWorkCase = new CaseTitleWorkData();
+                        PWorkCase.CaseTitle = cd.CaseDetail;
+                        PWorkCase.Id = cd.CaseId;
+                        PWorkCase.WorkDate = cd.LastWorkingDate;
+                        foreach (var w in cd.AWorks)
+                        {
+                            var wt = new WorkDt();
+                            wt.Work = w.WorkDetail;
+                            wt.Id = w.Id;
+                            wt.WorkId=w.WorkId;
+                            wdt.Add(wt);
+                        }
+                        PWorkCase.Works = wdt;
+                        work.Add(PWorkCase);
                     }
-                    PWorkCase.Works = wdt;
-                    work.Add(PWorkCase);
                 }
                 model.PendingWork = work;
+                //var viewModel = _mapper.Map<List<CaseWorkingViewModel>>(response.Data);
+                //var model = new PendingWorkDataViewModel();
+                //List<CaseTitleWorkData> work = new List<CaseTitleWorkData>();
+                //List<WorkDt> wdt = new List<WorkDt>();
+                //foreach (var item in viewModel)
+                //{
+                //    var PWorkCase = new CaseTitleWorkData();
+                //    PWorkCase.CaseTitle = item.CaseDetail;
+                //    PWorkCase.Id = item.CaseId;
+                //    PWorkCase.WorkDate = item.WorkingDate != null ? item.WorkingDate.Value.ToString("dd/MM/yyyy") : "";
+                //    foreach (var w in item.AWorks)
+                //    {
+                //        var wt = new WorkDt();
+                //        wt.Work = w.WorkDetail;
+                //        wt.Id = w.Id;
+                //        wdt.Add(wt);
+                //    }
+                //    PWorkCase.Works = wdt;
+                //    work.Add(PWorkCase);
+                //}
+                //model.PendingWork = work;
                 return PartialView("_ViewAll", model);
             }
             return null;
@@ -60,15 +84,16 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         Works = s.Works.Where(s => s.Selected == true).ToList()
                     });
                     var WorksDl = CaseDl.Select(s => s.Works);
+                    var ProcId = (WorksDl.FirstOrDefault()).Select(s=>s.Id).FirstOrDefault();
                     List<Guid> WorkIds = new List<Guid>();
                     foreach (var works in WorksDl)
                         foreach (var item in works)
                         {
-                            WorkIds.Add(item.Id);
+                            WorkIds.Add(item.WorkId);
                         }
                     if (WorkIds != null)
                     {
-                        var result = await _mediator.Send(new UpdateCWorkStatusCommand { CWorkId = WorkIds,Status=1 });
+                        var result = await _mediator.Send(new UpdateCWorkStatusCommand { CWorkId = WorkIds, Status = 1,ProcId= ProcId });
                         if (result.Succeeded) _notify.Information($"Case Work with ID {result.Data} Updated.");
                         else _notify.Error(result.Message);
                     }

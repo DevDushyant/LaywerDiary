@@ -12,9 +12,10 @@ namespace CourtApp.Application.Interfaces.Repositories
         IQueryable<CaseProcedingEntity> Entities { get; }
         Task<List<CaseProcedingEntity>> GetListAsync();
         Task<List<CaseProcedingEntity>> GetProceedingByCaseIdAsync(Guid CaseId);
-        Task<CaseProcedingEntity> GetByIdAsync(Guid CaseId);
+        Task<CaseProcedingEntity> GetByIdAsync(Guid CaseId, DateTime? SelDate);
+        Task<CaseProcedingEntity> GetDetailById(Guid Id);
         Task<Guid> AddAsync(CaseProcedingEntity Entity);
-        Task UpdateAsync(List<CaseProcedingEntity> Entity);
+        Task UpdateAsync(CaseProcedingEntity Entity);
         Task DeleteAsync(CaseProcedingEntity Entity);
     }
 }

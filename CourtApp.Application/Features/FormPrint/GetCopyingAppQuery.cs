@@ -85,10 +85,10 @@ namespace CourtApp.Application.Features.FormPrint
                            CourtType = cd.CourtType.CourtType,
                            Court = cd.CourtBench.CourtBench_En,
                            Appearence = "",
-                           DisposalDate = cd.CaseProcEntities.Any()
-                                        ? cd.CaseProcEntities.Where(d => d.Abbreviation == "DISP")
-                                        .Select(m => m.LastModifiedOn)
-                                        .FirstOrDefault().Value.ToString("dd/MM/yyyy") : "",
+                           //DisposalDate = cd.CaseProcEntities.Any()
+                           //             ? cd.CaseProcEntities.Where(d => d.Abbreviation == "DISP")
+                           //             .Select(m => m.LastModifiedOn)
+                           //             .FirstOrDefault().Value.ToString("dd/MM/yyyy") : "",
                            LawyerName = cd.Client != null ? cd.Client.OppositCounsel.FirstName+" "+cd.Client.OppositCounsel.LastName : "",
                            LawyerAddress = cd.Client != null ? cd.Client.OppositCounsel.Address:"",
                            NextDate = cd.NextDate.HasValue && cd.CaseProcEntities.Any()

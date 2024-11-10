@@ -1,79 +1,126 @@
-﻿@model CaseProceedingViewModel
-<form id="create-form" method="post" asp-controller="hearing" asp-action="OnPostCaseProceeding"  enctype="multipart/form-data">
+﻿<style>
+    fieldset.scheduler-border {
+        border: 1px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;
+        margin: 0 0 1.5em 0 !important;
+        -webkit-box-shadow: 0px 0px 0px 0px #000;
+        box-shadow: 0px 0px 0px 0px #000;
+        width: 100% !important;
+    }
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width: auto;
+        padding: 0 10px;
+        border-bottom: none;
+    }
+</style>
+
+@model CaseProceedingViewModel
+<form id="create-form" method="post" asp-controller="hearing" asp-action="OnPostCaseProceeding" enctype="multipart/form-data">
     <div class="row">
-        <div class="col-md-12">
-            <input type="hidden" asp-for="CaseId" />
-            <div class="form-group row">
-                <label class="col-md-3 col-form-label">@localizer["Proceeding Type"]</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <select class="form-control select2bs4"  asp-for="ProceedingTypeId" asp-items="@Model.ProceedingTypes">
-                            <option></option>
-                        </select>
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border"><strong>Case Proceeding</strong></legend>
+            <div class="col-md-12">
+                <input type="hidden" asp-for="CaseId" />
+                <input type="hidden" asp-for="IsUpdate"/>
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">@localizer["Proceeding Type"]</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <select class="form-control select2bs4" asp-for="HeadId" asp-items="@Model.ProceedingTypes">
+                                <option></option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="HeadId" class="text-danger"></span>
                     </div>
-                    <span asp-validation-for="ProceedingTypeId" class="text-danger"></span>
+                    <label class="col-md-2 col-form-label">@localizer["Proceeding"]</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <select class="form-control select2bs4" asp-for="SubHeadId" asp-items="@Model.Proceedings">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group row">
-                <label class="col-md-3 col-form-label">@localizer["Proceeding"]</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <select class="form-control select2bs4" asp-for="ProceedingsIds" asp-items="@Model.Proceedings">
-                            <option></option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-md-3 col-form-label">@localizer["Next Stage"]</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <select class="form-control select2bs4" asp-for="StageId" asp-items="@Model.Stages">
-                            <option></option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-md-3 col-form-label">@localizer["Next Date"]</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <input type="date" id="NextDate" asp-for="NextDate" value="@DateTime.Now.ToString("MM/dd/yyyy")"  placeholder="dd/MM/yyyy" class="form-control">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-md-3 col-form-label">@localizer["Remark"]</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <input type="text" placeholder="Please enter remark if any" asp-for="Remark" id="Remark" class="form-control" />
-                    </div>
-                </div>
-            </div>
 
-            <div class="form-group row">
-                <div class="col-md-3">
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">@localizer["Next Stage"]</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <select class="form-control select2bs4" asp-for="StageId" asp-items="@Model.Stages">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <label class="col-md-2 col-form-label">@localizer["Next Date"]</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input type="date" id="NextDate" asp-for="NextDate"  class="form-control">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </fieldset>
+    </div>
+    <div class="row">
+        <fieldset class="scheduler-border">
+            <legend class="scheduler-border"><strong>Case Proceeding Work Detail</strong></legend>
+            <div class="col-md-12">
+
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">@localizer["Work Type"]</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <select class="form-control select2bs4" id="WorkTypeId"
+                                    asp-for="@Model.ProcWork.Workdt[0].WorkTypeId"
+                                    asp-items="@Model.ProcWork.WorkTypes">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <label class="col-md-2 col-form-label">@localizer["Work"]</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <select class="form-control select2bs4" id="WorkId"
+                                    asp-for="@Model.ProcWork.Workdt[0].WorkId"
+                                    asp-items="@Model.ProcWork.Works">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">@localizer["Working Date"]</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input type="date" asp-for="@Model.ProcWork.WorkingDate"                                  
+                                    class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
     </div>
 
     <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
-        @* <button id="btnSubmit" type="button" class="btn btn-success">Save</button> *@
         <button type="submit" class="btn btn-success">Save</button>
         <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
     </div>
 </form>
 <script type="text/javascript" language=javascript>
-    $("#ProceedingTypeId").select2({
+    $("#HeadId").select2({
         placeholder: "Select a proceeding type",
         theme: "bootstrap4",
         escapeMarkup: function (m) {
             return m;
         }
     });
-    $("#ProceedingsIds").select2({
+    $("#SubHeadId").select2({
         placeholder: "Select a proceeding",
         theme: "bootstrap4",
         escapeMarkup: function (m) {
@@ -87,11 +134,34 @@
             return m;
         }
     });
-    $("#ProceedingTypeId").on("change", function () {
-        $("#ProceedingsIds").empty();
-        $.getJSON("/Litigation/CaseManage/DdlSubProcHeads?Id=" + $("#ProceedingTypeId").val(), function (data) {
+    $("#HeadId").on("change", function () {
+        $("#SubHeadId").empty();
+        $.getJSON("/Litigation/CaseManage/DdlSubProcHeads?Id=" + $("#HeadId").val(), function (data) {
             $.each(data.Data, function (i, item) {
-                $("#ProceedingsIds").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
+                $("#SubHeadId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
+            });
+        });
+    });
+    $("#WorkTypeId").select2({
+        placeholder: "Select a work type",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    $("#WorkId").select2({
+        placeholder: "Select a work",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+
+    $("#WorkTypeId").on("change", function () {
+        $("#WorkId").empty();
+        $.getJSON("/Litigation/CaseWork/DdlSubWorks?WorkId=" + $("#WorkTypeId").val(), function (data) {
+            $.each(data.Data, function (i, item) {
+                $("#WorkId").append(`<option value="${item.Id}">${item.Name_En}</option>`);
             });
         });
     });
@@ -121,7 +191,7 @@
     //         processData: false,
     //         contentType: false
     //     }).done(function (response) {
-            
+
     //     });
     // }
 </script>

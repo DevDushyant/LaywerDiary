@@ -11,6 +11,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using static CourtApp.Application.Constants.Permissions;
 namespace CourtApp.Application.Features.Registers
 {
     public class InstitutionRegisterQuery : IRequest<PaginatedResult<InstitutionResponse>>
@@ -19,6 +20,7 @@ namespace CourtApp.Application.Features.Registers
         public DateTime ToDt { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public string UserId { get; set; }
     }
     public class InstitutionRegisterQueryHandler : IRequestHandler<InstitutionRegisterQuery, PaginatedResult<InstitutionResponse>>
     {
@@ -43,6 +45,9 @@ namespace CourtApp.Application.Features.Registers
             var predicate = PredicateBuilder.True<CaseDetailEntity>();
             if (predicate != null)
             {
+                if (request.UserId != string.Empty)
+                    predicate = predicate.And(c => c.CreatedBy.Equals(request.UserId));
+
                 predicate = predicate.And(i => i.InstitutionDate >= request.FromDt && i.InstitutionDate <= request.ToDt);
             }
             var dt = await _caseRepo.Entites

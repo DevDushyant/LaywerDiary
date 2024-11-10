@@ -33,11 +33,16 @@ namespace CourtApp.Infrastructure.CacheRepositories
             return cachedDt;
         }
 
+        public Task<List<LawyerMasterEntity>> GetCachedLawyerDt()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<LawyerMasterEntity>> GetCachedListAsync()
         {
             string cacheKey = LawyerMasterCacheKeys.ListKey;
             var dtList = await _distCache.GetAsync<List<LawyerMasterEntity>>(cacheKey);
-            if (dtList == null)
+            if (dtList.Count == 0)
             {
                 dtList = await _Repo.GetListAsync();
                 await _distCache.SetAsync(cacheKey, dtList);

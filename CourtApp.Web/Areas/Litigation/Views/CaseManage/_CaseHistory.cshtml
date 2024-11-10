@@ -95,6 +95,7 @@
                                 <th>Type</th>
                                 <th>Proceeding/Working Date</th>
                                 <th>Stage</th>
+                                <th>Next Date</th>
                                 <th>Proceeding/Work Done</th>
                             </tr>
                         </thead>
@@ -113,6 +114,9 @@
                                     </td>
                                     <td>
                                         @Model.History[i].Stage
+                                    </td>
+                                    <td>
+                                        @Model.History[i].NextDate
                                     </td>
                                     <td>
                                         @Model.History[i].Activity

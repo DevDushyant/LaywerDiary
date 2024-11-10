@@ -27,7 +27,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 PageNumber = 1,
                 PageSize = 100,
                 FromDt = Convert.ToDateTime("2024-05-01"),
-                ToDt = DateTime.Now
+                ToDt = DateTime.Now,
+                UserId=CurrentUser.Id
             });
             if (response.Succeeded)
             {
@@ -67,8 +68,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     CopyingCaseDetailModel rd = new CopyingCaseDetailModel();
                     rd.Id = d.Id;
                     rd.AppliedOn = d.AppliedOn;
-                    rd.ReceivedOn = d.ReceivedOn;
-                    rd.Title = d.CaseAbbretion + "(" + d.CaseNo.ToString() + "/" + d.CaseYear.ToString() + ")" + d.FirstTitle + "Vs" + d.SecondTitle;
+                    rd.ReceivedOn = d.ReceivedOn;                    
+                    rd.Title = d.FirstTitle + "Vs" + d.SecondTitle;
+                    //rd.Title ="(" + d.CaseNo!=null? d.CaseNo.ToString()+ "/" + d.CaseYear.ToString():""+")" + d.FirstTitle + "Vs" + d.SecondTitle;
                     rdd.Add(rd);
                 }
                 model.copyingCases = rdd;
@@ -107,7 +109,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 PageNumber = 1,
                 PageSize = 100,
                 FromDt = Convert.ToDateTime("2024-05-01"),
-                ToDt = DateTime.Now
+                ToDt = DateTime.Now,
+                UserId=CurrentUser.Id
             });
             InstitutionRegisterViewMode model = new InstitutionRegisterViewMode();
             List<InstituteModel> inmd = new List<InstituteModel>();

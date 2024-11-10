@@ -1,8 +1,19 @@
 <div class="d-sm-flex align-items-center justify-content-between">
     <h1 class="h3 mb-0 text-gray-800">@ViewBag.Title</h1>
+    <a style="display:none" id="hypButton"
+       onclick="jQueryModalGet('@ViewBag.Url', '@ViewBag.PopupTitle')"
+       class="btn btn-outline-success">
+        <i class="fa fa-plus-square"></i>@ViewBag.Text
+    </a>
+    <a style="display:none" id="hypRepeatButton" asp-area="Litigation"
+       asp-controller="casemanage"
+       asp-action="GetLastUserCase" class="btn btn-outline-success pull-left"
+       title="Get Last entered case detail">
+        <i class="fa fa-repeat" aria-hidden="true"></i> Repeat
+    </a>
+
 </div>
 <p></p>
-@* <h6>@ViewBag.Caption</h6> *@
 <div class="d-sm-flex align-items-center justify-content-between">
     <h6 class="h6 mb-0 text-gray-800">@ViewBag.Caption</h6>
     <h6 class="h6 mb-0 text-red text-bold text-right">@ViewBag.Note</h6>

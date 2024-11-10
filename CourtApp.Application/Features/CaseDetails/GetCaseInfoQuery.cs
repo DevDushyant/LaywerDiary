@@ -24,6 +24,7 @@ namespace CourtApp.Application.Features.CaseDetails
         public int PageSize { get; set; }
         public string CaseNumber { get; set; }
         public int Year { get; set; }
+        public string UserId { get; set; }
     }
 
     public class GetCaseInfoQueryHandler : IRequestHandler<GetCaseInfoQuery, PaginatedResult<GetCaseInfoDto>>
@@ -37,10 +38,11 @@ namespace CourtApp.Application.Features.CaseDetails
         }
         public async Task<PaginatedResult<GetCaseInfoDto>> Handle(GetCaseInfoQuery request, CancellationToken cancellationToken)
         {
-
             var predicate = PredicateBuilder.True<CaseDetailEntity>();
             if (predicate != null)
             {
+                if (request.UserId != null)
+                    predicate = predicate.And(c => c.CreatedBy.Equals(request.UserId));
                 if (request.Year != 0)
                     predicate = predicate.And(y => y.CaseYear == request.Year);
                 if (request.CaseNumber != null && request.CaseNumber != string.Empty)
@@ -77,7 +79,7 @@ namespace CourtApp.Application.Features.CaseDetails
                                 CaseStage = e.CaseStage.CaseStage,
                                 CaseDetail = e.FirstTitle + " V/S " + e.SecondTitle + "(" + e.CaseNo + "/" + e.CaseYear + ")",
                                 NextDate = (e.NextDate.HasValue && md.MaxNextDate.HasValue)
-                                            ? (e.NextDate.Value > md.MaxNextDate.Value ? e.NextDate.Value 
+                                            ? (e.NextDate.Value > md.MaxNextDate.Value ? e.NextDate.Value
                                                             : md.MaxNextDate.Value).ToString("dd/MM/yyyy")
                                             : (e.NextDate.HasValue ? e.NextDate.Value.ToString("dd/MM/yyyy")
                                             : (md.MaxNextDate.HasValue ? md.MaxNextDate.Value.ToString("dd/MM/yyyy") : ""))

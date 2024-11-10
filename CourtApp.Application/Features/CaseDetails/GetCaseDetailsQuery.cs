@@ -27,6 +27,7 @@ namespace CourtApp.Application.Features.UserCase
         public Guid CaseTyepId { get; set; }
         public DateTime HearingDate { get; set; }
         public string CallingFrm { get; set; }
+        public string UserId { get; set; }
     }
     public class GetCaseDetailsQueryHandler : IRequestHandler<GetCaseDetailsQuery, PaginatedResult<CaseDetailResponse>>
     {
@@ -61,7 +62,7 @@ namespace CourtApp.Application.Features.UserCase
                 STitleType = e.FTitle.Name_En,
                 CaseTypeName = e.CaseType.Name_En,
                 CourtType = e.CourtType.CourtType,
-                CaseNumber = e.CaseNo==null? e.CaseYear.ToString(): String.Concat(e.CaseNo, "/", e.CaseYear),
+                CaseNumber = e.CaseNo == null ? e.CaseYear.ToString() : String.Concat(e.CaseNo, "/", e.CaseYear),
                 CourtName = e.CourtBench.CourtBench_En,
                 FirstTitle = e.FirstTitle,
                 SecondTitle = e.SecondTitle,
@@ -72,6 +73,8 @@ namespace CourtApp.Application.Features.UserCase
             var predicate = PredicateBuilder.True<CaseDetailEntity>();
             if (predicate != null)
             {
+                if (request.UserId != string.Empty)
+                    predicate = predicate.And(u => u.CreatedBy.Equals(request.UserId));
                 if (request.Year != 0)
                     predicate = predicate.And(y => y.CaseYear == request.Year);
                 if (request.CaseNumber != string.Empty)
@@ -110,7 +113,7 @@ namespace CourtApp.Application.Features.UserCase
             }
             else
             {
-                fnldt = from cd in td.Where(w => w.NextHearingDate.Date == request.HearingDate.Date)select cd;
+                fnldt = from cd in td select cd;
             }
 
             var dt = from cd in fnldt

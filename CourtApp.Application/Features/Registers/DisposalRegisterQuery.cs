@@ -6,6 +6,7 @@ using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -21,6 +22,7 @@ namespace CourtApp.Application.Features.Registers
         public DateTime ToDt { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public string UserId { get; set; }
     }
 
     public class RegistDisposalQueryHandler : IRequestHandler<DisposalRegisterQuery, PaginatedResult<DisposalRegisterResponse>>
@@ -34,22 +36,27 @@ namespace CourtApp.Application.Features.Registers
             this._wRepo = _wRepo;
         }
         public Task<PaginatedResult<DisposalRegisterResponse>> Handle(DisposalRegisterQuery request, CancellationToken cancellationToken)
-        {
-            Expression<Func<CaseProcedingEntity, DisposalRegisterResponse>> expression = e => new DisposalRegisterResponse
-            {
-                Id = e.CaseId,
-                Title = e.Case.CaseType.Abbreviation + "(" + e.Case.CaseNo.ToString() + "/" + e.Case.CaseYear.ToString() + ")" + e.Case.FirstTitle + "Vs" + e.Case.SecondTitle,
-                DisposalDate = e.LastModifiedOn != null ? e.LastModifiedOn.Value.ToString("dd/MM/yyyy") : "",
-                Reason = e.SubHead.Name_En
-            };
+        {            
             var predicate = PredicateBuilder.True<CaseProcedingEntity>();
+            if (predicate != null)
+                predicate = predicate.And(c => c.CreatedBy.Equals(request.UserId));
+
             DateTime to = DateTime.Now;
-            if (request.ToDt != default(DateTime)) to = request.ToDt;
-            if (request.FromDt != default(DateTime))
-                predicate = predicate.And(b => b.LastModifiedOn.Value >= request.FromDt && b.LastModifiedOn.Value <= to);
-            predicate = predicate.And(w => w.Head.Abbreviation == "DISP");
-            var fndt = _wRepo.Entities.Where(predicate)
-                .Select(expression)
+            //if (request.ToDt != default(DateTime)) to = request.ToDt;
+            //if (request.FromDt != default(DateTime))
+            //  predicate = predicate.And(b => b.LastModifiedOn.Value >= request.FromDt && b.LastModifiedOn.Value <= to);
+            predicate = predicate.And(w => w.Head.Abbreviation == "DISP");           
+            var fndt = _wRepo
+                .Entities
+                .Include(h => h.Head)
+                .Where(predicate)
+                .Select(e => new DisposalRegisterResponse
+                {
+                    DisposalDate = e.ProceedingDate != null ? e.ProceedingDate.Value.ToString("dd-MM-yyyy") : "",
+                    Id = e.CaseId,
+                    Title = e.Case.FirstTitle + "Vs" + e.Case.SecondTitle,
+                    Reason = e.SubHead.Name_En
+                })
                 .ToPaginatedListAsync(request.PageNumber, request.PageSize);
             return fndt;
         }

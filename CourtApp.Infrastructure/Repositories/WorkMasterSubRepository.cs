@@ -30,7 +30,7 @@ namespace CourtApp.Infrastructure.Repositories
         }
         public async Task<WorkMasterSubEntity> GetByIdAsync(Guid Id)
         {
-            var DetailDt = await _repository.Entities
+            var DetailDt = await _repository.Entities.Include(w=>w.Work)
                 .Where(c => c.Id == Id).FirstOrDefaultAsync();
             return DetailDt;
         }

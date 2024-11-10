@@ -22,11 +22,13 @@ using CourtApp.Application.Features.Lawyer;
 using CourtApp.Application.Features.ProceedingHead;
 using CourtApp.Application.Features.ProceedingSubHead;
 using CourtApp.Application.Features.Queries.Districts;
+using CourtApp.Application.Features.Queries.GAccessDdl;
 using CourtApp.Application.Features.Queries.States;
 using CourtApp.Application.Features.TypeOfCases.Query;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Application.Features.WorkMaster;
 using CourtApp.Application.Features.WorkMasterSub;
+using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models;
@@ -36,7 +38,9 @@ using CourtApp.Web.Areas.Litigation.Models;
 using DocumentFormat.OpenXml.Wordprocessing;
 using HtmlAgilityPack;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,6 +54,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -57,6 +62,24 @@ namespace CourtApp.Web.Abstractions
 {
     public abstract class BaseController<T> : Controller
     {
+        protected UserViewModel CurrentUser { get; private set; }
+        // Override OnActionExecuting to populate user details
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            base.OnActionExecuting(context);
+
+            if (User.Identity.IsAuthenticated)
+            {
+                CurrentUser = new UserViewModel
+                {
+                    Id = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                    UserName = User.FindFirstValue(ClaimTypes.Name),
+                    Email = User.FindFirstValue(ClaimTypes.Email),
+                    // Retrieve other claims as needed
+                };
+            }
+        }
+
         private IMediator _mediatorInstance;
         private ILogger<T> _loggerInstance;
         private IViewRenderService _viewRenderInstance;
@@ -69,6 +92,7 @@ namespace CourtApp.Web.Abstractions
         protected IViewRenderService _viewRenderer => _viewRenderInstance ??= HttpContext.RequestServices.GetService<IViewRenderService>();
         protected IMapper _mapper => _mapperInstance ??= HttpContext.RequestServices.GetService<IMapper>();
 
+       
 
         #region Dropdown Select List
         public async Task<SelectList> LoadStates()
@@ -142,7 +166,7 @@ namespace CourtApp.Web.Abstractions
 
         public async Task<SelectList> UserCaseTitle(Guid? CaseId)
         {
-            var response = await _mediator.Send(new GetCaseInfoQuery() { PageNumber = 1, PageSize = 5000 });
+            var response = await _mediator.Send(new GetCaseInfoQuery() { PageNumber = 1, PageSize = 5000,UserId=CurrentUser.Id });
             var viewModel = _mapper.Map<List<GetCaseInfoViewModel>>(CaseId != null && CaseId != Guid.Empty ? response.Data.Where(w => w.Id != CaseId.Value) : response.Data);
             return new SelectList(viewModel, nameof(GetCaseInfoViewModel.Id), nameof(GetCaseInfoViewModel.CaseDetail), null, null);
         }
@@ -270,6 +294,16 @@ namespace CourtApp.Web.Abstractions
             var response = await _mediator.Send(new GetProceedingSubHeadQuery { HeadId = Id });
             return Json(response);
         }
+        public async Task<SelectList> DdlSubProc(Guid Id)
+        {
+            var response = await _mediator.Send(new GetProceedingSubHeadQuery { HeadId = Id });
+            if (response.Succeeded)
+            {
+                var viewModel = _mapper.Map<List<ProceedingSubHeadViewModel>>(response.Data);
+                return new SelectList(viewModel, nameof(ProceedingSubHeadViewModel.Id), nameof(ProceedingSubHeadViewModel.Name_En), null, null);
+            }
+            return null;
+        }
         #endregion
 
         #region Case Work And Sub Work Area
@@ -283,6 +317,16 @@ namespace CourtApp.Web.Abstractions
         {
             var response = await _mediator.Send(new GWorkSubMstQuery { WorkId = WorkId });
             return Json(response);
+        }
+        public async Task<SelectList> DdlSubWork(Guid Id)
+        {
+            var response = await _mediator.Send(new GWorkSubMstQuery { WorkId = Id });
+            if (response.Succeeded)
+            {
+                var viewModel = _mapper.Map<List<WorkMasterSubViewModel>>(response.Data);
+                return new SelectList(viewModel, nameof(WorkMasterSubViewModel.Id), nameof(WorkMasterSubViewModel.Name_En), null, null);
+            }
+            return null;
         }
         #endregion
 
@@ -558,6 +602,22 @@ namespace CourtApp.Web.Abstractions
             }
         }
 
+        #endregion
+
+        #region Case DropDown By Lawyer
+        public async Task<JsonResult> ddlCaseInfoByLawyer(string UserId)
+        {
+            var response = await _mediator.Send(new GetCaseInfoQuery()
+            {
+                UserId = UserId
+            });
+            if (response.Succeeded)
+            {
+                var ViewModel = _mapper.Map<List<DropDownGViewModel>>(response.Data);
+                return Json(ViewModel);
+            }
+            return null;
+        }
         #endregion
     }
 }

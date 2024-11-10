@@ -66,10 +66,11 @@ namespace CourtApp.Application.Features.CaseDetails
                 var cprocdt = cprocs.Where(w => w.CaseId == request.CaseId)
                     .Select(s => new CaseHistoryData
                     {
-                        Date = s.NextDate!=null? s.NextDate.Value.ToString("dd/MM/yyyy"):"",
+                        NextDate = s.NextDate!=null? s.NextDate.Value.ToString("dd/MM/yyyy"):"",
                         Stage = s.StageId!=null? s.Stage.CaseStage:"",
                         Activity = s.SubHead.Name_En,
-                        Type = "Proceeding"
+                        Type = s.Head.Name_En,
+                        Date= (s.ProceedingDate!=null? s.ProceedingDate : s.CreatedOn).Value.ToString("dd/MM/yyyy")
                     });
 
                 var Docs = _CaseDocRepo
