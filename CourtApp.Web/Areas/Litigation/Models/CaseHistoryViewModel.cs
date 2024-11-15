@@ -19,6 +19,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string NextDate { get; set; }
         public string Stage { get; set; }
         public string Activity { get; set; }
+        public List<CaseWorkDetail> WorkDetail { get; set; }
     }
 
     public class CaseDoc
@@ -26,5 +27,16 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string DocType { get; set; }
         public string DocName { get; set; }
         public string DocFilePath { get; set; }
+    }
+    public class CaseWorkDetail
+    {
+        public string WorkingDate { get; set; }
+        public List<CaseWork> Works { get; set; }
+
+    }
+    public class CaseWork
+    {
+        public string WorkType { get; set; }
+        public string Work { get; set; }
     }
 }

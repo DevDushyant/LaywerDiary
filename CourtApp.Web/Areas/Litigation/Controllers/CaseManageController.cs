@@ -4,11 +4,9 @@ using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.CaseProceeding;
 using CourtApp.Application.Features.Clients.Commands;
 using CourtApp.Application.Features.UserCase;
-using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -21,7 +19,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     [Area("Litigation")]
     public class CaseManageController : BaseController<CaseManageController>
     {
-        
+
         #region Case Management Area
         public IActionResult Index()
         {
@@ -29,7 +27,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
 
         public async Task<IActionResult> LoadAll()
-        {            
+        {
             var response = await _mediator.Send(new GetCaseInfoQuery()
             {
                 UserId = CurrentUser.Id
@@ -43,15 +41,14 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
 
 
-        public async Task<IActionResult> CreateOrUpdateAsync(Guid id)
+        public async Task<IActionResult> CreateOrUpdateAsync(Guid id, string from)
         {
             bool showHighCourt = false;
             bool AgIsHighCourt = false;
-            ViewBag.Id = id.ToString();
-
             var caseViewModel = new CaseUpseartViewModel();
+            caseViewModel.from = from;
             caseViewModel.ClientId = TempData["ClientId"] != null ? (Guid)TempData["ClientId"] : Guid.Empty;
-            if (id == Guid.Empty)
+            if (id == Guid.Empty && (from == null || from == ""))
             {
                 caseViewModel.InstitutionDate = DateTime.Now;
                 caseViewModel.CourtTypes = await LoadCourtTypes();
@@ -72,7 +69,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
             else
             {
-                var response = await _mediator.Send(new GetUserCaseDetailByIdQuery { CaseId = id });
+                var response = await _mediator.Send(new GetUserCaseDetailByIdQuery
+                {
+                    CaseId = id,
+                    UserId = CurrentUser.Id
+                });
                 if (response.Succeeded)
                 {
                     var CaseDetail = _mapper.Map<CaseUpseartViewModel>(response.Data);
@@ -127,11 +128,25 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     CaseDetail.CaseStatusList = await DdlCaseStages();
                     CaseDetail.LinkedBy = await UserCaseTitle(id);
                     CaseDetail.Cadres = DdlCadres();
-                    ViewBag.ActionType = "Update";
+                    if (from != "repeat")
+                    {
+                        ViewBag.ActionType = "Update";
+                        ViewBag.Id = CaseDetail.Id.ToString();
+                    }
+                    else
+                    {
+                        ViewBag.ActionType = "Create";
+                        ViewBag.Id = Guid.Empty.ToString();
+                        CaseDetail.Id = Guid.Empty;
+                        CaseDetail.ClientList = await DdlClient();
+                    }
                     return View("_CreateOrEdit", CaseDetail);
                 }
-                return null;
-
+                ViewBag.ShowHighCourt = showHighCourt;
+                ViewBag.AgIsHighCourt = AgIsHighCourt;
+                caseViewModel.ClientList = await DdlClient();
+                caseViewModel.InstitutionDate = DateTime.Now;
+                return View("_CreateOrEdit", caseViewModel);
             }
         }
 
@@ -194,7 +209,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     ViewBag.ShowHighCourt = showHighCourt;
                     ViewBag.AgIsHighCourt = AgIsHighCourt;
                     return RedirectToAction("getcasedetail", new { id = Id });
-                }                
+                }
             }
             else
             {
@@ -227,61 +242,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
             return null;
         }
-
-        //public async Task<JsonResult> OnGetCaseProceeding(Guid id)
-        //{
-        //    if (id == Guid.Empty)
-        //    {
-        //        var ViewModel = new CaseProceedingViewModel();
-        //        ViewModel.Heads = await DdlProcHeads();
-        //        ViewModel.NextStages = await DdlCaseStages();
-        //        return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", ViewModel) });
-        //    }
-        //    else
-        //    {
-        //        var response = await _mediator.Send(new GetQueryByIdCaseCategory() { Id = id });
-        //        if (response.Succeeded)
-        //        {
-        //            var ViewModel = _mapper.Map<CaseProceedingViewModel>(response.Data);
-
-        //            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
-        //        }
-        //        return null;
-        //    }
-        //}
-
-        //[HttpPost]
-        //public async Task<JsonResult> OnPostCaseProceeding(Guid id, CaseProceedingViewModel ViewModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        if (id == Guid.Empty)
-        //        {
-        //            var createCommand = _mapper.Map<CreateCaseWorkCommand>(ViewModel);
-        //            var result = await _mediator.Send(createCommand);
-        //            if (result.Succeeded)
-        //                _notify.Success($"Case Proceeding with ID {result.Data} Created.");
-        //            else _notify.Error(result.Message);
-        //        }
-        //        else
-        //        {
-        //            var updateCommand = _mapper.Map<UpdateCaseProceedingCommand>(ViewModel);
-        //            var result = await _mediator.Send(updateCommand);
-        //            if (result.Succeeded)
-        //                _notify.Information($"Case Proceeding with ID {result.Data} Updated.");
-        //        }
-        //        return new JsonResult(new { isValid = false, html = "" });
-        //    }
-        //    else
-        //    {
-        //        var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
-        //        return new JsonResult(new { isValid = false, html = html });
-        //    }
-        //}
-
         #endregion
 
-        #region Case History Resion
+        #region Case History
         public async Task<JsonResult> OnGetCaseHistory(Guid CaseId)
         {
             var response = await _mediator.Send(new GetCaseHistoryQuery() { CaseId = CaseId });
@@ -418,8 +381,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
         #endregion
 
-        
-        public async Task<IActionResult>BindLawyerCaseDetail(Guid id)
+        #region Selected Lawyer case detail
+        public async Task<IActionResult> BindLawyerCaseDetail(Guid id)
         {
             bool showHighCourt = false;
             bool AgIsHighCourt = false;
@@ -452,7 +415,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     //Reset the main case variable.
                     CaseDetail.Id = Guid.Empty;
                     CaseDetail.LCaseId = id;
-                    CaseDetail.InstitutionDate= DateTime.Now;
+                    CaseDetail.InstitutionDate = DateTime.Now;
                     CaseDetail.StateId = 0;
                     CaseDetail.CourtTypeId = Guid.Empty;
                     CaseDetail.CourtDistrictId = Guid.Empty;
@@ -462,7 +425,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     CaseDetail.CaseTypeId = Guid.Empty;
                     CaseDetail.CaseStageId = Guid.Empty;
                     CaseDetail.CaseNo = string.Empty;
-                    CaseDetail.CaseYear =0;
+                    CaseDetail.CaseYear = 0;
                     CaseDetail.CisNumber = string.Empty;
                     CaseDetail.CisYear = 0;
                     CaseDetail.CnrNumber = string.Empty;
@@ -518,12 +481,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     CaseDetail.Cadres = DdlCadres();
                     CaseDetail.Strengths = DdlStrength();
                     ViewBag.ActionType = "Save";
-                    return View("_CreateOrEdit", CaseDetail);                   
+                    return View("_CreateOrEdit", CaseDetail);
                 }
 
             }
             return null;
         }
-
+        #endregion
     }
 }

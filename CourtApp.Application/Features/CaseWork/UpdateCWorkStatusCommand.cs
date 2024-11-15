@@ -41,9 +41,12 @@ namespace CourtApp.Application.Features.CaseWork
                     var pr = entity.ProcWork.Works
                         .Where(w => w.WorkId == item)
                         .FirstOrDefault();
-                    pr.AppliedOn = DateTime.Now;
-                    pr.Status = request.Status;
-                    w.Add(pr);
+                    if (pr != null)
+                    {
+                        pr.AppliedOn = DateTime.Now;
+                        pr.Status = request.Status;
+                        w.Add(pr);
+                    }
                 }
                 entity.ProcWork.Works = w;
                 await _ProcRepo.UpdateAsync(entity);
@@ -70,7 +73,7 @@ namespace CourtApp.Application.Features.CaseWork
             //    }
             //}
             //await _unitOfWork.Commit(cancellationToken);
-            return Result<Guid>.Success(entity.Id);
+            return Result<Guid>.Fail("There is no proceeding Id");
         }
     }
 }

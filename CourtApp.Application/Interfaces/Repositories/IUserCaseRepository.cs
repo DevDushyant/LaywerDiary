@@ -12,6 +12,7 @@ namespace CourtApp.Application.Interfaces.Repositories
         IQueryable<CaseDetailEntity> Entites { get; }
         Task<List<CaseDetailEntity>> GetListAsync();
         Task<CaseDetailEntity> GetByIdAsync(Guid Id);
+        Task<CaseDetailEntity> GetMostRecentCaseInfo(string UserId);
         Task<CaseDetailEntity> GetDetailAsync(Guid Id);
         Task<Guid> InsertAsync(CaseDetailEntity caseEntity);
         Task UpdateAsync(CaseDetailEntity caseEntity);

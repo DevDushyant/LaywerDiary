@@ -48,38 +48,36 @@ IWorkMasterRepository _WorkRepo)
                                  .ThenInclude(c => c.CaseType)
                              .Include(c => c.ProcWork)
                                  .ThenInclude(pw => pw.Works)
-                             .GroupBy(d => d.CaseId)
-                             .Select(g => g.FirstOrDefault()) // Select distinct cases by CaseId
                              .ToListAsync(); // Load into memory           
             if (distinctCases.Any())
             {
-                // Now you can safely flatten the Works collection in memory
-                var CaseWorkDetail = distinctCases
-                    .Where(c => c.ProcWork != null)
-                    .SelectMany(c => c.ProcWork.Works)
-                    .ToList();
-                var dt = from c in CaseWorkDetail
-                         join w in _WorkRepo.Entities.Where(w => w.Abbreviation.Equals("COPY")) on c.WorkTypeId equals w.Id
-                         select new
-                         {
-                             CaseWorkDetail = c,
-                             Work = w
-                         };
+
+                var CaseWorkDetailsWithWork = distinctCases
+                        .SelectMany(c => c.ProcWork.Works
+                        .Select(work => new // Flatten Works and retain Case reference
+                        {
+                            Case = c.Case,
+                            Work = work
+                        }))
+                        .Join(
+                            _WorkRepo.Entities
+                            .Where(w => w.Abbreviation.Equals("COPY")), // Filtered WorkRepo entries
+                            cw => cw.Work.WorkTypeId, // Key from CaseWorkDetail (WorkTypeId)
+                            w => w.Id,                // Key from _WorkRepo (Id)
+                            (cw, w) => new            // Project result with CaseWorkDetail and Work
+                            {
+                                Case = cw.Case,
+                                CaseWorkDetail = cw.Work,
+                                Work = w
+                            }
+                        )
+                        .ToList();
                 List<CopyDisposalResponse> awc = new List<CopyDisposalResponse>();
-                if (dt.Count() > 0)
+                if (CaseWorkDetailsWithWork.Count() > 0)
                 {
-                    foreach (var cd in distinctCases)
+                    foreach (var cd in CaseWorkDetailsWithWork)
                     {
                         CopyDisposalResponse a = new CopyDisposalResponse();
-                        var wr = cd.ProcWork.Works.Select(s => new
-                        {
-                            s.WorkId,
-                            s.WorkTypeId,
-                            s.ReceivedOn,
-                            s.Status,
-                            s.AppliedOn
-                        }).FirstOrDefault();
-                        var workd = await _WorkRepo.GetByIdAsync(wr.WorkId);
                         a.Id = cd.Case.Id;
                         a.CourtType = "";
                         a.CaseNo = cd.Case.CaseNo;
@@ -89,43 +87,16 @@ IWorkMasterRepository _WorkRepo)
                         a.SecondTitle = cd.Case.SecondTitle;
                         a.CaseType = "";
                         a.CaseAbbretion = "";
-                        if (workd != null)
-                            a.Reason = workd.Work_En;
-                        a.AppliedOn = wr.AppliedOn != default(DateTime) ? wr.AppliedOn.ToString("dd/MM/yyyy") : "";
-                        a.ReceivedOn = wr.ReceivedOn != default(DateTime) ? wr.ReceivedOn.ToString("dd/MM/yyyy") : "";
+                        a.AppliedOn = cd.CaseWorkDetail.AppliedOn != default(DateTime) ? cd.CaseWorkDetail.AppliedOn.ToString("dd/MM/yyyy") : "";
+                        a.ReceivedOn = cd.CaseWorkDetail.ReceivedOn != default(DateTime) ? cd.CaseWorkDetail.ReceivedOn.ToString("dd/MM/yyyy") : "";
+                        a.Reason = cd.Work.Work_En;
                         awc.Add(a);
                     }
-
                 }
+                if (request.SearchType == 3) awc = awc.Where(w => w.ReceivedOn != "").ToList();
+                if (request.SearchType == 2) awc = awc.Where(w => w.AppliedOn != "").ToList();
                 return Result<List<CopyDisposalResponse>>.Success(awc.ToList());
             }
-            //int[] status = new int[] { 1, 2 };
-            //IQueryable<CaseWorkEntity> cWdt = _wRepo.Entities.Where(w => w.WorkType.Abbreviation == "COPY"
-            //&& status.Contains(w.Status)).Distinct();
-            //if (request.SearchType == 2) cWdt = cWdt.Where(s => s.Status == 1);
-            //if (request.SearchType == 3) cWdt = cWdt.Where(s => s.Status == 2);            
-            //if (cWdt.Count() > 0)
-            //{
-            //    var fndt = from cd in _caseRepo.Entites
-            //               join w in cWdt on cd.Id equals w.CaseId
-            //               select new CopyDisposalResponse
-            //               {
-            //                   Id = cd.Id,
-            //                   CourtType = cd.CourtType.CourtType,
-            //                   CaseNo = cd.CaseNo,
-            //                   CaseYear = cd.CaseYear,
-            //                   CourtBench = cd.CourtBench.CourtBench_En,
-            //                   FirstTitle = cd.FirstTitle,
-            //                   SecondTitle = cd.SecondTitle,
-            //                   CaseType = cd.CaseType.Name_En,
-            //                   CaseAbbretion = cd.CaseType.Abbreviation,
-            //                   Reason = w.Work.Name_En,
-            //                   AppliedOn = w.AppliedOn != null ? w.AppliedOn.Value.ToString("dd/MM/yyyy") : "",
-            //                   ReceivedOn = w.ReceivedOn != null ? w.ReceivedOn.Value.ToString("dd/MM/yyyy") : "",
-            //               };
-            //    if (fndt != null)
-            //        return await fndt.ToPaginatedListAsync(request.PageNumber, request.PageSize);
-            //}
             return null;
         }
     }

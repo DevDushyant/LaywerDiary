@@ -57,7 +57,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 PageSize = 100,
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
-                SearchType = s
+                SearchType = s,
+                UserId=CurrentUser.Id
             });
             CopyingRegisterViewModel model = new CopyingRegisterViewModel();
             List<CopyingCaseDetailModel> rdd = new List<CopyingCaseDetailModel>();
@@ -124,6 +125,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     rd.CaseType = d.CaseType;
                     rd.CaseYear = d.CaseYear;
                     rd.CaseNo = d.CaseNo.ToString();
+                    rd.CourtType = d.CourtType;
+                    rd.CaseYear = d.CaseYear;
                     rd.FirstTitle = d.FirstTitle;
                     rd.SecondTitle = d.SecondTitle;
                     rd.InsititutionDate = d.InsititutionDate;
@@ -147,7 +150,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 PageNumber = 1,
                 PageSize = 100,
                 FromDt = Convert.ToDateTime("2024-05-01"),
-                ToDt = DateTime.Now
+                ToDt = DateTime.Now,
+                UserId=CurrentUser.Id
             });
             if (response.Succeeded)
             {

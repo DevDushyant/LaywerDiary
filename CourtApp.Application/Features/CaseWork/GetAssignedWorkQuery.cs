@@ -58,18 +58,18 @@ namespace CourtApp.Application.Features.CaseWork
                         aw.Id = c.Id;
                         aw.WorkId = w.WorkId;
                         var swork = await _SWRepo.GetByIdAsync(w.WorkId);
-                        aw.WorkDetail = swork!=null? swork.Work.Work_En + " - " + swork.Name_En:"";
+                        aw.WorkDetail = swork != null ? swork.Work.Work_En + " - " + swork.Name_En : "";
                         a.AWorks.Add(aw);
                     }
                     awc.Add(a);
                 }
-                var workc = awc.Select(s => s.AWorks.Count).FirstOrDefault();
-                if (workc != 0)
-                    return Result<List<AssignedWorkToCaseResponse>>.Success(awc);
+                var workc = awc.Where(w => w.AWorks.Count > 0).ToList();                    
+                if (workc.Count() > 0)
+                    return Result<List<AssignedWorkToCaseResponse>>.Success(workc);
                 else
                     return Result<List<AssignedWorkToCaseResponse>>.Success();
             }
-            return null;
+            return Result<List<AssignedWorkToCaseResponse>>.Fail("There is no record");
             //Expression<Func<CaseWorkEntity, CaseWorkDto>> expression = e => new CaseWorkDto
             //{
             //    Id = e.Id,

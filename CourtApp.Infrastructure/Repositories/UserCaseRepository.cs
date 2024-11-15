@@ -41,7 +41,7 @@ namespace CourtApp.Infrastructure.Repositories
                 .Include(d => d.CaseAgainstEntities)
                     .ThenInclude(c => c.CourtType)
                 .Include(d => d.CourtType)
-                .Include(c=>c.CourtBench)
+                .Include(c => c.CourtBench)
                 .Where(w => w.Id == Id).FirstAsync();
         }
 
@@ -58,7 +58,7 @@ namespace CourtApp.Infrastructure.Repositories
                 .Include(t => t.FTitle)
                 .Include(t => t.STitle)
                 .Include(t => t.CourtDistrict)
-                .Include(e=>e.Complex)
+                .Include(e => e.Complex)
                 .Include(d => d.CaseAgainstEntities).ThenInclude(c => c.CourtBench)
                 .Include(d => d.CaseAgainstEntities).ThenInclude(c => c.CourtType)
                 .Include(d => d.CaseAgainstEntities).ThenInclude(c => c.CaseCategory)
@@ -71,6 +71,24 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<List<CaseDetailEntity>> GetListAsync()
         {
             return await _repository.Entities.ToListAsync();
+        }
+
+        public async Task<CaseDetailEntity> GetMostRecentCaseInfo(string UserId)
+        {
+            var IsRecord = _repository.Entities.Where(w => w.CreatedBy.Equals(UserId));
+            if (IsRecord.Count() > 0)
+            {
+                return await _repository
+                   .Entities
+                    .Include(d => d.CaseAgainstEntities)
+                        .ThenInclude(c => c.CourtType)
+                    .Include(d => d.CourtType)
+                    .Include(c => c.CourtBench)
+                    .Where(u => u.CreatedBy.Equals(UserId))
+                    .OrderByDescending(u => u.CreatedOn)
+                    .FirstAsync();
+            }
+            return null;
         }
 
         public async Task<Guid> InsertAsync(CaseDetailEntity objEntity)

@@ -5,6 +5,8 @@ using CourtApp.Application.Features.Case;
 using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Web.Areas.Litigation.Models;
 using System;
+using CaseWork = CourtApp.Web.Areas.Litigation.Models.CaseWork;
+using CaseWorkDetail = CourtApp.Web.Areas.Litigation.Models.CaseWorkDetail;
 namespace CourtApp.Web.Areas.Litigation.Mappings
 {
     public class CaseMappingProfile : Profile
@@ -40,6 +42,10 @@ namespace CourtApp.Web.Areas.Litigation.Mappings
             CreateMap<AgainstCaseDetail, AgainstCaseDecisionViewModel>();
 
             CreateMap<CaseAgainstModel, UpseartAgainstCaseDto>();
+            CreateMap<Application.DTOs.CaseDetails.CaseWorkDetail, CaseWorkDetail>();
+            CreateMap<CaseHistoryData, HistoryDetail>();
+            CreateMap<Application.DTOs.CaseDetails.CaseWork, CaseWork>();
+            CreateMap<CaseHistoryData, HistoryDetail>();
 
 
             #region CaseUpseartViewModel Model Mapping With Create COmmand & Update COmmand

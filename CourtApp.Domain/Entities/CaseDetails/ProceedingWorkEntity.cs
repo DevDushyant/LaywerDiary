@@ -15,5 +15,7 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public int Status { get; set; }
         public DateTime AppliedOn { get; set; }
         public DateTime ReceivedOn { get; set; }
+        //public virtual WorkMasterEntity WorkType { get; set; }
+        //public virtual WorkMasterSubEntity Work { get; set; }
     }
 }

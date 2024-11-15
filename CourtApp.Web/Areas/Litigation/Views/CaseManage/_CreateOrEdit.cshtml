@@ -26,7 +26,7 @@
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
         <partial name="_StatusMessage" model="Model.StatusMessage" />
-        <input type="hidden" asp-for="@Model.LCaseId" />
+        <input type="hidden" asp-for="@Model.LCaseId" />        
         <form id="create-form" method="post" asp-controller="CaseManage" asp-action="OnPostCreateOrEdit" asp-route-Id="@Model.Id" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-12">
@@ -306,7 +306,7 @@
     <script>
         $(document).ready(function () {
             $("#hypButton").css("display", "block");
-            $("#hypRepeatButton").css("display", "block");
+            $("#hypRepeatButton").css("display", "block");            
             var showHighCourt = @((bool)ViewBag.ShowHighCourt ? "true" : "false");
             var AgIsHighCourt = @((bool)ViewBag.AgIsHighCourt ? "true" : "false");
             var CaseId = "@(ViewBag.Id)";

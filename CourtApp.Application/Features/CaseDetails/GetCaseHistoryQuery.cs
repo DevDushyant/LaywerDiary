@@ -5,6 +5,7 @@ using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading;
@@ -19,21 +20,24 @@ namespace CourtApp.Application.Features.CaseDetails
     public class GetCaseHistoryQueryHandler : IRequestHandler<GetCaseHistoryQuery, Result<CaseHistoryResposnse>>
     {
         private readonly IUserCaseRepository _CaseRepo;
-        private readonly ICaseWorkRepository _CaseWorkRepo;
+        private readonly IWorkMasterRepository _WorkRepo;
+        private readonly IWorkMasterSubRepository _WorkSRepo;
         private readonly ICaseProceedingRepository _ProceedingRepo;
         private readonly IMapper _mapper;
         private readonly ICaseDocsRepository _CaseDocRepo;
         public GetCaseHistoryQueryHandler(IUserCaseRepository _CaseRepo,
             IMapper _mapper,
-            ICaseWorkRepository _CaseWorkRepo,
+            IWorkMasterRepository _WorkRepo,
             ICaseProceedingRepository _ProceedingRepo,
-            ICaseDocsRepository caseDocRepo)
+            ICaseDocsRepository caseDocRepo,
+            IWorkMasterSubRepository _WorkSRepo)
         {
             this._CaseRepo = _CaseRepo;
             this._mapper = _mapper;
-            this._CaseWorkRepo = _CaseWorkRepo;
+            this._WorkRepo = _WorkRepo;
             this._ProceedingRepo = _ProceedingRepo;
             _CaseDocRepo = caseDocRepo;
+            this._WorkSRepo = _WorkSRepo;
 
         }
         public async Task<Result<CaseHistoryResposnse>> Handle(GetCaseHistoryQuery request, CancellationToken cancellationToken)
@@ -48,30 +52,81 @@ namespace CourtApp.Application.Features.CaseDetails
                 chr.Title = detail.FirstTitle + " Vs " + detail.SecondTitle;
                 chr.CourtType = detail.CourtType != null ? detail.CourtType.CourtType : "";
                 chr.Court = detail.CourtBench != null ? detail.CourtBench.CourtBench_En : "";
-                var caseWorks = await _CaseWorkRepo.GetWorkByCaseIdAsync(request.CaseId);
-                var cwdata = caseWorks
-                    .Select(s => new CaseHistoryData
-                    {
-                        Date = s.Status == 0 && s.WorkingDate != null ? s.WorkingDate.Value.ToString("dd/MM/yyyy")
-                        : s.Status == 1 && s.AppliedOn != null ? s.AppliedOn.Value.ToString("dd/MM/yyyy")
-                        : s.Status == 2 && s.ReceivedOn != null ? s.ReceivedOn.Value.ToString("dd/MM/yyyy") : "",
-                        Stage = "",
-                        Activity = s.Status == 0 ? s.Work.Name_En
-                        : s.Status == 1 ? "Copying Applied"
-                        : s.Status == 2 ? "Copying Recieved" : "",
-                        Type = "Work"
-                    });
+
 
                 var cprocs = await _ProceedingRepo.GetProceedingByCaseIdAsync(request.CaseId);
-                var cprocdt = cprocs.Where(w => w.CaseId == request.CaseId)
+
+                var ProcWorks = cprocs.GroupBy(pd => pd.ProceedingDate)
+                    .Select(g => new
+                    {
+                        ProceedingDate = g.Key,
+                        works = g.Select(s => s.ProcWork)
+                                .SelectMany(w => w.Works)
+                                .Select(w => w.WorkId)
+                                .ToList()
+                    });
+
+                var workDetails = ProcWorks
+                            .Select(pw => new
+                            {
+                                pw.ProceedingDate,
+                                WorkDetails = _WorkSRepo.Entities
+                                    .Where(w => pw.works.Contains(w.Id)) // Fetch only matching Work details
+                                    .ToList()
+                            })
+                            .ToList();
+                var cprocdt = cprocs
+                    .Where(w => w.CaseId == request.CaseId)
                     .Select(s => new CaseHistoryData
                     {
-                        NextDate = s.NextDate!=null? s.NextDate.Value.ToString("dd/MM/yyyy"):"",
-                        Stage = s.StageId!=null? s.Stage.CaseStage:"",
+                        NextDate = s.NextDate?.ToString("dd/MM/yyyy") ?? "",
+                        Stage = s.StageId != null ? s.Stage.CaseStage : "",
                         Activity = s.SubHead.Name_En,
                         Type = s.Head.Name_En,
-                        Date= (s.ProceedingDate!=null? s.ProceedingDate : s.CreatedOn).Value.ToString("dd/MM/yyyy")
-                    });
+                        Date = (s.ProceedingDate ?? s.CreatedOn).ToString("dd/MM/yyyy"),
+
+                        WorkDetail = s.ProcWork != null ? new List<CaseWorkDetail>
+                        {
+                            new CaseWorkDetail
+                            {
+                                WorkingDate = s.ProcWork.LastWorkingDate?.ToString("dd/MM/yyyy") ?? "",
+                                Works = workDetails
+                                    .Where(wd => wd.ProceedingDate == s.ProceedingDate) // Match by ProceedingDate
+                                    .SelectMany(wd => wd.WorkDetails)
+                                    .Select(w => new DTOs.CaseDetails.CaseWork
+                                    {
+                                        WorkType = w.Work.Work_En, // Assuming WorkType is a property of Work
+                                        Work = w.Name_En       // Assuming Name_En is a property of Work
+                                    })
+                                    .ToList()
+                            }
+                        }
+                        : new List<CaseWorkDetail>()
+                    })
+                    .ToList();
+                //var cprocdt = cprocs.Where(w => w.CaseId == request.CaseId)
+                //    .Select(s => new CaseHistoryData
+                //    {
+                //        NextDate = s.NextDate != null ? s.NextDate.Value.ToString("dd/MM/yyyy") : "",
+                //        Stage = s.StageId != null ? s.Stage.CaseStage : "",
+                //        Activity = s.SubHead.Name_En,
+                //        Type = s.Head.Name_En,
+                //        Date = (s.ProceedingDate != null ? s.ProceedingDate : s.CreatedOn).Value.ToString("dd/MM/yyyy"),
+                //        WorkDetail = s.ProcWork != null ? new List<CaseWorkDetail>
+                //                    {
+                //                        new CaseWorkDetail
+                //                        {
+                //                            WorkingDate = s.ProcWork.LastWorkingDate?.ToString("dd/MM/yyyy") ?? "",
+                //                            Works = workDetails?
+                //                                .Select(w => new DTOs.CaseDetails.CaseWork
+                //                                {
+                //                                    WorkType =w.,
+                //                                    Work =  w.Name_En
+                //                                }).ToList() ?? new List<DTOs.CaseDetails.CaseWork>()
+                //                        }
+                //                    }
+                //                    : new List<CaseWorkDetail>()
+                //    });
 
                 var Docs = _CaseDocRepo
                     .Entities
@@ -83,7 +138,7 @@ namespace CourtApp.Application.Features.CaseDetails
                         DocName = s.DO.Name_En
                     }).ToList();
 
-                var historydt = cwdata.Concat(cprocdt);
+                var historydt = cprocdt;
                 chr.History = historydt.ToList();
                 chr.Docs = Docs;
                 return Result<CaseHistoryResposnse>.Success(chr);

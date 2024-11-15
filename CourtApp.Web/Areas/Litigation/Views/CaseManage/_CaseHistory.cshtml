@@ -75,7 +75,7 @@
                                 <td>
                                     <p>
                                         <a href="~/@Model.Docs[i].DocFilePath" target="_blank">
-                                           <i class="fa fa-file-pdf" aria-hidden="true"></i>
+                                            <i class="fa fa-file-pdf" aria-hidden="true"></i>
                                         </a>
                                     </p>
 
@@ -93,10 +93,10 @@
                             <tr>
                                 <th>Sno.</th>
                                 <th>Type</th>
-                                <th>Proceeding/Working Date</th>
+                                <th>Proceeding</th>
                                 <th>Stage</th>
                                 <th>Next Date</th>
-                                <th>Proceeding/Work Done</th>
+                                <th>Proceeding</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -122,6 +122,21 @@
                                         @Model.History[i].Activity
                                     </td>
                                 </tr>
+
+                                @for (int j = 0; j < @Model.History[i].WorkDetail.Count; j++)
+                                {
+                                    <tr>
+                                        <td colspan="5">@Model.History[i].WorkDetail[j].WorkingDate</td>
+                                    </tr>
+                                    for (int k = 0; k < @Model.History[i].WorkDetail[j].Works.Count; k++)
+                                    {
+                                        <tr>
+                                            <td colspan="5">@Model.History[i].WorkDetail[j].Works[k].WorkType</td>
+                                            <td colspan="5">@Model.History[i].WorkDetail[j].Works[k].Work</td>
+                                        </tr>
+                                    }
+                                }
+
                             }
                         </tbody>
                     </table>

@@ -12,6 +12,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public SelectList Proceedings { get; set; }
         public SelectList Stages { get; set; }
         #endregion
+        public string ProceedingDate { get; set; }
         public bool IsUpdate { get; set; }
         public Guid CaseId { get; set; }
         public Guid HeadId { get; set; }

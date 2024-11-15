@@ -2,10 +2,8 @@
 using CourtApp.Application.Features.CaseProceeding;
 using CourtApp.Application.Features.CaseWork;
 using CourtApp.Application.Features.UserCase;
-using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Litigation.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,7 +14,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 {
     [Area("Litigation")]
     public class HearingController : BaseController<HearingController>
-    {       
+    {
 
         #region Case Hearing 
         public IActionResult Index()
@@ -25,14 +23,14 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
         public async Task<IActionResult> LoadAll(string seleDate)
         {
-           
+
             if (seleDate == null)
                 seleDate = DateTime.Now.Date.ToString();
             var response = await _mediator.Send(new GetCaseDetailsQuery()
             {
                 CallingFrm = "HTD",
                 HearingDate = Convert.ToDateTime(seleDate),
-                UserId= CurrentUser.Id
+                UserId = CurrentUser.Id
             });
             TempData["SelectedDate"] = seleDate;
             if (response.Succeeded)
@@ -141,6 +139,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var model = new CaseProceedingViewModel();
             model.CaseId = CaseId;
             model.IsUpdate = false;
+            
             if (ProcExDt.Succeeded && ProcExDt.Data != null)
             {
                 model = _mapper.Map<CaseProceedingViewModel>(ProcExDt.Data);
@@ -158,8 +157,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 wmodel.WorkTypes = await DdlWorks();
                 model.ProceedingTypes = await DdlProcHeads();
                 model.Stages = await DdlCaseStages();
-                model.ProcWork = wmodel;
+                model.ProcWork = wmodel;                
             }
+            model.ProceedingDate = Convert.ToDateTime(SelectedDate).ToString("dd/MM/yyyy");
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", model) });
         }
 
@@ -192,7 +192,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         _notify.Success($"Case proceeding with ID {result.Data} Created.");
                 }
             }
-            return RedirectToAction("Index");           
+            return RedirectToAction("Index");
         }
         #endregion
     }

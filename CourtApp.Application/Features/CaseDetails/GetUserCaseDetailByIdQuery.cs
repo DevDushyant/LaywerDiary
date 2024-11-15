@@ -4,6 +4,7 @@ using CourtApp.Application.DTOs.CaseDetails;
 using CourtApp.Application.Features.Case;
 using CourtApp.Application.Features.CaseKinds.Query;
 using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Domain.Entities.CaseDetails;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace CourtApp.Application.Features.UserCase
     public class GetUserCaseDetailByIdQuery : IRequest<Result<UserCaseDetailResponse>>
     {
         public Guid CaseId { get; set; }
+        public string UserId { get; set; }
     }
 
     public class GetUserCaseDetailByIdQueryHandler : IRequestHandler<GetUserCaseDetailByIdQuery, Result<UserCaseDetailResponse>>
@@ -28,7 +30,13 @@ namespace CourtApp.Application.Features.UserCase
         }
         public async Task<Result<UserCaseDetailResponse>> Handle(GetUserCaseDetailByIdQuery request, CancellationToken cancellationToken)
         {
-            var detail = await _CaseRepo.GetByIdAsync(request.CaseId);
+            CaseDetailEntity detail = new CaseDetailEntity();
+            //this condition is applicable for getting most
+            //recent case for repeat the case.
+            if (request.UserId != null && request.CaseId == Guid.Empty)
+                detail = await _CaseRepo.GetMostRecentCaseInfo(request.UserId);
+            else
+                detail = await _CaseRepo.GetByIdAsync(request.CaseId);
             if (detail != null)
             {
                 var mappeddata = _mapper.Map<UserCaseDetailResponse>(detail);
@@ -48,7 +56,7 @@ namespace CourtApp.Application.Features.UserCase
                         var agc = new UpseartAgainstCaseDto();
                         agc.ImpugedOrderDate = item.ImpugedOrderDate;
                         agc.StateId = item.StateId;
-                        agc.CourtTypeId = item.CourtTypeId;                        
+                        agc.CourtTypeId = item.CourtTypeId;
                         if (item.CourtType.Abbreviation == "HICT")
                         {
                             agc.IsAgHighCourt = true;
@@ -71,11 +79,10 @@ namespace CourtApp.Application.Features.UserCase
                         agl.Add(agc);
                     }
                     mappeddata.AgainstCaseDetails = agl;
-                }
-                //mappeddata.AgainstCaseDetails = _mapper.Map<List<CaseAgainstEntityModel>>(detail.CaseAgainstEntities);
+                }                
                 return Result<UserCaseDetailResponse>.Success(mappeddata);
             }
-            return null;
+            return Result<UserCaseDetailResponse>.Fail("Information is not exist!");
         }
     }
 }

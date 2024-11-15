@@ -6,6 +6,7 @@ using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -40,7 +41,7 @@ namespace CourtApp.Application.Features.Registers
                 CourtBench = e.CourtBench.CourtBench_En,
                 FirstTitle = e.FirstTitle,
                 SecondTitle = e.SecondTitle,
-                InsititutionDate = e.InstitutionDate != Convert.ToDateTime("0001-01-01") ? e.NextDate.Value.ToString("dd/MM/yyyy") : "-",
+                InsititutionDate = e.InstitutionDate != default(DateTime) ? e.InstitutionDate.ToString("dd/MM/yyyy") : "-",
             };
             var predicate = PredicateBuilder.True<CaseDetailEntity>();
             if (predicate != null)
@@ -51,6 +52,8 @@ namespace CourtApp.Application.Features.Registers
                 predicate = predicate.And(i => i.InstitutionDate >= request.FromDt && i.InstitutionDate <= request.ToDt);
             }
             var dt = await _caseRepo.Entites
+                .Include(c => c.CaseStage)
+                .Include(c => c.CourtType)
                     .Where(predicate)
                     .Select(expression)
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);

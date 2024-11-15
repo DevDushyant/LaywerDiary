@@ -86,6 +86,8 @@ namespace CourtApp.Infrastructure.Repositories
                 .Include(w => w.Head)
                 .Include(w => w.SubHead)
                 .Include(w => w.Stage)
+                .Include(p => p.ProcWork)
+                    .ThenInclude(w => w.Works)
                 .ToListAsync();
             return data;
         }

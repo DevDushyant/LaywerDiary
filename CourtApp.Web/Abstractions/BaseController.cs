@@ -92,7 +92,7 @@ namespace CourtApp.Web.Abstractions
         protected IViewRenderService _viewRenderer => _viewRenderInstance ??= HttpContext.RequestServices.GetService<IViewRenderService>();
         protected IMapper _mapper => _mapperInstance ??= HttpContext.RequestServices.GetService<IMapper>();
 
-       
+
 
         #region Dropdown Select List
         public async Task<SelectList> LoadStates()
@@ -166,7 +166,7 @@ namespace CourtApp.Web.Abstractions
 
         public async Task<SelectList> UserCaseTitle(Guid? CaseId)
         {
-            var response = await _mediator.Send(new GetCaseInfoQuery() { PageNumber = 1, PageSize = 5000,UserId=CurrentUser.Id });
+            var response = await _mediator.Send(new GetCaseInfoQuery() { PageNumber = 1, PageSize = 5000, UserId = CurrentUser.Id });
             var viewModel = _mapper.Map<List<GetCaseInfoViewModel>>(CaseId != null && CaseId != Guid.Empty ? response.Data.Where(w => w.Id != CaseId.Value) : response.Data);
             return new SelectList(viewModel, nameof(GetCaseInfoViewModel.Id), nameof(GetCaseInfoViewModel.CaseDetail), null, null);
         }
@@ -526,13 +526,14 @@ namespace CourtApp.Web.Abstractions
             {
                 var dtl = response.Data.FirstOrDefault();
                 var titles = new List<DropDownSViewModel>();
-                foreach (var item in dtl.CaseApplicantDetails)
-                {
-                    DropDownSViewModel d = new DropDownSViewModel();
-                    d.Id = item.ApplicantNo.ToString();
-                    d.Name = item.ApplicantDetail;
-                    titles.Add(d);
-                };
+                if (dtl != null)
+                    foreach (var item in dtl.CaseApplicantDetails)
+                    {
+                        DropDownSViewModel d = new DropDownSViewModel();
+                        d.Id = item.ApplicantNo.ToString();
+                        d.Name = item.ApplicantDetail;
+                        titles.Add(d);
+                    };
                 var fn = titles.Distinct().OrderBy(o => o.Name).ToList();
                 return Json(fn);
             }

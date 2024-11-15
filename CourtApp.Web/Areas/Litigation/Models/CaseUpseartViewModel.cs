@@ -9,6 +9,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string StatusMessage { get; set; }
         public bool IsHighCourt { get; set; }
         public Guid Id { get; set; }
+        public string from { get; set; }
         #region Common Properties Among all Court Type
         public DateTime InstitutionDate { get; set; }
         public int StateId { get; set; }
