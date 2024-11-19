@@ -22,6 +22,7 @@ namespace CourtApp.Application.Features.CaseDetails
         public int TypeId { get; set; }
         public Guid DocId { get; set; }
         public string DocPath { get; set; }
+        public DateTime DocDate { get; set; }
     }
 
     public class CaseDocsCreateCommandHandler : IRequestHandler<CaseDocsCreateCommand, Result<Guid>>
@@ -47,6 +48,7 @@ namespace CourtApp.Application.Features.CaseDetails
                     ce.DOTypeId = item.TypeId;
                     ce.DOId = item.DocId;
                     ce.Path = item.DocPath;
+                    ce.DocDate = item.DocDate;
                     await _repository.SaveCaseDocAsync(ce);
                 }
             }            

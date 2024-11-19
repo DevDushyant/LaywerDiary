@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using CourtApp.Application.DTOs.CaseDetails;
+using KT3Core.Areas.Global.Classes;
 
 namespace CourtApp.Application.Features.Case
 {
@@ -117,7 +118,20 @@ namespace CourtApp.Application.Features.Case
         }
         public async Task<Result<Guid>> Handle(CreateCaseCommand request, CancellationToken cancellationToken)
         {
-            var isCaseExist = await _Repository.GetByCaseNoYearAsync(request.CaseNo == null ? "" : request.CaseNo, request.CaseYear.Value);
+            var predicate = PredicateBuilder.True<CaseDetailEntity>();
+            if (predicate != null)
+            {
+                if (request.CourtTypeId != Guid.Empty)
+                    predicate = predicate.And(y => y.CourtTypeId == request.CourtTypeId);
+                if (request.CaseTypeId != Guid.Empty)
+                    predicate = predicate.And(y => request.CaseTypeId == request.CaseTypeId);
+                if (request.CaseNo != null && request.CaseYear != 0)
+                    predicate = predicate.And(y => y.CaseNo.Equals(request.CaseNo) && y.CaseYear == request.CaseYear);
+                if (request.CaseNo == null && request.FirstTitle != "" && request.SecondTitle != "")
+                    predicate = predicate.And(y => y.FirstTitle.Equals(request.FirstTitle) && y.SecondTitle.Equals(request.SecondTitle));
+
+            }
+            var isCaseExist = _Repository.Entites.Where(predicate).FirstOrDefault();
             if (isCaseExist == null)
             {
                 var entity = _mapper.Map<CaseDetailEntity>(request);
@@ -133,10 +147,10 @@ namespace CourtApp.Application.Features.Case
                     var agcs = new List<CaseDetailAgainstEntity>();
                     foreach (var item in request.AgainstCaseDetails)
                     {
-                        var ac = new CaseDetailAgainstEntity();                       
+                        var ac = new CaseDetailAgainstEntity();
                         ac.ImpugedOrderDate = item.ImpugedOrderDate.Value;
                         ac.CourtTypeId = item.CourtTypeId.Value;
-                        ac.CourtBenchId = item.CourtId!=null? item.CourtId.Value:item.BenchId.Value;
+                        ac.CourtBenchId = item.CourtId != null ? item.CourtId.Value : item.BenchId.Value;
                         ac.StateId = item.StateId.Value;
                         ac.CaseYear = item.CaseYear.Value;
                         ac.CaseNo = item.CaseNo;
@@ -145,9 +159,9 @@ namespace CourtApp.Application.Features.Case
                         ac.StrengthId = item.StrengthId != null ? item.StrengthId.Value : 0;
                         ac.OfficerName = item.OfficerName;
                         ac.CisYear = item.CisYear.Value;
-                        ac.CisNo = item.CisNo;                        
-                        ac.Cadre=item.Cadre;
-                        ac.CnrNo=item.CnrNo;                        
+                        ac.CisNo = item.CisNo;
+                        ac.Cadre = item.Cadre;
+                        ac.CnrNo = item.CnrNo;
                         ac.CourtDistrictId = item.CourtDistrictId != Guid.Empty ? item.CourtDistrictId : null;
                         ac.ComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null;
                         agcs.Add(ac);

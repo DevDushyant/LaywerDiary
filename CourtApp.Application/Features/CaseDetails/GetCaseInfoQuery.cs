@@ -77,6 +77,7 @@ namespace CourtApp.Application.Features.CaseDetails
                                 CaseType = e.CaseType.Name_En,
                                 Court = e.CourtBench.CourtBench_En,
                                 CaseStage = e.CaseStage.CaseStage,
+                                DisposalDate=e.DisposalDate,
                                 CaseDetail = e.FirstTitle + " V/S " + e.SecondTitle + "(" + e.CaseNo + "/" + e.CaseYear + ")",
                                 NextDate = (e.NextDate.HasValue && md.MaxNextDate.HasValue)
                                             ? (e.NextDate.Value > md.MaxNextDate.Value ? e.NextDate.Value

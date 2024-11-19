@@ -38,5 +38,26 @@ namespace CourtApp.Web.Areas.Litigation.Models
         #endregion
         public bool IsAgHighCourt { get; set; }
 
+        #region Select List Region
+        public SelectList ACaseNatures { get; set; }
+        public SelectList ATypeOfCases { get; set; }
+        public SelectList ACourtTypes { get; set; }
+        public SelectList ACourts { get; set; }
+        public SelectList ACaseKinds { get; set; }
+        public SelectList AYears { get; set; }
+        public SelectList ACaseStages { get; set; }
+        public SelectList AClientList { get; set; }
+        public SelectList ACaseStatusList { get; set; }
+        public SelectList AFirstTitleList { get; set; }
+        public SelectList ASecondTitleList { get; set; }
+        public SelectList ALinkedBy { get; set; }
+        public SelectList ACadres { get; set; }
+        public SelectList ACourtDistricts { get; set; }
+        public SelectList AComplexBenchs { get; set; }
+        public SelectList AStates { get; set; }
+        public SelectList AStrengths { get; set; }
+
+        #endregion
+
     }
 }

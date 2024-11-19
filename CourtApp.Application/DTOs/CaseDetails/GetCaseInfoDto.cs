@@ -15,5 +15,6 @@ namespace CourtApp.Application.DTOs.CaseDetails
         public string CaseStage { get; set; }
         public string NextDate { get; set; }
         public string CaseDetail { get; set; }
+        public DateTime? DisposalDate { get; set; }
     }
 }

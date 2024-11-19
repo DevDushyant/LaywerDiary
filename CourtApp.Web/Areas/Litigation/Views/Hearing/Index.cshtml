@@ -2,6 +2,7 @@
     ViewData["Title"] = localizer["Today's Hearing Case Register"];
     ViewData["Caption"] = localizer["Your Case List"];
 }
+@model BringTodayCaseViewModel
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
         <div class="form-group row">
@@ -11,7 +12,7 @@
                 </a>
             </div>
             <div class="col-sm-3">
-                <input type="date" id="SelData" class="form-control">
+                <input type="date" id="SelData" asp-for="@Model.HearingDate" class="form-control" />
             </div>
         </div>
     </div>
@@ -29,7 +30,7 @@
             });
         });
         function loadData() {
-            $('#viewAll').load('/Litigation/Hearing/LoadAll');
+            $('#viewAll').load('/Litigation/Hearing/LoadAll?seleDate=' + $("#SelData").val());
         }
         $("#SelData").on("change", function () {
             $('#viewAll').load('/Litigation/Hearing/LoadAll?seleDate=' + $("#SelData").val());

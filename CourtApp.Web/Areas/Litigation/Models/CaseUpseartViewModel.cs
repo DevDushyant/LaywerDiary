@@ -65,5 +65,9 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public SelectList Strengths { get; set; }
 
         #endregion
+
+        #region Case Disposal 
+        public DateTime? DisposalDate { get; set; }
+        #endregion
     }
 }

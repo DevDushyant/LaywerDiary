@@ -25,9 +25,9 @@
 @model CaseUpseartViewModel
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
-        <partial name="_StatusMessage" model="Model.StatusMessage" />
-        <input type="hidden" asp-for="@Model.LCaseId" />        
+        <partial name="_StatusMessage" model="Model.StatusMessage" />                
         <form id="create-form" method="post" asp-controller="CaseManage" asp-action="OnPostCreateOrEdit" asp-route-Id="@Model.Id" enctype="multipart/form-data">
+            <input type="hidden" asp-for="@Model.LCaseId" />
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group row">
@@ -305,6 +305,7 @@
     <script src="~/js/litigation/managecase.js"></script>
     <script>
         $(document).ready(function () {
+            debugger;
             $("#hypButton").css("display", "block");
             $("#hypRepeatButton").css("display", "block");            
             var showHighCourt = @((bool)ViewBag.ShowHighCourt ? "true" : "false");
@@ -330,7 +331,26 @@
                     $('.ACourt').css('display', 'block');
                 }
             }
-
+            debugger;
+            var frm = '@ViewBag.from';
+            if (frm == "repeat") { 
+                if (showHighCourt == true) {
+                    $('.highCourt').css('display', 'block');
+                    $('.Court').css('display', 'none');
+                }
+                else {
+                    $('.highCourt').css('display', 'none');
+                    $('.Court').css('display', 'block');
+                }
+                if (AgIsHighCourt == true) {
+                    $('.AhighCourt').css('display', 'block');
+                    $('.ACourt').css('display', 'none');
+                }
+                else {
+                    $('.AhighCourt').css('display', 'none');
+                    $('.ACourt').css('display', 'block');
+                }
+            }
         });
     </script>
 

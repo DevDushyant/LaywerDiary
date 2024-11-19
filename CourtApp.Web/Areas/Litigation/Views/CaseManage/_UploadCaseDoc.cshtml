@@ -36,9 +36,10 @@
                 <table id="tblDocs" border="1" style="width:100%!important">
                     <thead>
                         <tr>
-                            <th width="30%"><label class="col-md-3 col-form-label">Document Type</label></th>
-                            <th width="30%"><label class="col-md-3 col-form-label">Document Name</label></th>
-                            <th width="30%"><label class="col-md-3 col-form-label">Document Upload</label></th>
+                            <th width="20%"><label class="col-md-3 col-form-label">Type</label></th>
+                            <th width="30%"><label class="col-md-3 col-form-label">Name</label></th>
+                            <th width="20%"><label class="col-md-3 col-form-label">Date</label></th>
+                            <th width="20%"><label class="col-md-3 col-form-label">Upload</label></th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -56,16 +57,8 @@
 </form>
 <script type="text/javascript" language=javascript>
     $.validator.unobtrusive.parse(document);
-    $(document).ready(function () {
-        
-        BindType('dynamicdata');
-        // $("#Documents_0__DocId").select2({
-        //     placeholder: "Select a document",
-        //     theme: "bootstrap4",
-        //     escapeMarkup: function (m) {
-        //         return m;
-        //     }
-        // });
+    $(document).ready(function () {        
+        BindType('dynamicdata');        
         $(document).on("change", ".doctypechange", function () {       
             var id = $(this).attr('id').split("_")[1];
             BindDocument('Documents_' + id + '__DocId', $("#Documents_" + id + "__TypeId").val());
@@ -83,7 +76,7 @@
     function defaultload(){
         var content = '<tr class="removedoc_' + incval + '"><td><select class="form-control select2bs4 doctypechange" id="Documents_' + incval + '__TypeId" name="Documents[' + incval + '].TypeId">' +
             '</select></td><td><select class="form-control select2bs4" id="Documents_' + incval + '__DocId" name="Documents[' + incval + '].DocId">' +
-            '</select></td><td><input type="file" name="Documents[' + incval + '].Document" id="Documents_' + incval + '__Document" width="300px" placeholder="Enter court/Bench adress" class="form-control" /></td><td><button class="add-btn-repeat btn btn-success" id="btnDraft" onclick="addElement()" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button> </td></tr>';
+            '</select></td><td><input type="date" id="OrderDate_' + incval + '__DocDate" name="Documents[' + incval + '].DocDate" class="form-control" /></td><td><input type="file" name="Documents[' + incval + '].Document" id="Documents_' + incval + '__Document" width="300px" placeholder="Enter court/Bench adress" class="form-control" /></td><td><button class="add-btn-repeat btn btn-success" id="btnDraft" onclick="addElement()" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button> </td></tr>';
         $('#tblDocs tbody').append(content);
         var data = $("#dynamicdata").html();
         $("#Documents_" + incval + "__TypeId").html(data)
@@ -111,7 +104,7 @@
         if (vald==true) {
             var content = '<tr class="removedoc_' + incval + '"><td><select class="form-control select2bs4 doctypechange" id="Documents_' + incval + '__TypeId" name="Documents[' + incval + '].TypeId">' +
                 '</select></td><td><select class="form-control select2bs4" id="Documents_' + incval + '__DocId" name="Documents[' + incval + '].DocId">' +
-                '</select></td><td><input type="file" name="Documents[' + incval + '].Document" id="Documents_' + incval + '__Document" width="300px" placeholder="Enter court/Bench adress" class="form-control" /></td><td> <button type="button" onclick="removeKolom(' + incval + ')" class="btn btn-warning"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>';
+                '</select></td><td><input type="date" id="OrderDate_' + incval + '__DocDate" name="Documents[' + incval + '].DocDate" class="form-control" /></td><td><input type="file" name="Documents[' + incval + '].Document" id="Documents_' + incval + '__Document" width="300px" placeholder="Enter court/Bench adress" class="form-control" /></td><td> <button type="button" onclick="removeKolom(' + incval + ')" class="btn btn-warning"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>';
             $('#tblDocs tbody').append(content);
             var data = $("#dynamicdata").html();
             $("#Documents_" + incval + "__TypeId").html(data)

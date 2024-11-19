@@ -125,6 +125,13 @@ namespace CourtApp.Web.Abstractions
             var CaseNatures = _mapper.Map<List<CaseNatureViewModel>>(response.Data);
             return new SelectList(CaseNatures, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.Name_En), null, null);
         }
+        public async Task<SelectList> LoadCaseNatureByCourtType(Guid CourtTypeId)
+        {
+            var response = await _mediator.Send(new GetQueryCaseCategory { CourtTypeId = CourtTypeId });
+            var CaseNatures = _mapper.Map<List<CaseNatureViewModel>>(response.Data);
+            return new SelectList(CaseNatures, nameof(CaseNatureViewModel.Id), nameof(CaseNatureViewModel.Name_En), null, null);
+        }
+
         public async Task<SelectList> ddlCaseCategory(Guid CourtTypeId)
         {
             var response = await _mediator.Send(new GetQueryCaseCategory());
@@ -245,7 +252,7 @@ namespace CourtApp.Web.Abstractions
             if (response.Succeeded)
             {
                 var fields = _mapper.Map<List<TypeOfCasesViewModel>>(response.Data);
-                return new SelectList(fields, nameof(TypeOfCasesViewModel.Id), nameof(TypeOfCasesViewModel.CaseNature), null, null); ;
+                return new SelectList(fields, nameof(TypeOfCasesViewModel.Id), nameof(TypeOfCasesViewModel.Name_En), null, null); ;
             }
             return null;
         }
@@ -614,7 +621,9 @@ namespace CourtApp.Web.Abstractions
             });
             if (response.Succeeded)
             {
-                var ViewModel = _mapper.Map<List<DropDownGViewModel>>(response.Data);
+                var dt = response.Data;
+                var result = dt.Where(d => d.DisposalDate != null).ToList();
+                var ViewModel = _mapper.Map<List<DropDownGViewModel>>(result);
                 return Json(ViewModel);
             }
             return null;

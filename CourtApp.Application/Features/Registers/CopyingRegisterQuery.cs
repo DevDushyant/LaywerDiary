@@ -94,7 +94,7 @@ IWorkMasterRepository _WorkRepo)
                     }
                 }
                 if (request.SearchType == 3) awc = awc.Where(w => w.ReceivedOn != "").ToList();
-                if (request.SearchType == 2) awc = awc.Where(w => w.AppliedOn != "").ToList();
+                if (request.SearchType == 2 || request.SearchType==1) awc = awc.Where(w => w.ReceivedOn == "").ToList();
                 return Result<List<CopyDisposalResponse>>.Success(awc.ToList());
             }
             return null;

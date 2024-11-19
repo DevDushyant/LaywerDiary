@@ -368,17 +368,16 @@ BindBench = function () {
     
     $("#BenchId").empty();
     $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val() + "&ComplexId=00000000-0000-0000-0000-000000000000", function (data) {
-        $.each(data.Data, function (i, item) {
-            debugger;
+        $.each(data.Data, function (i, item) {            
             $("#BenchId").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
         });
     });
 }
 BindAgainstBench = function () {
-    $("#AgainstCaseDetails_0__AgainstBenchId").empty();
-    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#AgainstCourtTypeId_0").val() + "&StateId=" + $("#AgainstStateId_0").val() + "&ComplexId=00000000-0000-0000-0000-000000000000", function (data) {
+    $("#AgBenchId").empty();
+    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#AgCourtTypeId").val() + "&StateId=" + $("#AgStateId").val() + "&ComplexId=00000000-0000-0000-0000-000000000000", function (data) {
         $.each(data.Data, function (i, item) {
-            $("#AgainstCaseDetails_0__AgainstBenchId").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
+            $("#AgBenchId").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
         });
     });
 }

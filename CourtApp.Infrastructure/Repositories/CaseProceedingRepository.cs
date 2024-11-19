@@ -52,7 +52,7 @@ namespace CourtApp.Infrastructure.Repositories
                         .Entities
                         .Include(t => t.ProcWork)
                         .ThenInclude(s => s.Works)
-                        .Where(w => w.CaseId == CaseId && w.NextDate != null)
+                        .Where(w => w.CaseId == CaseId)
                         .OrderByDescending(w => w.NextDate)
                         .FirstOrDefaultAsync();
                 return data;

@@ -11,6 +11,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public int DOTypeId { get; set; }
         public Guid DOId { get; set; }
         public string Path { get; set; }
+        public DateTime DocDate { get; set; }
         public virtual DOTypeEntity DO { get; set; }
     }
 }

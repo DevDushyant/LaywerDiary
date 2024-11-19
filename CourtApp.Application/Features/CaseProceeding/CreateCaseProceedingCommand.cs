@@ -28,29 +28,32 @@ namespace CourtApp.Application.Features.CaseProceeding
     public class CreateCaseProceedingCommandHandler : IRequestHandler<CreateCaseProceedingCommand, Result<Guid>>
     {
         private readonly ICaseProceedingRepository _Repository;
+        private readonly IUserCaseRepository _CaseRepo;
+        private readonly IProceedingHeadRepository _ProcRepo;
         private readonly IMapper _mapper;
         private IUnitOfWork _unitOfWork { get; set; }
-        public CreateCaseProceedingCommandHandler(ICaseProceedingRepository _Repository, IMapper _mapper, IUnitOfWork _unitOfWork)
+        public CreateCaseProceedingCommandHandler(ICaseProceedingRepository _Repository,
+            IMapper _mapper,
+            IUnitOfWork _unitOfWork,
+            IUserCaseRepository caseRepo,
+            IProceedingHeadRepository procRepo)
         {
             this._Repository = _Repository;
             this._mapper = _mapper;
             this._unitOfWork = _unitOfWork;
+            _CaseRepo = caseRepo;
+            _ProcRepo = procRepo;
         }
         public async Task<Result<Guid>> Handle(CreateCaseProceedingCommand request, CancellationToken cancellationToken)
         {
-            //List<CaseProcedingEntity> mappingEntity = new List<CaseProcedingEntity>();
-            //foreach (var subHeadId in request.ProceedingsIds)
-            //{
-            //    var mpDt = new CaseProcedingEntity() { CreatedBy = "" };
-            //    mpDt.Id = Guid.NewGuid();
-            //    mpDt.CaseId = request.CaseId;
-            //    mpDt.SubHeadId = subHeadId;
-            //    mpDt.HeadId = request.ProceedingTypeId;
-            //    mpDt.StageId = request.StageId!=null? request.StageId:null;
-            //    mpDt.NextDate = request.NextDate!=null? request.NextDate:null;
-            //    mpDt.Remark = request.Remark;
-            //    await _Repository.AddAsync(mpDt);
-            //}
+
+            var ProcDetail = await _ProcRepo.GetByIdAsync(request.HeadId);
+            if (ProcDetail != null && ProcDetail.Abbreviation == "DISP")
+            {
+                var CaseDetail = await _CaseRepo.GetByIdAsync(request.CaseId);
+                CaseDetail.DisposalDate = DateTime.Now;
+                await _CaseRepo.UpdateAsync(CaseDetail);
+            }
             var entity = _mapper.Map<CaseProcedingEntity>(request);
             entity.ProceedingDate = request.ProceedingDate;
             await _Repository.AddAsync(entity);

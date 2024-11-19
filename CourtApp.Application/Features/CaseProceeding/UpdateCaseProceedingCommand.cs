@@ -23,18 +23,35 @@ namespace CourtApp.Application.Features.CaseProceeding
     public class UpdateCaseProceedingCommandHandler : IRequestHandler<UpdateCaseProceedingCommand, Result<Guid>>
     {
         private readonly ICaseProceedingRepository _Repository;
+        private readonly IUserCaseRepository _CaseRepo;
+        private readonly IProceedingHeadRepository _ProcRepo;
         private readonly IMapper _mapper;
         private IUnitOfWork _unitOfWork { get; set; }
-        public UpdateCaseProceedingCommandHandler(ICaseProceedingRepository _Repository, IMapper _mapper, IUnitOfWork _unitOfWork)
+        public UpdateCaseProceedingCommandHandler(ICaseProceedingRepository _Repository,
+            IMapper _mapper,
+            IUnitOfWork _unitOfWork,
+            IUserCaseRepository _CaseRepo,
+            IProceedingHeadRepository _ProcRepo
+            )
         {
             this._Repository = _Repository;
             this._mapper = _mapper;
             this._unitOfWork = _unitOfWork;
+            this._ProcRepo = _ProcRepo;
+            this._CaseRepo = _CaseRepo;
         }
         public async Task<Result<Guid>> Handle(UpdateCaseProceedingCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _Repository.GetByIdAsync(request.CaseId,null);
-            if (entity != null && entity.NextDate==request.NextDate)
+
+            var ProcDetail = await _ProcRepo.GetByIdAsync(request.HeadId);
+            if (ProcDetail != null && ProcDetail.Abbreviation == "DISP")
+            {
+                var CaseDetail = await _CaseRepo.GetByIdAsync(request.CaseId);
+                CaseDetail.DisposalDate = DateTime.Now;
+                await _CaseRepo.UpdateAsync(CaseDetail);
+            }
+            var entity = await _Repository.GetByIdAsync(request.CaseId, null);
+            if (entity != null && entity.NextDate == request.NextDate)
             {
                 entity.NextDate = request.NextDate;
                 entity.HeadId = request.HeadId;
@@ -49,7 +66,7 @@ namespace CourtApp.Application.Features.CaseProceeding
             else
             {
                 var obj = _mapper.Map<CaseProcedingEntity>(request);
-                obj.ProceedingDate = entity.NextDate;
+                obj.ProceedingDate = entity.NextDate != null ? entity.NextDate.Value : null;
                 await _Repository.AddAsync(obj);
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(obj.Id); ;

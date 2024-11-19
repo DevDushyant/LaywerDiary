@@ -57,6 +57,10 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public int StrengthId { get; set; }
         #endregion
 
+        #region Case Disposal 
+        public DateTime? DisposalDate { get; set; }
+        #endregion
+
         #region Navigational Properies which shows the relationship
         public virtual StateEntity State { get; set; }
         public virtual CourtTypeEntity CourtType { get; set; }

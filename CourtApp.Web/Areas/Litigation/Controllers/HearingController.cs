@@ -17,13 +17,15 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     {
 
         #region Case Hearing 
-        public IActionResult Index()
+        public IActionResult Index(string SelectedDate)
         {
-            return View();
+            var model = new BringTodayCaseViewModel();
+            //var SelectedDate = TempData["SelectedDate"] != null ? TempData["SelectedDate"].ToString() : "";
+            model.HearingDate = SelectedDate!=null ? Convert.ToDateTime(SelectedDate) : DateTime.Now;
+            return View(model);
         }
         public async Task<IActionResult> LoadAll(string seleDate)
         {
-
             if (seleDate == null)
                 seleDate = DateTime.Now.Date.ToString();
             var response = await _mediator.Send(new GetCaseDetailsQuery()
@@ -36,7 +38,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<HearingViewModel>>(response.Data);
-                return PartialView("_ViewAll", TodayCaseList(viewModel));
+                return PartialView("_ViewAll", TodayCaseList(viewModel, seleDate));
             }
             return null;
         }
@@ -51,7 +53,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<HearingViewModel>>(response.Data);
-                return Json(TodayCaseList(viewModel));
+                return Json(TodayCaseList(viewModel, SDate));
             }
             return null;
         }
@@ -65,11 +67,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_BringToday", TodayCaseList(viewModel)) });
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_BringToday", TodayCaseList(viewModel, DateTime.Now.ToString())) });
             }
             return null;
         }
-        private BringTodayCaseViewModel TodayCaseList(dynamic viewModel)
+        private BringTodayCaseViewModel TodayCaseList(dynamic viewModel, string selectedDate)
         {
             var model = new BringTodayCaseViewModel();
             List<HearingViewModel> cdt = new List<HearingViewModel>();
@@ -81,6 +83,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 cdt.Add(hearing);
             }
             model.CaseList = cdt;
+            model.HearingDate = selectedDate != null ? Convert.ToDateTime(selectedDate) : DateTime.Now;
             return model;
         }
 
@@ -139,7 +142,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var model = new CaseProceedingViewModel();
             model.CaseId = CaseId;
             model.IsUpdate = false;
-            
+
             if (ProcExDt.Succeeded && ProcExDt.Data != null)
             {
                 model = _mapper.Map<CaseProceedingViewModel>(ProcExDt.Data);
@@ -157,7 +160,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 wmodel.WorkTypes = await DdlWorks();
                 model.ProceedingTypes = await DdlProcHeads();
                 model.Stages = await DdlCaseStages();
-                model.ProcWork = wmodel;                
+                model.ProcWork = wmodel;
             }
             model.ProceedingDate = Convert.ToDateTime(SelectedDate).ToString("dd/MM/yyyy");
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", model) });
@@ -192,7 +195,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         _notify.Success($"Case proceeding with ID {result.Data} Created.");
                 }
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { SelectedDate= TempData["SelectedDate"].ToString() });
         }
         #endregion
     }

@@ -18,6 +18,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
     {
         public int TypeId { get; set; }
         public Guid DocId { get; set; }
+        public DateTime DocDate { get; set; }
         public IFormFile Document { get; set; }
     }
 }

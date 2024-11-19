@@ -54,8 +54,9 @@
                     <thead>
                         <tr>
                             <th>Sno.</th>
-                            <th>Document Type</th>
-                            <th>Document Name</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Name</th>                            
                             <th></th>
                         </tr>
                     </thead>
@@ -70,8 +71,12 @@
                                     @Model.Docs[i].DocType
                                 </td>
                                 <td>
+                                    @Model.Docs[i].DocDate
+                                </td>
+                                <td>
                                     @Model.Docs[i].DocName
                                 </td>
+                                
                                 <td>
                                     <p>
                                         <a href="~/@Model.Docs[i].DocFilePath" target="_blank">
@@ -131,8 +136,10 @@
                                     for (int k = 0; k < @Model.History[i].WorkDetail[j].Works.Count; k++)
                                     {
                                         <tr>
-                                            <td colspan="5">@Model.History[i].WorkDetail[j].Works[k].WorkType</td>
-                                            <td colspan="5">@Model.History[i].WorkDetail[j].Works[k].Work</td>
+                                            <td>@Model.History[i].WorkDetail[j].Works[k].WorkType</td>
+                                            <td>@Model.History[i].WorkDetail[j].Works[k].Work</td>
+                                            <td>@Model.History[i].WorkDetail[j].Works[k].Status</td>
+                                            <td>@Model.History[i].WorkDetail[j].Works[k].Date</td>
                                         </tr>
                                     }
                                 }

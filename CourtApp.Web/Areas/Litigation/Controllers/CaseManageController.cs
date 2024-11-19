@@ -48,9 +48,19 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var caseViewModel = new CaseUpseartViewModel();
             caseViewModel.from = from;
             caseViewModel.ClientId = TempData["ClientId"] != null ? (Guid)TempData["ClientId"] : Guid.Empty;
+            CaseAgainstModel cam = new CaseAgainstModel();
+            cam.AStates = await LoadStates();
+            cam.ACourtTypes = await LoadCourtTypes();
+            cam.AYears = DdlYears();
+            cam.ACaseStatusList = await DdlCaseStages();
+            cam.ALinkedBy = await UserCaseTitle(Guid.Empty);
+            cam.ACadres = DdlCadres();
+            cam.AStrengths = DdlStrength();
+            cam.ACaseNatures = await LoadCaseNature();
             if (id == Guid.Empty && (from == null || from == ""))
             {
                 caseViewModel.InstitutionDate = DateTime.Now;
+                caseViewModel.States = await LoadStates();
                 caseViewModel.CourtTypes = await LoadCourtTypes();
                 caseViewModel.CaseNatures = await LoadCaseNature();
                 caseViewModel.FirstTitleList = await DdlFSTypes(1);
@@ -60,11 +70,13 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 caseViewModel.LinkedBy = await UserCaseTitle(Guid.Empty);
                 caseViewModel.Cadres = DdlCadres();
                 caseViewModel.Strengths = DdlStrength();
-                caseViewModel.States = await LoadStates();
-                ViewBag.ActionType = "Create";
+                ViewBag.ActionType = "Save";
                 ViewBag.ShowHighCourt = showHighCourt;
                 ViewBag.AgIsHighCourt = AgIsHighCourt;
                 caseViewModel.ClientList = await DdlClient();
+                var agcl = new List<CaseAgainstModel>();
+                agcl.Add(cam);
+                caseViewModel.AgainstCaseDetails = agcl;
                 return View("_CreateOrEdit", caseViewModel);
             }
             else
@@ -78,6 +90,15 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 {
                     var CaseDetail = _mapper.Map<CaseUpseartViewModel>(response.Data);
                     CaseDetail.ClientList = await DdlClient();
+                    CaseDetail.States = await LoadStates();
+                    CaseDetail.CourtTypes = await LoadCourtTypes();
+                    CaseDetail.CaseNatures = await LoadCaseNatureByCourtType(CaseDetail.CourtTypeId); ;
+                    CaseDetail.TypeOfCases = await CaseTypes(CaseDetail.CaseCategoryId);
+                    CaseDetail.Years = DdlYears();
+                    CaseDetail.FirstTitleList = await DdlFSTypes(1);
+                    CaseDetail.SecondTitleList = await DdlFSTypes(2);
+                    CaseDetail.CaseStatusList = await DdlCaseStages();
+                    CaseDetail.LinkedBy = await UserCaseTitle(id);
                     if (CaseDetail.IsHighCourt == true)
                     {
                         CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, Guid.Empty);
@@ -89,44 +110,91 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         CaseDetail.CourtDistricts = await DdlLoadCourtDistricts(CaseDetail.StateId);
                         CaseDetail.ComplexBenchs = await GetCourtComplex(CaseDetail.CourtDistrictId.Value);
                         CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, CaseDetail.ComplexId.Value);
-
                     }
-                    if (CaseDetail.AgainstCaseDetails.Count == 0)
-                        CaseDetail.AgainstCaseDetails = null;
-                    else
+                    if (CaseDetail.AgainstCaseDetails.Count > 0)
                     {
-
                         foreach (var item in CaseDetail.AgainstCaseDetails)
                         {
                             item.CaseId = id;
+                            cam.StateId = item.StateId;
+                            cam.ImpugedOrderDate = item.ImpugedOrderDate;
+                            cam.CourtTypeId = item.CourtTypeId;
                             if (item.IsAgHighCourt == true)
                             {
-
-                                CaseDetail.Courts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, Guid.Empty);
-                                CaseDetail.Strengths = DdlStrength();
+                                cam.ACourts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, Guid.Empty);
+                                cam.AStrengths = DdlStrength();
                                 AgIsHighCourt = true;
+                                cam.BenchId = item.BenchId;
                             }
                             else
                             {
-                                CaseDetail.CourtDistricts = await DdlLoadCourtDistricts(item.StateId.Value);
-                                CaseDetail.ComplexBenchs = await GetCourtComplex(item.CourtDistrictId.Value);
-                                CaseDetail.Courts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, item.ComplexId.Value);
-                                CaseDetail.AgainstCaseDetails[0].CourtId = item.CourtId;
+                                cam.CourtDistrictId = item.CourtDistrictId;
+                                cam.ComplexId = item.ComplexId;
+                                cam.CourtId = item.CourtId;
+                                cam.ACourtDistricts = await DdlLoadCourtDistricts(item.StateId.Value);
+                                cam.AComplexBenchs = await GetCourtComplex(item.CourtDistrictId.Value);
+                                cam.ACourts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, item.ComplexId.Value);
                             }
+                            cam.CaseCategoryId = item.CaseCategoryId;
+                            cam.CaseTypeId = item.CaseTypeId;
+                            cam.CaseNo = item.CaseNo;
+                            cam.CaseYear = item.CaseYear;
+                            cam.CisNo = item.CisNo;
+                            cam.CisYear = item.CisYear;
+                            cam.CnrNo = item.CnrNo;
+                            cam.OfficerName = item.OfficerName;
+                            cam.Cadre = item.Cadre;
+                            cam.ACaseNatures = await LoadCaseNatureByCourtType(item.CourtTypeId.Value);
+                            cam.ATypeOfCases = await CaseTypes(item.CaseCategoryId.Value);
                         }
-
                     }
+                    var agcl = new List<CaseAgainstModel>();
+                    agcl.Add(cam);
+                    CaseDetail.AgainstCaseDetails = agcl;
+                    //if (CaseDetail.AgainstCaseDetails.Count == 0)
+                    //    CaseDetail.AgainstCaseDetails = null;
+                    //else
+                    //{
+                    //    foreach (var item in CaseDetail.AgainstCaseDetails)
+                    //    {
+                    //        item.CaseId = id;
+                    //        cam.StateId = item.StateId;
+                    //        cam.ImpugedOrderDate = item.ImpugedOrderDate;
+                    //        cam.CourtTypeId = item.CourtTypeId;
+                    //        if (item.IsAgHighCourt == true)
+                    //        {
+                    //            cam.ACourts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, Guid.Empty);
+                    //            cam.AStrengths = DdlStrength();
+                    //            AgIsHighCourt = true;
+                    //            cam.BenchId = item.BenchId;
+                    //        }
+                    //        else
+                    //        {
+                    //            cam.CourtDistrictId = item.CourtDistrictId;
+                    //            cam.ComplexId = item.ComplexId;
+                    //            cam.CourtId = item.CourtId;
+                    //            cam.ACourtDistricts = await DdlLoadCourtDistricts(item.StateId.Value);
+                    //            cam.AComplexBenchs = await GetCourtComplex(item.CourtDistrictId.Value);
+                    //            cam.ACourts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, item.ComplexId.Value);
+                    //        }
+                    //        cam.CaseCategoryId = item.CaseCategoryId;
+                    //        cam.CaseTypeId = item.CaseTypeId;
+                    //        cam.CaseNo = item.CaseNo;
+                    //        cam.CaseYear = item.CaseYear;
+                    //        cam.CisNo = item.CisNo;
+                    //        cam.CisYear = item.CisYear;
+                    //        cam.CnrNo = item.CnrNo;
+                    //        cam.OfficerName = item.OfficerName;
+                    //        cam.Cadre = item.Cadre;
+                    //        cam.ACaseNatures = await LoadCaseNatureByCourtType(item.CourtTypeId.Value);
+                    //        cam.ATypeOfCases = await CaseTypes(item.CaseCategoryId.Value);
+                    //    }
+                    //    var agcl = new List<CaseAgainstModel>();
+                    //    agcl.Add(cam);
+                    //    CaseDetail.AgainstCaseDetails = agcl;
+                    //}
                     ViewBag.ShowHighCourt = showHighCourt;
                     ViewBag.AgIsHighCourt = AgIsHighCourt;
-                    CaseDetail.States = await LoadStates();
-                    CaseDetail.CourtTypes = await LoadCourtTypes();
-                    CaseDetail.CaseNatures = await LoadCaseNature();
-                    CaseDetail.TypeOfCases = await CaseTypes(CaseDetail.CaseCategoryId);
-                    CaseDetail.Years = DdlYears();
-                    CaseDetail.FirstTitleList = await DdlFSTypes(1);
-                    CaseDetail.SecondTitleList = await DdlFSTypes(2);
-                    CaseDetail.CaseStatusList = await DdlCaseStages();
-                    CaseDetail.LinkedBy = await UserCaseTitle(id);
                     CaseDetail.Cadres = DdlCadres();
                     if (from != "repeat")
                     {
@@ -135,10 +203,25 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     }
                     else
                     {
-                        ViewBag.ActionType = "Create";
+                        ViewBag.ActionType = "Save";
                         ViewBag.Id = Guid.Empty.ToString();
                         CaseDetail.Id = Guid.Empty;
-                        CaseDetail.ClientList = await DdlClient();
+                        ViewBag.from = from;
+                        //ViewBag.ShowHighCourt = showHighCourt;
+                        //ViewBag.AgIsHighCourt = AgIsHighCourt;
+                        //CaseDetail.ClientList = await DdlClient();
+                        //CaseDetail.InstitutionDate = DateTime.Now;
+                        //CaseDetail.CourtTypes = await LoadCourtTypes();
+                        //CaseDetail.CaseNatures = await LoadCaseNature();
+                        //CaseDetail.FirstTitleList = await DdlFSTypes(1);
+                        //CaseDetail.SecondTitleList = await DdlFSTypes(2);
+                        //CaseDetail.Years = DdlYears();
+                        //CaseDetail.CaseStatusList = await DdlCaseStages();
+                        //CaseDetail.LinkedBy = await UserCaseTitle(Guid.Empty);
+                        //CaseDetail.Cadres = DdlCadres();
+                        //CaseDetail.Strengths = DdlStrength();
+                        //CaseDetail.States = await LoadStates();
+                        //caseViewModel.ClientList = await DdlClient();
                     }
                     return View("_CreateOrEdit", CaseDetail);
                 }
@@ -180,7 +263,35 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         _notify.Success($"Case created with ID {result.Data} Created.");
 
                     }
-                    else _notify.Error(result.Message);
+                    else
+                    {
+                        _notify.Error(result.Message);
+                        ViewModel.InstitutionDate = DateTime.Now;
+                        ViewModel.CourtTypes = await LoadCourtTypes();
+                        ViewModel.CaseNatures = await LoadCaseNature();
+                        ViewModel.FirstTitleList = await DdlFSTypes(1);
+                        ViewModel.SecondTitleList = await DdlFSTypes(2);
+                        ViewModel.Years = DdlYears();
+                        ViewModel.CaseStatusList = await DdlCaseStages();
+                        ViewModel.LinkedBy = await UserCaseTitle(Guid.Empty);
+                        ViewModel.Cadres = DdlCadres();
+                        ViewModel.Strengths = DdlStrength();
+                        ViewModel.States = await LoadStates();
+                        ViewBag.from = "repeat";
+                        if (ViewModel.BenchId != null)
+                        {
+                            showHighCourt = true;
+                            //need to add the dropdown for high court
+                        }
+                        else
+                        {
+                           //district court
+                        }
+                        if (ViewModel.AgainstCaseDetails[0].BenchId != null)
+                        {
+                            AgIsHighCourt = true;
+                        }
+                    }
                     ViewBag.ShowHighCourt = showHighCourt;
                     ViewBag.AgIsHighCourt = AgIsHighCourt;
                     return View("_CreateOrEdit", ViewModel);
@@ -259,6 +370,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         DocFilePath = item.DocFilePath,
                         DocName = item.DocName,
                         DocType = item.DocType,
+                        DocDate = item.DocDate
                     });
                 }
                 var model = _mapper.Map<CaseHistoryViewModel>(response.Data);
@@ -308,6 +420,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                             DocId = f.DocId,
                             TypeId = f.TypeId,
                             DocPath = DocPath + "/" + fileName,
+                            DocDate = f.DocDate
                         });
                     }
                 }
@@ -393,11 +506,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 {
                     _notify.Success($"Client with ID {response.Data} Created.");
                     var CaseDetail = _mapper.Map<CaseUpseartViewModel>(response.Data);
-                    CaseDetail.ClientList = await DdlClient();
                     //Set the primary case detail to against in upper case
                     var agnstVM = new CaseAgainstModel();
                     var agnstVML = new List<CaseAgainstModel>();
-                    agnstVM.ImpugedOrderDate = CaseDetail.InstitutionDate;
+                    agnstVM.ImpugedOrderDate = CaseDetail.DisposalDate != null ? CaseDetail.DisposalDate : null;
                     agnstVM.StateId = CaseDetail.StateId;
                     agnstVM.CourtTypeId = CaseDetail.CourtTypeId;
                     agnstVM.CourtDistrictId = CaseDetail.CourtDistrictId;
@@ -410,9 +522,44 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     agnstVM.CisNo = CaseDetail.CisNumber;
                     agnstVM.CisYear = CaseDetail.CisYear;
                     agnstVM.CnrNo = CaseDetail.CnrNumber;
+                    if (CaseDetail.IsHighCourt == true)
+                    {
+                        agnstVM.ACourts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, Guid.Empty);
+                        agnstVM.AStrengths = DdlStrength();
+                        showHighCourt = true;
+                    }
+                    else
+                    {
+                        agnstVM.ACourtDistricts = await DdlLoadCourtDistricts(CaseDetail.StateId);
+                        agnstVM.AComplexBenchs = await GetCourtComplex(CaseDetail.CourtDistrictId.Value);
+                        agnstVM.ACourts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, CaseDetail.ComplexId.Value);
+                    }
+                    agnstVM.AStates = await LoadStates();
+                    agnstVM.ACourtTypes = await LoadCourtTypes();
+                    agnstVM.AYears = DdlYears();
+                    agnstVM.ACaseStatusList = await DdlCaseStages();
+                    agnstVM.ALinkedBy = await UserCaseTitle(Guid.Empty);
+                    agnstVM.ACadres = DdlCadres();
+                    agnstVM.ACaseNatures = await LoadCaseNatureByCourtType(CaseDetail.CourtTypeId);
+                    agnstVM.ATypeOfCases = await CaseTypes(CaseDetail.CaseCategoryId);
                     agnstVML.Add(agnstVM);
                     CaseDetail.AgainstCaseDetails = agnstVML;
-                    //Reset the main case variable.
+                    ViewBag.ShowHighCourt = showHighCourt;
+                    ViewBag.AgIsHighCourt = AgIsHighCourt;
+                    ViewBag.ActionType = "Save";
+                    //Reset the main case variable. 
+                    CaseDetail.ClientList = await DdlClient();
+                    CaseDetail.States = await LoadStates();
+                    CaseDetail.CourtTypes = await LoadCourtTypes();
+                    CaseDetail.CaseNatures = await LoadCaseNatureByCourtType(CaseDetail.CourtTypeId);
+                    CaseDetail.TypeOfCases = await CaseTypes(CaseDetail.CaseCategoryId);
+                    CaseDetail.Years = DdlYears();
+                    CaseDetail.FirstTitleList = await DdlFSTypes(1);
+                    CaseDetail.SecondTitleList = await DdlFSTypes(2);
+                    CaseDetail.CaseStatusList = await DdlCaseStages();
+                    CaseDetail.LinkedBy = await UserCaseTitle(id);
+                    CaseDetail.Cadres = DdlCadres();
+                    CaseDetail.Strengths = DdlStrength();
                     CaseDetail.Id = Guid.Empty;
                     CaseDetail.LCaseId = id;
                     CaseDetail.InstitutionDate = DateTime.Now;
@@ -430,57 +577,6 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     CaseDetail.CisYear = 0;
                     CaseDetail.CnrNumber = string.Empty;
                     CaseDetail.NextDate = null;
-                    if (CaseDetail.IsHighCourt == true)
-                    {
-                        CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, Guid.Empty);
-                        CaseDetail.Strengths = DdlStrength();
-                        showHighCourt = true;
-                    }
-                    else
-                    {
-                        CaseDetail.CourtDistricts = await DdlLoadCourtDistricts(CaseDetail.StateId);
-                        CaseDetail.ComplexBenchs = await GetCourtComplex(CaseDetail.CourtDistrictId.Value);
-                        CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, CaseDetail.ComplexId.Value);
-
-                    }
-                    if (CaseDetail.AgainstCaseDetails.Count == 0)
-                        CaseDetail.AgainstCaseDetails = null;
-                    else
-                    {
-                        foreach (var item in CaseDetail.AgainstCaseDetails)
-                        {
-                            item.CaseId = id;
-                            if (item.IsAgHighCourt == true)
-                            {
-
-                                CaseDetail.Courts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, Guid.Empty);
-                                CaseDetail.Strengths = DdlStrength();
-                                AgIsHighCourt = true;
-                            }
-                            else
-                            {
-                                CaseDetail.CourtDistricts = await DdlLoadCourtDistricts(item.StateId.Value);
-                                CaseDetail.ComplexBenchs = await GetCourtComplex(item.CourtDistrictId.Value);
-                                CaseDetail.Courts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, item.ComplexId.Value);
-                                CaseDetail.AgainstCaseDetails[0].CourtId = item.CourtId;
-                            }
-                        }
-
-                    }
-                    ViewBag.ShowHighCourt = showHighCourt;
-                    ViewBag.AgIsHighCourt = AgIsHighCourt;
-                    CaseDetail.States = await LoadStates();
-                    CaseDetail.CourtTypes = await LoadCourtTypes();
-                    CaseDetail.CaseNatures = await LoadCaseNature();
-                    CaseDetail.TypeOfCases = await CaseTypes(CaseDetail.CaseCategoryId);
-                    CaseDetail.Years = DdlYears();
-                    CaseDetail.FirstTitleList = await DdlFSTypes(1);
-                    CaseDetail.SecondTitleList = await DdlFSTypes(2);
-                    CaseDetail.CaseStatusList = await DdlCaseStages();
-                    CaseDetail.LinkedBy = await UserCaseTitle(id);
-                    CaseDetail.Cadres = DdlCadres();
-                    CaseDetail.Strengths = DdlStrength();
-                    ViewBag.ActionType = "Save";
                     return View("_CreateOrEdit", CaseDetail);
                 }
 
