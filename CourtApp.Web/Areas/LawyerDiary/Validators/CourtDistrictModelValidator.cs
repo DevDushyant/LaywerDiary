@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Validators
 {
-    public class CourtDistrict : AbstractValidator<CourtDistrict>
+    public class CourtDistrictModelValidator : AbstractValidator<CourtDistrict>
     {
-        public CourtDistrict()
+        public CourtDistrictModelValidator()
         {
             RuleFor(p => p.Name_En)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
