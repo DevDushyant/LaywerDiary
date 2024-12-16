@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Models
 {
@@ -7,13 +9,16 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
     {
         public Guid Id { get; set; }
         public string Name_En { get; set; }
-        public string Name_Hn { get; set; }
-        public string Abbreviation { get; set; }
+        public string Name_Hn { get; set; }        
         public string StateName { get; set; }
         public string DistrictName { get; set; }
-        public int StateId { get; set; }
-        //public int DistrictId { get; set; }
+        public int StateId { get; set; }      
         public SelectList States { get; set; }
-        //public SelectList Districts { get; set; }
+        public List<CourtDistrict> CourtDistricts { get; set; }
+    }
+    public class CourtDistrict
+    {
+        public string Name_En { get; set; }
+        public string Name_Hn { get; set; }
     }
 }

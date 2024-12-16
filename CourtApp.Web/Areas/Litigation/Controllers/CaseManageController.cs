@@ -247,7 +247,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     var result = await _mediator.Send(createCommand);
                     if (result.Succeeded)
                     {
-                        ViewModel.StatusMessage = "Case created successfully!";
+                        ViewModel.StatusMessage = "Case information created successfully!";
                         ViewModel.Id = result.Data;
                         ViewModel.InstitutionDate = DateTime.Now;
                         ViewModel.CourtTypes = await LoadCourtTypes();
@@ -303,7 +303,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     var result = await _mediator.Send(updateCommand);
                     if (result.Succeeded)
                     {
-                        _notify.Information($"Book type with ID {result.Data} Updated.");
+                        _notify.Information($"Case information  with ID {result.Data} Updated.");
                         ViewModel.InstitutionDate = DateTime.Now;
                         ViewModel.CourtTypes = await LoadCourtTypes();
                         ViewModel.CaseNatures = await LoadCaseNature();

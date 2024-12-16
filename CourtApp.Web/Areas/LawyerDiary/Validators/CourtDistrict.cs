@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Validators
 {
-    public class CourtDistrict : AbstractValidator<CourtDistrictViewModel>
+    public class CourtDistrict : AbstractValidator<CourtDistrict>
     {
         public CourtDistrict()
         {
@@ -11,11 +11,11 @@ namespace CourtApp.Web.Areas.LawyerDiary.Validators
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .NotNull()
                 ;
-            RuleFor(p => p.Abbreviation)
-                .NotEmpty().WithMessage("{PropertyName} is required.")
-                .NotNull()
-                .MinimumLength(4).WithMessage("{PropertyName} must not exceed 4 characters.")
-                ;
+            //RuleFor(p => p.Abbreviation)
+            //    .NotEmpty().WithMessage("{PropertyName} is required.")
+            //    .NotNull()
+            //    .MinimumLength(4).WithMessage("{PropertyName} must not exceed 4 characters.")
+            //    ;
         }
     }
 }

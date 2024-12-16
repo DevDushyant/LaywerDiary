@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Validators
 {
-    public class ProceedingModelValidator : AbstractValidator<ProceedingSubHeadViewModel>
+    public class ProceedingModelValidator : AbstractValidator<ProcHead>
     {
         public ProceedingModelValidator()
         {

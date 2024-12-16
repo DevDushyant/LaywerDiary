@@ -10,10 +10,8 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
 
     {
         public Guid Id { get; set; }
-        public SelectList CourtTypes { get; set; }
-        //public SelectList States { get; set; }
-        public Guid CourtTypeId { get; set; }
-        //public int StateId { get; set; }
+        public SelectList CourtTypes { get; set; }       
+        public Guid CourtTypeId { get; set; }       
         public string StateName { get; set; }
         public string CourtTypeName { get; set; }
         public SelectList CaseNatures { get; set; }
@@ -22,5 +20,13 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
         public string Abbreviation { get; set; }
+        public List<CaseType> CaseTypes { get; set; }
     }
+    public class CaseType
+    {
+        public string Name_En { get; set; }
+        public string Name_Hn { get; set; }
+        public string Abbreviation { get; set; }
+    }
+
 }

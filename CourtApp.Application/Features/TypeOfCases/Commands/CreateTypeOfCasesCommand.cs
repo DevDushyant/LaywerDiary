@@ -17,6 +17,11 @@ namespace CourtApp.Application.Features.Typeofcasess.Commands
         public Guid NatureId { get; set; }
         public Guid CourtTypeId { get; set; }
         public int StateId { get; set; }
+        public List<TypeOfCase> typeOfCases { get; set; }
+
+    }
+    public class TypeOfCase
+    {
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
         public string Abbreviation { get; set; }
@@ -39,15 +44,44 @@ namespace CourtApp.Application.Features.Typeofcasess.Commands
         }
         public async Task<Result<Guid>> Handle(CreateTypeOfCasesCommand request, CancellationToken cancellationToken)
         {
-            var isExist = repository.QryEntities
-                .Where(w => (w.Abbreviation.Equals(request.Abbreviation.Trim()) ||
-                w.Name_En.Equals(request.Name_En.Trim())) && w.CourtTypeId==request.CourtTypeId).FirstOrDefault();
-            if (isExist != null)
-                return Result<Guid>.Fail("The given information is already exist");
-            var mappeddata = mapper.Map<TypeOfCasesEntity>(request);
-            await repository.InsertAsync(mappeddata);
-            await _unitOfWork.Commit(cancellationToken);
-            return Result<Guid>.Success(mappeddata.Id);
+            if (request.typeOfCases.Count > 0)
+            {
+                Guid id = Guid.Empty;
+                foreach (var c in request.typeOfCases)
+                {
+                    var detail = repository.QryEntities
+                                .Where(w => w.Name_En.ToLower()
+                                .Equals(c.Name_En.ToLower()))
+                                .FirstOrDefault() ?? null;
+                    if (detail == null)
+                    {
+                        var cdt = new TypeOfCasesEntity()
+                        {
+                            Name_En = c.Name_En,
+                            Name_Hn = c.Name_Hn,
+                            CourtTypeId = request.CourtTypeId,
+                            NatureId = request.NatureId,
+                            Abbreviation = c.Abbreviation
+                        };
+                        await repository.InsertAsync(cdt);
+                        await _unitOfWork.Commit(cancellationToken);
+                        id = cdt.Id;
+                    }
+                    else
+                        return Result<Guid>.Fail("Given case type is already exist!");
+                }
+                return Result<Guid>.Success(id);
+            }
+            return Result<Guid>.Fail("Case type is not supplied!");
+            //var isExist = repository.QryEntities
+            //    .Where(w => (w.Abbreviation.Equals(request.Abbreviation.Trim()) ||
+            //    w.Name_En.Equals(request.Name_En.Trim())) && w.CourtTypeId == request.CourtTypeId).FirstOrDefault();
+            //if (isExist != null)
+            //    return Result<Guid>.Fail("The given information is already exist");
+            //var mappeddata = mapper.Map<TypeOfCasesEntity>(request);
+            //await repository.InsertAsync(mappeddata);
+            //await _unitOfWork.Commit(cancellationToken);
+            //return Result<Guid>.Success(mappeddata.Id);
         }
     }
 }

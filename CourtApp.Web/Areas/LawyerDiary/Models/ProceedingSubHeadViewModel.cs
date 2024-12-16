@@ -1,6 +1,8 @@
 ﻿using CourtApp.Domain.Entities.LawyerDiary;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Models
 {
@@ -14,6 +16,12 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
         public string PheadName { get; set; }
         public SelectList PHeads { get; set; }
         //public string Abbreviation { get; set; }
+        public List<ProcHead> ProcHeads { get; set; }
 
+    }
+    public class ProcHead
+    {
+        public string Name_En { get; set; }
+        public string Name_Hn { get; set; }
     }
 }

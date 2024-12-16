@@ -3,11 +3,10 @@
     <thead>
         <tr>
             <th>Sr.</th>
-            <th>State</th>
-            @* <th>District</th> *@
+            <th>State</th>           
             <th>Court District</th>
             <th>Name</th>
-            <th>Abbreviation</th>
+            <th>Name (Hn)</th>
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded
             || (AuthorizationService.AuthorizeAsync(User, Permissions.Books.Edit)).Result.Succeeded)
             {
@@ -27,10 +26,7 @@
                 </td>
                 <td>
                     @bt.StateName
-                </td>
-                @* <td>
-                    @bt.DistrictName
-                </td> *@
+                </td>                
                 <td>
                     @bt.CDistrictName
                 </td>
@@ -38,7 +34,7 @@
                     @bt.Name_En
                 </td>
                 <td>
-                    @bt.Abbreviation
+                    @bt.Name_Hn
                 </td>
                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                 {

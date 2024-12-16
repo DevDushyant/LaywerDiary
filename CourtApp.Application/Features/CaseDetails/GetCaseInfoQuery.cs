@@ -56,7 +56,8 @@ namespace CourtApp.Application.Features.CaseDetails
                     .Include(ct => ct.CaseType)
                     .Include(cs => cs.CaseStage)
                     .Include(c => c.CourtBench)
-                    .Where(predicate);
+                    .Where(predicate)
+                    ;
 
                 var caseIds = cases.Select(c => c.Id).ToList();
                 var maxNextDates = _ProcRepo.Entities
@@ -67,28 +68,25 @@ namespace CourtApp.Application.Features.CaseDetails
                                         CaseId = g.Key,
                                         MaxNextDate = g.Max(x => x.NextDate)
                                     });
-                var query = from e in cases
-                            join md in maxNextDates on e.Id equals md.CaseId into maxDates
-                            from md in maxDates.DefaultIfEmpty()
-                            select new GetCaseInfoDto
-                            {
-                                Id = e.Id,
-                                CourtType = e.CourtType.CourtType.ToString(),
-                                CaseType = e.CaseType.Name_En,
-                                Court = e.CourtBench.CourtBench_En,
-                                CaseStage = e.CaseStage.CaseStage,
-                                DisposalDate=e.DisposalDate,
-                                CaseDetail = e.FirstTitle + " V/S " + e.SecondTitle + "(" + e.CaseNo + "/" + e.CaseYear + ")",
-                                NextDate = (e.NextDate.HasValue && md.MaxNextDate.HasValue)
-                                            ? (e.NextDate.Value > md.MaxNextDate.Value ? e.NextDate.Value
-                                                            : md.MaxNextDate.Value).ToString("dd/MM/yyyy")
-                                            : (e.NextDate.HasValue ? e.NextDate.Value.ToString("dd/MM/yyyy")
-                                            : (md.MaxNextDate.HasValue ? md.MaxNextDate.Value.ToString("dd/MM/yyyy") : ""))
-                                //NextDate = e.NextDate != null && e.NextDate.HasValue ? e.NextDate.Value.ToString("dd/MM/yyyy")
-                                //           : md.MaxNextDate != null && md.MaxNextDate.HasValue ? md.MaxNextDate.Value.ToString("dd/MM/yyyy")
-                                //           : ""
-
-                            };
+                var query = (from e in cases
+                             join md in maxNextDates on e.Id equals md.CaseId into maxDates
+                             from md in maxDates.DefaultIfEmpty()
+                             select new GetCaseInfoDto
+                             {
+                                 Id = e.Id,
+                                 CourtType = e.CourtType.CourtType.ToString(),
+                                 CaseType = e.CaseType.Name_En,
+                                 Court = e.CourtBench.CourtBench_En,
+                                 CaseStage = e.CaseStage.CaseStage,
+                                 DisposalDate = e.DisposalDate,
+                                 OrderByKey = e.LastModifiedOn != null && e.LastModifiedOn > e.CreatedOn ? e.LastModifiedOn.Value : e.CreatedOn,
+                                 CaseDetail = e.FirstTitle + " V/S " + e.SecondTitle + "(" + e.CaseNo + "/" + e.CaseYear + ")",
+                                 NextDate = (e.NextDate.HasValue && md.MaxNextDate.HasValue)
+                                             ? (e.NextDate.Value > md.MaxNextDate.Value ? e.NextDate.Value
+                                                             : md.MaxNextDate.Value).ToString("dd/MM/yyyy")
+                                             : (e.NextDate.HasValue ? e.NextDate.Value.ToString("dd/MM/yyyy")
+                                             : (md.MaxNextDate.HasValue ? md.MaxNextDate.Value.ToString("dd/MM/yyyy") : ""))
+                             }).OrderByDescending(o => o.OrderByKey);
 
                 var result = await query.ToPaginatedListAsync(request.PageNumber, request.PageSize);
                 return result;

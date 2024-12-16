@@ -48,7 +48,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 var ViewModel = new ProceedingSubHeadViewModel();
                 ViewModel.PHeads = await DdlProcHeads();
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", ViewModel) });
             }
             else
             {
@@ -57,7 +57,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 {
                     var ViewModel = _mapper.Map<ProceedingSubHeadViewModel>(response.Data);
                     ViewModel.PHeads = await DdlProcHeads();
-                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
+                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Edit", ViewModel) });
                 }
                 return null;
             }

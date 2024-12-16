@@ -14,6 +14,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Mappings
             CreateMap<CourtComplexResponse, CourtComplexViewModel>();
             CreateMap<CourtComplexByIdResponse, CourtComplexViewModel>();
             CreateMap<CourtComplexViewModel, CreateCourtComplexCommand>();
+            CreateMap<Complex, DistrictComplex>();
             CreateMap<CourtComplexViewModel, UpdateCourtComplexCommand>();
         }
     }

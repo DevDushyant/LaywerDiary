@@ -18,6 +18,12 @@ namespace CourtApp.Application.Features.ProceedingSubHead
         public Guid HeadId { get; set; }       
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
+        public List<ProceedingHead> ProcHeads { get; set; }
+    }
+    public class ProceedingHead
+    {
+        public string Name_En { get; set; }
+        public string Name_Hn { get; set; }
     }
     public class CreateProcSubHeadCommandHandler : IRequestHandler<CreateProcSubHeadCommand, Result<Guid>>
     {
@@ -32,16 +38,43 @@ namespace CourtApp.Application.Features.ProceedingSubHead
         }
         public async Task<Result<Guid>> Handle(CreateProcSubHeadCommand request, CancellationToken cancellationToken)
         {
-            var isExist=_Repository.Entities
-                .Where(w=>w.Name_En.Equals(request.Name_En) && w.HeadId==request.HeadId).FirstOrDefault();
-            if (isExist == null)
+            if (request.ProcHeads.Count > 0)
             {
-                var entity = _mapper.Map<ProceedingSubHeadEntity>(request);
-                await _Repository.InsertAsync(entity);
-                await _unitOfWork.Commit(cancellationToken);
-                return Result<Guid>.Success(entity.Id);
+                Guid id = Guid.Empty;
+                foreach (var c in request.ProcHeads)
+                {
+                    var detail = _Repository.Entities
+                                .Where(w => w.Name_En.ToLower()
+                                .Equals(c.Name_En.ToLower()))
+                                .FirstOrDefault() ?? null;
+                    if (detail == null)
+                    {
+                        var cdt = new ProceedingSubHeadEntity()
+                        {
+                            Name_En = c.Name_En,
+                            Name_Hn = c.Name_Hn,
+                            HeadId = request.HeadId                            
+                        };
+                        await _Repository.InsertAsync(cdt);
+                        await _unitOfWork.Commit(cancellationToken);
+                        id = cdt.Id;
+                    }
+                    else
+                        return Result<Guid>.Fail("Proceeding head is already exist!");
+                }
+                return Result<Guid>.Success(id);
             }
-            return Result<Guid>.Fail("Given name is already exist");
+            return Result<Guid>.Fail("Proceeding head is not supplied!");
+            //var isExist=_Repository.Entities
+            //    .Where(w=>w.Name_En.Equals(request.Name_En) && w.HeadId==request.HeadId).FirstOrDefault();
+            //if (isExist == null)
+            //{
+            //    var entity = _mapper.Map<ProceedingSubHeadEntity>(request);
+            //    await _Repository.InsertAsync(entity);
+            //    await _unitOfWork.Commit(cancellationToken);
+            //    return Result<Guid>.Success(entity.Id);
+            //}
+            //return Result<Guid>.Fail("Given name is already exist");
         }
     }
 }

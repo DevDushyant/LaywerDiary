@@ -8,10 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CourtApp.Application.Features.CaseCategory;
 using CourtApp.Application.Features.CourtType.Query;
-using CourtApp.Application.Features.Queries.States;
-
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 {
     [Area("LawyerDiary")]
@@ -57,7 +54,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 var ViewModel = new TypeOfCasesViewModel();
                 await BindDropdownAsync(ViewModel);
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", ViewModel) });
             }
             else
             {

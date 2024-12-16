@@ -12,8 +12,7 @@ namespace CourtApp.Domain.Entities.LawyerDiary
 {
     [Table("m_court_complex", Schema = "ld")]
     public class CourtComplexEntity : AuditableEntity
-    {
-        
+    {        
         public required string Name_En { get; set; }
         public string Name_Hn { get; set; }
         public int StateId { get; set; }
