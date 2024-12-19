@@ -7,6 +7,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
 {
     public class CourtComplexViewModel
     {
+        public string Message { get; set; }
         public SelectList States { get; set; }
         public SelectList CourtDistricts { get; set; }
         public Guid Id { get; set; }

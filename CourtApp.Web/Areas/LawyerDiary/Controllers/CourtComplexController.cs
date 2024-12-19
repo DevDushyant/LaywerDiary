@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 {
     [Area("LawyerDiary")]
-    public class CourtComplexController :BaseController<CourtComplexController>
+    public class CourtComplexController : BaseController<CourtComplexController>
     {
         public IActionResult Index()
         {
@@ -22,7 +22,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new GetCourtComplexQuery() { PageNumber=1,PageSize=100});
+            var response = await _mediator.Send(new GetCourtComplexQuery() { PageNumber = 1, PageSize = 100 });
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<CourtComplexViewModel>>(response.Data);
@@ -30,13 +30,13 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
             return null;
         }
-        
+
         public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
         {
             if (id == Guid.Empty)
             {
                 var ViewModel = new CourtComplexViewModel();
-                ViewModel.States = await LoadStates();               
+                ViewModel.States = await LoadStates();
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", ViewModel) });
             }
             else
@@ -68,7 +68,13 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                         id = result.Data;
                         _notify.Success($"Court complex with ID {result.Data} Created.");
                     }
-                    else _notify.Error(result.Message);
+                    else
+                    {
+                        btViewModel.Message = result.Message;
+                        var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel);
+                        return new JsonResult(new { isValid = false, html = html });
+                        //_notify.Error(result.Message);
+                    }
                 }
                 else
                 {

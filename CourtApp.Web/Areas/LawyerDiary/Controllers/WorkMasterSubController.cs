@@ -39,7 +39,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 var ViewModel = new WorkMasterSubViewModel();
                 var wMasterViewModel = _mapper.Map<List<WorkMasterViewModel>>(wMasterList.Data);
                 ViewModel.WMasters = new SelectList(wMasterViewModel, nameof(WorkMasterViewModel.Id), nameof(WorkMasterViewModel.Work_En), null, null);
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", ViewModel) });
             }
             else
             {
@@ -49,7 +49,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     var brandViewModel = _mapper.Map<WorkMasterSubViewModel>(response.Data);
                     var wMasterViewModel = _mapper.Map<List<WorkMasterViewModel>>(wMasterList.Data);
                     brandViewModel.WMasters = new SelectList(wMasterViewModel, nameof(WorkMasterViewModel.Id), nameof(WorkMasterViewModel.Work_En), null, null);
-                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", brandViewModel) });
+                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Edit", brandViewModel) });
                 }
                 return null;
             }
@@ -74,7 +74,12 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                             return new JsonResult(new { isValid = true, html = html });
 
                         }
-                        else _notify.Error(result.Message);
+                        else
+                        {
+                            viewModel.Message = result.Message;
+                            var html = await _viewRenderer.RenderViewToStringAsync("_Create", viewModel);
+                            return new JsonResult(new { isValid = false, html = html });
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -105,7 +110,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
             else
             {
-                var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", viewModel);
+                var html = await _viewRenderer.RenderViewToStringAsync("_Create", viewModel);
                 return new JsonResult(new { isValid = false, html = html });
             }
         }

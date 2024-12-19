@@ -8,6 +8,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
 {
     public class ProceedingSubHeadViewModel
     {
+        public string Message { get; set; }
         public Guid Id { get; set; }
         public string Head { get; set; }
         public string Name_En { get; set; }

@@ -84,7 +84,12 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                         id = result.Data;
                         _notify.Success($"Case type with ID {result.Data} Created.");
                     }
-                    else _notify.Error(result.Message);
+                    else
+                    {
+                        btViewModel.Message = result.Message;
+                        var html = await _viewRenderer.RenderViewToStringAsync("_Create", btViewModel);
+                        return new JsonResult(new { isValid = false, html = html });
+                    }
                 }
                 else
                 {

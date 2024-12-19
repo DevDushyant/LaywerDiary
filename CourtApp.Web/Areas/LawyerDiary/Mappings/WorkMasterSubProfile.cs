@@ -15,7 +15,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Mappings
             CreateMap<WorkMasterSubViewModel,CreateWorkSubMstCommand>();
             CreateMap<WorkMasterSubViewModel,UpdateWorkSubMstCommand>();
             CreateMap<WorkMasterSubViewModel,DeleteWorkSubMstCommand>();
-
+            CreateMap<WorkSubMaster, WrkSubMaster>();
         }
     }
 }

@@ -77,7 +77,12 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                         Id = result.Data;
                         _notify.Success($"Proceeding Head with ID {result.Data} Created.");
                     }
-                    else _notify.Error(result.Message);
+                    else
+                    {
+                        viewModel.Message = result.Message;
+                        var html = await _viewRenderer.RenderViewToStringAsync("_Create", viewModel);
+                        return new JsonResult(new { isValid = false, html = html });
+                    }
                 }
                 else
                 {

@@ -60,7 +60,7 @@ namespace CourtApp.Application.Features.ProceedingSubHead
                         id = cdt.Id;
                     }
                     else
-                        return Result<Guid>.Fail("Proceeding head is already exist!");
+                        return Result<Guid>.Fail("Error! the Given name is already exist! "+c.Name_En+" ");
                 }
                 return Result<Guid>.Success(id);
             }

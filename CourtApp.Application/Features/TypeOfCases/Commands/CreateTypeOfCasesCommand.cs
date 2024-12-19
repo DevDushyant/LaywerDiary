@@ -17,7 +17,7 @@ namespace CourtApp.Application.Features.Typeofcasess.Commands
         public Guid NatureId { get; set; }
         public Guid CourtTypeId { get; set; }
         public int StateId { get; set; }
-        public List<TypeOfCase> typeOfCases { get; set; }
+        public List<TypeOfCase> CaseTypes { get; set; }
 
     }
     public class TypeOfCase
@@ -44,14 +44,18 @@ namespace CourtApp.Application.Features.Typeofcasess.Commands
         }
         public async Task<Result<Guid>> Handle(CreateTypeOfCasesCommand request, CancellationToken cancellationToken)
         {
-            if (request.typeOfCases.Count > 0)
+            if (request.CaseTypes.Count > 0)
             {
                 Guid id = Guid.Empty;
-                foreach (var c in request.typeOfCases)
+                foreach (var c in request.CaseTypes)
                 {
                     var detail = repository.QryEntities
                                 .Where(w => w.Name_En.ToLower()
-                                .Equals(c.Name_En.ToLower()))
+                                .Equals(c.Name_En.ToLower())
+                                && w.CourtTypeId.Equals(request.CourtTypeId)
+                                && w.NatureId.Equals(request.NatureId)
+                                && w.Abbreviation.Equals(c.Abbreviation)
+                                )
                                 .FirstOrDefault() ?? null;
                     if (detail == null)
                     {
@@ -68,7 +72,7 @@ namespace CourtApp.Application.Features.Typeofcasess.Commands
                         id = cdt.Id;
                     }
                     else
-                        return Result<Guid>.Fail("Given case type is already exist!");
+                        return Result<Guid>.Fail("Error! the Given name is already exist! "+ c.Name_En + " ");
                 }
                 return Result<Guid>.Success(id);
             }

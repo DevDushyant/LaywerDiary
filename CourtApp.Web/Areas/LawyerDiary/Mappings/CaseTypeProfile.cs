@@ -19,7 +19,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Mappings
             CreateMap<CreateTypeOfCasesCommand, TypeOfCasesViewModel>().ReverseMap();
             CreateMap<UpdateTypeOfCasesCommand, TypeOfCasesViewModel>().ReverseMap();
             CreateMap<DeleteTypeOfCasesCommand, TypeOfCasesViewModel>().ReverseMap();
-            CreateMap<CaseType, TypeOfCase>().ReverseMap();
+            CreateMap<CaseType, TypeOfCase>();
         }
     }
 }

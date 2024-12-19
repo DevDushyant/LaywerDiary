@@ -16,7 +16,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Mappings
             CreateMap<ProceedingSubHeadViewModel,CreateProcSubHeadCommand>();
             CreateMap<ProceedingSubHeadViewModel,UpdateProcSubHeadCommand>();
             CreateMap<ProceedingSubHeadViewModel,DeleteProcSubHeadCommand>();
-            CreateMap<ProcHead, ProceedingSubHeadEntity>();
+            CreateMap<ProcHead, ProceedingHead>();
         }
     }
 }

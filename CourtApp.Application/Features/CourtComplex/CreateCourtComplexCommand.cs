@@ -47,7 +47,10 @@ namespace CourtApp.Application.Features.CourtComplex
                 {
                     var detail = repository.Entities
                                 .Where(w => w.Name_En.ToLower()
-                                .Equals(c.Name_En.ToLower()))
+                                .Equals(c.Name_En.ToLower())
+                                && w.CourtDistrictId == request.CourtDistrictId
+                                && w.StateId == request.StateId
+                                )
                                 .FirstOrDefault() ?? null;
                     if (detail == null)
                     {
@@ -61,8 +64,9 @@ namespace CourtApp.Application.Features.CourtComplex
                         await repository.InsertAsync(cdt);
                         await _unitOfWork.Commit(cancellationToken);
                         id = cdt.Id;
-                    }else
-                    return Result<Guid>.Fail("District court complex is already exist!");
+                    }
+                    else
+                        return Result<Guid>.Fail("Error! the Given name is already exist! " + detail.Name_En + " ");
                 }
                 return Result<Guid>.Success(id);
             }

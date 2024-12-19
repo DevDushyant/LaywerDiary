@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace CourtApp.Web.Areas.LawyerDiary.Models
 {
     public class TypeOfCasesViewModel
-
     {
+        public string Message { get; set; }
         public Guid Id { get; set; }
         public SelectList CourtTypes { get; set; }       
         public Guid CourtTypeId { get; set; }       

@@ -48,7 +48,8 @@ namespace CourtApp.Application.Features.CourtDistrict
                 {
                     var detail = repository.Entities
                                 .Where(w => w.Name_En.ToLower()
-                                .Equals(c.Name_En.ToLower()))
+                                .Equals(c.Name_En.ToLower())
+                                && w.StateId == request.StateId)
                                 .FirstOrDefault() ?? null;
                     if (detail == null)
                     {
@@ -56,14 +57,14 @@ namespace CourtApp.Application.Features.CourtDistrict
                         {
                             Name_En = c.Name_En,
                             Name_Hn = c.Name_Hn,
-                            StateId = request.StateId                            
+                            StateId = request.StateId
                         };
                         await repository.InsertAsync(cdt);
                         await _unitOfWork.Commit(cancellationToken);
                         id = cdt.Id;
                     }
                     else
-                        return Result<Guid>.Fail("District court district is already exist!");
+                        return Result<Guid>.Fail("Error! the Given name is already exist! " + c.Name_En + "!");
                 }
                 return Result<Guid>.Success(id);
             }
