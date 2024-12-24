@@ -29,7 +29,10 @@ namespace CourtApp.Application.Features.Queries.States
         {
             var list = await _repositoryCache.GetStateListAsync();
             var mappeddata = _mapper.Map<List<GetStateMasterResponse>>(list.OrderBy(s => s.Name_En));
-            return Result<List<GetStateMasterResponse>>.Success(mappeddata);
+            var OrderDt = mappeddata.Select(s => new GetStateMasterResponse
+            { Id = s.Id, name_en = s.name_en.ToUpper(), name_hn = s.name_hn })
+                .OrderBy(o => o.name_en.ToUpper()).ToList();
+            return Result<List<GetStateMasterResponse>>.Success(OrderDt);
         }
     }
 

@@ -1,9 +1,9 @@
 ﻿ @model CopyingRegisterViewModel
 <div id="viewAll" class="card-body table-responsive">
-    <form asp-controller="Register" method="post" asp-action="UpdateCopyingStatus" class="d-inline">
+    <form asp-controller="Register" method="post" asp-action="UpdateCopyingStatus" class="table table-striped" width="100%" cellspacing="0">
         <div class="row">
             <div class="col-md-12">
-                <table id="tblRegister" class="table table-striped" width="100%" cellspacing="0">
+                <table id="tblCopyingRegister" class="table table-striped" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Sno.</th>
@@ -38,6 +38,7 @@
                                         }
                                     </td>
                                     <td>
+                                        <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=@Model.copyingCases[i].Id', 'Upload Document')" class="fa fa-file" title="Upload Document"></a>
                                         <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@Model.copyingCases[i].Id', 'See History')" class="fa fa-history"></a>
                                     </td>
                                 </tr>

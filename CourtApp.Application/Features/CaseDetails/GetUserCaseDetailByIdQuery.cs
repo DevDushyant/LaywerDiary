@@ -1,8 +1,6 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
 using CourtApp.Application.DTOs.CaseDetails;
-using CourtApp.Application.Features.Case;
-using CourtApp.Application.Features.CaseKinds.Query;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
 using MediatR;
@@ -23,10 +21,12 @@ namespace CourtApp.Application.Features.UserCase
     {
         private readonly IUserCaseRepository _CaseRepo;
         private readonly IMapper _mapper;
-        public GetUserCaseDetailByIdQueryHandler(IUserCaseRepository _CaseRepo, IMapper _mapper)
+        private readonly IClientRepository _clientRepository;
+        public GetUserCaseDetailByIdQueryHandler(IUserCaseRepository _CaseRepo, IMapper _mapper, IClientRepository clientRepository)
         {
             this._CaseRepo = _CaseRepo;
             this._mapper = _mapper;
+            _clientRepository = clientRepository;
         }
         public async Task<Result<UserCaseDetailResponse>> Handle(GetUserCaseDetailByIdQuery request, CancellationToken cancellationToken)
         {
@@ -80,6 +80,7 @@ namespace CourtApp.Application.Features.UserCase
                     }
                     mappeddata.AgainstCaseDetails = agl;
                 }                
+                
                 return Result<UserCaseDetailResponse>.Success(mappeddata);
             }
             return Result<UserCaseDetailResponse>.Fail("Information is not exist!");

@@ -67,7 +67,7 @@ namespace CourtApp.Application.Features.CaseDetails
                 // Process each group and fetch details
                 var result = PWorks.Select(pw =>
                 {
-                    var WDetails = pw.works.ToDictionary(w => w.WorkId, w => new
+                    var WDetails = pw.works.Where(w=>w.WorkId!=Guid.Empty).ToDictionary(w => w.WorkId, w => new
                     {
                         w.Status,
                         w.AppliedOn,

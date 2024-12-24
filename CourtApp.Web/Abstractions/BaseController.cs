@@ -5,6 +5,7 @@ using Azure;
 using CourtApp.Application.Constants;
 using CourtApp.Application.DTOs.CourtMaster;
 using CourtApp.Application.Enums;
+using CourtApp.Application.Features.Cadre;
 using CourtApp.Application.Features.CaseCategory;
 using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.CaseKinds.Query;
@@ -105,11 +106,11 @@ namespace CourtApp.Web.Abstractions
         {
             var response = await _mediator.Send(new GetCourtTypeQuery());
             var CaseKind = _mapper.Map<List<CourtTypeViewModel>>(response.Data);
-            return new SelectList(CaseKind, nameof(CourtTypeViewModel.Id), nameof(CourtTypeViewModel.CourtType), null, null);
+            return new SelectList(CaseKind, nameof(CourtTypeViewModel.Id), nameof(CourtTypeViewModel.CourtType), nameof(CourtTypeViewModel.Abbreviation), null);
         }
         public async Task<SelectList> DdlLoadCourtDistricts(int StateID)
         {
-            var districts = await _mediator.Send(new GetCourtDistrictQuery() { StateId = StateID });
+            var districts = await _mediator.Send(new GetCourtDistrictCachedQuery() { StateId = StateID });
             var districtViewModel = _mapper.Map<List<CourtDistrictViewModel>>(districts.Data);
             return new SelectList(districtViewModel, nameof(CourtDistrictViewModel.Id), nameof(CourtDistrictViewModel.Name_En), null, null);
         }
@@ -164,11 +165,18 @@ namespace CourtApp.Web.Abstractions
             var caseStagesViewModel = _mapper.Map<List<CaseStageViewModel>>(stages.Data);
             return new SelectList(caseStagesViewModel, nameof(CaseStageViewModel.Id), nameof(CaseStageViewModel.CaseStage), null, null);
         }
-        public async Task<SelectList> DdlClient()
+        public async Task<SelectList> DdlClient(string UserId)
         {
-            var response = await _mediator.Send(new GetAllClientCachedQuery());
+            var response = await _mediator.Send(new GetAllClientCachedQuery() { UserId=UserId});
             var viewModel = _mapper.Map<List<GClientViewModel>>(response.Data);
-            return new SelectList(viewModel, nameof(GClientViewModel.Id), nameof(GClientViewModel.Name), null, null);
+            Dictionary<Guid, string> Clients = new Dictionary<Guid, string>();
+            foreach (var item in viewModel)
+            {
+                var name = item.Name + " (" + item.Mobile  + " - "+item.Address+")";
+                Clients.Add(item.Id, name);
+            }
+            return new SelectList(Clients, "Key", "Value");
+            //return new SelectList(viewModel, nameof(GClientViewModel.Id), nameof(GClientViewModel.Name), null, null);
         }
 
         public async Task<SelectList> UserCaseTitle(Guid? CaseId)
@@ -242,7 +250,7 @@ namespace CourtApp.Web.Abstractions
 
         public async Task<JsonResult> LoadTypeOfCase(Guid natureId)
         {
-            var caseType = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 100) { CategoryId = natureId });
+            var caseType = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 1000) { CategoryId = natureId });
             var data = Json(caseType);
             return data;
         }
@@ -271,16 +279,16 @@ namespace CourtApp.Web.Abstractions
             return null;
         }
 
-        public async Task<JsonResult> LoadCourtBench(Guid CourtTypeId, int StateId, Guid ComplexId)
+        public async Task<JsonResult> LoadCourtBench(Guid CourtTypeId, int StateId, Guid ComplexId, Guid CourtDistrict)
         {
-            var dt = await _mediator.Send(new GetCourtBenchQuery(1, 100) { StateId = StateId, CourtTypeId = CourtTypeId, CourtId = ComplexId });
+            var dt = await _mediator.Send(new GetCourtBenchQuery(1, 1000) { StateId = StateId, CourtTypeId = CourtTypeId, CourtId = ComplexId, CourtDistrictId = CourtDistrict });
             var data = Json(dt);
             return data;
         }
 
-        public async Task<SelectList> LoadBenches(Guid CourtTypeId, int StateId, Guid ComplexId)
+        public async Task<SelectList> LoadBenches(Guid CourtTypeId, int StateId, Guid ComplexId, Guid CourtDistrict)
         {
-            var dt = await _mediator.Send(new GetCourtBenchQuery(1, 100) { StateId = StateId, CourtTypeId = CourtTypeId, CourtId = ComplexId });
+            var dt = await _mediator.Send(new GetCourtBenchQuery(1, 100) { StateId = StateId, CourtTypeId = CourtTypeId, CourtId = ComplexId, CourtDistrictId = CourtDistrict });
             if (dt.Succeeded)
             {
                 var fields = dt.Data;
@@ -386,9 +394,16 @@ namespace CourtApp.Web.Abstractions
         {
             return new SelectList(StaticDropDownDictionaries.CaseTitle().OrderBy(v => v.Value), "Key", "Value");
         }
-        public SelectList DdlCadres()
+        public async Task<SelectList> DdlCadres()
         {
-            return new SelectList(StaticDropDownDictionaries.Cadres().OrderBy(v => v.Value), "Key", "Value");
+            var response = await _mediator.Send(new GetQueryCadre());
+            if (response.Succeeded)
+            {
+                var fields = _mapper.Map<List<CadreMasterViewModel>>(response.Data.OrderBy(o => o.Name_En));
+                return new SelectList(fields, nameof(CadreMasterViewModel.Id), nameof(CadreMasterViewModel.Name_En), null, null); ;
+            }
+            return null;
+            //return new SelectList(StaticDropDownDictionaries.Cadres().OrderBy(v => v.Value), "Key", "Value");
         }
         public SelectList DdlStrength()
         {

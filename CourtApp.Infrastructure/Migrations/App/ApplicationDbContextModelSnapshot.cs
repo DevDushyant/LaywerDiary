@@ -972,6 +972,36 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.ToTable("m_book_type", "ld");
                 });
 
+            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CadreMasterEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name_En")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name_Hn")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("m_cadre", "ld");
+                });
+
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CaseDocsEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1124,6 +1154,8 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppearenceID");
 
                     b.HasIndex("OppositCounselId");
 
@@ -2522,9 +2554,17 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.ClientEntity", b =>
                 {
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.FSTitleEntity", "Appearence")
+                        .WithMany()
+                        .HasForeignKey("AppearenceID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("CourtApp.Domain.Entities.LawyerDiary.LawyerMasterEntity", "OppositCounsel")
                         .WithMany()
                         .HasForeignKey("OppositCounselId");
+
+                    b.Navigation("Appearence");
 
                     b.Navigation("OppositCounsel");
                 });

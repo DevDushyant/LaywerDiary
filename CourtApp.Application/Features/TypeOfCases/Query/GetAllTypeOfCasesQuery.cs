@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.TypeOfCases.Query
 {
-    public class GetAllTypeOfCasesQuery:IRequest<PaginatedResult<GetAllTypeOfCasesResponse>>
+    public class GetAllTypeOfCasesQuery : IRequest<PaginatedResult<GetAllTypeOfCasesResponse>>
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
@@ -26,7 +26,7 @@ namespace CourtApp.Application.Features.TypeOfCases.Query
         public GetAllTypeOfCasesQuery(int pagenumber, int pagesize)
         {
             PageNumber = pagenumber;
-            PageSize = pagesize;           
+            PageSize = pagesize;
         }
     }
 
@@ -42,17 +42,17 @@ namespace CourtApp.Application.Features.TypeOfCases.Query
             Expression<Func<TypeOfCasesEntity, GetAllTypeOfCasesResponse>> expression = e => new GetAllTypeOfCasesResponse
             {
                 Id = e.Id,
-               CaseNature=e.Nature.Name_En,
-               Name_En=e.Name_En,
-               Name_Hn=e.Name_Hn,
-               Abbreviation=e.Abbreviation,
-               CourtTypeName=e.CourtType.CourtType,
-               //StateName=e.State.Name_En
+                CaseNature = e.Nature.Name_En.ToUpper(),
+                Name_En = e.Name_En.ToUpper(),
+                Name_Hn = e.Name_Hn,
+                Abbreviation = e.Abbreviation.ToUpper(),
+                CourtTypeName = e.CourtType.CourtType.ToUpper(),
+                //StateName=e.State.Name_En
             };
             var predicate = PredicateBuilder.True<TypeOfCasesEntity>();
 
             if (request.CategoryId != Guid.Empty)
-                predicate = predicate.And(b => b.Nature.Id==request.CategoryId);
+                predicate = predicate.And(b => b.Nature.Id == request.CategoryId);
 
             //if (request.StateId != 0)
             //    predicate = predicate.And(b => b.StateId == request.StateId);
@@ -67,12 +67,14 @@ namespace CourtApp.Application.Features.TypeOfCases.Query
                     .Include(c => c.Nature)
                     .Where(predicate)
                     .Select(expression)
+                    .OrderBy(o => o.Name_En.ToUpper())
                     .ToPaginatedListAsync(request.PageNumber, request.PageSize);
                 paginatedList.TotalCount = _repository.QryEntities.Count();
                 return paginatedList;
             }
-            catch(Exception ex) { 
-            Console.WriteLine(ex.ToString());
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
             return null;
 

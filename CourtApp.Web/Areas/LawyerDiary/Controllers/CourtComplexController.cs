@@ -71,7 +71,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     else
                     {
                         btViewModel.Message = result.Message;
-                        var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel);
+                        var html = await _viewRenderer.RenderViewToStringAsync("_Create", btViewModel);
                         return new JsonResult(new { isValid = false, html = html });
                         //_notify.Error(result.Message);
                     }

@@ -73,7 +73,8 @@ namespace CourtApp.Application.Features.Registers
                         .Select(work => new // Flatten Works and retain Case reference
                         {
                             Case = c.Case,
-                            Work = work
+                            Work = work,
+                            LastModifiedDate=c.LastModifiedOn
                         }))
                         .Join(
                             _wRepo.Entities
@@ -84,7 +85,8 @@ namespace CourtApp.Application.Features.Registers
                             {
                                 Case = cw.Case,
                                 CaseWorkDetail = cw.Work,
-                                Work = w
+                                Work = w 
+                               
                             }
                         )
                         .ToList();
@@ -103,7 +105,7 @@ namespace CourtApp.Application.Features.Registers
                 }               
                 return Result<List<OtherRegisterResponse>>.Success(awc.ToList());
             }
-            return null;           
+            return Result<List<OtherRegisterResponse>>.Fail("No record found");           
         }
     }
 }

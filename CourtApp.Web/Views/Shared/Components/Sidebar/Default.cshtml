@@ -24,6 +24,29 @@
                 }
 
                 @*  <li class="nav-header">@localizer["Admin"]</li> *@
+                <li is-active-route asp-area="Client" class="nav-item has-treeview">
+                    <a is-active-route asp-area="Client" class="nav-link">
+                        <i class="nav-icon fas fa fa-handshake-o"></i>
+                        <p>
+                            @localizer["Client Management"]
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Client" asp-controller="ManageClient" asp-action="index" class="nav-link">
+                                <i class="fa fa-user" aria-hidden="true"></i>
+                                <p>@localizer["Client"]</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a is-active-route asp-area="LawyerDiary" asp-controller="Lawyer" asp-action="index" class="nav-link">
+                                <i class="fa fa-gavel" aria-hidden="true"></i>
+                                <p>@localizer["Lawyer"]</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
                 <li is-active-route asp-area="Litigation" class="nav-item has-treeview">
                     <a is-active-route asp-area="Litigation" class="nav-link">
@@ -82,29 +105,7 @@
                     </ul>
                 </li>
 
-                <li is-active-route asp-area="Client" class="nav-item has-treeview">
-                    <a is-active-route asp-area="Client" class="nav-link">
-                        <i class="nav-icon fas fa fa-handshake-o"></i>
-                        <p>
-                            @localizer["Client Management"]
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a is-active-route asp-area="Client" asp-controller="ManageClient" asp-action="index" class="nav-link">
-                                <i class="fa fa-user" aria-hidden="true"></i>
-                                <p>@localizer["Client"]</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a is-active-route asp-area="LawyerDiary" asp-controller="Lawyer" asp-action="index" class="nav-link">
-                                <i class="fa fa-gavel" aria-hidden="true"></i>
-                                <p>@localizer["Lawyer"]</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                
 
                 <li is-active-route asp-area="Report" class="nav-item has-treeview">
                     <a is-active-route asp-area="Report" class="nav-link">
@@ -397,6 +398,12 @@
                                 <a is-active-route asp-area="LawyerDiary" asp-controller="Title" asp-action="fstitle" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>@localizer["First & Second Title"]</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="cadre" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Cadre Master"]</p>
                                 </a>
                             </li>
                             @* <li class="nav-item">

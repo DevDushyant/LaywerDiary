@@ -5,6 +5,7 @@ using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -174,6 +175,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 if (model.IsUpdate)
                 {
                     var up = _mapper.Map<UpdateCaseProceedingCommand>(model);
+                    up.ProceedingDate = Convert.ToDateTime(TempData["SelectedDate"].ToString());
                     bool hasValues = up.ProcWork.GetType().GetProperties()
                                        .Any(prop => prop.GetValue(up.ProcWork) != null);
                     if (!hasValues)

@@ -36,7 +36,7 @@ namespace CourtApp.Application.Features.CaseCategory
             {
                 Id = e.Id,
                 CourtType = e.CourtType.CourtType,                
-                Name_En = e.Name_En,
+                Name_En = e.Name_En.ToUpper(),
                 Name_Hn = e.Name_Hn
             };
             var predicate = PredicateBuilder.True<NatureEntity>();
@@ -49,6 +49,7 @@ namespace CourtApp.Application.Features.CaseCategory
 
             var paginatedList = await repository.CaseNatures.Where(predicate)
                 .Select(expression)
+                .OrderBy(o => o.Name_En.ToUpper())
                 .ToPaginatedListAsync(request.PageNumber, request.PageSize);
             return paginatedList;
         }

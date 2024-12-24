@@ -13,7 +13,6 @@ namespace CourtApp.Web.Areas.LawyerDiary.Mappings
             CreateMap<GetAllClientCachedResponse, GClientViewModel>();
             CreateMap<ClientFeeViewModel, ClientFee>();
             CreateMap<ClientViewModel,CreateClientCommand>();
-
             CreateMap<GetClientByIdResponse, ClientViewModel>();
             CreateMap<CreateClientCommand, ClientViewModel>();
             CreateMap<UpdateClientCommand, ClientViewModel>();

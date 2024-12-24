@@ -158,7 +158,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 var model = _mapper.Map<List<OtherRegisterViewModel>>(response.Data);
                 return PartialView("_OtherRegister", model);
             }
-            return null;
+            var vm = new List<OtherRegisterViewModel>();
+            return PartialView("_OtherRegister", vm);
         }
         #endregion
     }

@@ -159,5 +159,12 @@ namespace CourtApp.Application.Constants
             public const string Edit = "Permissions.Complex.Edit";
             public const string Delete = "Permissions.Complex.Delete";
         }
+        public static class Cadre
+        {
+            public const string View = "Permissions.Cadre.View";
+            public const string Create = "Permissions.Cadre.Create";
+            public const string Edit = "Permissions.Cadre.Edit";
+            public const string Delete = "Permissions.Cadre.Delete";
+        }
     }
 }

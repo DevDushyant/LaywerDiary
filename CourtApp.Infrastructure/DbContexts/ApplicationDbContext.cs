@@ -1,7 +1,5 @@
-﻿//using AspNetCoreHero.Abstractions.Domain;
-using CourtApp.Application.Interfaces.Contexts;
+﻿using CourtApp.Application.Interfaces.Contexts;
 using CourtApp.Application.Interfaces.Shared;
-//using AspNetCoreHero.EntityFrameworkCore.AuditTrail;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Linq;
@@ -17,7 +15,6 @@ using CourtApp.Domain.Entities.FormBuilder;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using System.Reflection.Emit;
 namespace CourtApp.Infrastructure.DbContexts
 {
     public class ApplicationDbContext : AuditableContext, IApplicationDbContext
@@ -76,6 +73,7 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<FormBuilderEntity> DynamicFrmBuilders { get; set; }
         public DbSet<DraftingDetailEntity> CaseTempMappings { get; set; }
         public DbSet<FormTemplateMappingEntity> TempFormMappings { get; set; }
+        public DbSet<CadreMasterEntity> Cadres { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

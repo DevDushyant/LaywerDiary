@@ -8,25 +8,35 @@ namespace CourtApp.Web.Areas.Client.Validators
     {
         public ClientViewModelValidator()
         {
-            //RuleFor(p => p.FirstName)
-            //   .NotEmpty().WithMessage("{PropertyName} is required.")
-            //   .NotNull();
+            RuleFor(p => p.Name)
+               .NotEmpty().WithMessage("{PropertyName} is required.")
+               .NotNull();
 
-            //RuleFor(p => p.LastName)
-            //  .NotEmpty().WithMessage("{PropertyName} is required.")
-            //  .NotNull();
+            RuleFor(p => p.Mobile)
+             .NotEmpty().WithMessage("{PropertyName} is required.")
+             .NotNull()
+            .MinimumLength(10).WithMessage("{PropertyName} must not be less than 10 characters.");
+            //.Matches(new Regex(@"((\(\d{3}\) ?)|(\d{3}-))?\d{3}-\d{4}")).WithMessage("{PropertyName} not valid");
 
-            //RuleFor(p => p.FatherName)
-            // .NotEmpty().WithMessage("{PropertyName} is required.")
-            // .NotNull();
+            RuleFor(p => p.AppearenceID)
+               .NotEmpty().WithMessage("{PropertyName} is required.")
+               .NotNull();
 
-            //RuleFor(p => p.Mobile)
-            // .NotEmpty().WithMessage("{PropertyName} is required.")
-            // .NotNull();
-             //.MinimumLength(10).WithMessage("{PropertyName} must not be less than 10 characters.");         
-             //.Matches(new Regex(@"((\(\d{3}\) ?)|(\d{3}-))?\d{3}-\d{4}")).WithMessage("{PropertyName} not valid");
+            RuleFor(p => p.ReferalBy)
+               .NotEmpty().WithMessage("{PropertyName} is required.")
+               .NotNull();
 
+            RuleFor(p => p.Address)
+               .NotEmpty().WithMessage("{PropertyName} is required.")
+               .NotNull();
 
+            RuleFor(p => p.FeeDetail.FeeSettled)
+               .NotEmpty().WithMessage("{PropertyName} is required.")
+               .NotNull();               
+
+            RuleFor(p => p.FeeDetail.FeeAdvance)
+               .NotEmpty().WithMessage("{PropertyName} is required.")
+               .NotNull();
 
         }
     }

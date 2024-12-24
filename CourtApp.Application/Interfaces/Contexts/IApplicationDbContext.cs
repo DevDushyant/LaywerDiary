@@ -46,6 +46,7 @@ namespace CourtApp.Application.Interfaces.Contexts
         DbSet<FormBuilderEntity> DynamicFrmBuilders { get; set; }
         DbSet<DraftingDetailEntity> CaseTempMappings { get; set; }
         DbSet<FormTemplateMappingEntity> TempFormMappings { get; set; }
+        DbSet<CadreMasterEntity> Cadres { get; set; }
 
     }
 }

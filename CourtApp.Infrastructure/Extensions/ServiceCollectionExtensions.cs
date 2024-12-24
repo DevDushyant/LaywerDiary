@@ -103,6 +103,9 @@ namespace CourtApp.Infrastructure.Extensions
             services.AddTransient<IDOTypeRepository, DOTypeRepository>();
             services.AddTransient<ICaseDocsRepository, CaseDocsRepository>();
 
+            services.AddTransient<ICadreMasterCacheRepository, CadreMasterCacheRepository>();
+            services.AddTransient<ICadreMasterRepository, CadreMasterRepository>();
+
             #endregion Repositories
 
             #region First & Secound Title Services

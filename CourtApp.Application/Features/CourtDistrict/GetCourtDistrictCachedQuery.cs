@@ -31,8 +31,16 @@ namespace CourtApp.Application.Features.CourtDistrict
         public async Task<Result<List<CourtDistrictReponse>>> Handle(GetCourtDistrictCachedQuery request, CancellationToken cancellationToken)
         {
             var dl = await _cacheRepository.GetCachedListAsync();
-            var mappedDt = _mapper.Map<List<CourtDistrictReponse>>(dl.Where(w=>w.StateId==request.StateId));
-            return Result<List<CourtDistrictReponse>>.Success(mappedDt.OrderBy(o=>o.Name_En).ToList());
+            var mappedDt = _mapper.Map<List<CourtDistrictReponse>>(dl.Where(w => w.StateId == request.StateId));
+            var mdt = mappedDt.Select(s => new CourtDistrictReponse
+            {
+                Id = s.Id,
+                Name_En = s.Name_En.ToUpper(),
+                StateName = s.StateName,
+                Abbreviation = s.Abbreviation,
+                Name_Hn = s.Name_Hn
+            }).OrderBy(o => o.Name_En.ToUpper()).ToList();
+            return Result<List<CourtDistrictReponse>>.Success(mdt);
         }
     }
 }

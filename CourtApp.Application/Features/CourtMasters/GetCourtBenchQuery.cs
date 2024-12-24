@@ -26,6 +26,7 @@ namespace CourtApp.Application.Features.CourtMasters
         public int StateId { get; set; }
         public Guid CourtTypeId { get; set; }
         public Guid CourtId { get; set; }
+        public Guid CourtDistrictId { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
     }
@@ -33,10 +34,15 @@ namespace CourtApp.Application.Features.CourtMasters
     {
         private readonly ICourtBenchRepository _Repository;
         private readonly ICourtMasterRepository _CourtMasterRepo;
-        public GetCourtBenchQueryHandler(ICourtBenchRepository _Repository, ICourtMasterRepository _CourtMasterRepo)
+        private readonly ICourtTypeRepository _CourtTypeRepo;
+        public GetCourtBenchQueryHandler(ICourtBenchRepository _Repository,
+            ICourtMasterRepository _CourtMasterRepo,
+            ICourtTypeRepository courtTypeRepo)
         {
             this._Repository = _Repository;
             this._CourtMasterRepo = _CourtMasterRepo;
+            _CourtTypeRepo = courtTypeRepo;
+
         }
         public Task<PaginatedResult<CourtBenchResponse>> Handle(GetCourtBenchQuery request, CancellationToken cancellationToken)
         {
@@ -44,23 +50,38 @@ namespace CourtApp.Application.Features.CourtMasters
             {
                 Id = e.Id,
                 Address = e.Address,
-                CourtBench_En = e.CourtBench_En,
+                CourtBench_En = e.CourtBench_En.ToUpper(),
                 CourtBench_Hn = e.CourtBench_Hn
             };
             var predicate = PredicateBuilder.True<CourtBenchEntity>();
             Guid CourtMasterId = Guid.Empty;
-            var dt = _CourtMasterRepo.Entities                
-                .Where(w => w.StateId == request.StateId && w.CourtTypeId == request.CourtTypeId)
-                .ToList();
-            if (request.CourtTypeId != Guid.Empty && request.CourtId != Guid.Empty)
-                CourtMasterId = dt
-                    .Select(s => s.Id).FirstOrDefault();
+            var CourtTypeAbb = _CourtTypeRepo
+                .CourtTypeEntities
+                .Where(w => w.Id.Equals(request.CourtTypeId))
+                .Select(s => s.Abbreviation)
+                .FirstOrDefault();
+            if (CourtTypeAbb != null && CourtTypeAbb.Equals("DICT"))
+            {
+                CourtMasterId = _CourtMasterRepo.Entities
+                .Where(w => w.StateId == request.StateId
+                        && w.CourtDistrictId == request.CourtDistrictId
+                        && w.CourtComplexId.Equals(request.CourtId)).Select(s => s.Id)
+                .FirstOrDefault();
+            }
             else
-                CourtMasterId = dt.Select(s => s.Id).FirstOrDefault();
+            {
+                CourtMasterId = _CourtMasterRepo.Entities
+                .Where(w => w.StateId == request.StateId
+                        && w.CourtTypeId.Equals(request.CourtTypeId)).Select(s => s.Id)
+                .FirstOrDefault();
+            }
             if (request.CourtTypeId != Guid.Empty)
                 predicate = predicate.And(b => b.CourtMasterId == CourtMasterId);
 
-            var dtlist = _Repository.Entities.Where(predicate)
+            var dtlist = _Repository
+                .Entities
+                .Where(predicate)
+                .OrderBy(o => o.CourtBench_En.ToUpper())
                .Select(expression).
                ToPaginatedListAsync(request.PageNumber, request.PageSize);
 

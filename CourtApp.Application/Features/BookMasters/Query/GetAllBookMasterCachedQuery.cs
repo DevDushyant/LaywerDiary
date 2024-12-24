@@ -1,13 +1,9 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
 using CourtApp.Application.Interfaces.CacheRepositories;
-using CourtApp.Domain.Entities.LawyerDiary;
-using KT3Core.Areas.Global.Classes;
 using MediatR;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 

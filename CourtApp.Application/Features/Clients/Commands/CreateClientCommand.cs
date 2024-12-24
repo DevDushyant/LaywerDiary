@@ -6,12 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using CourtApp.Domain.Entities.LawyerDiary;
 using System;
-using CourtApp.Domain.Entities.Common;
 using CourtApp.Domain.Entities.Account;
+using System.Linq;
+using CourtApp.Domain.Entities.Common;
 
 namespace CourtApp.Application.Features.Clients.Commands
 {
-    public partial class CreateClientCommand : IRequest<Result<Guid>>
+    public class CreateClientCommand : IRequest<Result<Guid>>
     {
         public string Name { get; set; }
         public string Address { get; set; }
@@ -24,6 +25,7 @@ namespace CourtApp.Application.Features.Clients.Commands
         public Guid? OppositCounselId { get; set; }
         public Guid CaseId { get; set; }
         public ClientFee FeeDetail { get; set; }
+        public string UserId { get; set; }
     }
     public class ClientFee
     {
@@ -54,11 +56,18 @@ namespace CourtApp.Application.Features.Clients.Commands
 
         public async Task<Result<Guid>> Handle(CreateClientCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<ClientEntity>(request);
-            entity.CaseFee=_mapper.Map<CaseFeeEntity>(request.FeeDetail);
-            await _clientRepository.InsertAsync(entity);
-            await _unitOfWork.Commit(cancellationToken);
-            return Result<Guid>.Success(entity.Id);
+            var detail = _clientRepository.Clients
+                .Where(w => w.Mobile == request.Mobile && w.CreatedBy.Equals(request.UserId))
+                .FirstOrDefault();
+            if (detail == null)
+            {
+                var entity = _mapper.Map<ClientEntity>(request);
+                entity.CaseFee = _mapper.Map<CaseFeeEntity>(request.FeeDetail);
+                await _clientRepository.InsertAsync(entity);
+                await _unitOfWork.Commit(cancellationToken);
+                return Result<Guid>.Success(entity.Id);
+            }
+            return Result<Guid>.Fail("Error! The client is already exist");
         }
     }
 }

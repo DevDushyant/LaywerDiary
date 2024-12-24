@@ -32,19 +32,21 @@
 <form id="create-form" method="post" asp-controller="ManageClient"
       asp-action="OnPostCreateOrEdit"
       asp-route-id="@Model.Id"
+      onsubmit="return jQueryModalPost(this);"
       enctype="multipart/form-data">
     <input type="hidden" asp-for="@Model.CaseId" />
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
-                <label class="col-md-2 col-form-label">Name (<span style="color:red">*</span>)</label>
+                <label class="col-md-2 col-form-label">@localizer["Name"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <input type="text" placeholder="Please enter name" asp-for="Name" class="form-control" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
-                <label class="col-md-2 col-form-label">Mobile (<span style="color:red">*</span>)</label>
+                <label class="col-md-2 col-form-label">@localizer["Mobile"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
-                    <input type="tel" placeholder="Please enter mobile" asp-for="Mobile" class="form-control" />
+                    <input type="tel" placeholder="Please enter mobile"
+                           asp-for="Mobile" class="form-control" maxlength="10" />
                     <span asp-validation-for="Mobile" class="text-danger"></span>
                 </div>
             </div>
@@ -54,7 +56,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
-                <label class="col-md-2 col-form-label">Email (<span style="color:red">*</span>)</label>
+                <label class="col-md-2 col-form-label">@localizer["Email"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <input type="email" placeholder="Please enter email" asp-for="Email" class="form-control" />
                     <span asp-validation-for="Email" class="text-danger"></span>
@@ -70,13 +72,30 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
-                <label class="col-md-2 col-form-label">Referal By</label>
+                <label class="col-md-2 col-form-label">@localizer["Referal By"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
-                    <input type="text" placeholder="Please referals name" asp-for="ReferalBy" class="form-control" />
+                    <input type="text" placeholder="Please referals name"
+                           asp-for="ReferalBy" class="form-control" />
+                    <span asp-validation-for="ReferalBy" class="text-danger"></span>
                 </div>
-                <label class="col-md-2 col-form-label">Appearance</label>
+                <label class="col-md-2 col-form-label">@localizer["Appearance"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
-                    <select class="form-control select2bs4" asp-for="AppearenceID" asp-items="@Model.Appearences">
+                    <select class="form-control select2bs4" asp-for="AppearenceID"
+                            asp-items="@Model.Appearences">
+                        <option></option>
+                    </select>
+                    <span asp-validation-for="AppearenceID" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">@localizer["Opposite Counsel"]</label>
+                <div class="col-md-4">
+                    <select class="form-control select2bs4" asp-for="OppositCounselId" asp-items="@Model.OppositCounsels">
                         <option></option>
                     </select>
                 </div>
@@ -86,11 +105,12 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
-                <label class="col-md-2 col-form-label">Opposite Counsel</label>
-                <div class="col-md-4">
-                    <select class="form-control select2bs4" asp-for="OppositCounselId" asp-items="@Model.OppositCounsels">
-                        <option></option>
-                    </select>
+                <label class="col-md-2 col-form-label">@localizer["Address"] (<span style="color:red">*</span>)</label>
+                <div class="col-md-10">
+                    <textarea type="text"
+                              placeholder="Please enter the client complete address"
+                              asp-for="Address" class="form-control"> </textarea>
+                    <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -101,15 +121,15 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group row">
-                    <label class="col-md-2 col-form-label">Fee Settled </label>
+                    <label class="col-md-2 col-form-label">Fee Settled (<span style="color:red">*</span>)</label>
                     <div class="col-md-4">
                         <input type="text" placeholder="Please settled fee" asp-for="FeeDetail.FeeSettled" class="form-control" />
-
+                        <span asp-validation-for="FeeDetail.FeeSettled" class="text-danger"></span>
                     </div>
-                    <label class="col-md-2 col-form-label">Advance Fee</label>
+                    <label class="col-md-2 col-form-label">Advance Fee (<span style="color:red">*</span>)</label>
                     <div class="col-md-4">
                         <input type="text" placeholder="Please enter advance if any" asp-for="FeeDetail.FeeAdvance" class="form-control" />
-
+                        <span asp-validation-for="FeeDetail.FeeAdvance" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -123,6 +143,7 @@
 </form>
 
 <script type="text/javascript" language=javascript>
+     $.validator.unobtrusive.parse(document);
     $("#OppositCounselId").select2({
         placeholder: "Select a opposit councel",
         theme: "bootstrap4",

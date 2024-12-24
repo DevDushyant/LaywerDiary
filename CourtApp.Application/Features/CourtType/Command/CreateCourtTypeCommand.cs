@@ -31,7 +31,7 @@ namespace CourtApp.Application.Features.CourtType.Command
         public async Task<Result<Guid>> Handle(CreateCourtTypeCommand request, CancellationToken cancellationToken)
         {
             var IsExists = _Repository.CourtTypeEntities
-                .Where(c => c.CourtType.Contains(request.CourtType.Trim()))
+                .Where(c => c.CourtType.Contains(request.Abbreviation.Trim()))
                 .FirstOrDefault();
             if (IsExists == null)
             {

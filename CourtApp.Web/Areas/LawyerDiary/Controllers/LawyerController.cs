@@ -1,9 +1,13 @@
 ﻿using AspNetCoreHero.Results;
+using CourtApp.Application.Features.CaseCategory;
+using CourtApp.Application.Features.CaseDetails;
+using CourtApp.Application.Features.Clients.Queries.GetById;
 using CourtApp.Application.Features.Lawyer;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
+using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.LawyerDiary.Models.Lawyer;
 using CourtApp.Web.Areas.Litigation.Models;
@@ -137,11 +141,34 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             ViewModel.Lawyers = new SelectList(model, nameof(UserViewModel.Id), nameof(UserViewModel.FirstName), null, null); ;
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_BringCaseDetail", ViewModel) });
         }
+        public async Task<IActionResult> GetClientDetailByCase(Guid CaseId)
+        {
+            var response = await _mediator.Send(new GetClientDetailByCaseIdQuery
+            {
+                CaseId = CaseId
+            });
+            if (response.Succeeded)
+            {
+                var dt = _mapper.Map<ClientViewModel>(response.Data);
+                var data = Json(dt);
+                return data;
+            }
+            return null;
+        }
+
         [HttpPost]
-        public IActionResult OnPostCaseByLawyer(BringCaseViewModel vmodel)
-        {           
-            _notify.Success("Case detail fetched!");
-            return RedirectToAction("BindLawyerCaseDetail", "CaseManage", new { area = "Litigation",id=vmodel.CaseId });
+        public async Task<IActionResult> OnPostCaseByLawyer(BringCaseViewModel vmodel)
+        {
+            if (ModelState.IsValid)
+            {
+                _notify.Success("Case detail fetched!");
+                return RedirectToAction("BindLawyerCaseDetail", "CaseManage", new { area = "Litigation", id = vmodel.CaseId });
+            }
+            else
+            {
+                var html = await _viewRenderer.RenderViewToStringAsync("_BringCaseDetail", vmodel);
+                return new JsonResult(new { isValid = false, html = html });
+            }
         }
         #endregion
     }

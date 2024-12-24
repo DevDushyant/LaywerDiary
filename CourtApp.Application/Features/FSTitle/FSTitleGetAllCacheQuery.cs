@@ -42,10 +42,12 @@ namespace CourtApp.Application.Features.FSTitle
                         {
                             Id = e.Id,
                             Name_En = e.Name_En,
-                            Type = sdt.Value
+                            Type = sdt.Value.ToUpper()
                         };
-            var mappedProducts = _mapper.Map<List<FSTitleResponse>>(DList.OrderBy(o => o.Type).ThenBy(o => o.Name_En));
-            return Result<List<FSTitleResponse>>.Success(mappedProducts);
+            var mappedProducts = _mapper.Map<List<FSTitleResponse>>(DList
+                .OrderBy(o => o.Type.ToUpper())
+                .ThenBy(o => o.Name_En));
+            return Result<List<FSTitleResponse>>.Success(mappedProducts.ToList());
         }
     }
 }

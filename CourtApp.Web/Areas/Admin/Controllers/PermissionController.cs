@@ -44,6 +44,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             allPermissions.GetPermissions(typeof(Permissions.CaseHearing), roleId);
             allPermissions.GetPermissions(typeof(Permissions.Titles), roleId);
             allPermissions.GetPermissions(typeof(Permissions.Complex), roleId);
+            allPermissions.GetPermissions(typeof(Permissions.Cadre), roleId);           
            
             var role = await _roleManager.FindByIdAsync(roleId);
             model.RoleId = roleId;

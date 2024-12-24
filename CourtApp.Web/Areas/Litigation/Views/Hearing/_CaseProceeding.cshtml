@@ -110,31 +110,31 @@
                     }
                     else
                     { *@
-                        <div id="workRows">
-                            <div class="form-group row workRow" id="workRow_0">
-                                <label class="col-md-2 col-form-label">@localizer["Work Type"]</label>
-                                <div class="col-md-4">
-                                    <div class="input-group">
-                                        <select class="form-control select2bs4" id="WorkTypeId_0"
-                                                asp-for="@Model.ProcWork.Workdt[0].WorkTypeId"
-                                                asp-items="@Model.ProcWork.WorkTypes">
-                                            <option></option>
-                                        </select>
-                                    </div>
+                    <div id="workRows">
+                        <div class="form-group row workRow" id="workRow_0">
+                            <label class="col-md-2 col-form-label">@localizer["Work Type"]</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <select class="form-control select2bs4" id="WorkTypeId_0"
+                                            asp-for="@Model.ProcWork.Workdt[0].WorkTypeId"
+                                            asp-items="@Model.ProcWork.WorkTypes">
+                                        <option></option>
+                                    </select>
                                 </div>
-                                <label class="col-md-2 col-form-label">@localizer["Work"]</label>
-                                <div class="col-md-4">
-                                    <div class="input-group">
-                                        <select class="form-control select2bs4" id="WorkId_0"
-                                                asp-for="@Model.ProcWork.Workdt[0].WorkId"
-                                                asp-items="@Model.ProcWork.Works">
-                                            <option></option>
-                                        </select>
-                                    </div>
+                            </div>
+                            <label class="col-md-2 col-form-label">@localizer["Work"]</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <select class="form-control select2bs4" id="WorkId_0"
+                                            asp-for="@Model.ProcWork.Workdt[0].WorkId"
+                                            asp-items="@Model.ProcWork.Works">
+                                        <option></option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                   @*  } *@
+                    </div>
+                    @*  } *@
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label">@localizer["Working Date"]</label>
                         <div class="col-md-4">
@@ -149,7 +149,12 @@
         </div>
 
         <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
-            <button type="submit" class="btn btn-success">Save</button>
+            @{
+                string ButtonText = "";
+                if (Model.IsUpdate == true) ButtonText = "Update";
+                else ButtonText = "Save";
+            }
+            <button type="submit" class="btn btn-success">@ButtonText</button>
             <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
         </div>
     </div>

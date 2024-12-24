@@ -3,7 +3,7 @@
     <form asp-controller="Register" method="post" asp-action="UpdateCopyingStatus" class="d-inline">
         <div class="row">
             <div class="col-md-12">
-                <table id="tblRegister" class="table table-striped" width="100%" cellspacing="0">
+                <table id="tblRegisterDisp" class="table table-striped" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Sno.</th>
@@ -44,3 +44,8 @@
         </div>       
     </form>
 </div>
+<script>
+    $(document).ready(function () {
+        $("#tblRegisterDisp").DataTable();
+    });
+</script>

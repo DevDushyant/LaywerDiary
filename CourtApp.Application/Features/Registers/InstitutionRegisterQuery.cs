@@ -37,7 +37,7 @@ namespace CourtApp.Application.Features.Registers
                 Id = e.Id,
                 CaseType = e.CaseType.Name_En,
                 CourtType = e.CourtType.CourtType,
-                CaseNo = String.Concat(e.CaseNo, "/", e.CaseYear),
+                CaseNo = e.CaseNo!=null? String.Concat(e.CaseNo, "/", e.CaseYear):e.CaseYear.ToString(),
                 CourtBench = e.CourtBench.CourtBench_En,
                 FirstTitle = e.FirstTitle,
                 SecondTitle = e.SecondTitle,

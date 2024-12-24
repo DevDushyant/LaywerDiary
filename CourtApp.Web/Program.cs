@@ -30,7 +30,7 @@ namespace CourtApp.Web
                     await Infrastructure.Identity.Seeds.DefaultSuperAdminUser.SeedAsync(userManager, roleManager);
                     await Infrastructure.Identity.Seeds.DefaultBasicUser.SeedAsync(userManager, roleManager);
                     logger.LogInformation("Finished Seeding Default Data");
-                    logger.LogInformation("Application Starting");
+                    logger.LogInformation("Application Starting");                    
                 }
                 catch (Exception ex)
                 {

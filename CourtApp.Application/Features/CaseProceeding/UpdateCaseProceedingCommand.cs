@@ -17,6 +17,7 @@ namespace CourtApp.Application.Features.CaseProceeding
         public Guid SubHeadId { get; set; }
         public Guid? StageId { get; set; }
         public DateTime? NextDate { get; set; }
+        public DateTime ProceedingDate { get; set; }
         public string Remark { get; set; }
         public ProceedingWorkDto ProcWork { get; set; }
     }
@@ -51,13 +52,13 @@ namespace CourtApp.Application.Features.CaseProceeding
                 await _CaseRepo.UpdateAsync(CaseDetail);
             }
             var entity = await _Repository.GetByIdAsync(request.CaseId, null);
-            if (entity != null && entity.NextDate == request.NextDate)
+            if (entity != null)
             {
                 entity.NextDate = request.NextDate;
                 entity.HeadId = request.HeadId;
                 entity.SubHeadId = request.SubHeadId;
                 entity.StageId = request.StageId;
-                entity.ProceedingDate = request.NextDate;
+                entity.ProceedingDate = request.ProceedingDate;
                 entity.ProcWork = _mapper.Map<ProceedingWorkEntity>(request.ProcWork);
                 await _Repository.UpdateAsync(entity);
                 await _unitOfWork.Commit(cancellationToken);

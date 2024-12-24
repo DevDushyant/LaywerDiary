@@ -51,8 +51,8 @@ namespace CourtApp.Application.Features.CaseWork
                     a.CaseId = c.CaseId;
                     a.CaseDetail = c.Case.FirstTitle + " " + c.Case.SecondTitle + " (" + c.Case.CaseYear + "/" + c.Case.CaseNo + ")";
                     a.AWorks = new List<AssignedWork>();
-                    a.LastWorkingDate = c.ProcWork.LastWorkingDate != null ? c.ProcWork.LastWorkingDate.Value.ToString("dd-MM-yyyy") : "";
-                    foreach (var w in c.ProcWork.Works.Where(s => s.Status == 0))
+                    a.LastWorkingDate = c.ProcWork.LastWorkingDate != null ? c.ProcWork.LastWorkingDate.Value : default(DateTime);
+                    foreach (var w in c.ProcWork.Works.Where(w=>w.WorkId!=Guid.Empty).Where(s => s.Status == 0))
                     {
                         AssignedWork aw = new AssignedWork();
                         aw.Id = c.Id;
@@ -63,68 +63,14 @@ namespace CourtApp.Application.Features.CaseWork
                     }
                     awc.Add(a);
                 }
-                var workc = awc.Where(w => w.AWorks.Count > 0).ToList();                    
-                if (workc.Count() > 0)
-                    return Result<List<AssignedWorkToCaseResponse>>.Success(workc);
+                var workc = awc.Where(w => w.AWorks.Count > 0).ToList();
+                var works = workc.SelectMany(s => s.AWorks).Where(w=>w.WorkId!=Guid.Empty);                
+                if (works.Count() > 0)
+                    return Result<List<AssignedWorkToCaseResponse>>.Success(workc.OrderByDescending(o=>o.LastWorkingDate).ToList()); 
                 else
-                    return Result<List<AssignedWorkToCaseResponse>>.Success();
+                    return Result<List<AssignedWorkToCaseResponse>>.Success("There is no work allocated");
             }
-            return Result<List<AssignedWorkToCaseResponse>>.Fail("There is no record");
-            //Expression<Func<CaseWorkEntity, CaseWorkDto>> expression = e => new CaseWorkDto
-            //{
-            //    Id = e.Id,
-            //    CaseId = e.Case.Id,
-            //    CaseTitle = e.Case.FirstTitle + " V/S " + e.Case.SecondTitle + "(" + e.Case.CaseNo + "/" + e.Case.CaseYear + ")",
-            //    Work = e.Work.Work.Work_En,
-            //    WorkId = e.Work.Work.Id,
-            //    SubWork = e.Work.Name_En,
-            //    SubWId = e.Work.Id,
-            //    WDate = e.WorkingDate != null ? e.WorkingDate.Value.ToString("dd/MM/yyyy") : "",
-            //    Status = e.Status,
-
-            //};
-            //var predicate = PredicateBuilder.True<CaseWorkEntity>();
-            //if (request.CaseId != Guid.Empty)
-            //    predicate = predicate.And(b => b.CaseId == request.CaseId);
-            //try
-            //{
-
-            //    var rData = _Repository.Entities.Where(predicate)
-            //        .Select(expression)
-            //        .Where(w=>w.Status==0)
-            //        .ToList();
-
-            //    var CaseDetail = rData.Select(c => new { CId = c.CaseId, CDetail = c.CaseTitle })
-            //        .Distinct().ToList();
-
-            //    List<AssignedWorkToCaseResponse> dtl = new List<AssignedWorkToCaseResponse>();
-            //    foreach (var cd in CaseDetail)
-            //    {
-            //        AssignedWorkToCaseResponse assigned = new AssignedWorkToCaseResponse();
-            //        assigned.CaseDetail = cd.CDetail;
-            //        assigned.CaseId = cd.CId;
-            //        List<AssignedWork> Works = new List<AssignedWork>();
-            //        foreach (var w in rData)
-            //        {                        
-            //            if (cd.CId == w.CaseId)
-            //            {
-            //                var asW = new AssignedWork();
-            //                asW.Id = w.Id;
-            //                asW.WorkId = w.SubWId;
-            //                asW.WorkDetail = w.Work + " - " + w.SubWork;                            
-            //                Works.Add(asW);
-            //            }
-            //        }
-            //        assigned.AWorks = Works;
-            //        dtl.Add(assigned);
-            //    }               
-            //    return Result<List<AssignedWorkToCaseResponse>>.Success(dtl);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex);
-            //    return null;
-            //}
+            return Result<List<AssignedWorkToCaseResponse>>.Fail("There is no record");            
         }
     }
 }

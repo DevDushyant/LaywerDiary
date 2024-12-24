@@ -34,7 +34,15 @@ namespace CourtApp.Application.Features.CourtComplex
             var rs = dl.Where(w => w.CourtDistrictId == request.CourtDistrictId)
                 .OrderBy(o => o.Name_En).ToList();
             var mappedDt = _mapper.Map<List<CourtComplexResponse>>(rs);
-            return Result<List<CourtComplexResponse>>.Success(mappedDt);
+            var mdt = mappedDt.Select(s => new CourtComplexResponse
+            {
+                Id = s.Id,
+                DistrictName = s.DistrictName,
+                CDistrictName = s.CDistrictName,
+                Name_En = s.Name_En.ToUpper(),
+                StateName = s.StateName
+            }).OrderBy(o => o.Name_En.ToUpper());
+            return Result<List<CourtComplexResponse>>.Success(mdt.ToList());
         }
     }
 }

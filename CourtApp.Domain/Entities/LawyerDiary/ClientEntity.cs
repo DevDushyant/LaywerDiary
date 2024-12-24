@@ -22,5 +22,6 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public Guid? OppositCounselId { get; set; }       
         public virtual LawyerMasterEntity OppositCounsel { get; set; }        
         public virtual CaseFeeEntity CaseFee { get; set; }
+        public virtual FSTitleEntity Appearence{ get; set; }
     }
 }

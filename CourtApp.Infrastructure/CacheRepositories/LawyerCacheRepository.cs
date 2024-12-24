@@ -42,7 +42,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
         {
             string cacheKey = LawyerMasterCacheKeys.ListKey;
             var dtList = await _distCache.GetAsync<List<LawyerMasterEntity>>(cacheKey);
-            if (dtList.Count == 0)
+            if (dtList==null)
             {
                 dtList = await _Repo.GetListAsync();
                 await _distCache.SetAsync(cacheKey, dtList);

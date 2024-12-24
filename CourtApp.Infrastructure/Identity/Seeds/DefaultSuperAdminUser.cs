@@ -39,6 +39,8 @@ namespace CourtApp.Infrastructure.Identity.Seeds
             await roleManager.AddPermissionClaim(adminRole, "ProceedingSubHeads");
             await roleManager.AddPermissionClaim(adminRole, "CaseWorks");
             await roleManager.AddPermissionClaim(adminRole, "Titles");
+            await roleManager.AddPermissionClaim(adminRole, "Cadre");
+            await roleManager.AddPermissionClaim(adminRole, "Complex");
         }
 
         public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)

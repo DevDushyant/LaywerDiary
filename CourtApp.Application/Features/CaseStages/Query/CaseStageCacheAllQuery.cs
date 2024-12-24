@@ -31,7 +31,12 @@ namespace CourtApp.Application.Features.CaseStages.Query
         {
             var dt = await _repository.GetCachedListAsync();
             var mappeddata = _mapper.Map<List<CaseStageCacheAllQueryResponse>>(dt);
-            return Result<List<CaseStageCacheAllQueryResponse>>.Success(mappeddata.OrderBy(o=>o.CaseStage).ToList());
+            var mdt = mappeddata.Select(s => new CaseStageCacheAllQueryResponse
+            {
+                Id = s.Id,
+                CaseStage = s.CaseStage.ToUpper()
+            }).OrderBy(o => o.CaseStage.ToUpper());
+            return Result<List<CaseStageCacheAllQueryResponse>>.Success(mdt.ToList());
         }
     }
 }

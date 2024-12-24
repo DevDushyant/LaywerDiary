@@ -11,6 +11,11 @@ namespace CourtApp.Web.Areas.LawyerDiary.Validators
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .NotNull()
                 .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
+
+            RuleFor(p => p.Abbreviation)
+                .NotEmpty().WithMessage("{PropertyName} is required.")
+                .NotNull()
+                .MaximumLength(4).WithMessage("{PropertyName} must not exceed 4 characters.");
         }
     }
 }

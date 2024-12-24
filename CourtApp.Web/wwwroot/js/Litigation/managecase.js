@@ -125,8 +125,8 @@
         escapeMarkup: function (m) {
             return m;
         }
-    });   
-    
+    });
+
 
     $("#ComplexId").select2({
         placeholder: "Select a complex",
@@ -160,11 +160,11 @@
         }
     });
 
-    
 
-    
-    
-   
+
+
+
+
 
     $("#CaseYear").select2({
         placeholder: "Select year",
@@ -277,15 +277,15 @@
             return m;
         }
     });
-    
+
     $("#CourtTypeId").on("change", function () {
         CourtTypeChange(this);
     });
     function CourtTypeChange() {
-       
+
         var selectedValue = $('#CourtTypeId').val();
         $("#CaseCategoryId").empty();
-        if ($("#CourtTypeId option:selected").text() === "High Court") {
+        if ($("#CourtTypeId option:selected").text() === "HIGH COURT".toUpperCase()) {
             $('#divDistrictCourt').addClass('div_hide');
             $('#divHighCourt').removeClass('div_hide');
             $('.highCourt').css('display', 'block');
@@ -302,9 +302,9 @@
         BindCaseCategory($("#CourtTypeId").val())
     }
 
-    $("#AgCourtTypeId").on("change", function () {       
+    $("#AgCourtTypeId").on("change", function () {
         $("#AgCaseCategoryId").empty();
-        if ($("#AgCourtTypeId option:selected").text() === "High Court") {
+        if ($("#AgCourtTypeId option:selected").text() === "HIGH COURT".toUpperCase()) {
             $('.AhighCourt').css('display', 'block');
             $('.ACourt').css('display', 'none');
             BindAgainstBench();
@@ -315,7 +315,7 @@
             BindAgainstDistrictCourt();
         }
         BindAgainstCaseCategory($("#AgCourtTypeId").val())
-    });    
+    });
 
     $("#CaseCategoryId").on('change', function () {
         $("#CaseTypeId").empty();
@@ -352,10 +352,10 @@
                 $("#AgComplexId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
             });
         });
-        
+
     });
 
-    $("#ComplexId").on("change", function () {       
+    $("#ComplexId").on("change", function () {
         BindCourt();
     });
 
@@ -365,10 +365,10 @@
 
 });
 BindBench = function () {
-    
+
     $("#BenchId").empty();
-    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val() + "&ComplexId=00000000-0000-0000-0000-000000000000", function (data) {
-        $.each(data.Data, function (i, item) {            
+    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val() + "&ComplexId=00000000-0000-0000-0000-000000000000&CourtDistrict=00000000-0000-0000-0000-000000000000", function (data) {
+        $.each(data.Data, function (i, item) {
             $("#BenchId").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
         });
     });
@@ -385,7 +385,7 @@ BindAgainstBench = function () {
 
 BindCourt = function () {
     $("#CourtId").empty();
-    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val() + "&ComplexId=" + $("#ComplexId").val(), function (data) {
+    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#CourtTypeId").val() + "&StateId=" + $("#StateId").val() + "&ComplexId=" + $("#ComplexId").val() + "&CourtDistrict=" + $("#CourtDistrictId").val(), function (data) {
         $.each(data.Data, function (i, item) {
             $("#CourtId").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
         });
@@ -393,7 +393,7 @@ BindCourt = function () {
 }
 BindAgainstCourt = function () {
     $("#AgCourtId").empty();
-    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#AgCourtTypeId").val() + "&StateId=" + $("#AgStateId").val() + "&ComplexId=" + $("#AgComplexId").val(), function (data) {
+    $.getJSON("/Litigation/CaseManage/LoadCourtBench?CourtTypeId=" + $("#AgCourtTypeId").val() + "&StateId=" + $("#AgStateId").val() + "&ComplexId=" + $("#AgComplexId").val() + "&CourtDistrict=" + $("#AgCourtDistrictId").val(), function (data) {
         $.each(data.Data, function (i, item) {
             $("#AgCourtId").append(`<option /><option value="${item.Id}">${item.CourtBench_En}</option>`);
         });
@@ -433,3 +433,4 @@ BindAgainstCaseCategory = function (CategoryId) {
         });
     });
 }
+

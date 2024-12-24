@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System;
 using System.Linq;
 using CourtApp.Application.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourtApp.Application.Features.Clients.Queries.GetAllCached
 {
@@ -17,12 +18,14 @@ namespace CourtApp.Application.Features.Clients.Queries.GetAllCached
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public string UserId { get; set; }
     }
 
     public class GetAllClientsCachedQueryHandler : IRequestHandler<GetAllClientCachedQuery, PaginatedResult<GetAllClientCachedResponse>>
     {
         private readonly IClientRepository _RepoClient;
         private readonly IMapper _mapper;
+
 
         public GetAllClientsCachedQueryHandler(IClientRepository _Repository, IMapper mapper)
         {
@@ -37,12 +40,20 @@ namespace CourtApp.Application.Features.Clients.Queries.GetAllCached
                 Id = e.Id,
                 Name = e.Name,
                 Email = e.Email,
-                Mobile = e.Mobile
+                Mobile = e.Mobile,
+                Councel = e.OppositCounselId != Guid.Empty ? (e.OppositCounsel.FirstName + " " + e.OppositCounsel.LastName) : "",
+                OffEmail = e.OfficeEmail,
+                Appearence = e.Appearence.Name_En,
+                Address = e.Address
             };
             var predicate = PredicateBuilder.True<ClientEntity>();
-            var paginatedList = await _RepoClient.Clients
-                   .Select(expression)
-                   .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+            var paginatedList = await
+                _RepoClient
+                .Clients
+                .Include(a => a.Appearence)
+                .Where(w => w.CreatedBy.Equals(request.UserId))
+                .Select(expression)
+                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
             return paginatedList;
         }
     }
