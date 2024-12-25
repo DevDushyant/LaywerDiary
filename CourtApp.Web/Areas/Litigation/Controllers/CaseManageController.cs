@@ -107,7 +107,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         CaseDetail.LinkedBy = await UserCaseTitle(id);
                         if (CaseDetail.IsHighCourt == true)
                         {
-                            CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, Guid.Empty,Guid.Empty);
+                            CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, Guid.Empty, Guid.Empty);
                             CaseDetail.Strengths = DdlStrength();
                             showHighCourt = true;
                         }
@@ -115,7 +115,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         {
                             CaseDetail.CourtDistricts = await DdlLoadCourtDistricts(CaseDetail.StateId);
                             CaseDetail.ComplexBenchs = await GetCourtComplex(CaseDetail.CourtDistrictId.Value);
-                            CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, CaseDetail.ComplexId.Value,CaseDetail.CourtDistrictId.Value);
+                            CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, CaseDetail.ComplexId.Value, CaseDetail.CourtDistrictId.Value);
                         }
                         if (CaseDetail.AgainstCaseDetails.Count > 0)
                         {
@@ -127,7 +127,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                                 cam.CourtTypeId = item.CourtTypeId;
                                 if (item.IsAgHighCourt == true)
                                 {
-                                    cam.ACourts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, Guid.Empty,Guid.Empty);
+                                    cam.ACourts = await LoadBenches(item.CourtTypeId.Value, item.StateId.Value, Guid.Empty, Guid.Empty);
                                     cam.AStrengths = DdlStrength();
                                     AgIsHighCourt = true;
                                     cam.BenchId = item.BenchId;
@@ -386,7 +386,31 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     });
                 }
                 var model = _mapper.Map<CaseHistoryViewModel>(response.Data);
+                var ProcDts = response.Data.History
+                    .Select(s => s.Date).Distinct().OrderByDescending(o => o.Date);
+                var ProcHis = new List<ProcHistory>();
+                foreach (var h in ProcDts)
+                {
+                    var ph = new ProcHistory();
+                    ph.Date = h.Date.ToString("dd/MM/yyyy");
+                    var Hisdt = response.Data.History.Where(w => w.Date == h.Date);
+                    var ProcWiseHis = new List<HistoryDetail>();
+                    foreach (var hd in Hisdt)
+                    {
+                        var his = new HistoryDetail();
+                        his.Activity = hd.Activity;
+                        his.NextDate = hd.NextDate;
+                        his.Date = hd.Date.ToString("dd/MM/yyyy");
+                        his.Stage = hd.Stage;
+                        his.Type = hd.Type;
+                        his.WorkDetail = _mapper.Map<List<Models.CaseWorkDetail>>(hd.WorkDetail);
+                        ProcWiseHis.Add(his);
+                        ph.History= ProcWiseHis;
+                    }                    
+                    ProcHis.Add(ph);
+                }
                 model.Docs = UDocs;
+                model.ProcHis = ProcHis;
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseHistory", model) });
             }
             return null;
@@ -521,7 +545,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             bool AgIsHighCourt = false;
             if (ModelState.IsValid)
             {
-                var response = await _mediator.Send(new GetUserCaseDetailByIdQuery { CaseId = id,UserId=CurrentUser.Id });
+                var response = await _mediator.Send(new GetUserCaseDetailByIdQuery { CaseId = id, UserId = CurrentUser.Id });
                 if (response.Succeeded)
                 {
                     _notify.Success($"Client with ID {response.Data} Created.");

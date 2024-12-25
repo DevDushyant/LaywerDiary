@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace CourtApp.Web.Areas.Litigation.Models
-{
+{    
     public class CaseHistoryViewModel
     {
         public Guid Id { get; set; }
@@ -11,6 +11,13 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string CaseNoYear { get; set; }
         public List<HistoryDetail> History { get; set; }
         public List<CaseDoc> Docs { get; set; }
+        public List<ProcHistory> ProcHis { get; set; }
+    }
+    public class ProcHistory
+    {
+        public string Date { get; set; }
+        public List<HistoryDetail> History { get; set; }
+
     }
     public class HistoryDetail
     {

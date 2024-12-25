@@ -9,6 +9,7 @@ namespace CourtApp.Application.DTOs.Case
         public string CourtType { get; set; }
         public string CaseKindName { get; set; }
         public string CaseNumber { get; set; }
+        public string CaseYear{ get; set; }
         public DateTime NextHearingDate { get; set; }
         public string CaseStage { get; set; }
         public string FTitleType { get; set; }

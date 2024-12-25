@@ -5,6 +5,12 @@ namespace CourtApp.Web.Areas.Litigation.Models
     public class HearingViewModel
     {
         public Guid Id { get; set; }
+        public string CaseNumber { get; set; }
+        public string CaseYear { get; set; }
+        public string CaseStage { get; set; }
+        public string CourtType { get; set; }
+        public DateTime NextHearingDate { get; set; }
+        public string CourtName { get; set; }
         public string CaseTitle { get; set; }        
         public bool Selected { get; set; }
 

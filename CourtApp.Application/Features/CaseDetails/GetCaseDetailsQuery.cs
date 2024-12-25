@@ -62,13 +62,14 @@ namespace CourtApp.Application.Features.UserCase
                 STitleType = e.FTitle.Name_En,
                 CaseTypeName = e.CaseType.Name_En,
                 CourtType = e.CourtType.CourtType,
-                CaseNumber = e.CaseNo == null ? e.CaseYear.ToString() : String.Concat(e.CaseNo, "/", e.CaseYear),
+                CaseNumber = e.CaseNo == null ? "" : e.CaseNo,
+                CaseYear = e.CaseYear == 0 ? e.CaseYear.ToString() : "",
                 CourtName = e.CourtBench.CourtBench_En,
                 FirstTitle = e.FirstTitle,
                 SecondTitle = e.SecondTitle,
                 NextHearingDate = e.NextDate.HasValue == true ? e.NextDate.Value : default(DateTime),
                 CaseStage = e.CaseStage.CaseStage,
-                CaseTitle = e.FirstTitle + " V/S " + e.SecondTitle + "(" + e.CaseNo + "/" + e.CaseYear + ")",
+                CaseTitle = e.FirstTitle + " V/S " + e.SecondTitle,
             };
             var predicate = PredicateBuilder.True<CaseDetailEntity>();
             if (predicate != null)

@@ -52,8 +52,6 @@ namespace CourtApp.Application.Features.CaseDetails
                 chr.Title = detail.FirstTitle + " Vs " + detail.SecondTitle;
                 chr.CourtType = detail.CourtType != null ? detail.CourtType.CourtType : "";
                 chr.Court = detail.CourtBench != null ? detail.CourtBench.CourtBench_En : "";
-
-
                 var cprocs = await _ProceedingRepo.GetProceedingByCaseIdAsync(request.CaseId);
                 var PWorks = cprocs.GroupBy(pd => pd.ProceedingDate)
                     .Select(g => new
@@ -97,46 +95,6 @@ namespace CourtApp.Application.Features.CaseDetails
                         WorkDetails = workDetails
                     };
                 }).ToList();
-
-
-                //var workDetails = PWorks
-                //        .Select(pw => new
-                //        {
-                //            pw.ProceedingDate,
-                //            WorkDetails = _WorkSRepo.Entities
-                //                .Where(w => pw.works.Select(x => x.WorkId).Contains(w.Id))
-                //                .Select(s => new
-                //                {
-                //                    s.Id,
-                //                    s.Name_En,
-                //                    s.Abbreviation,
-                //                    Status = pw.works.FirstOrDefault(x => x.WorkId == s.Id)?.Status
-                //                })
-                //                .ToList()
-                //        })
-                //        .ToList();
-
-
-
-                //var ProcWorks = cprocs.GroupBy(pd => pd.ProceedingDate)
-                //    .Select(g => new
-                //    {
-                //        ProceedingDate = g.Key,
-                //        works = g.Select(s => s.ProcWork)
-                //                .SelectMany(w => w.Works)
-                //                .Select(w => w.WorkId)
-                //                .ToList()
-                //    });
-
-                //var workDetails = ProcWorks
-                //            .Select(pw => new
-                //            {
-                //                pw.ProceedingDate,
-                //                WorkDetails = _WorkSRepo.Entities
-                //                    .Where(w => pw.works.Contains(w.Id)) // Fetch only matching Work details
-                //                    .ToList()
-                //            })
-                //            .ToList();
                 var cprocdt = cprocs
                     .Where(w => w.CaseId == request.CaseId)
                     .Select(s => new CaseHistoryData
@@ -145,7 +103,7 @@ namespace CourtApp.Application.Features.CaseDetails
                         Stage = s.StageId != null ? s.Stage.CaseStage : "",
                         Activity = s.SubHead.Name_En,
                         Type = s.Head.Name_En,
-                        Date = (s.ProceedingDate ?? s.CreatedOn).ToString("dd/MM/yyyy"),
+                        Date = (s.ProceedingDate ?? s.CreatedOn),
                         WorkDetail = s.ProcWork != null ? new List<CaseWorkDetail>
                         {
                             new CaseWorkDetail

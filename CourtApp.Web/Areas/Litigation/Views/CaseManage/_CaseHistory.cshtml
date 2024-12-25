@@ -50,40 +50,30 @@
             <fieldset class="scheduler-border">
                 <legend class="scheduler-border">Case Attached Documents Information</legend>
 
-                <table id="tblCaseHistory" class="table table-striped" width="100%" cellspacing="0">
+                <table id="tblCaseHistory" class="table table-striped" width="100%" cellspacing="0" style="border: 1px solid #ddd; border-collapse: collapse;">
                     <thead>
-                        <tr>
-                            <th>Sno.</th>
-                            <th>Type</th>
-                            <th>Date</th>
-                            <th>Name</th>
-                            <th></th>
+                        <tr style="border: 1px solid #ddd;">
+                            <th style="border: 1px solid #ddd; padding: 8px;">Sno.</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Type</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Date</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Name</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @for (int i = 0; i < Model.Docs.Count(); i++)
                         {
-                            <tr>
-                                <td>
-                                    @(i + 1)
-                                </td>
-                                <td>
-                                    @Model.Docs[i].DocType
-                                </td>
-                                <td>
-                                    @Model.Docs[i].DocDate
-                                </td>
-                                <td>
-                                    @Model.Docs[i].DocName
-                                </td>
-
-                                <td>
+                            <tr style="border: 1px solid #ddd; background-color: aqua;">
+                                <td style="border: 1px solid #ddd; padding: 8px;">@(i + 1)</td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">@Model.Docs[i].DocType </td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">@Model.Docs[i].DocDate</td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">@Model.Docs[i].DocName</td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">
                                     <p>
                                         <a href="~/@Model.Docs[i].DocFilePath" target="_blank">
                                             <i class="fa fa-file-pdf" aria-hidden="true"></i>
                                         </a>
                                     </p>
-
                                 </td>
                             </tr>
                         }
@@ -97,45 +87,38 @@
                         <thead>
                             <tr style="border: 1px solid #ddd;">
                                 <th style="border: 1px solid #ddd; padding: 8px;">Sno.</th>
-                                <th style="border: 1px solid #ddd; padding: 8px;">Type</th>
-                                <th style="border: 1px solid #ddd; padding: 8px;">Proceeding</th>
+                                <th style="border: 1px solid #ddd; padding: 8px;">Type</th>                               
                                 <th style="border: 1px solid #ddd; padding: 8px;">Stage</th>
                                 <th style="border: 1px solid #ddd; padding: 8px;">Next Date</th>
                                 <th style="border: 1px solid #ddd; padding: 8px;">Proceeding</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @{
-                                List<string> ProcDates = Model.History
-                                .Select(s => s.Date)
-                                .Distinct().ToList();
-                            }
-                            @for (int p = 0; p < ProcDates.Count(); p++)
+                        <tbody>                            
+                            @for (int p = 0; p < Model.ProcHis.Count(); p++)
                             {
                                 <tr style="border: 1px solid #ddd;">
-                                    <td colspan="6" style="text-align:center; font-weight:bold; border: 1px solid #ddd; padding: 8px;">
-                                        Proceeding Date - @ProcDates[p]
+                                    <td colspan="5" style="text-align:center; font-weight:bold; border: 1px solid #ddd; padding: 8px;">
+                                        Proceeding Date - @Model.ProcHis[p].Date
                                     </td>
                                 </tr>
-                                @for (int i = 0; i < Model.History.Count(); i++)
+                                @for (int i = 0; i < @Model.ProcHis[p].History.Count(); i++)
                                 {
                                     <tr style="border: 1px solid #ddd; background-color: aqua;">
                                         <td style="border: 1px solid #ddd; padding: 8px;">@(i + 1)</td>
-                                        <td style="border: 1px solid #ddd; padding: 8px;">@Model.History[i].Type</td>
-                                        <td style="border: 1px solid #ddd; padding: 8px;">@Model.History[i].Date</td>
-                                        <td style="border: 1px solid #ddd; padding: 8px;">@Model.History[i].Stage</td>
-                                        <td style="border: 1px solid #ddd; padding: 8px;">@Model.History[i].NextDate</td>
-                                        <td style="border: 1px solid #ddd; padding: 8px;">@Model.History[i].Activity</td>
+                                        <td style="border: 1px solid #ddd; padding: 8px;">@Model.ProcHis[p].History[i].Type</td>                                        
+                                        <td style="border: 1px solid #ddd; padding: 8px;">@Model.ProcHis[p].History[i].Stage</td>
+                                        <td style="border: 1px solid #ddd; padding: 8px;">@Model.ProcHis[p].History[i].NextDate</td>
+                                        <td style="border: 1px solid #ddd; padding: 8px;">@Model.ProcHis[p].History[i].Activity</td>
                                     </tr>
-                                    @for (int j = 0; j < @Model.History[i].WorkDetail.Count; j++)
+                                    @for (int j = 0; j < @Model.ProcHis[p].History[i].WorkDetail.Count; j++)
                                     {
-                                        for (int k = 0; k < @Model.History[i].WorkDetail[j].Works.Count; k++)
+                                        for (int k = 0; k < @Model.ProcHis[p].History[i].WorkDetail[j].Works.Count; k++)
                                         {
                                             <tr style="border: 1px solid #ddd;background-color:coral;">
                                                 <td colspan="1" style="border: 1px solid #ddd; padding: 8px;">@(k + 1)</td>
-                                                <td colspan="2" style="border: 1px solid #ddd; padding: 8px;">@Model.History[i].WorkDetail[j].Works[k].WorkType</td>
-                                                <td colspan="2" style="border: 1px solid #ddd; padding: 8px;">@Model.History[i].WorkDetail[j].Works[k].Work</td>
-                                                <td colspan="1" style="border: 1px solid #ddd; padding: 8px;">Last Working Date - @Model.History[i].WorkDetail[j].WorkingDate</td>
+                                                <td colspan="1" style="border: 1px solid #ddd; padding: 8px;">@Model.ProcHis[p].History[i].WorkDetail[j].Works[k].WorkType</td>
+                                                <td colspan="2" style="border: 1px solid #ddd; padding: 8px;">@Model.ProcHis[p].History[i].WorkDetail[j].Works[k].Work</td>
+                                                <td colspan="1" style="border: 1px solid #ddd; padding: 8px;">Last Working Date - @Model.ProcHis[p].History[i].WorkDetail[j].Works[k].Date</td>
                                             </tr>
                                         }
                                     }
