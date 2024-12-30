@@ -7,8 +7,12 @@
                     <thead>
                         <tr>
                             <th>Sno.</th>
-                            <th>Case Detail</th>
-                            <th>Disposal Date</th>
+                            <th>Court.</th>
+                            <th>Type</th>
+                            <th>No</th>
+                            <th>Year</th>
+                            <th>Title</th>
+                            <th>Dis. Date</th>
                             <th>Remark</th>
                             <th></th>
                         </tr>
@@ -20,18 +24,14 @@
                         @foreach (var bt in Model)
                         {
                             <tr>
-                                <td>
-                                    @(++count)
-                                </td>
-                                <td>
-                                    @bt.Title
-                                </td>
-                                <td>
-                                    @bt.DisposalDate
-                                </td>
-                                <td>
-                                    @bt.Reason
-                                </td>                                
+                                <td> @(++count)</td>
+                                <td> @bt.Court</td>
+                                <td> @bt.CaseType</td>
+                                <td> @bt.No</td>
+                                <td> @bt.Year</td>
+                                <td>@(bt.FirstTitle + " Vs " + bt.SecondTitle)</td>
+                                <td>@bt.DisposalDate</td>
+                                <td>@bt.Reason</td>                                
                                 <td>
                                     <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-history" title="See History"></a>
                                     <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail" asp-route-id="@bt.Id" class="fa fa-eye" title="View Case Detail"></a>

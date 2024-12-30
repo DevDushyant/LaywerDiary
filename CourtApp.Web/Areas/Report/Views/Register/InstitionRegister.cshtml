@@ -11,11 +11,11 @@
                     <table id="tblRegister" class="table table-striped" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Sno.</th>
-                                <th>Court Type</th>
+                                <th>Sno.</th>                               
                                 <th>Court.</th>
-                                <th>Case Type</th>
-                                <th>Case No./Year</th>                               
+                                <th>Type</th>
+                                <th>No</th>
+                                <th>Year</th>                               
                                 <th>Title</th>
                                 <th>Institution Date</th>
                                 <th></th>
@@ -28,11 +28,11 @@
                                     <td>
                                         <input type="hidden" asp-for="@Model.dtmodel[i].Id" />
                                         @(i + 1)
-                                    </td>
-                                    <td>@Model.dtmodel[i].CourtType</td>
-                                    <td> @Model.dtmodel[i].CourtBench </td>
+                                    </td>                                  
+                                    <td> @Model.dtmodel[i].Court </td>
                                     <td>@Model.dtmodel[i].CaseType</td>
-                                    <td>@Model.dtmodel[i].CaseNo</td>                                    
+                                    <td>@Model.dtmodel[i].No</td>                                    
+                                    <td>@Model.dtmodel[i].Year</td>                                    
                                     <td>
                                         @{
                                             string Title = Model.dtmodel[i].FirstTitle + " Vs " + Model.dtmodel[i].SecondTitle;

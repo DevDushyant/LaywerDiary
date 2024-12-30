@@ -49,7 +49,7 @@ namespace CourtApp.Application.Features.CaseWork
                 {
                     AssignedWorkToCaseResponse a = new AssignedWorkToCaseResponse();
                     a.CaseId = c.CaseId;
-                    a.CaseDetail = c.Case.FirstTitle + " " + c.Case.SecondTitle + " (" + c.Case.CaseYear + "/" + c.Case.CaseNo + ")";
+                    a.CaseDetail = " (" + c.Case.CaseNo + "/" + c.Case.CaseYear + "/" + c.Case.CaseType.Name_En + "/" + c.Case.CourtBench.CourtBench_En + ") /" + c.Case.FirstTitle + " " + c.Case.SecondTitle;
                     a.AWorks = new List<AssignedWork>();
                     a.LastWorkingDate = c.ProcWork.LastWorkingDate != null ? c.ProcWork.LastWorkingDate.Value : default(DateTime);
                     foreach (var w in c.ProcWork.Works.Where(w=>w.WorkId!=Guid.Empty).Where(s => s.Status == 0))

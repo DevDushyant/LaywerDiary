@@ -243,8 +243,8 @@ namespace CourtApp.Web.Abstractions
         }
         public async Task<SelectList> GetCourtComplex(Guid CourtDistrictId)
         {
-            var response = await _mediator.Send(new GetCourtComplexQuery() { CourtDistrictId = CourtDistrictId });
-            var viewModel = _mapper.Map<List<CourtComplexViewModel>>(response.Data);
+            var response = await _mediator.Send(new GetCourtComplexQuery() { CourtDistrictId = CourtDistrictId,PageNumber=1,PageSize=1000 });
+            var viewModel = _mapper.Map<List<CourtComplexViewModel>>(response.Data.OrderBy(o=>o.Name_En));
             return new SelectList(viewModel, nameof(CourtComplexViewModel.Id), nameof(CourtComplexViewModel.Name_En), null, null);
         }
 
@@ -288,10 +288,10 @@ namespace CourtApp.Web.Abstractions
 
         public async Task<SelectList> LoadBenches(Guid CourtTypeId, int StateId, Guid ComplexId, Guid CourtDistrict)
         {
-            var dt = await _mediator.Send(new GetCourtBenchQuery(1, 100) { StateId = StateId, CourtTypeId = CourtTypeId, CourtId = ComplexId, CourtDistrictId = CourtDistrict });
+            var dt = await _mediator.Send(new GetCourtBenchQuery(1, 1000) { StateId = StateId, CourtTypeId = CourtTypeId, CourtId = ComplexId, CourtDistrictId = CourtDistrict });
             if (dt.Succeeded)
             {
-                var fields = dt.Data;
+                var fields = dt.Data.OrderBy(o=>o.CourtBench_En);
                 return new SelectList(fields, nameof(CourtBenchResponse.Id), nameof(CourtBenchResponse.CourtBench_En), null, null); ;
             }
             return null;

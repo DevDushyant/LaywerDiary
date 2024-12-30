@@ -2,11 +2,15 @@
 <table id="tblUserCase" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th>Sno.</th>
-            <th>Type</th>
-            <th>Case Info</th>
-            <th>Total Applicant</th>
-            <th>Actions</th>
+            <th style="width:1%!important">Sno.</th>
+            <th style="width:16%!important">Court</th>
+            <th style="width:16%!important">Type</th>
+            <th style="width:5%!important">No.</th>
+            <th style="width:5%!important">Year</th>
+            <th style="width:5%!important">Title Type</th>   
+            <th style="width:30%!important">Title</th>
+            <th style="width:5%!important">Total</th>
+            <th style="width:3%!important">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -20,11 +24,24 @@
                     @(count = count + 1)
                 </td>
                 <td>
+                    @bt.Court
+                </td>
+                <td>
+                    @bt.CaseType
+                </td>
+                <td>
+                    @bt.No
+                </td>
+                <td>
+                    @bt.Year
+                </td>
+                <td>
                     @bt.Type
                 </td>
                 <td>
                     @bt.CaseDetail
                 </td>
+
                 <td>
                     @bt.CaseApplicantDetails.Count()
                 </td>

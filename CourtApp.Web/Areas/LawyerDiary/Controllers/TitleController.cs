@@ -19,7 +19,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new GetCaseTitleQuery());
+            var response = await _mediator.Send(new GetCaseTitleQuery() { PageNumber=1,PageSize=5000});
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<TitleGetViewModel>>(response.Data);

@@ -2,10 +2,13 @@
 <table id="tblRegister" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th style="width:5%!important">Sno.</th>
-            <th style="width:20%!important">Case Detail</th>
+            <th>Sno.</th>
+            <th>Court.</th>
+            <th>Type</th>
+            <th>No</th>
+            <th>Year</th>
+            <th style="width:20%!important">Title</th>
             <th style="width:8%!important">Date</th>
-            @*  <th style="width:10%!important">Work Type</th>   *@          
             <th style="width:15%!important">Work</th>
             <th style="width:10%!important">Actions</th>
         </tr>
@@ -17,23 +20,14 @@
         @foreach (var bt in Model)
         {
             <tr>
-                <td>
-                    @(++count)
-                </td>
-                <td>
-                    @bt.Title
-                </td>
-                <td>
-                    @bt.WorkDate
-                </td>
-                @*  <td>
-                    @bt.WorkType
-                </td> *@
-
-                <td>
-                    @bt.WorkDone
-                </td>
-
+                <td>@(++count)</td>
+                <td>@bt.Court</td>
+                <td>@bt.CaseType</td>
+                <td>@bt.No</td>
+                <td>@bt.Year</td>
+                <td>@(bt.FirstTitle + " Vs " + bt.SecondTitle)</td>
+                <td>@bt.WorkDate</td>
+                <td> @bt.WorkDone</td>
                 <td>
                     <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-history" title="See History"></a>
                     <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail" asp-route-id="@bt.Id" class="fa fa-eye" title="View Case Detail"></a>

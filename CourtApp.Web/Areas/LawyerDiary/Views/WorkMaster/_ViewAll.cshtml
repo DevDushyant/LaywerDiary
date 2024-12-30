@@ -2,9 +2,10 @@
 <table id="tblWorkMaster" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
+            <th>Sno.</th>
             <th>Name(En)</th>
             <th>Name(Hn)</th>
-            <th>Abbreviation</th>
+            @* <th>Abbreviation</th> *@
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded
             || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
             {
@@ -13,19 +14,22 @@
         </tr>
     </thead>
     <tbody>
-
+        @{
+            int count = 0;
+        }
         @foreach (var bt in Model)
         {
             <tr>
+                <td>@(count = count + 1)</td>
                 <td>
                     @bt.Work_En
                 </td>
                 <td>
                     @bt.Work_Hn
                 </td>
-                <td>
+                @* <td>
                     @bt.Abbreviation
-                </td>
+                </td> *@
                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded ||
                (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                 {
@@ -59,6 +63,6 @@
 </table>
 <script>
     $(document).ready(function () {
-        $("#tblWorkMaster").DataTable();
-    });
+        JqueryDataTable('tblWorkMaster','Work Type','0,1,2');
+    });    
 </script>

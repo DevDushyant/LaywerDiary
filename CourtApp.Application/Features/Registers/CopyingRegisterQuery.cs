@@ -7,12 +7,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
-using CourtApp.Application.Extensions;
 using System.Collections.Generic;
-using CourtApp.Domain.Entities.CaseDetails;
-using CourtApp.Application.DTOs.CaseWorking;
 using Microsoft.EntityFrameworkCore;
-using static CourtApp.Application.Constants.Permissions;
+
 namespace CourtApp.Application.Features.Registers
 {
     public class CopyingRegisterQuery : IRequest<Result<List<CopyDisposalResponse>>>
@@ -46,6 +43,8 @@ IWorkMasterRepository _WorkRepo)
                                 .Where(w => w.CreatedBy.Equals(request.UserId))
                              .Include(c => c.Case)
                                  .ThenInclude(c => c.CaseType)
+                            .Include(c => c.Case)
+                                .ThenInclude(c => c.CourtBench)
                              .Include(c => c.ProcWork)
                                  .ThenInclude(pw => pw.Works)
                              .ToListAsync(); // Load into memory           
@@ -79,14 +78,12 @@ IWorkMasterRepository _WorkRepo)
                     {
                         CopyDisposalResponse a = new CopyDisposalResponse();
                         a.Id = cd.Case.Id;
-                        a.CourtType = "";
-                        a.CaseNo = cd.Case.CaseNo;
-                        a.CaseYear = cd.Case.CaseYear;
-                        a.CourtBench = "";
+                        a.Court = cd.Case.CourtBench.CourtBench_En.ToString();
+                        a.No = cd.Case.CaseNo;
+                        a.Year = cd.Case.CaseYear.ToString();                        
                         a.FirstTitle = cd.Case.FirstTitle;
                         a.SecondTitle = cd.Case.SecondTitle;
-                        a.CaseType = "";
-                        a.CaseAbbretion = "";
+                        a.CaseType =cd.Case.CaseType.Name_En;                       
                         a.AppliedOn = cd.CaseWorkDetail.AppliedOn != default(DateTime) ? cd.CaseWorkDetail.AppliedOn.ToString("dd/MM/yyyy") : "";
                         a.ReceivedOn = cd.CaseWorkDetail.ReceivedOn != default(DateTime) ? cd.CaseWorkDetail.ReceivedOn.ToString("dd/MM/yyyy") : "";
                         a.Reason = cd.Work.Work_En;

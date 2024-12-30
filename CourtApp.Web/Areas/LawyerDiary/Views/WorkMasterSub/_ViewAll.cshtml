@@ -2,18 +2,21 @@
 <table id="tblWorkMasterSub" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
+            <th>Sno.</th>
             <th>Work</th>
             <th>Name(En)</th>
-            <th>Name(Hn)</th>
-           @*  <th>Abbreviation</th> *@
+            <th>Name(Hn)</th>           
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-
+        @{
+            int count = 0;
+        }
         @foreach (var bt in Model)
         {
             <tr>
+                <td>@(count = count + 1)</td>
                 <td>
                     @bt.WorkName
                 </td>
@@ -23,9 +26,7 @@
                 <td>
                     @bt.Name_Hn
                 </td>
-               @*  <td>
-                    @bt.Abbreviation
-                </td> *@
+               
                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded ||
                (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                 {
@@ -58,7 +59,8 @@
     </tbody>
 </table>
 <script>
-    $(document).ready(function () {
-        $("#tblWorkMasterSub").DataTable();
-    });
+    JqueryDataTable('tblWorkMasterSub','Work Master','0,1,2,3');
+    // $(document).ready(function () {
+    //     JqueryDataTable('tblWorkMasterSub','Work Master','0,1,2,3');
+    // });    
 </script>

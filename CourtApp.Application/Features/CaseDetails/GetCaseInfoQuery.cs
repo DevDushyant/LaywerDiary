@@ -74,13 +74,15 @@ namespace CourtApp.Application.Features.CaseDetails
                              select new GetCaseInfoDto
                              {
                                  Id = e.Id,
+                                 No=e.CaseNo,
+                                 Year=e.CaseYear.ToString(),
                                  CourtType = e.CourtType.CourtType.ToString(),
                                  CaseType = e.CaseType.Name_En,
                                  Court = e.CourtBench.CourtBench_En,
                                  CaseStage = e.CaseStage.CaseStage,
                                  DisposalDate = e.DisposalDate,
                                  OrderByKey = e.LastModifiedOn != null && e.LastModifiedOn > e.CreatedOn ? e.LastModifiedOn.Value : e.CreatedOn,
-                                 CaseDetail = e.FirstTitle + " V/S " + e.SecondTitle + "(" + e.CaseNo + "/" + e.CaseYear + ")",
+                                 CaseDetail = e.FirstTitle + " V/S " + e.SecondTitle,
                                  NextDate = (e.NextDate.HasValue && md.MaxNextDate.HasValue)
                                              ? (e.NextDate.Value > md.MaxNextDate.Value ? e.NextDate.Value
                                                              : md.MaxNextDate.Value).ToString("dd/MM/yyyy")

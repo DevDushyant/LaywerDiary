@@ -2,13 +2,14 @@
 <table id="tblUserCase" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th style="width:2%!important">Sno.</th>
-            <th style="width:10%!important">Court type</th>
-            <th style="width:10%!important">Court</th>
-            <th style="width:15%!important">Type</th>
-            <th style="width:35%!important">Case Detail</th>
+            <th style="width:1%!important">Sno.</th>
+            <th style="width:16%!important">Court</th>
+            <th style="width:16%!important">Type</th>
+            <th style="width:5%!important">No.</th>
+            <th style="width:5%!important">Year</th>
+            <th style="width:30%!important">Title</th>
             <th style="width:10%!important">Stage</th>
-            <th style="width:12%!important">Next Date</th>
+            <th style="width:14%!important">Next Date</th>
             <th style="width:3%!important">Actions</th>
         </tr>
     </thead>
@@ -23,13 +24,16 @@
                     @(count = count + 1)
                 </td>
                 <td>
-                    @bt.CourtType
-                </td>
-                <td>
                     @bt.Court
                 </td>
                 <td>
                     @bt.CaseType
+                </td>
+                <td>
+                    @bt.No
+                </td>
+                <td>
+                    @bt.Year
                 </td>
                 <td>
                     @bt.CaseDetail
@@ -37,25 +41,24 @@
                 <td>
                     @bt.CaseStage
                 </td>
-                @*  <td>
-            @bt.Status
-            </td> *@
+
                 <td>
                     @if (bt.NextDate != "01/01/0001")
                         @bt.NextDate
+
                 </td>
                 <td>
                     <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-history" title="See History"></a>
                     <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=@bt.Id', 'Upload Document')" class="fa fa-file" title="Upload Document"></a>
                     <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail" asp-route-id="@bt.Id" class="fa fa-eye" title="View Case Detail"></a>
-                        
+
                 </td>
             </tr>
         }
     </tbody>
 </table>
-<script>
+<script>    
     $(document).ready(function () {
-        $("#tblUserCase").DataTable();
+        JqueryDataTable('tblUserCase','User Data List','0,1,2,3,4,5,6,7');        
     });
 </script>

@@ -62,6 +62,8 @@ namespace CourtApp.Application.Features.Registers
                                 .Where(w => w.CreatedBy.Equals(request.UserId))
                              .Include(c => c.Case)
                                  .ThenInclude(c => c.CaseType)
+                              .Include(c => c.Case)
+                                 .ThenInclude(c => c.CourtBench)
                              .Include(c => c.ProcWork)
                                  .ThenInclude(pw => pw.Works)
                              .ToListAsync(); // Load into memory           
@@ -74,7 +76,7 @@ namespace CourtApp.Application.Features.Registers
                         {
                             Case = c.Case,
                             Work = work,
-                            LastModifiedDate=c.LastModifiedOn
+                            LastModifiedDate = c.LastModifiedOn
                         }))
                         .Join(
                             _wRepo.Entities
@@ -85,8 +87,8 @@ namespace CourtApp.Application.Features.Registers
                             {
                                 Case = cw.Case,
                                 CaseWorkDetail = cw.Work,
-                                Work = w 
-                               
+                                Work = w
+
                             }
                         )
                         .ToList();
@@ -97,15 +99,20 @@ namespace CourtApp.Application.Features.Registers
                     {
                         OtherRegisterResponse a = new OtherRegisterResponse();
                         a.Id = cd.Case.Id;
-                        a.Title = cd.Case.FirstTitle+" Vs "+cd.Case.SecondTitle;
-                        a.WorkDone =cd.Work.Work_En;
-                        a.WorkDate= cd.Work.LastModifiedOn!=null?cd.Work.LastModifiedOn.Value.ToString("dd/MM/yyyy"):"-";                        
+                        a.FirstTitle = cd.Case.FirstTitle;
+                        a.SecondTitle = cd.Case.SecondTitle;
+                        a.No = cd.Case.CaseNo;
+                        a.Year = cd.Case.CaseYear.ToString();
+                        a.Court = cd.Case.CourtBench.CourtBench_En.ToString();
+                        a.CaseType = cd.Case.CaseType.Name_En;
+                        a.WorkDone = cd.Work.Work_En;
+                        a.WorkDate = cd.Work.LastModifiedOn != null ? cd.Work.LastModifiedOn.Value.ToString("dd/MM/yyyy") : "-";
                         awc.Add(a);
                     }
-                }               
+                }
                 return Result<List<OtherRegisterResponse>>.Success(awc.ToList());
             }
-            return Result<List<OtherRegisterResponse>>.Fail("No record found");           
+            return Result<List<OtherRegisterResponse>>.Fail("No record found");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿@model PendingWorkDataViewModel
+
 <div class="card">
     <div id="viewAll" class="card-body table-responsive">
         <form asp-controller="CaseWork" method="post" asp-action="Update"  class="d-inline">
@@ -68,14 +69,17 @@
 </div>
 <script>
     $(document).ready(function () {
-        $("#tblPendingWork").DataTable(
-            {
-                "language": {
-                    "emptyTable": "There are no pending works!"
-                }
-            }
-        );
+        JqueryDataTable('tblPendingWork','Pending Work Register','0,1,2');
     });
+    // $(document).ready(function () {
+    //     $("#tblPendingWork").DataTable(
+    //         {
+    //             "language": {
+    //                 "emptyTable": "There are no pending works!"
+    //             }
+    //         }
+    //     );
+    // });
 </script>
 
 

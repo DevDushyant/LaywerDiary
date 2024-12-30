@@ -30,7 +30,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 Type = type,
                 Value = value,
                 PageNumber = 1,
-                PageSize = 10
+                PageSize = 1000,
+                UserId = CurrentUser.Id
             });
 
             if (response.Succeeded)

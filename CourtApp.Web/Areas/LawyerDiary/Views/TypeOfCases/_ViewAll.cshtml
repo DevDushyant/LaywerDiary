@@ -1,9 +1,9 @@
 ﻿@model IEnumerable<TypeOfCasesViewModel>
-<table id="tblNature" class="table table-striped" width="100%" cellspacing="0">
+<table id="tblCaseTypes" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th>Court Type</th>
-            @* <th>State</th> *@
+            <th>Sno.</th>
+            <th>Court Type</th>            
             <th>Case Category</th>
             <th>Case Type</th>
             <th>Case Type (Hn)</th>
@@ -16,16 +16,16 @@
         </tr>
     </thead>
     <tbody>
-
+        @{
+            int count = 0;
+        }
         @foreach (var bt in Model)
         {
             <tr>
+                <td>@(count = count + 1)</td>
                 <td>
                     @bt.CourtTypeName
-                </td>
-               @*  <td>
-                    @bt.StateName
-                </td> *@
+                </td>              
                 <td>
                     @bt.CaseNature
                 </td>
@@ -68,6 +68,6 @@
 </table>
 <script>
     $(document).ready(function () {
-        $("#tblNature").DataTable();
-    });
+        JqueryDataTable('tblCaseTypes','Case Types Data List','0,1,2,3,4,5');
+    });    
 </script>

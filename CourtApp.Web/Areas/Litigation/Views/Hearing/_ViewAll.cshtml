@@ -1,13 +1,5 @@
 ﻿@model BringTodayCaseViewModel
-<style>
 
-    table{
-    border: 1px solid #ddd; border-collapse: collapse;
-    }
-    th,td{
-    border: 1px solid #ddd; padding: 8px;
-    }
-</style>
 <div class="card">
     <div id="viewAll" class="card-body table-responsive">
         <form asp-controller="Hearing" method="post" asp-action="AssignWorkCase" class="d-inline" return=jQueryModalGet(this)>
@@ -17,7 +9,7 @@
                         <thead>
                             <tr>
                                 <th>Sno.</th>
-                                <th>Court</th>                                
+                                <th>Court</th>
                                 <th>Type</th>
                                 <th>Number</th>
                                 <th>Year</th>
@@ -34,7 +26,7 @@
                             {
                                 <tr>
                                     <td style="width:5%">
-                                        <input type="hidden" asp-for="@Model.CaseList[i].Id" />                                        
+                                        <input type="hidden" asp-for="@Model.CaseList[i].Id" />
                                         @(count = count + 1)
                                     </td>
                                     <td style="width:10%">
@@ -42,8 +34,8 @@
                                         @Model.CaseList[i].CourtName
                                     </td>
                                     <td style="width:10%">
-                                        <input type="hidden" asp-for="@Model.CaseList[i].CourtType" />
-                                        @Model.CaseList[i].CourtType
+                                        <input type="hidden" asp-for="@Model.CaseList[i].CaseTypeName" />
+                                        @Model.CaseList[i].CaseTypeName
                                     </td>
                                     <td style="width:10%">
                                         <input type="hidden" asp-for="@Model.CaseList[i].CaseNumber" />
@@ -62,8 +54,8 @@
                                         @Model.CaseList[i].CaseTitle
                                     </td>
                                     <td style="width:6%">
-                                        <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@Model.CaseList[i].Id', 'See History')"  title="Case History"> <i class="fa fa-history"></i></a>
-                                        <a onclick="jQueryModalGet('/Litigation/hearing/CaseProceeding?CaseId=@Model.CaseList[i].Id', 'Case Proceeding')"  title="Add Proceeding/work detail for the case"> <i class="fa fa-plus-square"></i></a>                                        
+                                        <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@Model.CaseList[i].Id', 'See History')" title="Case History"> <i class="fa fa-history"></i></a>
+                                        <a onclick="jQueryModalGet('/Litigation/hearing/CaseProceeding?CaseId=@Model.CaseList[i].Id', 'Case Proceeding')" title="Add Proceeding/work detail for the case"> <i class="fa fa-plus-square"></i></a>
                                     </td>
                                 </tr>
                             }
@@ -76,12 +68,6 @@
 </div>
 <script>
     $(document).ready(function () {
-        $("#tblTHearingCaseDetail").DataTable(
-            {
-                "language": {
-                    "emptyTable": "There are no hearing today!"
-                }
-            }
-        );
+        JqueryDataTable('tblTHearingCaseDetail','Today Case Hearing','0,1,2,3,4,5,6');
     });
 </script>

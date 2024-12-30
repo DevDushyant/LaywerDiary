@@ -7,7 +7,11 @@
                     <thead>
                         <tr>
                             <th>Sno.</th>
-                            <th>Case Detail</th>
+                            <th>Court.</th>
+                            <th>Type</th>
+                            <th>No</th>
+                            <th>Year</th>
+                            <th>Title</th>
                             <th>Applied On</th>
                             <th>Received On</th>
                             <th></th>
@@ -23,10 +27,11 @@
                                         <input type="hidden" asp-for="@Model.copyingCases[i].Id" />
                                         @(i + 1)
                                     </td>
-                                    <td>
-                                        <input type="hidden" asp-for="@Model.copyingCases[i].Title" />
-                                        @Model.copyingCases[i].Title
-                                    </td>
+                                    <td>@Model.copyingCases[i].Court</td>
+                                    <td>@Model.copyingCases[i].CaseType</td>
+                                    <td>@Model.copyingCases[i].No</td>
+                                    <td>@Model.copyingCases[i].Year</td>
+                                    <td>@(Model.copyingCases[i].FirstTitle + " Vs " + Model.copyingCases[i].SecondTitle)</td>
                                     <td>@Model.copyingCases[i].AppliedOn</td>
                                     <td>@Model.copyingCases[i].ReceivedOn</td>
                                     <td>

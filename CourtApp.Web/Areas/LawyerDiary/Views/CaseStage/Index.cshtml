@@ -3,7 +3,8 @@
     ViewData["Caption"] = localizer["Manage Case Stage"];
 }
 @model CaseStageViewModel
-<div class="card">
+@* <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+ *@<div class="card">
     <div class="col-sm-12" style="padding:20px">
         @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Create)).Result.Succeeded)
         {
@@ -21,11 +22,9 @@
     </div>
 </div>
 @section Scripts
-{
-    <script src="~/js/site.js"></script>
+{        
     <script>
-        $(document).ready(function () {
-            $("#brandTable").DataTable();
+        $(document).ready(function () {           
             loadData();
             $('#reload').on('click', function () {
                 loadData();

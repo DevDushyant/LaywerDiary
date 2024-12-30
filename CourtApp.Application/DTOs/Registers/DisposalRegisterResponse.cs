@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using CourtApp.Application.DTOs.CaseDetails;
 namespace CourtApp.Application.DTOs.Registers
 {
-    public class DisposalRegisterResponse
-    {
-        public Guid Id { get; set; }
-        public string Title { get; set; }
+    public class DisposalRegisterResponse:CaseDetailDto
+    {       
         public string Reason { get; set; }
         public string DisposalDate { get; set; }
     }

@@ -9,7 +9,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,10 +40,7 @@ namespace CourtApp.Application.Features.Registers
             if (predicate != null)
                 predicate = predicate.And(c => c.CreatedBy.Equals(request.UserId));
 
-            DateTime to = DateTime.Now;
-            //if (request.ToDt != default(DateTime)) to = request.ToDt;
-            //if (request.FromDt != default(DateTime))
-            //  predicate = predicate.And(b => b.LastModifiedOn.Value >= request.FromDt && b.LastModifiedOn.Value <= to);
+            DateTime to = DateTime.Now;           
             predicate = predicate.And(w => w.Head.Abbreviation == "DISP");           
             var fndt = _wRepo
                 .Entities
@@ -54,7 +50,12 @@ namespace CourtApp.Application.Features.Registers
                 {
                     DisposalDate = e.ProceedingDate != null ? e.ProceedingDate.Value.ToString("dd-MM-yyyy") : "",
                     Id = e.CaseId,
-                    Title = e.Case.FirstTitle + "Vs" + e.Case.SecondTitle,
+                    FirstTitle = e.Case.FirstTitle,
+                    SecondTitle = e.Case.SecondTitle,
+                    No = e.Case.CaseNo,
+                    Year = e.Case.CaseYear.ToString(),
+                    Court = e.Case.CourtBench.CourtBench_En,
+                    CaseType = e.Case.CaseType.Name_En,
                     Reason = e.SubHead.Name_En
                 })
                 .ToPaginatedListAsync(request.PageNumber, request.PageSize);

@@ -49,30 +49,11 @@ namespace CourtApp.Application.Features.CaseWork
                     }
                 }
                 entity.ProcWork.Works = w;
-                await _ProcRepo.UpdateAsync(entity);
-                // Update only the ProcWork property
-                //entity.ProcWork = _mapper.Map<ProcWorkEntity>(request.ProcWork);
-
-                // Update only the modified ProcWork field
-                //_Repository.Update(entity, nameof(entity.ProcWork));
+                await _ProcRepo.UpdateAsync(entity);                
 
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(entity.Id);
-            }
-            //var cdEntityt = new CaseWorkEntity() { CreatedBy = "" };
-            //foreach (var item in request.CWorkId)
-            //{
-            //    cdEntityt = await _Repository.GetByIdAsync(item);
-            //    if (cdEntityt == null)
-            //        return Result<Guid>.Fail($"Case Work Id is not found.");
-            //    else
-            //    {
-            //        cdEntityt.Status = request.Status;
-            //        cdEntityt.AppliedOn = DateTime.Now;
-            //        await _Repository.UpdateAsync(cdEntityt);
-            //    }
-            //}
-            //await _unitOfWork.Commit(cancellationToken);
+            }           
             return Result<Guid>.Fail("There is no proceeding Id");
         }
     }

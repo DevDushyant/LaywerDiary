@@ -12,7 +12,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using static CourtApp.Application.Constants.Permissions;
 namespace CourtApp.Application.Features.Registers
 {
     public class InstitutionRegisterQuery : IRequest<PaginatedResult<InstitutionResponse>>
@@ -36,9 +35,9 @@ namespace CourtApp.Application.Features.Registers
             {
                 Id = e.Id,
                 CaseType = e.CaseType.Name_En,
-                CourtType = e.CourtType.CourtType,
-                CaseNo = e.CaseNo!=null? String.Concat(e.CaseNo, "/", e.CaseYear):e.CaseYear.ToString(),
-                CourtBench = e.CourtBench.CourtBench_En,
+                No = e.CaseNo,
+                Year = e.CaseYear.ToString(),
+                Court = e.CourtBench.CourtBench_En,
                 FirstTitle = e.FirstTitle,
                 SecondTitle = e.SecondTitle,
                 InsititutionDate = e.InstitutionDate != default(DateTime) ? e.InstitutionDate.ToString("dd/MM/yyyy") : "-",
@@ -53,10 +52,10 @@ namespace CourtApp.Application.Features.Registers
             }
             var dt = await _caseRepo.Entites
                 .Include(c => c.CaseStage)
-                .Include(c => c.CourtType)
-                    .Where(predicate)
-                    .Select(expression)
-                    .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+                .Include(c => c.CourtBench)
+                .Where(predicate)
+                .Select(expression)
+                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
             return dt;
         }
     }

@@ -63,7 +63,7 @@ namespace CourtApp.Application.Features.UserCase
                 CaseTypeName = e.CaseType.Name_En,
                 CourtType = e.CourtType.CourtType,
                 CaseNumber = e.CaseNo == null ? "" : e.CaseNo,
-                CaseYear = e.CaseYear == 0 ? e.CaseYear.ToString() : "",
+                CaseYear = e.CaseYear.ToString(),
                 CourtName = e.CourtBench.CourtBench_En,
                 FirstTitle = e.FirstTitle,
                 SecondTitle = e.SecondTitle,
@@ -109,7 +109,8 @@ namespace CourtApp.Application.Features.UserCase
                             CaseStage = cd.CaseStage,
                             CaseNumber = cd.CaseNumber,
                             NextHearingDate = MaxDt,
-                            CaseTitle = cd.CaseTitle
+                            CaseTitle = cd.CaseTitle,
+                            CaseYear = cd.CaseYear
                         };
             }
             else
@@ -123,7 +124,8 @@ namespace CourtApp.Application.Features.UserCase
                          Id = cd.Id,
                          CourtName = cd.CourtName,
                          Abbreviation = cd.Abbreviation,
-                         CaseTypeName = cd.CourtType,
+                         CaseTypeName = cd.CaseTypeName,
+                         CaseYear=cd.CaseYear,
                          FTitleType = cd.FTitleType,
                          FirstTitle = cd.FirstTitle,
                          STitleType = cd.STitleType,
@@ -131,7 +133,7 @@ namespace CourtApp.Application.Features.UserCase
                          CaseStage = cd.CaseStage,
                          CaseNumber = cd.CaseNumber,
                          NextHearingDate = cd.NextHearingDate,
-                         CaseTitle = cd.CaseTitle
+                         CaseTitle = cd.CaseTitle                         
                      };
             if (request.HearingDate! != default(DateTime))
             {

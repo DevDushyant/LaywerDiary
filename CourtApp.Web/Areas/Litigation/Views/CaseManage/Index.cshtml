@@ -6,7 +6,9 @@
     .btnHide {
         display: none;
     }
+    
 </style>
+
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
         @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Create)).Result.Succeeded)

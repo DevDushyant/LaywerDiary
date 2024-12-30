@@ -34,6 +34,7 @@
     <Folder Include="Areas\Settings\Models\" />
     <Folder Include="Areas\Settings\Views\" />
     <Folder Include="Views\Shared\Components\Menu\" />
+    <Folder Include="wwwroot\js\export\" />
   </ItemGroup>
 
   <ItemGroup>

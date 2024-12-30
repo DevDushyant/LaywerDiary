@@ -75,7 +75,9 @@ namespace CourtApp.Infrastructure.Repositories
             var data = await _repository
                  .Entities
                  .Include(t => t.ProcWork)
-                 .Include(s => s.Case)
+                 .Include(s => s.Case).ThenInclude(t=>t.CaseType)
+                 .Include(s => s.Case).ThenInclude(t=>t.CourtBench)
+
                  .ToListAsync();
             return data;
         }

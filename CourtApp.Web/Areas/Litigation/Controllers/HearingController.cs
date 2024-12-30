@@ -81,6 +81,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 var hearing = new HearingViewModel();
                 hearing.Id = item.Id;
                 hearing.CaseTitle = item.CaseTitle;
+                hearing.CaseNumber = item.CaseNumber;
+                hearing.CaseYear = item.CaseYear;
+                hearing.CaseStage = item.CaseStage;
+                hearing.CourtName = item.CourtName;
+                hearing.CaseTypeName = item.CaseTypeName;
                 cdt.Add(hearing);
             }
             model.CaseList = cdt;
