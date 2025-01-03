@@ -3,8 +3,8 @@
     public enum Roles
     {
         SuperAdmin, 
-        Admin,
+        Lawyer,
         Operator,
-        Basic
+        User
     }    
 }

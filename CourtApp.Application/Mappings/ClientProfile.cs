@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CourtApp.Application.DTOs.Client;
 using CourtApp.Application.Features.Clients.Commands;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.Clients.Queries.GetById;
@@ -17,6 +18,7 @@ namespace CourtApp.Application.Mappings
             .ForPath(d => d.SettledAmount, s => s.MapFrom(src => src.FeeSettled));
             CreateMap<ClientEntity, GetClientByIdResponse>();
             CreateMap<GetAllClientCachedResponse, ClientEntity>().ReverseMap();
+            CreateMap<CaseFeeEntity, ClientFeeDto>();
         }
     }
 }

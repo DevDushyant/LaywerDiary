@@ -56,6 +56,8 @@ namespace CourtApp.Web.Areas.Litigation.Mappings
             CreateMap<UpseartAgainstCaseDto, CaseAgainstModel>();
             #endregion
 
+            CreateMap<UpdateHearingDtViewModel, CaseHearingDto>();
+
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using CourtApp.Application.Constants;
+﻿using Azure;
+using CourtApp.Application.Constants;
 using CourtApp.Application.Features.CaseWork;
 using CourtApp.Application.Features.Registers;
 using CourtApp.Web.Abstractions;
@@ -15,6 +16,64 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     [Area("Report")]
     public class RegisterController : BaseController<RegisterController>
     {
+        public IActionResult index()
+        {
+            return View();
+        }
+        public async Task<IActionResult> LoadAll(string rt, string f, string to)
+        {
+            var viewName = ""; dynamic md = null;
+            DateTime fromDt; DateTime toDt;
+            if (string.IsNullOrEmpty(f)) fromDt = DateTime.Today.AddDays(-7);
+            else fromDt = Convert.ToDateTime(f).Date;
+
+            if (string.IsNullOrEmpty(to)) toDt = DateTime.Today;
+            else toDt = Convert.ToDateTime(f).Date;
+
+            switch (rt)
+            {
+                case "dis":
+                    break;
+
+                case "copy":
+                    break;
+                case "other":
+                    break;
+                default:
+                    var response = await _mediator.Send(new InstitutionRegisterQuery()
+                    {
+                        PageNumber = 1,
+                        PageSize = 100,
+                        FromDt =fromDt,
+                        ToDt = toDt,
+                        UserId = CurrentUser.Id
+                    });
+                    InstitutionRegisterViewMode model = new InstitutionRegisterViewMode();
+                    List<InstituteModel> inmd = new List<InstituteModel>();
+                    if (response != null && response.Succeeded)
+                    {
+                        foreach (var d in response.Data)
+                        {
+                            InstituteModel rd = new InstituteModel();
+                            rd.Id = d.Id;
+                            rd.Court = d.Court;
+                            rd.CaseType = d.CaseType;
+                            rd.Year = d.Year;
+                            rd.No = d.No;
+                            rd.FirstTitle = d.FirstTitle;
+                            rd.SecondTitle = d.SecondTitle;
+                            rd.InsititutionDate = d.InsititutionDate;
+                            inmd.Add(rd);
+                        }
+                    }
+                    model.dtmodel = inmd;
+                    viewName = "_Instition";
+                    md = model;
+                    break;
+            }
+            return PartialView(viewName, md);
+        }
+
         #region Disposal Register
         public IActionResult DisposalRegister()
         {

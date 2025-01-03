@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CourtApp.Application.DTOs.Client;
+using System;
 
 namespace CourtApp.Application.Features.Clients.Queries.GetById
 {
@@ -14,5 +15,6 @@ namespace CourtApp.Application.Features.Clients.Queries.GetById
         public string ReferalBy { get; set; }
         public Guid AppearenceID { get; set; }
         public Guid OppositCounselId { get; set; }
-    }
+        public ClientFeeDto Fees { get; set; }
+    }    
 }

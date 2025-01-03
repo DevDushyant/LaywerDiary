@@ -62,39 +62,6 @@ namespace CourtApp.Application.Features.CaseDetails
                                 .ToList()
                     }).ToList();
 
-                // Process each group and fetch details
-                //var result = PWorks.Select(pw =>
-                //{
-                //    var WDetails = pw.works.Where(w=>w.WorkId!=Guid.Empty).ToDictionary(w => w.WorkId, w => new
-                //    {
-                //        w.Status,
-                //        w.AppliedOn,
-                //        w.ReceivedOn,
-                //        w.WorkTypeId
-                //    });
-
-                //    var workDetails = _WorkSRepo.Entities
-                //        .Where(w => pw.works.Select(x => x.WorkId).Contains(w.Id)) // Filter only matching work IDs
-                //        .Select(w => new
-                //        {
-                //            WorkID = w.Id,
-                //            WorkName = w.Name_En,
-                //            WorkType = w.Work.Work_En,
-                //            WorkStatus = WDetails.ContainsKey(w.Id) ? WDetails[w.Id].Status : 0,
-                //            WorkDoneDate = WDetails.ContainsKey(w.Id)
-                //                ? (WDetails[w.Id].Status == 1
-                //                    ? WDetails[w.Id].AppliedOn.ToString("dd/MM/yyyy")
-                //                    : (WDetails[w.Id].Status == 2 ? WDetails[w.Id].ReceivedOn.ToString("dd/MM/yyyy") : null))
-                //                : null
-                //        })
-                //        .ToList();
-
-                //    return new
-                //    {
-                //        pw.ProceedingDate,
-                //        WorkDetails = workDetails
-                //    };
-                //}).ToList();
                 var result = PWorks.Select(pw =>
                 {
                     // Group works by WorkId and select the first entry or aggregate them

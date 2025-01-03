@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System;
 using CourtApp.Domain.Entities.LawyerDiary;
 using AutoMapper;
+using CourtApp.Domain.Entities.Account;
 
 namespace CourtApp.Application.Features.Clients.Commands
 {
@@ -24,13 +25,15 @@ namespace CourtApp.Application.Features.Clients.Commands
         public string Address { get; set; }
         public int StateCode { get; set; }
         public int DistrictCode { get; set; }
+        public ClientFee FeeDetail { get; set; }
     }
     public class UpdateClientCommandHandler : IRequestHandler<UpdateClientCommand, Result<Guid>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IClientRepository _clientRepository;
+        private readonly IMapper _mapper;
         private readonly IStateMasterRepository _rStateMst;
-        private readonly IDistrictMasterRepository _rDistrictMst;       
+        private readonly IDistrictMasterRepository _rDistrictMst;
 
         public UpdateClientCommandHandler(IClientRepository _clientRepository,
             IUnitOfWork unitOfWork, IStateMasterRepository rStateMst, IDistrictMasterRepository _rDistrictMst,
@@ -40,7 +43,8 @@ namespace CourtApp.Application.Features.Clients.Commands
             _unitOfWork = unitOfWork;
             this._rDistrictMst = _rDistrictMst;
             this._rStateMst = rStateMst;
-           
+            this._mapper = _mapper;
+
         }
 
         public async Task<Result<Guid>> Handle(UpdateClientCommand command, CancellationToken cancellationToken)
@@ -49,13 +53,13 @@ namespace CourtApp.Application.Features.Clients.Commands
             if (client == null)
                 return Result<Guid>.Fail($"Client Not Found.");
             else
-            {                
-               
+            {
+
                 client.Email = command.Email;
                 client.OfficeEmail = command.OfficeEmail;
                 client.Phone = command.Phone;
                 client.Mobile = command.Mobile;
-                
+                client.CaseFee = _mapper.Map<CaseFeeEntity>(command.FeeDetail);
                 await _clientRepository.UpdateAsync(client);
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(client.Id);

@@ -61,6 +61,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     if (response.Succeeded)
                     {
                         var ViewModel = _mapper.Map<ClientViewModel>(response.Data);
+                        if (response.Data.Fees != null)
+                            ViewModel.FeeDetail = new ClientFeeViewModel()
+                            {
+                                FeeAdvance = response.Data.Fees.AdvanceAmount,
+                                FeeSettled = response.Data.Fees.SettledAmount
+                            };
                         ViewModel.OppositCounsels = await DdlLawyerAsync();
                         ViewModel.Appearences = await DdlFSTypes(0);
                         _logger.LogInformation("Form data by id load successfully");
@@ -133,7 +139,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 var response = await _mediator.Send(new GetAllClientCachedQuery() { UserId = CurrentUser.Id, PageNumber = 1, PageSize = 1000 });
                 if (response.Succeeded)
                 {
-                    var viewModel = _mapper.Map<List<ClientViewModel>>(response.Data);
+                    var viewModel = _mapper.Map<List<GClientViewModel>>(response.Data);
                     var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
                     return new JsonResult(new { isValid = true, html = html });
                 }

@@ -89,6 +89,7 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                         userName = userCheck.UserName;
                     }
                 }
+                
                 var user = await _userManager.FindByNameAsync(userName);
                 if (user != null)
                 {

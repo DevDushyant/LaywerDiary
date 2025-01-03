@@ -205,5 +205,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return RedirectToAction("Index", new { SelectedDate= TempData["SelectedDate"].ToString() });
         }
         #endregion
+
+       
     }
 }

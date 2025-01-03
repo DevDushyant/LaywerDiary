@@ -108,7 +108,7 @@ namespace CourtApp.Application.Features.UserCase
                             SecondTitle = cd.SecondTitle,
                             CaseStage = cd.CaseStage,
                             CaseNumber = cd.CaseNumber,
-                            NextHearingDate = MaxDt,
+                            NextHearingDate = MaxDt!=(default)?MaxDt:cd.NextHearingDate,
                             CaseTitle = cd.CaseTitle,
                             CaseYear = cd.CaseYear
                         };

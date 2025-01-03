@@ -1,0 +1,70 @@
+﻿@model IEnumerable<GetCaseInfoViewModel>
+@{
+    ViewData["Title"] = localizer["User Case List Without Hearing Date"];
+    ViewData["Caption"] = localizer["You can fill hearing date from here"];
+}
+<div class="card">
+    <div class="col-sm-12" style="padding:20px">
+        <table id="tblCaseWohd" class="table table-striped" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th style="width:1%!important">Sno.</th>
+                    <th style="width:16%!important">Court</th>
+                    <th style="width:16%!important">Type</th>
+                    <th style="width:5%!important">No.</th>
+                    <th style="width:5%!important">Year</th>
+                    <th style="width:30%!important">Title</th>
+                    <th style="width:10%!important">Stage</th>
+                    <th style="width:14%!important">Next Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int count = 0;
+                }
+                @foreach (var bt in Model)
+                {
+                    <tr>
+                        <td>
+                            @(count = count + 1)
+                        </td>
+                        <td>
+                            @bt.Court
+                        </td>
+                        <td>
+                            @bt.CaseType
+                        </td>
+                        <td>
+                            @bt.No
+                        </td>
+                        <td>
+                            @bt.Year
+                        </td>
+                        <td>
+                            @bt.CaseDetail
+                        </td>
+                        <td>
+                            @bt.CaseStage
+                        </td>
+
+                        <td>
+                            <input type="hidden" asp-for="@bt.Id" />
+                            <input type="date" asp-for="@bt.NextDate" class="form-control" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @if (Model.Count() > 0)
+        {
+            <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
+                <input type="button" id="btnUpdate" class="btn btn-success" value="Update"></input>
+            </div>
+        }
+    </div>
+</div>
+@section Scripts
+{
+    <script src="~/js/site.js"></script>
+    <script src="~/js/Litigation/CaseHearingDate.js"></script>
+}

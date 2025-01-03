@@ -27,7 +27,7 @@ namespace CourtApp.Infrastructure.Identity.Seeds
                 if (user == null)
                 {
                     await userManager.CreateAsync(defaultUser, "123Pa$$word!");
-                    await userManager.AddToRoleAsync(defaultUser, Roles.Basic.ToString());
+                    await userManager.AddToRoleAsync(defaultUser, Roles.User.ToString());
                 }
             }
         }

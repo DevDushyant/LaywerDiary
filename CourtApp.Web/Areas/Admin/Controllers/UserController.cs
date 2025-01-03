@@ -37,7 +37,8 @@ namespace CourtApp.Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll()
         {
             var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-            var allUsersExceptCurrentUser = await _userManager.Users.Where(a => a.Id != currentUser.Id ).ToListAsync();
+            var allUsersExceptCurrentUser = await _userManager.Users
+                .Where(a => a.Id != currentUser.Id ).ToListAsync();
             var model = _mapper.Map<IEnumerable<UserViewModel>>(allUsersExceptCurrentUser);
             return PartialView("_ViewAll", model);
         }
@@ -70,7 +71,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                 var result = await _userManager.CreateAsync(user, "123Pa$$word!");
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
+                    await _userManager.AddToRoleAsync(user, Roles.User.ToString());
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var currentUser = await _userManager.GetUserAsync(HttpContext.User);
                     var allUsersExceptCurrentUser = await _userManager.Users.Where(a => a.Id != currentUser.Id).ToListAsync();
