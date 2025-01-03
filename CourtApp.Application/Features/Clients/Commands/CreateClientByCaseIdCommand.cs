@@ -38,15 +38,18 @@ namespace CourtApp.Application.Features.Clients.Commands
 
         public async Task<Result<Guid>> Handle(CreateClientByCaseIdCommand request, CancellationToken cancellationToken)
         {
-            var detail = await _clientRepository.GetByIdAsync(request.ClientId);
-            if (detail != null)
+            var detail = _clientRepository
+                .Clients
+                .Where(w => w.Id == request.ClientId && w.CreatedBy.Equals(request.UserId)).FirstOrDefault();
+            if (detail != null) Result<Guid>.Fail("Error! The client is already exist for the logged in user");
+            else
             {
-                //var entity = _mapper.Map<ClientEntity>(request);                
+                var cld = await _clientRepository.GetByIdAsync(request.ClientId);
                 detail.Id = Guid.NewGuid();
                 detail.ReferalBy = "";
-                await _clientRepository.InsertAsync(detail);
+                await _clientRepository.InsertAsync(cld);
                 await _unitOfWork.Commit(cancellationToken);
-                return Result<Guid>.Success(detail.Id);
+                return Result<Guid>.Success(cld.Id);
             }
             return Result<Guid>.Fail("Error! The client is already exist for the logged in user");
         }

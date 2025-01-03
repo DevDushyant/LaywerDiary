@@ -82,7 +82,7 @@
     </div>
     <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
         <a href="javascript:void(0);" class="btn btn-secondary" onclick="btnSaveClientInfo()">Copy Client Info from selected Case</a>
-        <button class="btn btn-primary">Copy Information Case</button>        
+        <button class="btn btn-primary">Copy Information Case</button>
         <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
     </div>
 </form>
@@ -130,17 +130,28 @@
                var param = {
         ClientId: $("#hdnClientId").val()
     };
-    
+
     $.ajax({
         url: "/Client/ManageClient/OnCreateClientByCaseId?ClientId="+$("#hdnClientId").val(),
         type: "POST",
          contentType: 'application/json',
          datatype: "json",
         success: function (response) {
+            var msg=""; txt="";
             if (response === "Success") {
-                alert("Client create successfully");
+                msg="Client is created successfully!";
+                txt="Success";
                 $("#btnCopyCaseInfo").removeAttr('disabled');
             }
+            else{
+                 msg=response;
+                txt="error";
+            }
+            Swal.fire({
+                        title: msg,
+                        text: "Ok!",
+                        icon: "success"
+                    });
         },
         error: function (xhr) {
             console.error('An error occurred:', xhr.responseText);

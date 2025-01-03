@@ -3,8 +3,6 @@ using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.Clients.Queries.GetById;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Client.Model;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -179,7 +177,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             else
             {
                 _notify.Error(deleteCommand.Message);
-                return null;
+                var res = await _mediator.Send(new GetAllClientCachedQuery() { UserId = CurrentUser.Id, PageNumber = 1, PageSize = 1000 });
+                var viewModel = _mapper.Map<List<GClientViewModel>>(res.Data);
+                var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+                return new JsonResult(new { isValid = true, html = html });
             }
         }
 
@@ -195,14 +196,14 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         [HttpPost]
         public async Task<JsonResult> OnCreateClientByCaseId(Guid ClientId)
         {
-            var response = await _mediator.Send(new CreateClientByCaseIdCommand { ClientId = ClientId });
+            var response = await _mediator.Send(new CreateClientByCaseIdCommand { ClientId = ClientId, UserId = CurrentUser.Id });
             if (response.Succeeded)
             {
                 return Json("Success");
             }
             else
             {
-                return null;
+                return Json(response.Message);
             }
         }
     }
