@@ -1,6 +1,5 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
-using CourtApp.Application.Features.Case;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
 using MediatR;
@@ -78,10 +77,11 @@ namespace CourtApp.Application.Features.CaseDetails
                 detail.ComplexId = request.ComplexId != Guid.Empty ? request.ComplexId : null;
                 detail.CaseCategoryId = request.CaseCategoryId;
                 detail.CaseStageId = request.CaseStageId != null ? request.CaseStageId.Value : null;
-                detail.CaseYear = request.CaseYear.Value;
+                detail.CaseYear = request.CaseYear!=null? request.CaseYear.Value:0;
                 detail.NextDate = request.NextDate != null ? request.NextDate.Value : DateTime.MinValue;
                 detail.CnrNumber = request.CnrNumber;
                 detail.CisNumber = request.CisNumber;
+                detail.CisYear =request.CisYear;
                 detail.CaseYear = request.CaseYear != null ? request.CaseYear.Value : 0;
                 detail.CaseNo = request.CaseNo;
                 detail.CaseCategoryId = request.CaseCategoryId;
@@ -93,55 +93,7 @@ namespace CourtApp.Application.Features.CaseDetails
                 detail.StrengthId = request.StrengthId != null ? request.StrengthId.Value : 0;
                 detail.CaseTypeId = request.CaseTypeId;
                 detail.LinkedCaseId = request.LinkedCaseId != null ? request.LinkedCaseId.Value : null;
-                //if (request.AgainstCaseDetails.Count > 0)
-                //{
-                //    foreach (var item in request.AgainstCaseDetails)
-                //    {
-                //        if (item.CaseId == null && item.StateId != 0)
-                //        {
-                //            CaseDetailAgainstEntity againstDt = new CaseDetailAgainstEntity();
-                //            againstDt.ImpugedOrderDate = item.ImpugedOrderDate.Value;
-                //            againstDt.CourtBenchId = item.BenchId != null ? item.BenchId.Value : item.CourtId.Value;
-                //            againstDt.StateId = item.StateId.Value;
-                //            againstDt.CourtTypeId = item.CourtTypeId.Value;
-                //            againstDt.CaseYear = item.CaseYear.Value;
-                //            againstDt.CaseNo = item.CaseNo;
-                //            againstDt.CaseCategoryId = item.CaseCategoryId.Value;
-                //            againstDt.CaseTypeId = item.CaseTypeId!=null? item.CaseTypeId.Value:Guid.Empty;
-                //            againstDt.StrengthId = item.StrengthId != null ? item.StrengthId.Value : 0;
-                //            againstDt.OfficerName = item.OfficerName;
-                //            againstDt.CisYear = item.CisYear.Value;
-                //            againstDt.CisNo = item.CisNo;
-                //            againstDt.CaseId = request.Id;
-                //            againstDt.CourtDistrictId = item.CourtDistrictId != Guid.Empty ? item.CourtDistrictId : null;
-                //            againstDt.ComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null;
-                //            detail.CaseAgainstEntities.Add(againstDt);
-                //        }
-                //        else
-                //        {
-                //            var againstDt = detail.CaseAgainstEntities.Where(w => w.CaseId == item.CaseId).FirstOrDefault();
-                //            if (againstDt != null)
-                //            {
-                //                againstDt.ImpugedOrderDate = item.ImpugedOrderDate.Value;
-                //                againstDt.StateId = item.StateId.Value;
-                //                againstDt.CourtTypeId = item.CourtTypeId.Value;
-                //                againstDt.CourtBenchId = item.BenchId != null ? item.BenchId.Value : item.CourtId.Value;
-                //                againstDt.CaseYear = item.CaseYear.Value;
-                //                againstDt.CaseNo = item.CaseNo;
-                //                againstDt.CaseCategoryId = item.CaseCategoryId.Value;
-                //                againstDt.CaseTypeId = item.CaseTypeId.Value;
-                //                againstDt.StrengthId = item.StrengthId != null ? item.StrengthId.Value : 0;
-                //                againstDt.OfficerName = item.OfficerName;
-                //                againstDt.CisYear = item.CisYear.Value;
-                //                againstDt.CisNo = item.CisNo;
-                //                againstDt.CaseId = request.Id;
-                //                againstDt.CourtDistrictId = item.CourtDistrictId != Guid.Empty ? item.CourtDistrictId : null;
-                //                againstDt.ComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null;
-                //                detail.CaseAgainstEntities.Add(againstDt);
-                //            }
-                //        }
-                //    }
-                //}
+                
                 var againstDt = detail.CaseAgainstEntities.FirstOrDefault();
                 var IsAgstCases = request.AgainstCaseDetails
                     .Where(w => w.StateId != null)
@@ -161,10 +113,10 @@ namespace CourtApp.Application.Features.CaseDetails
                             againstDt.CaseTypeId = item.CaseTypeId.Value;
                             againstDt.StrengthId = item.StrengthId != null ? item.StrengthId.Value : 0;
                             againstDt.OfficerName = item.OfficerName;
-                            againstDt.CisYear = item.CisYear.Value;
+                            againstDt.CisYear = item.CisYear!=null? item.CisYear.Value:0;
                             againstDt.CisNo = item.CisNo;
                             againstDt.CaseId = request.Id;
-                            againstDt.Cadre = item.Cadre;
+                            againstDt.CadreId = item.CadreId;
                             againstDt.CnrNo = item.CnrNo;
                             againstDt.CourtDistrictId = item.CourtDistrictId != Guid.Empty ? item.CourtDistrictId : null;
                             againstDt.ComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null;
@@ -189,7 +141,7 @@ namespace CourtApp.Application.Features.CaseDetails
                             agDt.CisYear = item.CisYear.Value;
                             agDt.CisNo = item.CisNo;
                             agDt.CaseId = request.Id;
-                            agDt.Cadre = item.Cadre;
+                            agDt.CadreId = item.CadreId;
                             agDt.CnrNo = item.CnrNo;
                             agDt.CourtDistrictId = item.CourtDistrictId != Guid.Empty ? item.CourtDistrictId : null;
                             agDt.ComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null;

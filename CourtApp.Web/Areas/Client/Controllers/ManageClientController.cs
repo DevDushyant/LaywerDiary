@@ -194,17 +194,16 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnCreateClientByCaseId(Guid ClientId)
+        public async Task<JsonResult> OnCreateClientByCaseId(Guid ClientId, string Name, string Mobile)
         {
-            var response = await _mediator.Send(new CreateClientByCaseIdCommand { ClientId = ClientId, UserId = CurrentUser.Id });
-            if (response.Succeeded)
+            var response = await _mediator.Send(new CreateClientByCaseIdCommand
             {
-                return Json("Success");
-            }
-            else
-            {
-                return Json(response.Message);
-            }
+                ClientId = ClientId,
+                UserId = CurrentUser.Id,
+                Name= Name,
+                Mobile=Mobile
+            });
+            return Json(response.Message);            
         }
     }
 }

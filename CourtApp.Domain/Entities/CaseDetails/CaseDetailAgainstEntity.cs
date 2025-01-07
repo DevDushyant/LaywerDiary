@@ -27,7 +27,7 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public int CaseYear { get; set; }
         public int CisYear { get; set; }
         public string OfficerName { get; set; }
-        public string Cadre { get; set; }
+        public Guid CadreId { get; set; }
         public string CisNo { get; set; }
         public string CnrNo { get; set; }
 
@@ -57,6 +57,7 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public virtual CourtTypeEntity CourtType { get; set; }
         public virtual NatureEntity CaseCategory { get; set; }
         public virtual TypeOfCasesEntity CaseType { get; set; }
+        public virtual CadreMasterEntity Cadre { get; set; }
         #endregion
 
     }

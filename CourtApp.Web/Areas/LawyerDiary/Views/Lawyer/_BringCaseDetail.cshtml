@@ -60,11 +60,11 @@
                         <table id="tblCourtBench" border="1" style="width:100%!important">
                             <tr>
                                 <td>Name</td>
-                                <td><label id="lblName"></label></td>
+                                <td><label id="lblName"></label><input type="hidden" id="hdnlblName"></input></td>
                             </tr>
                             <tr>
                                 <td>Mobile</td>
-                                <td><label id="lblMobile"></label></td>
+                                <td><label id="lblMobile"></label><input type="hidden" id="hdnlblMobile"></input></td>
                             </tr>
                             <tr>
                                 <td>Address</td>
@@ -122,6 +122,8 @@
                 $("#lblMobile").text(data.Mobile);
                 $("#lblAddress").text(data.Address);
                 $("#hdnClientId").val(data.Id);
+                $("#hdnlblName").val(data.Name);
+                $("#hdnlblMobile").val(data.Mobile);
                 }
         });
             $("#divClientDetail").show();
@@ -132,7 +134,7 @@
     };
 
     $.ajax({
-        url: "/Client/ManageClient/OnCreateClientByCaseId?ClientId="+$("#hdnClientId").val(),
+        url: "/Client/ManageClient/OnCreateClientByCaseId?ClientId="+$("#hdnClientId").val()+"&Name="+$("#hdnlblName").val()+"&Mobile="+$("#hdnlblMobile").val()+"",
         type: "POST",
          contentType: 'application/json',
          datatype: "json",

@@ -23,6 +23,7 @@ namespace CourtApp.Application.DTOs.CaseDetails
         public int? CaseYear { get; set; }
         public int? CisYear { get; set; }
         public string OfficerName { get; set; }
+        public Guid CadreId { get; set; }
         public string Cadre { get; set; }
         public string CisNo { get; set; }
         public string CnrNo { get; set; }

@@ -66,7 +66,7 @@ namespace CourtApp.Application.Features.UserCase
                             agc.CourtId = item.CourtBenchId;
                         agc.CourtDistrictId = item.CourtDistrictId != null ? item.CourtDistrictId : Guid.Empty;
                         agc.ComplexId = item.ComplexId != null ? item.ComplexId : Guid.Empty;
-                        agc.Cadre = item.Cadre;
+                        agc.CadreId = item.CadreId;
                         agc.CaseNo = item.CaseNo;
                         agc.CaseCategoryId = item.CaseCategoryId;
                         agc.CaseTypeId = item.CaseTypeId;

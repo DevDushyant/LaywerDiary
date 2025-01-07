@@ -49,15 +49,6 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Id), nameof(StateViewModel.Name_En), null, null);
 
             }
-
-            //var DistrictList = await _mediator.Send(new GetDistrictQuery { StateCode = ViewModel.StateCode });
-            //if (DistrictList.Succeeded)
-            //{
-            //    var DdlDistrict = _mapper.Map<List<DistrictViewModel>>(DistrictList.Data);
-            //    ViewModel.Districts = new SelectList(DdlDistrict, nameof(DistrictViewModel.Id), nameof(DistrictViewModel.Name_En), null, null);
-
-            //}
-
         }
 
         public async Task<JsonResult> OnGetCreateOrEdit(Guid id)

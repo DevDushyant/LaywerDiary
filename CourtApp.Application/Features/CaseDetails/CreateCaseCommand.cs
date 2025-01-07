@@ -67,7 +67,7 @@ namespace CourtApp.Application.Features.Case
         public int CaseYear { get; set; }
         public int CisYear { get; set; }
         public string OfficerName { get; set; }
-        public string Cadre { get; set; }
+        public Guid Cadre { get; set; }
         public Guid? CourtDistrictId { get; set; }
         public Guid? AgainstBenchId { get; set; }
         public Guid? ComplexId { get; set; }
@@ -158,9 +158,9 @@ namespace CourtApp.Application.Features.Case
                         ac.CaseTypeId = item.CaseTypeId.Value;
                         ac.StrengthId = item.StrengthId != null ? item.StrengthId.Value : 0;
                         ac.OfficerName = item.OfficerName;
-                        ac.CisYear = item.CisYear.Value;
+                        ac.CisYear = item.CisYear!=null ?item.CisYear.Value:0;
                         ac.CisNo = item.CisNo;
-                        ac.Cadre = item.Cadre;
+                        ac.CadreId = item.CadreId;
                         ac.CnrNo = item.CnrNo;
                         ac.CourtDistrictId = item.CourtDistrictId != Guid.Empty ? item.CourtDistrictId : null;
                         ac.ComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null;

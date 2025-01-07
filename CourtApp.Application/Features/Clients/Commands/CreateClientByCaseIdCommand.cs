@@ -16,6 +16,8 @@ namespace CourtApp.Application.Features.Clients.Commands
     {
         public Guid ClientId { get; set; }
         public string UserId { get; set; }
+        public string Mobile { get; set; }
+        public string Name { get; set; }
     }
 
 
@@ -40,18 +42,21 @@ namespace CourtApp.Application.Features.Clients.Commands
         {
             var detail = _clientRepository
                 .Clients
-                .Where(w => w.Id == request.ClientId && w.CreatedBy.Equals(request.UserId)).FirstOrDefault();
-            if (detail != null) Result<Guid>.Fail("Error! The client is already exist for the logged in user");
+                .Where(w => w.Name.Trim().ToLower().Equals(request.Name.Trim().ToLower())
+                        && w.Mobile.Equals(request.Mobile) && w.CreatedBy.Equals(request.UserId)
+                ).FirstOrDefault();
+            if (detail != null)
+                return Result<Guid>.Fail("Error! The client is already exist for the logged in user");
             else
             {
                 var cld = await _clientRepository.GetByIdAsync(request.ClientId);
-                detail.Id = Guid.NewGuid();
-                detail.ReferalBy = "";
+                cld.Id = Guid.NewGuid();
+                cld.ReferalBy = "";
                 await _clientRepository.InsertAsync(cld);
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(cld.Id);
             }
-            return Result<Guid>.Fail("Error! The client is already exist for the logged in user");
+            return Result<Guid>.Fail("There is some problem to process the request");
         }
     }
 }

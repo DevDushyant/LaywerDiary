@@ -148,7 +148,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                                 cam.CisYear = item.CisYear;
                                 cam.CnrNo = item.CnrNo;
                                 cam.OfficerName = item.OfficerName;
-                                cam.Cadre = item.Cadre;
+                                cam.CadreId = item.CadreId;
                                 cam.ACaseNatures = await LoadCaseNatureByCourtType(item.CourtTypeId.Value);
                                 cam.ATypeOfCases = await CaseTypes(item.CaseCategoryId.Value);
                             }
@@ -292,6 +292,36 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 ViewBag.AgIsHighCourt = AgIsHighCourt;
                 var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
                 return new JsonResult(new { isValid = false, html = html });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> OnPostDelete(Guid id)
+        {
+            var deleteCommand = await _mediator.Send(new DeleteCaseDetailCommand { Id = id });
+            if (deleteCommand.Succeeded)
+            {
+                _notify.Information($"Case info with Id {id} Deleted.");
+                var response = await _mediator.Send(new GetCaseInfoQuery()
+                {
+                    UserId = CurrentUser.Id
+                });
+                if (response.Succeeded)
+                {
+                    var viewModel = _mapper.Map<List<GetCaseInfoViewModel>>(response.Data);
+                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+                    return new JsonResult(new { isValid = true, html = html });
+                }
+                else
+                {
+                    _notify.Error(response.Message);
+                    return null;
+                }
+            }
+            else
+            {
+                _notify.Error(deleteCommand.Message);
+                return null;
             }
         }
         #endregion

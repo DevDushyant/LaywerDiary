@@ -13,13 +13,7 @@
             return m;
         }
     });
-    //$("#DistrictCode").select2({
-    //    placeholder: "Select a district",
-    //    theme: "bootstrap4",
-    //    escapeMarkup: function (m) {
-    //        return m;
-    //    }
-    //});
+    
     $("#CourtDistrictId").select2({
         placeholder: "Select a district court",
         theme: "bootstrap4",
@@ -36,8 +30,8 @@
     });
 });
 $("#CourtTypeId").on("change", function () {
-    
-    if ($("#CourtTypeId option:selected").text() === "High Court") {
+    debugger;
+    if ($("#CourtTypeId option:selected").text().toUpperCase() === "High Court".toUpperCase()) {
         $('#c_district').addClass('div_hide');
         $('#d_court_Complex').addClass('div_hide');
         $('#d_high_court_name').removeClass('div_hide');
@@ -57,12 +51,6 @@ $("#CourtTypeId").on("change", function () {
         });
     });
 
-    //$.getJSON("/LawyerDiary/CourtMaster/LoadDistricts?StateCode=" + $("#StateCode").val(), function (data) {
-    //    $("#DistrictCode").empty();
-    //    $.each(data.Data, function (i, item) {
-    //        $("#DistrictCode").append(`<option /><option value="${item.Code}">${item.Name_En}</option>`);
-    //    });
-    //});
 });
 $("#DistrictCode").on("change", function () {
     $.getJSON("/LawyerDiary/CourtMaster/LoadCourtDistrict?DistrictId=" + $("#DistrictCode").val(), function (data) {
@@ -91,9 +79,7 @@ function removeKolom(e) {
 
 function addElement(e) {
     var trlength = $('#tblCourtBench tbody tr').length;
-    var clonedRow = $('#tblCourtBench tbody tr:last').clone();
-    //clonedRow.find('input').attr('name', "CBAddress[" + trlength + "].Court_Bench_Name").attr('id', NameId)
-    //clonedRow.find('input').attr('name', "CBAddress[" + trlength + "].Court_Bench_Address").attr('id', AddressId);
+    var clonedRow = $('#tblCourtBench tbody tr:last').clone();    
     clonedRow.find('input').each(function (i) {
         var BName = "", BenchId;
         if (i === 0) {
@@ -109,8 +95,5 @@ function addElement(e) {
     clonedRow.find('button').find('button').replaceWith(btn_add);
     clonedRow.find('button.add-btn-repeat').replaceWith(btn_delete);
     clonedRow.find("input").val("");
-    $('#tblCourtBench tbody').append(clonedRow);
-    // var newElement = $(".kolom").last().clone();
-    //$(".kolom").find('button.add-btn-repeat').replaceWith(btn_delete);
-    //newElement.appendTo(".data-repeater").find('button').replaceWith(btn_add);
+    $('#tblCourtBench tbody').append(clonedRow);   
 }
