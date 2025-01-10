@@ -64,6 +64,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                             fdd.Key = Guid.NewGuid();
                             fdd.Name = f.Name;
                             fdd.Type = f.Type;
+                            fdd.DefaultVal = f.DefaultVal;
                             ff.Add(fdd);
                         }
                         FormFieldsDto formFieldsDto = new FormFieldsDto();

@@ -17,24 +17,28 @@ function addElement1(e) {
             NameAtr = "Form.Fields[" + trlength + "].Name";
             IdAtr = "Form_Fields_" + trlength + "__Name";
         }
+        if (i === 2) {
+            NameAtr = "Form.Fields[" + trlength + "].DefaultVal";
+            IdAtr = "Form_Fields_" + trlength + "__DefaultVal";
+        }
 
-        if (i === 1) {
+        if (i === 3) {
             NameAtr = "Form.Fields[" + trlength + "].IsRequire";
             IdAtr = "Form_Fields_" + trlength + "__IsRequire";
         }
-        if (i === 2) {
+        if (i === 4) {
             NameAtr = "Form.Fields[" + trlength + "].DispOrder";
             IdAtr = "Form_Fields_" + trlength + "__DispOrder";
         }
-        if (i === 3) {
+        if (i === 5) {
             NameAtr = "Form.Fields[" + trlength + "].Placeholder";
             IdAtr = "Form_Fields_" + trlength + "__Placeholder";
         }
-        if (i === 4) {
+        if (i === 6) {
             NameAtr = "Form.Fields[" + trlength + "].length.Min";
             IdAtr = "Form_Fields_" + trlength + "__length.Min";
         }
-        if (i === 5) {
+        if (i === 7) {
             NameAtr = "Form.Fields[" + trlength + "].length.Max";
             IdAtr = "Form_Fields_" + trlength + "__length.Max";
         }
@@ -75,6 +79,7 @@ function addElement(e) {
     html += "<td><input type='hidden' name='Form.Fields[" + index + "].Key' value='" + key + "' />" +
         "<input type='text' name='Form.Fields[" + index + "].Name' id='Form_Fields_" + index + "__Name' width='300px' placeholder='Enter label name' class='form-control' title='Please enter field label name!' /></td>";
     html += "<td><select name='Form.Fields[" + index + "].Type' id='Form_Fields_" + index + "__Type'  class='form-control' title='Please enter type name!'><option>--Select--</option></select></td>";
+    html += "<td><input type = 'text' name = 'Form.Fields[" + index + "].DefaultVal' id = 'Form_Fields_" + index + "__DefaultVal' width = '300px' placeholder = 'Enter Default value (In case of Dropdown provide comma seprated values)' class='form-control' title = 'Enter Default value (In case of Dropdown provide comma seprated values)' /></td >";
     html += "<td><button type='button' class='btn btn-warning delete'><i class='fa fa-trash' aria-hidden='true'></i></button></td>";
     html += "</tr>";
     $(".data-repeater").append(html);

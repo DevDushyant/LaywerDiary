@@ -46,7 +46,7 @@ namespace CourtApp.Application.Features.Clients.Commands
                         && w.Mobile.Equals(request.Mobile) && w.CreatedBy.Equals(request.UserId)
                 ).FirstOrDefault();
             if (detail != null)
-                return Result<Guid>.Fail("Error! The client is already exist for the logged in user");
+                return Result<Guid>.Fail("The client is already exist for the logged in user!");
             else
             {
                 var cld = await _clientRepository.GetByIdAsync(request.ClientId);

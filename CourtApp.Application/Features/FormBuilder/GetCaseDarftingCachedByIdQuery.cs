@@ -51,6 +51,7 @@ namespace CourtApp.Application.Features.FormBuilder
                     fm.Type = item.Type;
                     fm.Value = dt.FieldDetails.Where(s => s.Key == item.Key)
                     .Select(s => s.Value).FirstOrDefault();
+                    fm.DefaultVal = item.DefaultVal;
                     fmr.Add(fm);
                 }
                 //var frslt = from f in frmDetails

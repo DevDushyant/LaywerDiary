@@ -139,20 +139,22 @@
          contentType: 'application/json',
          datatype: "json",
         success: function (response) {
-            var msg=""; txt="";
+            var msg=""; txt="";icn="";
             if (response === "Success") {
                 msg="Client is created successfully!";
                 txt="Success";
+                icn="success";
                 $("#btnCopyCaseInfo").removeAttr('disabled');
             }
             else{
                  msg=response;
                 txt="error";
+                icn="error";
             }
             Swal.fire({
                         title: msg,
-                        text: "Ok!",
-                        icon: "success"
+                        text: txt,
+                        icon: icn
                     });
         },
         error: function (xhr) {

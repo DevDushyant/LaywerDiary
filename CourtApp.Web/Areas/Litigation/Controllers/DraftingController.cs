@@ -140,7 +140,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     string FinalContent = string.Empty;
                     foreach (var tg in dt.TagValues)
                     {
-                        FinalContent = Content.Replace(tg.Key, tg.Value);
+                        FinalContent = Content.Replace(tg.Key.Trim(), tg.Value.Trim());
                         Content = FinalContent;
                     }
                     // Create a memory stream to hold the document

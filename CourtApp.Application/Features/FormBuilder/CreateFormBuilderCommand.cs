@@ -15,7 +15,7 @@ namespace CourtApp.Application.Features.FormBuilder
     public class CreateFormBuilderCommand : IRequest<Result<Guid>>
     {
         public Guid Id { get; set; }
-        public string FormName { get; set; }
+        public string FormName { get; set; }       
         public FormFieldsDto Form { get; set; }
     }
     public class CreateFormBuilderCommandHandler : IRequestHandler<CreateFormBuilderCommand, Result<Guid>>

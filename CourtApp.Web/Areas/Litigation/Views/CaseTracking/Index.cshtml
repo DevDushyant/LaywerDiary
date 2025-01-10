@@ -179,7 +179,11 @@
                 var v = $("#GroupItem").val();
                 loadData(t, v);
             });
-
+            $('#reload').click(function() {
+                // Reset the select elements
+                $('#SearchBy').val('').trigger('change');
+                $('#GroupItem').val('').trigger('change');
+            });
 
         });
         function loadData(t, v) {

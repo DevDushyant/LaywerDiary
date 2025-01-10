@@ -142,7 +142,8 @@
                 type: "POST",
                 url: '@Url.Action("GetTemplateFields", "Drafting")',
                 data: input,
-                success: function (response) {                    
+                success: function (response) {   
+                    debugger;
                     $('#FieldDetails').html(response);                    
                 }
             });

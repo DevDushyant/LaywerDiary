@@ -39,6 +39,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             if (id == Guid.Empty)
             {
                 ViewModel = new TemplateViewModel();
+                ViewBag.BtText = "Save";
                 return View("_CreateOrEdit", ViewModel);
             }
             else
@@ -53,6 +54,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                     dt.TemplateName = TempName;
                     string TemplateBody = ReadTemplate(FilePath, FileName);
                     dt.TemplateBody = TemplateBody;
+                    ViewBag.BtText = "Update";
                     return View("_CreateOrEdit", dt);
                 }
             }

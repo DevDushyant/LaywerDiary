@@ -27,7 +27,26 @@
                                 </td>
                                 <td>
                                     <input type="hidden" asp-for="@Model.FieldDetails[i].Type" />
-                                    <input class="form-control" type="@Model.FieldDetails[i].Type" asp-for="@Model.FieldDetails[i].Value" />
+
+                                    @if (@Model.FieldDetails[i].Type == "1")
+                                    {
+                                        <input class="form-control" type="@Model.FieldDetails[i].Type" asp-for="@Model.FieldDetails[i].Value" />
+                                    }
+                                    else if (@Model.FieldDetails[i].Type == "2")
+                                    {
+                                        <input type="date" asp-for="@Model.FieldDetails[i].Value" class="form-control">
+                                    }
+                                    else
+                                    {
+                                        if (@Model.FieldDetails[i].DefaultVal != null)
+                                        {
+                                            var ddlValues = @Model.FieldDetails[i].DefaultVal.Split(',').ToList();
+                                            var selectListItems = ddlValues.Select(x => new SelectListItem { Text = x, Value = x });
+                                            <select asp-for="@Model.FieldDetails[i].Value" asp-items="@(new SelectList(selectListItems, "Value", "Text"))" class="form-control" title="Please select the value!">
+                                                <option>--Select--</option>
+                                            </select>
+                                        }
+                                    }                                   
                                 </td>
                             </tr>
                         }
@@ -45,3 +64,4 @@
         </div>
     </div>
 </div>
+

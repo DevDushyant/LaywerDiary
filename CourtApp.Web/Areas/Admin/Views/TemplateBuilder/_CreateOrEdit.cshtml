@@ -5,14 +5,14 @@
 
 <style>
     .main-container {
-        width: 100%;
-        margin-left: auto;
-        margin-right: auto;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
     }
 
     .ck-editor__editable {
-        min-height: 300px;
-        max-height: 300px;
+    min-height: 300px;
+    max-height: 300px;
     }
 
 </style>
@@ -35,10 +35,9 @@
             </div>
             <div class="form-group row">
                 <div class="main-container">
-                    <textarea id="editor" asp-for="TemplateBody"></textarea>
+                    <textarea asp-for="TemplateBody"></textarea>
                 </div>
             </div>
-
             <div class="form-group row">
                 <div class="col-md-3">
                 </div>
@@ -46,10 +45,22 @@
         </div>
     </div>
 
-    <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
-        <button type="submit" class="btn btn-success">Save</button>
-        <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
+    <div class="form-group justify-content-between" style="margin-bottom: 0px !important">       
+        <button type="submit" class="btn btn-success">@ViewBag.BtText</button>
+        <input type="button" class="btn btn-default close-button" id="btnReset" value="Reset" data-dismiss="modal"></button>
     </div>
 </form>
+@section Scripts
+{
+    <script src="~/assets/ckeditor/ckeditor.js"></script>
+    <script>
+        $(document).ready(function(){
+                CKEDITOR.replace('TemplateBody');
+                    $("#btnReset").on('click', function () {
+                    CKEDITOR.instances['TemplateBody'].setData();
+                $("#TemplateName").val('');
 
-
+            });
+        });
+    </script>
+}

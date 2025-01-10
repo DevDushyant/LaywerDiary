@@ -9,5 +9,6 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public bool IsRequired { get; set; }       
         public string Name { get; set; }
         public string Value { get; set; }
+        public string DefaultVal { get; set; }
     }
 }

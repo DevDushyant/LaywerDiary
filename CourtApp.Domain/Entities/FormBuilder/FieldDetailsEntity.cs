@@ -6,7 +6,8 @@ namespace CourtApp.Domain.Entities.FormBuilder
     {
         public Guid Key { get; set; }
         public string Name { get; set; }
-        public int Type { get; set; }       
+        public int Type { get; set; }
+        public string DefaultVal { get; set; }
         public bool IsRequire { get; set; }
         public int DispOrder { get; set; }
         public string Placeholder { get; set; }       

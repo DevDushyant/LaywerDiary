@@ -296,12 +296,12 @@ namespace CourtApp.Application.Constants
             var _Str = new Dictionary<int, string>
             {
                 {1, "TextBox"},
-                {2, "TextArea"},
-                {3, "DatePicker"},
-                {4, "CheckBox"},
-                {5, "CheckBoxList"},
-                {6, "Select"},
-                {7, "FileUpload"}                
+                {2, "DatePicker"},
+                {3, "DropDownList"},
+                {4, "TextArea"},
+                //{5, "CheckBoxList"},
+                //{6, "Select"},
+                //{7, "FileUpload"}                
             };
             return _Str;
         }

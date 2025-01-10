@@ -3,14 +3,15 @@
     ViewData["Caption"] = localizer["Proceeding Sub Head List"];
 }
 @model ProceedingSubHeadViewModel
+@Html.AntiForgeryToken()
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
-        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Create)).Result.Succeeded)
-        {
-            <a onclick="jQueryModalGet('/lawyerdiary/ProceedingSubHead/OnGetCreateOrEdit','Create Proceeding Sub Head')" class="btn bg-success">
-                <i class="fa fa-plus-square"></i> Create
-            </a>
-        }
+        @*  @if ((AuthorizationService.AuthorizeAsync(User, Permissions.ProceedingSubHeads.Create)).Result.Succeeded)
+        { *@
+        <a onclick="jQueryModalGet('/lawyerdiary/ProceedingSubHead/OnGetCreateOrEdit','Create Proceeding Sub Head')" class="btn bg-success">
+            <i class="fa fa-plus-square"></i> Create
+        </a>
+        @* } *@
 
         <a id="reload" class="btn btn-primary text-white">
             <i class="fa fas fa-bolt"></i>
@@ -18,20 +19,63 @@
         </a>
     </div>
     <div id="viewAll" class="card-body table-responsive">
+        <table id="tblProceedingSHead" class="table table-striped" width="100%">
+            <thead>
+                <tr>
+                    <th>Head</th>
+                    <th>Name(En)</th>
+                    <th>Name(Hn)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
     </div>
 </div>
 @section Scripts
 {
     <script src="~/js/site.js"></script>
     <script>
-        $(document).ready(function () {
-            loadData(1, 1000);;
-            $('#reload').on('click', function () {
-                loadData(1,20);
-            });
+        $('#tblProceedingSHead').DataTable().clear().destroy();
+        $('#tblProceedingSHead').DataTable({
+            "processing": true,
+            "serverSide": true,
+
+            "ajax": {
+                "url": "/LawyerDiary/ProceedingSubHead/LoadAll",
+                "type": "POST",
+                "headers": {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                "dataSrc": function (json) {
+                    // DataTable expects the response in the format: { draw, recordsTotal, recordsFiltered, data }
+                    console.log(json);
+                    return json.data;  // Return the `data` property from the response
+                }
+
+            },
+            "columns": [
+                { "data": "Head" },
+                { "data": "Name_En" },
+                { "data": "Name_Hn" },
+                {
+                "render": function (data, type, row) {
+                        var actions = '<div class="btn-group">';
+                        actions += '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action</button>';
+                        actions += '<div class="dropdown-menu shadow animated--grow-in">';
+                        actions += '<a onclick="jQueryModalGet(\'/LawyerDiary/ProceedingSubHead/OnGetCreateOrEdit?id=' + row.Id + '\',\'Edit Proceeding Sub Head Type\')" class="dropdown-item"><i class="fas fa-pencil-alt"></i> Edit</a>';
+                        actions += '<a href="javascript:$(\'#form_delete_' + row.Id + '\').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i> Delete</a>';
+                        actions += '</div></div>';
+                        return actions;
+                    }
+                    }
+             ]
+                // {
+                //     "data": null,
+                //     "render": function (data, type, row) {
+                //         return '<a href="/LawyerDiary/ProceedingSubHead/Edit/' + row.Id + '">Edit</a> | <a href="/LawyerDiary/ProceedingSubHead/Delete/' + row.Id + '">Delete</a>';
+                //     }
+                // }
+            //]
         });
-        function loadData(pN,pS) {
-            $('#viewAll').load('/LawyerDiary/ProceedingSubHead/LoadAll?pageNumber=' + pN + '&pageSize='+pS+'');
-        }
     </script>
 }

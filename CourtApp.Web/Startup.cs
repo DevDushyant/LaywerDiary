@@ -54,7 +54,7 @@ namespace CourtApp.Web
             
             services.AddFluentValidationAutoValidation();
             Syncfusion.Licensing.SyncfusionLicenseProvider
-                .RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NCaF1cWWhAYVJ2WmFZfVpgcF9EaFZSQWYuP1ZhSXxXdkxjWn9acnxWQ2leV00=");
+                .RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWX5eeXRXRWJfV0RxXEU=");
             services.AddControllersWithViews().AddFluentValidation(fv =>
             {
                 fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());                
