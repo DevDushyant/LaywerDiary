@@ -23,6 +23,7 @@ namespace CourtApp.Application.Mappings
 
             CreateMap<CreateTemplateFormMappingCommand, FormTemplateMappingEntity>();
             CreateMap<MappingDto, MappingEntity>();
+            CreateMap<TemplateTags, TemplateTagsEntity>();
 
         }
     }

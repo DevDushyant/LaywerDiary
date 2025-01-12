@@ -95,7 +95,7 @@
                                         <input type="hidden" asp-for="@Model.Form.Fields[i].Key" />
                                         <td><input type="text" asp-for="@Model.Form.Fields[i].Name" width="300px" placeholder="Enter label name" class="form-control" title="Please enter field label name!" /></td>
                                         <td><select asp-for="@Model.Form.Fields[i].Type" asp-items="Html.GetEnumSelectList<FieldType>()" class="form-control" title="Please enter type name!"><option>--Select--</option></select></td>
-                                        <td><input type="text" asp-for="Form.Fields[0].DefaultVal" width="300px" placeholder="Enter Default value (In case of Dropdown provide comma seprated values)" class="form-control" title="Enter Default value (In case of Dropdown provide comma seprated values)" /></td>
+                                        <td><input type="text" asp-for="Form.Fields[i].DefaultVal" width="300px" placeholder="Enter Default value (In case of Dropdown provide comma seprated values)" class="form-control" title="Enter Default value (In case of Dropdown provide comma seprated values)" /></td>
                                         @* <td><input type="checkbox" asp-for="Form.Fields[0].IsRequire" class="form-control" title="Please tick field if would be mandatory!" /></td>
                                 <td><input type="number" asp-for="Form.Fields[0].DispOrder" placeholder="Enter field display order" class="form-control" title="Please provide field display order number!" /></td>
                                 <td><input type="text" asp-for="Form.Fields[0].Placeholder" placeholder="Enter field placeholder name" class="form-control" title="Please enter field placeholder name!" /></td>

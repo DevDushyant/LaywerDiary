@@ -1,67 +1,73 @@
 ﻿@model FormBuilderViewModel
 <div id="viewAll" class="card-body table-responsive">
     <div class="row">
-        <div class="col-md-12">
-            <table id="tblRegister" class="table table-striped" style="border:1px;">
-                <thead>
-                    <tr>
-                        <th style="width:5%">Sno.</th>
-                        <th style="width:25%">Label Name</th>
-                        <th style="width:70%">Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.FieldDetails.Count() > 0)
-                    {
-                        int count = 0;
-                        for (int i = 0; i < Model.FieldDetails.Count(); i++)
-                        {
-                            <tr>
-                                <td>
-                                    <input type="hidden" asp-for="@Model.FieldDetails[i].Key" />
-                                    <label class="col-form-label">@(++count)</label>
-                                </td>
-                                <td>
-                                    <input type="hidden" asp-for="@Model.FieldDetails[i].Name" />
-                                    <label class="col-form-label">@localizer[@Model.FieldDetails[i].Name]</label>
-                                </td>
-                                <td>
-                                    <input type="hidden" asp-for="@Model.FieldDetails[i].Type" />
-
-                                    @if (@Model.FieldDetails[i].Type == "1")
-                                    {
-                                        <input class="form-control" type="@Model.FieldDetails[i].Type" asp-for="@Model.FieldDetails[i].Value" />
-                                    }
-                                    else if (@Model.FieldDetails[i].Type == "2")
-                                    {
-                                        <input type="date" asp-for="@Model.FieldDetails[i].Value" class="form-control">
-                                    }
-                                    else
-                                    {
-                                        if (@Model.FieldDetails[i].DefaultVal != null)
-                                        {
-                                            var ddlValues = @Model.FieldDetails[i].DefaultVal.Split(',').ToList();
-                                            var selectListItems = ddlValues.Select(x => new SelectListItem { Text = x, Value = x });
-                                            <select asp-for="@Model.FieldDetails[i].Value" asp-items="@(new SelectList(selectListItems, "Value", "Text"))" class="form-control" title="Please select the value!">
-                                                <option>--Select--</option>
-                                            </select>
-                                        }
-                                    }                                   
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
+        <table id="tblRegister" class="table table-striped" style="border:1px;">
+            <thead>
+                <tr>
+                    <th style="width:5%">Sno.</th>
+                    <th style="width:25%">Label Name</th>
+                    <th style="width:70%">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.FieldDetails.Count() > 0)
+                {
+                    int count = 0;
+                    for (int i = 0; i < Model.FieldDetails.Count(); i++)
                     {
                         <tr>
-                            <td colspan="5" align="center">
-                                Record is not there
+                            <td>
+                                <input type="hidden" asp-for="@Model.FieldDetails[i].Key" />
+                                <label class="col-form-label">@(++count)</label>
+                            </td>
+                            <td>
+                                <input type="hidden" asp-for="@Model.FieldDetails[i].Name" />
+                                <label class="col-form-label">@localizer[@Model.FieldDetails[i].Name]</label>
+                            </td>
+                            <td>
+                                <input type="hidden" asp-for="@Model.FieldDetails[i].Type" />
+
+                                @if (@Model.FieldDetails[i].Type == "1")
+                                {
+                                    <input class="form-control" type="@Model.FieldDetails[i].Type" asp-for="@Model.FieldDetails[i].Value" />
+                                }
+                                else if (@Model.FieldDetails[i].Type == "2")
+                                {
+                                    <input type="date" asp-for="@Model.FieldDetails[i].Value" class="form-control">
+                                }
+                                else if (@Model.FieldDetails[i].Type == "4")
+                                {
+                                    <textarea asp-for="@Model.FieldDetails[i].Value" class="form-control"></textarea>
+                                }
+                                else if (@Model.FieldDetails[i].Type == "5")
+                                {
+                                    <input class="form-control" type="number" asp-for="@Model.FieldDetails[i].Value" />
+                                }
+                                else
+                                {
+                                    if (@Model.FieldDetails[i].DefaultVal != null)
+                                    {
+                                        var ddlValues = @Model.FieldDetails[i].DefaultVal.Split(',').ToList();
+                                        var selectListItems = ddlValues.Select(x => new SelectListItem { Text = x, Value = x });
+                                        <select asp-for="@Model.FieldDetails[i].Value" asp-items="@(new SelectList(selectListItems, "Value", "Text"))" class="form-control" title="Please select the value!">
+                                            <option>--Select--</option>
+                                        </select>
+                                    }
+                                }
                             </td>
                         </tr>
                     }
-                </tbody>
-            </table>
-        </div>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" align="center">
+                            Record is not there
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 

@@ -299,9 +299,8 @@ namespace CourtApp.Application.Constants
                 {2, "DatePicker"},
                 {3, "DropDownList"},
                 {4, "TextArea"},
-                //{5, "CheckBoxList"},
-                //{6, "Select"},
-                //{7, "FileUpload"}                
+                {5, "Numeric"},
+                              
             };
             return _Str;
         }

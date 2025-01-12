@@ -21,9 +21,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
         {
             _distributedCache = distributedCache;
             this._Repository = _Repository;
-        }
-
-       
+        }       
 
         public async Task<LDBookEntity> GetByIdAsync(Guid bookId)
         {

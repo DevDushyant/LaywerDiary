@@ -8,6 +8,19 @@ namespace CourtApp.Application.DTOs.FormBuilder
         public string CaseType { get; set; }
         public string TemplateName { get; set; }
         public string TemplatePath { get; set; }
+        public string Strength { get; set; }
+        public string FirstTitle { get; set; }
+        public string FirstTitleType { get; set; }
+        public string SecondTitle { get; set; }
+        public string SecondTitleType { get; set; }
+        public string ImpungedOrderDt { get; set; }
+        public string Office { get; set; }
+        public string Cadre { get; set; }
+        public string AgCourt { get; set; }
+        public string AgCaseNoYear { get; set; }
+        public string AgCNR { get; set; }
+        public string AgCisNoYear { get; set; }
+        public string State { get; set; }
         public List<CaseCompleteTitle> CaseCompleteTitles { get; set; }
         public List<MappingDetails> TagValues { get; set; }
     }

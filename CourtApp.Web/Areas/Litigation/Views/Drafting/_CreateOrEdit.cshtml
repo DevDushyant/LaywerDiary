@@ -28,13 +28,6 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
-                <label class="col-md-2 col-form-label">@localizer["Case Title"]</label>
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <select asp-for="CaseId" asp-items="@Model.Cases" class="form-control select2bs4"><option></option></select>
-                    </div>
-                    <span asp-validation-for="CaseId" class="text-danger"></span>
-                </div>
                 <label class="col-md-2 col-form-label">@localizer["Drafting Form"]</label>
                 <div class="col-md-4">
                     <div class="input-group" id="Template">
@@ -45,16 +38,26 @@
                     </div>
                     <span asp-validation-for="DraftingFormId" class="text-danger"></span>
                 </div>
-            </div>
 
-            <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["Associate Template"]</label>
                 <div class="col-md-4">
                     <div class="input-group">
                         <select asp-for="TemplateId" asp-items="@Model.Templates" class="form-control select2bs4"><option></option></select>
                     </div>
                     <span asp-validation-for="TemplateId" class="text-danger"></span>
-                </div>                
+                </div>
+                
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">@localizer["Case Title"]</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <select asp-for="CaseId" asp-items="@Model.Cases" class="form-control select2bs4"><option></option></select>
+                    </div>
+                    <span asp-validation-for="CaseId" class="text-danger"></span>
+                </div>
+
             </div>
 
             <div class="form-group row">
