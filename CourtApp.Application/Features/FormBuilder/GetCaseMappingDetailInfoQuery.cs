@@ -53,6 +53,7 @@ namespace CourtApp.Application.Features.FormBuilder
                 .Include(c => c.Case).ThenInclude(s => s.CaseCategory)
                 .Include(c => c.Case).ThenInclude(s => s.CaseStage)
                 .Include(c => c.Case).ThenInclude(s => s.CaseType)
+                .Include(c => c.Case).ThenInclude(s => s.Titles)
                 .Where(w => w.Id == request.Id).FirstOrDefault();
             if (draftingDetail != null)
             {
@@ -62,11 +63,25 @@ namespace CourtApp.Application.Features.FormBuilder
                 var FieldDetails = draftingDetail.FieldDetails;
                 var TempInfo = await _RepoTemplate.GetByIdAsync(TemplateId);
                 var agd = draftingDetail.Case.CaseAgainstEntities.FirstOrDefault();
+
                 var FieldMapping = _RepoMapping
                     .Entities
                     .Where(w => w.FormId == draftId && w.TemplateId == TemplateId)
                     .FirstOrDefault();
-
+                //Getting all the first title of the court. Here we shall be generate a string and
+                //concate all the applicants in one string with new line corrector.
+                var fsTitles = draftingDetail.Case.Titles
+                    .Where(t => t.TypeId == 1)
+                    .SelectMany(a => a.CaseApplicants);
+                string ftils ="" ;
+                foreach (var item in fsTitles)               
+                    ftils += item.ApplicantNo + ".    " + item.ApplicantDetail + " <br><br><br>";
+                
+                var ssTitles = draftingDetail.Case.Titles.Where(t => t.TypeId == 2)
+                    .SelectMany(a => a.CaseApplicants);
+                string stils = "";
+                foreach (var item in ssTitles)
+                    stils += item.ApplicantNo + ".    " + item.ApplicantDetail + " <br><br><br>";
                 var tagMappingDetails = (from fm in FieldMapping.FieldsMapping
                                          join fd in FieldDetails on fm.Key equals fd.Key
                                          select new MappingDetails
@@ -75,26 +90,34 @@ namespace CourtApp.Application.Features.FormBuilder
                                              Value = fd.Value
                                          }).ToList();
                 var CaseExistingKeys = TempInfo.Tags.Where(w => w.Tag.Contains("DB"));
+                var AmountAwarded = tagMappingDetails.Where(w => w.Key.Trim().Equals("#AmountAwarded#")).Select(s => s.Value).FirstOrDefault();
+                var AmountClaimd = tagMappingDetails.Where(w => w.Key.Trim().Equals("#AmountClaimed#")).Select(s => s.Value).FirstOrDefault();
+                var totalAmount = Convert.ToDouble(AmountClaimd) - Convert.ToDouble(AmountAwarded);
                 foreach (var it in CaseExistingKeys)
                 {
                     var dbm = new MappingDetails();
                     dbm.Key = it.Tag.Trim();
-                    if (it.Tag.Trim() == "#DBStrength#") dbm.Value = draftingDetail.Case.StrengthId == 1 ? "S.B." : "D.B.";
-                    else if (it.Tag.Trim() == "#DBStateName#") dbm.Value = draftingDetail.Case.State.Name_En;
-                    else if (it.Tag.Trim() == "#DBBench#") dbm.Value = draftingDetail.Case.CourtBench.CourtBench_En;
+                    if (it.Tag.Trim() == "#DBStrength#") dbm.Value = draftingDetail.Case.StrengthId == 1 ? "S.B." : "D.B. <br><br>";
+                    else if (it.Tag.Trim() == "#DBStateName#") dbm.Value = draftingDetail.Case.State.Name_En.ToUpper()+" <br>";
+                    else if (it.Tag.Trim() == "#DBBench#") dbm.Value = draftingDetail.Case.CourtBench.CourtBench_En.ToUpper();
                     else if (it.Tag.Trim() == "#DBCaseType#") dbm.Value = draftingDetail.Case.CaseType.Name_En;
                     else if (it.Tag.Trim() == "#DBCaseNoYear#") dbm.Value = draftingDetail.Case.CaseNo + "/" + draftingDetail.Case.CaseYear;
-                    else if (it.Tag.Trim() == "#DBFirstTitleFull#") dbm.Value = draftingDetail.Case.FirstTitle;
+                    else if (it.Tag.Trim() == "#DBFTCase#") dbm.Value = ftils;//draftingDetail.Case.FirstTitle;
+                    else if (it.Tag.Trim() == "#DBSTCase#") dbm.Value = stils;//draftingDetail.Case.SecondTitle;
+                    
+                    else if (it.Tag.Trim() == "#DBFirstTitleFull#") dbm.Value =draftingDetail.Case.FirstTitle;
                     else if (it.Tag.Trim() == "#DBSecondTitleFull#") dbm.Value = draftingDetail.Case.SecondTitle;
+
                     else if (it.Tag.Trim() == "#DBFirstTitle#") dbm.Value = draftingDetail.Case.FTitle.Name_En;
                     else if (it.Tag.Trim() == "#DBSecondTitle#") dbm.Value = draftingDetail.Case.STitle.Name_En;
                     else if (it.Tag.Trim() == "#DBImpungedOrder#") dbm.Value = agd.ImpugedOrderDate.ToString("dd/MM/yyyy");
-                    else if (it.Tag.Trim() == "#DBCadre#") dbm.Value = agd != null && agd.Cadre!=null ? agd.Cadre.Name_En : "";
-                    else if (it.Tag.Trim() == "#DBOfficerName#") dbm.Value = agd != null  ? agd.OfficerName : "";
+                    else if (it.Tag.Trim() == "#DBCadre#") dbm.Value = agd != null && agd.Cadre != null ? agd.Cadre.Name_En : "";
+                    else if (it.Tag.Trim() == "#DBOfficerName#") dbm.Value = agd != null ? agd.OfficerName : "";
                     else if (it.Tag.Trim() == "#DBAgCaseNoYear#") dbm.Value = agd != null ? agd.CaseNo + "/" + agd.CaseYear : "";
                     else if (it.Tag.Trim() == "#DBAgCISCASENoYear#") dbm.Value = agd != null ? agd.CisNo + "/" + agd.CisYear : "";
                     else if (it.Tag.Trim() == "#DBAgCNRNO#") dbm.Value = agd != null ? agd.CnrNo : "";
-                    else if (it.Tag.Trim() == "#DBAgainstCourt#") dbm.Value = agd != null && agd.CourtBench!=null ? agd.CourtBench.CourtBench_En : "";
+                    else if (it.Tag.Trim() == "#DBAgainstCourt#") dbm.Value = agd != null && agd.CourtBench != null ? agd.CourtBench.CourtBench_En : "";
+                    else if (it.Tag.Trim().Contains("#DBAmountRecieved#")) dbm.Value = totalAmount.ToString();
                     else dbm.Value = "";
                     tagMappingDetails.Add(dbm);
                 }
@@ -105,6 +128,7 @@ namespace CourtApp.Application.Features.FormBuilder
                 cmd.TagValues = tagMappingDetails.ToList();
                 cmd.TemplateName = TempInfo.TemplateName;
                 cmd.TemplatePath = TempInfo.TemplatePath;
+                cmd.TemplateBody = TempInfo.TemplateBody;
                 return Result<CaseMappingDetailInfoDto>.Success(cmd);
             }
             return null;

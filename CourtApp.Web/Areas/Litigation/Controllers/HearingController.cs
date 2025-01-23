@@ -22,7 +22,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             var model = new BringTodayCaseViewModel();
             //var SelectedDate = TempData["SelectedDate"] != null ? TempData["SelectedDate"].ToString() : "";
-            model.HearingDate = SelectedDate!=null ? Convert.ToDateTime(SelectedDate) : DateTime.Now;
+            model.HearingDate = SelectedDate != null ? Convert.ToDateTime(SelectedDate) : DateTime.Now;
             return View(model);
         }
         public async Task<IActionResult> LoadAll(string seleDate)
@@ -156,7 +156,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 model.Proceedings = await DdlSubProc(model.HeadId);
                 model.ProcWork.WorkTypes = await DdlWorks();
                 var WorkTypeId = model.ProcWork.Workdt.Select(s => s.WorkTypeId).FirstOrDefault();
-                model.ProcWork.Works = await DdlSubWork(WorkTypeId.Value);
+                for (int i = 0; i < model.ProcWork.Workdt.Count(); i++)
+                {
+                    model.ProcWork.Workdt[i].Works = await DdlSubWork(model.ProcWork.Workdt[i].WorkTypeId.Value);
+                }
                 model.Stages = await DdlCaseStages();
                 model.IsUpdate = true;
             }
@@ -202,10 +205,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         _notify.Success($"Case proceeding with ID {result.Data} Created.");
                 }
             }
-            return RedirectToAction("Index", new { SelectedDate= TempData["SelectedDate"].ToString() });
+            return RedirectToAction("Index", new { SelectedDate = TempData["SelectedDate"].ToString() });
         }
         #endregion
 
-       
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Infrastructure.CacheKeys;
+using CourtApp.Application.CacheKeys;
 using AspNetCoreHero.Extensions.Caching;
 using AspNetCoreHero.ThrowR;
 using Microsoft.Extensions.Caching.Distributed;
@@ -23,7 +23,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
         }
         public async Task<CourtFeeStructureEntity> GetCacheDataByIdAsync(Guid Id)
         {
-            string cacheKey = CacheKeys.AppCacheKeys.CourtFeeKey;
+            string cacheKey = AppCacheKeys.CourtFeeKey;
             var data = await _distributedCache.GetAsync<CourtFeeStructureEntity>(cacheKey);
             if (data == null)
             {
@@ -36,7 +36,7 @@ namespace CourtApp.Infrastructure.CacheRepositories
 
         public async Task<List<CourtFeeStructureEntity>> GetCacheDataListAsync()
         {
-            string cacheKey = CacheKeys.AppCacheKeys.CourtFeeKey;
+            string cacheKey = AppCacheKeys.CourtFeeKey;
             try
             {
                 var dataList = await _distributedCache.GetAsync<List<CourtFeeStructureEntity>>(cacheKey);

@@ -31,12 +31,15 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("text");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid?>("DemographicId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -45,10 +48,10 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("EnrollmentNo")
+                    b.Property<string>("FirstName")
                         .HasColumnType("text");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("Gender")
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
@@ -89,9 +92,6 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
-                    b.Property<string>("Telephone")
-                        .HasColumnType("text");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
@@ -99,10 +99,13 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<string>("Website")
+                    b.Property<string>("UserType")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DemographicId")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -112,6 +115,77 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("Users", "Identity");
+                });
+
+            modelBuilder.Entity("CourtApp.Infrastructure.Identity.Models.Demographic", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AddressInfo")
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("ContactInfo")
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("ProfessionalInfo")
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("WorkLocInfo")
+                        .HasColumnType("jsonb");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("demographic", "Identity");
+                });
+
+            modelBuilder.Entity("CourtApp.Infrastructure.Identity.Models.OperatorUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AddressInfo")
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateOfJoining")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LawyerId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LawyerId");
+
+                    b.ToTable("operator", "Identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -246,6 +320,24 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                     b.ToTable("UserTokens", "Identity");
                 });
 
+            modelBuilder.Entity("CourtApp.Infrastructure.Identity.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("CourtApp.Infrastructure.Identity.Models.Demographic", "Demographic")
+                        .WithOne("User")
+                        .HasForeignKey("CourtApp.Infrastructure.Identity.Models.ApplicationUser", "DemographicId");
+
+                    b.Navigation("Demographic");
+                });
+
+            modelBuilder.Entity("CourtApp.Infrastructure.Identity.Models.OperatorUser", b =>
+                {
+                    b.HasOne("CourtApp.Infrastructure.Identity.Models.ApplicationUser", "Lawyer")
+                        .WithMany("Operators")
+                        .HasForeignKey("LawyerId");
+
+                    b.Navigation("Lawyer");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -295,6 +387,16 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("CourtApp.Infrastructure.Identity.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Operators");
+                });
+
+            modelBuilder.Entity("CourtApp.Infrastructure.Identity.Models.Demographic", b =>
+                {
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

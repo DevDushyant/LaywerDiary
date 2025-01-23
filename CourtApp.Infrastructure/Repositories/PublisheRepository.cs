@@ -1,4 +1,5 @@
-﻿using CourtApp.Application.Interfaces.Repositories;
+﻿using CourtApp.Application.CacheKeys;
+using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -25,8 +26,8 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task DeleteAsync(PublisherEntity obj)
         {
             await _repository.DeleteAsync(obj);
-            await _distributedCache.RemoveAsync(CacheKeys.PublisherCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.PublisherCacheKeys.GetKey(obj.Id));
+            await _distributedCache.RemoveAsync(PublisherCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(PublisherCacheKeys.GetKey(obj.Id));
         }
 
         public async Task<PublisherEntity> GetByIdAsync(Guid Id)
@@ -42,15 +43,15 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<Guid> InsertAsync(PublisherEntity obj)
         {
             await _repository.AddAsync(obj);
-            await _distributedCache.RemoveAsync(CacheKeys.PublisherCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(PublisherCacheKeys.ListKey);
             return obj.Id;
         }
 
         public async Task UpdateAsync(PublisherEntity obj)
         {
             await _repository.UpdateAsync(obj);
-            await _distributedCache.RemoveAsync(CacheKeys.PublisherCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.PublisherCacheKeys.GetKey(obj.Id));
+            await _distributedCache.RemoveAsync(PublisherCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(PublisherCacheKeys.GetKey(obj.Id));
         }
     }
 }

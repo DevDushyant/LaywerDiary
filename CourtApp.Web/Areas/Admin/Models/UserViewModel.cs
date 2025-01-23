@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 
 namespace CourtApp.Web.Areas.Admin.Models
@@ -21,5 +22,7 @@ namespace CourtApp.Web.Areas.Admin.Models
         public byte[] ProfilePicture { get; set; }
         public bool EmailConfirmed { get; set; }
         public string Id { get; set; }
+        public string Gender { get; set; }
+        public DateTime DateOfBirth { get; set; }
     }
 }

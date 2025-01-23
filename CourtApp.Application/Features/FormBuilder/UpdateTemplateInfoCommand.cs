@@ -17,6 +17,7 @@ namespace CourtApp.Application.Features.FormBuilder
         public Guid Id { get; set; }
         public string TemplateName { get; set; }
         public string TemplatePath { get; set; }
+        public string TemplateBody { get; set; }
         public List<TemplateTags> Tags { get; set; }
     }
     public class UpdateTemplateInfoCommandHandler : IRequestHandler<UpdateTemplateInfoCommand, Result<Guid>>
@@ -37,6 +38,7 @@ namespace CourtApp.Application.Features.FormBuilder
             if (TempDetail == null) Result<Guid>.Fail("Template is not found!");
             TempDetail.TemplateName = request.TemplateName;
             TempDetail.TemplatePath = request.TemplatePath;
+            TempDetail.TemplateBody = request.TemplateBody;
             TempDetail.Tags=_mapper.Map<List<TemplateTagsEntity>>(request.Tags);            
             await _repository.UpdateAsync(TempDetail);
             await _UoW.Commit(cancellationToken);

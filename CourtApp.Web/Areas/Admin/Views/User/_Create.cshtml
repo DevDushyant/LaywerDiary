@@ -1,48 +1,48 @@
 ﻿@using CourtApp.Web.Areas.Admin.Models
 @model UserViewModel
 <form id="create-form" method="post" asp-area="Admin" asp-controller="User" asp-action="OnPostCreate" onsubmit="return jQueryModalPost(this);">
-    <div class="form-group row">
-        <label class="col-md-3 col-form-label">@localizer["FirstName"]</label>
-        <div class="col-md-9">
-            <input type="text" asp-for="FirstName" name="FirstName" class="form-control">
-            <span asp-validation-for="FirstName" class="text-danger"></span>
+    <div class="row">
+        <div class="col-md-6">
+            <label class="col-md-3 col-form-label">@localizer["First Name"]</label>
+            <div class="col-md-9">
+                <input type="text" asp-for="FirstName" class="form-control">
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="col-md-3 col-form-label">@localizer["Last Name"]</label>
+                <div class="col-md-9">
+                    <input type="text" asp-for="LastName"class="form-control">
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-md-3 col-form-label">@localizer["LastName"]</label>
-        <div class="col-md-9">
-            <input type="text" asp-for="LastName" name="LastName" class="form-control">
-            <span asp-validation-for="LastName" class="text-danger"></span>
+
+    <div class="row">
+        <div class="col-md-6">
+            <label class="col-md-3 col-form-label">@localizer["Email"]</label>
+            <div class="col-md-9">
+                <input type="email" asp-for="Email" name="Email" class="form-control">
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="col-md-3 col-form-label">@localizer["Mobile"]</label>
+                <div class="col-md-9">
+                    <input type="text" asp-for="Mobile" name="Mobile" class="form-control">
+                    <span asp-validation-for="Mobile" class="text-danger"></span>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-md-3 col-form-label">@localizer["Email"]</label>
-        <div class="col-md-9">
-            <input type="email" asp-for="Email" name="Email" class="form-control">
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-md-3 col-form-label">@localizer["Enrollment number"]</label>
-        <div class="col-md-9">
-            <input type="text" asp-for="EnrollmentNo" name="EnrollmentNo" class="form-control">
-            <span asp-validation-for="EnrollmentNo" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-md-3 col-form-label">@localizer["Mobile"]</label>
-        <div class="col-md-9">
-            <input type="text" asp-for="Mobile" name="Mobile" class="form-control">
-            <span asp-validation-for="Mobile" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-md-3 col-form-label">@localizer["Website"]</label>
-        <div class="col-md-9">
-            <input type="text" asp-for="Website" name="Mobile" class="form-control">
-            <span asp-validation-for="Website" class="text-danger"></span>
-        </div>
-    </div>
+
+
+
     @*<div class="form-group row">
         <label class="col-md-3 col-form-label">@localizer["Password"]</label>
         <div class="col-md-9">

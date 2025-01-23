@@ -3,6 +3,7 @@ using CourtApp.Application.Enums;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Application.Interfaces.Shared;
 using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Infrastructure.DbContexts;
 using CourtApp.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -29,18 +31,20 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IMailService _emailSender;
+        private readonly IdentityContext _identityDbContext;
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IMailService emailSender,
             ILawyerRepository lawyerRepository,
-            IUnitOfWork uow)
+            IUnitOfWork uow, IdentityContext _identityDbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            this._identityDbContext = _identityDbContext;
         }
 
         [BindProperty]
@@ -73,6 +77,14 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
             [Display(Name = "Mobile No")]
             public string Mobile { get; set; }
 
+            [Required]
+            [Display(Name = "Gender")]
+            public string Gender { get; set; }
+
+            [Required]
+            [Display(Name = "Date Of Birth")]
+            public DateTime DateOfBirth { get; set; }
+
 
             [Display(Name = "Website")]
             public string Website { get; set; }
@@ -83,16 +95,16 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
             [Display(Name = "Address")]
             public string Address { get; set; }
 
-            //[Required]
-            //[StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            //[DataType(DataType.Password)]
-            //[Display(Name = "Password")]
-            //public string Password { get; set; }
+            [Required]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [DataType(DataType.Password)]
+            [Display(Name = "Password")]
+            public string Password { get; set; }
 
-            //[DataType(DataType.Password)]
-            //[Display(Name = "Confirm password")]
-            //[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            //public string ConfirmPassword { get; set; }
+            [DataType(DataType.Password)]
+            [Display(Name = "Confirm password")]
+            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            public string ConfirmPassword { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -115,19 +127,38 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                     Email = Input.Email,
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
-                    EnrollmentNo = Input.EnrollmentNo,
                     Mobile = Input.Mobile,
-                    Website = Input.Website,
-                    Telephone = Input.Telephone,
-                    Address = Input.Address
-
+                    Gender = Input.Gender,
+                    DateOfBirth = Input.DateOfBirth,
+                    UserType = "Lawyer",
+                    Demographic= new Demographic
+                    {
+                        CreatedBy = "-",
+                        ProfessionalInfo = new ProfessionalInfo
+                        {
+                            EnrollmentNo = Input.EnrollmentNo,
+                            BarAssociationNumber = Input.EnrollmentNo
+                        }
+                    }
                 };
-                var result = await _userManager.CreateAsync(user, "123Pa$$word!");
+                var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    await _userManager.AddToRoleAsync(user, Roles.User.ToString());
+                    await _userManager.AddToRoleAsync(user, Roles.Lawyer.ToString());
+                    //var UserDemo = new Demographic
+                    //{
+                    //    Id=Guid.Parse(user.Id),
+                    //    ProfessionalInfo = new ProfessionalInfo
+                    //    {
+                    //        EnrollmentNo = Input.EnrollmentNo,
+                    //        BarAssociationNumber= Input.EnrollmentNo
+                    //    }
+                    //};
+                    //_identityDbContext.Demographics.Add(UserDemo);
+                    //await _identityDbContext.SaveChangesAsync();
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                  
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
@@ -139,7 +170,7 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                         Body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
                         From = "info@sparo.com",
                         To = Input.Email,
-                        Subject = "Confirm Registration"
+                        Subject = "Please verify your email address\r\n"
                     };
                     await _emailSender.SendAsync(mailRequest);
 

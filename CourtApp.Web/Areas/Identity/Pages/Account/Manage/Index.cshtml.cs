@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,6 +49,17 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account.Manage
 
             [Display(Name = "Profile Picture")]
             public byte[] ProfilePicture { get; set; }
+            public string EnrollmentNo { get; set; }
+            public string Mobile { get; set; }
+            public string Website { get; set; }
+            public string Telephone { get; set; }
+            public string Address { get; set; }
+            public int StateId { get; set; }
+            public Guid CourtTypeId { get; set; }
+            public Guid DistrictId { get; set; }
+            public Guid ComplexId { get; set; }
+            public Guid CourtId { get; set; }
+            public int PracticeSince { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -58,7 +70,6 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account.Manage
             var lastName = user.LastName;
             var profilePicture = user.ProfilePicture;
             Username = userName;
-
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber,

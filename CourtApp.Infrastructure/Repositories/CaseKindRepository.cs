@@ -1,6 +1,6 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
-using CourtApp.Infrastructure.CacheKeys;
+using CourtApp.Application.CacheKeys;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;

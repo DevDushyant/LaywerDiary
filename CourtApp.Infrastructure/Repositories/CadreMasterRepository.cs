@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CourtApp.Application.CacheKeys;
 namespace CourtApp.Infrastructure.Repositories
 {
     public class CadreMasterRepository : ICadreMasterRepository
@@ -24,8 +25,8 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task DeleteAsync(CadreMasterEntity entity)
         {
             await _repository.DeleteAsync(entity);
-            await _distributedCache.RemoveAsync(CacheKeys.CadreMasterCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.CadreMasterCacheKeys.GetKey(entity.Id));
+            await _distributedCache.RemoveAsync(CadreMasterCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(CadreMasterCacheKeys.GetKey(entity.Id));
         }
 
         public async Task<CadreMasterEntity> GetByIdAsync(Guid id)
@@ -44,15 +45,15 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<Guid> InsertAsync(CadreMasterEntity entity)
         {
             await _repository.AddAsync(entity);
-            await _distributedCache.RemoveAsync(CacheKeys.CadreMasterCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(CadreMasterCacheKeys.ListKey);
             return entity.Id;
         }
 
         public async Task UpdateAsync(CadreMasterEntity entity)
         {
             await _repository.UpdateAsync(entity);
-            await _distributedCache.RemoveAsync(CacheKeys.CadreMasterCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.CadreMasterCacheKeys.GetKey(entity.Id));
+            await _distributedCache.RemoveAsync(CadreMasterCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(CadreMasterCacheKeys.GetKey(entity.Id));
         }
     }
 }

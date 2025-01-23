@@ -51,9 +51,5 @@
     <Folder Include="Interfaces\CacheRepositories\LawyerDiary\" />
     <Folder Include="Interfaces\CacheRepositories\Litigation\" />
     <Folder Include="Interfaces\CacheRepositories\Client\" />
-    <Folder Include="Interfaces\Repositories\Client\" />
-    <Folder Include="Interfaces\Repositories\Common\" />
-    <Folder Include="Interfaces\Repositories\LawyerDiary\" />
-    <Folder Include="Interfaces\Repositories\Litigation\" />
   </ItemGroup>
 </Project>

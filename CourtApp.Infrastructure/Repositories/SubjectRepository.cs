@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using CourtApp.Application.CacheKeys;
 namespace CourtApp.Infrastructure.Repositories
 {
     public class SubjectRepository : ISubjectRepository
@@ -24,8 +24,8 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task DeleteAsync(SubjectEntity subject)
         {
             await _repository.DeleteAsync(subject);
-            await _distributedCache.RemoveAsync(CacheKeys.SubjectCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.SubjectCacheKeys.GetKey(subject.Id));
+            await _distributedCache.RemoveAsync(SubjectCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(SubjectCacheKeys.GetKey(subject.Id));
         }
 
         public async Task<SubjectEntity> GetByIdAsync(Guid Id)
@@ -41,15 +41,15 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<Guid> InsertAsync(SubjectEntity subject)
         {
             await _repository.AddAsync(subject);
-            await _distributedCache.RemoveAsync(CacheKeys.SubjectCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(SubjectCacheKeys.ListKey);
             return subject.Id;
         }
 
         public async Task UpdateAsync(SubjectEntity subject)
         {
             await _repository.UpdateAsync(subject);
-            await _distributedCache.RemoveAsync(CacheKeys.SubjectCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.SubjectCacheKeys.GetKey(subject.Id));
+            await _distributedCache.RemoveAsync(SubjectCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(SubjectCacheKeys.GetKey(subject.Id));
         }
     }
 }

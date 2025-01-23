@@ -73,79 +73,82 @@
 
         <div class="row">
             <fieldset class="scheduler-border">
-                <legend class="scheduler-border"><strong>Case Proceeding Work Detail</strong></legend>
+                <legend class="scheduler-border">Case Proceeding Work Detail</legend>
                 <div class="col-md-12">
                     <div class="form-group row">
-                        <button type="button" id="btnAddMore" class="btn btn-success">Add More...</button>
-                    </div>
-                    @*@if (@Model.ProcWork != null)
-                     {
-                        @for (int i = 0; i < @Model.ProcWork.Workdt.Count; i++)
-                        {
-                            <div id="workRows">
-                                <div class="form-group row workRow" id="workRow_" @i>
-                                    <label class="col-md-2 col-form-label">@localizer["Work Type"]</label>
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <select class="form-control select2bs4" id="WorkTypeId_" @i
-                                                    asp-for="@Model.ProcWork.Workdt[@i].WorkTypeId"
-                                                    asp-items="@Model.ProcWork.WorkTypes">
-                                                <option></option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <label class="col-md-2 col-form-label">@localizer["Work"]</label>
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <select class="form-control select2bs4" id="WorkId_" @i
-                                                    asp-for="@Model.ProcWork.Workdt[@i].WorkId"
-                                                    asp-items="@Model.ProcWork.Works">
-                                                <option></option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
-                    else
-                    { *@
-                    <div id="workRows">
-                        <div class="form-group row workRow" id="workRow_0">
-                            <label class="col-md-2 col-form-label">@localizer["Work Type"]</label>
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                    <select class="form-control select2bs4" id="WorkTypeId_0"
-                                            asp-for="@Model.ProcWork.Workdt[0].WorkTypeId"
-                                            asp-items="@Model.ProcWork.WorkTypes">
-                                        <option></option>
-                                    </select>
-                                </div>
-                            </div>
-                            <label class="col-md-2 col-form-label">@localizer["Work"]</label>
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                    <select class="form-control select2bs4" id="WorkId_0"
-                                            asp-for="@Model.ProcWork.Workdt[0].WorkId"
-                                            asp-items="@Model.ProcWork.Works">
-                                        <option></option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @*  } *@
-                    <div class="form-group row">
-                        <label class="col-md-2 col-form-label">@localizer["Working Date"]</label>
-                        <div class="col-md-4">
+                        <label class="col-md-3 col-form-label">@localizer["Working Date"]</label>
+                        <div class="col-md-5">
                             <div class="input-group">
                                 <input type="date" asp-for="@Model.ProcWork.WorkingDate"
                                        class="form-control">
                             </div>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <table id="tblWorks" border="1" style="width:100%!important">
+                            <thead>
+                                <tr>
+                                    <th width="45%">@localizer["Work Type"]</th>
+                                    <th width="45%">@localizer["Work"]</th>
+                                    <th width="10%"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="data-repeater">
+                                <tr>
+                                    <td>
+                                        <select class="form-control select2bs4"
+                                                asp-for="@Model.ProcWork.Workdt[0].WorkTypeId"
+                                                asp-items="@Model.ProcWork.WorkTypes">
+                                            <option></option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-control select2bs4"
+                                                asp-for="@Model.ProcWork.Workdt[0].WorkId"
+                                                asp-items="@(Model.ProcWork.Workdt != null ? Model.ProcWork.Workdt[0].Works : new List<SelectListItem>())">
+                                            <option></option>
+                                        </select>
+                                    </td>
+                                    <td class="btn-repeater">
+                                        <button class="add-btn-repeat btn btn-success" onclick="addElement($(this))" type="button">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                @if (Model.ProcWork.Workdt != null)
+                                {
+                                    @for (int i = 1; i < @Model.ProcWork.Workdt.Count(); i++)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <select class="form-control select2bs4"
+                                                        asp-for="@Model.ProcWork.Workdt[i].WorkTypeId"
+                                                        asp-items="@Model.ProcWork.WorkTypes"
+                                                        onchange="BindDynamicWork('@("ProcWork_Workdt_" + i + "__WorkTypeId")','@("ProcWork_Workdt_" + i + "__WorkId")')">
+                                                    <option></option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control select2bs4"
+                                                        asp-for="@Model.ProcWork.Workdt[i].WorkId"
+                                                        asp-items="@Model.ProcWork.Workdt[i].Works">
+                                                    <option></option>
+                                                </select>
+                                            </td>
+                                            <td class="btn-repeater">
+                                                <button class="btn btn-warning" onclick="removeKolom($(this))" type="button">
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </fieldset>
+            
         </div>
 
         <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
@@ -159,149 +162,5 @@
         </div>
     </div>
 </form>
-<script type="text/javascript" language=javascript>
-    $("#HeadId").select2({
-        placeholder: "Select a proceeding type",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-    $("#SubHeadId").select2({
-        placeholder: "Select a proceeding",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-    $("#StageId").select2({
-        placeholder: "Select a stage",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-    $("#HeadId").on("change", function () {
-        $("#SubHeadId").empty();
-        $.getJSON("/Litigation/CaseManage/DdlSubProcHeads?Id=" + $("#HeadId").val(), function (data) {
-            $.each(data.Data, function (i, item) {
-                $("#SubHeadId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
-            });
-        });
-    });
-    $("#WorkTypeId_0").select2({
-        placeholder: "Select a work type",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-    $("#WorkId_0").select2({
-        placeholder: "Select a work",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
 
-    $("#WorkTypeId_0").on("change", function () {
-        $("#WorkId_0").empty();
-        $.getJSON("/Litigation/CaseWork/DdlSubWorks?WorkId=" + $("#WorkTypeId_0").val(), function (data) {
-            $.each(data.Data, function (i, item) {
-                $("#WorkId_0").append(`<option value="${item.Id}">${item.Name_En}</option>`);
-            });
-        });
-    });
-    var rowCount = 1;
-    $("#btnAddMore").on("click", function () {
-        var newRow = $('#workRow_0').clone();
-        newRow.attr('id', 'workRow_' + rowCount);
-
-        newRow.find('select#WorkTypeId_0')
-            .attr('id', 'WorkTypeId_' + rowCount)
-            .attr('name', "ProcWork.Workdt[" + rowCount + "].WorkTypeId")
-            .val('')
-            .removeClass('select2-hidden-accessible');
-
-        newRow.find('select#WorkId_0')
-            .attr('id', 'WorkId_' + rowCount)
-            .attr('name', "ProcWork.Workdt[" + rowCount + "].WorkId")
-            .val('')
-            .removeClass('select2-hidden-accessible');
-
-        newRow.find('.select2bs4').select2({
-            theme: 'bootstrap4'
-        });
-
-        $('#workRows').append(newRow);
-        rowCount++;
-    });
-    // $('.select2bs4').select2({
-    //     theme: 'bootstrap4'
-    // });
-
-    $(document).on('change', '[id^=WorkTypeId_]', function () {
-        var selectedWorkTypeId = $(this).val(); // Get selected WorkTypeId
-        var workIdDropdown = $(this).closest('.workRow').find('[id^=WorkId_]'); // Find associated WorkId dropdown
-
-        if (selectedWorkTypeId) {
-            // Example: Fetch data for WorkId dropdown (replace with actual AJAX call)
-            $.ajax({
-                url: '/Litigation/CaseWork/DdlSubWorks', // Replace with your API endpoint
-                method: 'GET',
-                data: { WorkId: selectedWorkTypeId },
-                success: function (data) {
-                    // Populate the WorkId dropdown
-                    workIdDropdown.empty(); // Clear existing options
-                    workIdDropdown.append('<option value="">Select Work</option>'); // Add placeholder option
-                    $.each(data.Data, function (index, work) {
-                        debugger;
-                        workIdDropdown.append('<option value="' + work.Id + '">' + work.Name_En + '</option>');
-                    });
-
-                    // Reinitialize select2 for the updated dropdown
-                    workIdDropdown.select2({
-                        theme: 'bootstrap4'
-                    });
-                },
-                error: function () {
-                    alert('Failed to load works. Please try again.');
-                }
-            });
-        } else {
-            // Clear WorkId dropdown if no WorkTypeId selected
-            workIdDropdown.empty().append('<option value="">Select Work</option>').select2({
-                theme: 'bootstrap4'
-            });
-        }
-    });
-
-    // $("#btnSubmit").on("click", function () {
-    //     Upseart();
-    // });
-    // Upseart = function () {
-    //     debugger;
-    //     var SelectedCaseId = [];
-    //     $('#tblUserCase tbody tr').each(function () {
-    //         if ($(this).find("input[type='checkbox'").is(":checked")) {
-    //             SelectedCaseId.push($(this).find('input[type="hidden"]').val());
-    //         }
-    //     });
-    //     var url = $("#create-form").attr("action");
-    //     var formData = new FormData();
-    //     formData.append("HeadId", $("#HeadId").val());
-    //     formData.append("SelectedSubHeads", $("#SubHeadId").val());
-    //     formData.append("StageId", $("#StageId").val());
-    //     formData.append("NextDate", $("#NextDate").val());
-    //     formData.append("SelectedCases", SelectedCaseId);
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: url,
-    //         data: formData,
-    //         processData: false,
-    //         contentType: false
-    //     }).done(function (response) {
-
-    //     });
-    // }
-</script>
+<script src="~/js/litigation/workproceeding.js"></script>

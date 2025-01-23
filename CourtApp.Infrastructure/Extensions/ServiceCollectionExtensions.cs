@@ -4,15 +4,11 @@ using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Infrastructure.CacheRepositories;
 using CourtApp.Infrastructure.DbContexts;
 using CourtApp.Infrastructure.Repositories;
-using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using CourtApp.Application.Interfaces.CacheRepositories.FormBuilder;
-using CourtApp.Infrastructure.CacheRepositories.FormBuilder;
 using CourtApp.Application.Interfaces.Repositories.FormBuilder;
-using CourtApp.Infrastructure.Repositories.DynamicForms;
-using CourtApp.Infrastructure.Repositories.FormBuilder;
 
 namespace CourtApp.Infrastructure.Extensions
 {
@@ -129,6 +125,11 @@ namespace CourtApp.Infrastructure.Extensions
             services.AddTransient<ITemplateInfoRepository, TemplateInfoRepository>();
 
             services.AddTransient<IFormTempMappingRepository, FormTempMappingRepository>();
+            #endregion
+
+            #region Specility 
+            services.AddTransient<ISpecilityCacheRepository, SpecilityCacheRepository>();
+            services.AddTransient<ISpecilityRepository, SpecilityRepository>();
             #endregion
         }
     }

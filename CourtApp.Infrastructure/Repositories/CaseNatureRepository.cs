@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CourtApp.Application.CacheKeys;
 
 namespace CourtApp.Infrastructure.Repositories
 {
@@ -23,8 +24,8 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task DeleteAsync(NatureEntity caseNature)
         {
             await _repository.DeleteAsync(caseNature);
-            await _distributedCache.RemoveAsync(CacheKeys.CaseNatureCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.CaseNatureCacheKeys.GetKey(caseNature.Id));
+            await _distributedCache.RemoveAsync(CaseNatureCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(CaseNatureCacheKeys.GetKey(caseNature.Id));
         }
 
         public async Task<NatureEntity> GetByIdAsync(Guid caseNatureId)
@@ -40,15 +41,15 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<Guid> InsertAsync(NatureEntity caseNature)
         {
             await _repository.AddAsync(caseNature);
-            await _distributedCache.RemoveAsync(CacheKeys.CaseNatureCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(CaseNatureCacheKeys.ListKey);
             return caseNature.Id;
         }
 
         public async Task UpdateAsync(NatureEntity caseNature)
         {
             await _repository.UpdateAsync(caseNature);
-            await _distributedCache.RemoveAsync(CacheKeys.CaseNatureCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.CaseNatureCacheKeys.GetKey(caseNature.Id));
+            await _distributedCache.RemoveAsync(CaseNatureCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(CaseNatureCacheKeys.GetKey(caseNature.Id));
         }
     }
 }

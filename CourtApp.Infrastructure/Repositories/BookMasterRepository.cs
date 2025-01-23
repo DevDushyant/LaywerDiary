@@ -1,4 +1,5 @@
-﻿using CourtApp.Application.Interfaces.Repositories;
+﻿using CourtApp.Application.CacheKeys;
+using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -25,8 +26,8 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task DeleteAsync(LDBookEntity bookMaster)
         {
             await _repository.DeleteAsync(bookMaster);
-            await _distributedCache.RemoveAsync(CacheKeys.BookMasterCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.BookMasterCacheKeys.GetKey(bookMaster.Id));
+            await _distributedCache.RemoveAsync(BookMasterCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(BookMasterCacheKeys.GetKey(bookMaster.Id));
         }
 
         public async Task<LDBookEntity> GetByIdAsync(Guid bookTypeId)
@@ -42,15 +43,15 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<Guid> InsertAsync(LDBookEntity bookMaster)
         {
             await _repository.AddAsync(bookMaster);
-            await _distributedCache.RemoveAsync(CacheKeys.BookMasterCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(BookMasterCacheKeys.ListKey);
             return bookMaster.Id;
         }
 
         public async Task UpdateAsync(LDBookEntity bookMaster)
         {
             await _repository.UpdateAsync(bookMaster);
-            await _distributedCache.RemoveAsync(CacheKeys.BookMasterCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.BookMasterCacheKeys.GetKey(bookMaster.Id));
+            await _distributedCache.RemoveAsync(BookMasterCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(BookMasterCacheKeys.GetKey(bookMaster.Id));
         }
     }
 }

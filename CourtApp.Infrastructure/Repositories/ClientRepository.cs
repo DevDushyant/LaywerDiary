@@ -1,4 +1,4 @@
-﻿
+﻿using CourtApp.Application.CacheKeys;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using Microsoft.EntityFrameworkCore;
@@ -25,8 +25,8 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task DeleteAsync(ClientEntity client)
         {
             await _repository.DeleteAsync(client);
-            await _distributedCache.RemoveAsync(CacheKeys.ClientCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.ClientCacheKeys.GetKey(client.Id));
+            await _distributedCache.RemoveAsync(ClientCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(ClientCacheKeys.GetKey(client.Id));
         }
 
         public async Task<ClientEntity> GetByIdAsync(Guid clientId)
@@ -44,15 +44,15 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<Guid> InsertAsync(ClientEntity client)
         {
             await _repository.AddAsync(client);
-            await _distributedCache.RemoveAsync(CacheKeys.ClientCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(ClientCacheKeys.ListKey);
             return client.Id;
         }
 
         public async Task UpdateAsync(ClientEntity client)
         {
             await _repository.UpdateAsync(client);
-            await _distributedCache.RemoveAsync(CacheKeys.ClientCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.ClientCacheKeys.GetKey(client.Id));
+            await _distributedCache.RemoveAsync(ClientCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(ClientCacheKeys.GetKey(client.Id));
         }
     }
 }

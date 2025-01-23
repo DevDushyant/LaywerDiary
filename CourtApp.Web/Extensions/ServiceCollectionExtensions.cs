@@ -27,7 +27,8 @@ namespace CourtApp.Web.Extensions
             #endregion Registering ResourcesPath
 
             services.AddMvc()
-               .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
+               .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor
+               .LanguageViewLocationExpanderFormat.Suffix)
                .AddDataAnnotationsLocalization(options =>
                {
                    options.DataAnnotationLocalizerProvider = (type, factory) =>
@@ -38,9 +39,9 @@ namespace CourtApp.Web.Extensions
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 var cultures = new List<CultureInfo> {
-        new CultureInfo("en"),
-         new CultureInfo("ar"),
-        new CultureInfo("fr")
+                    new CultureInfo("en"),
+                    new CultureInfo("hi"),
+                    new CultureInfo("gu"),
                 };
                 options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en");
                 options.SupportedCultures = cultures;
@@ -69,8 +70,8 @@ namespace CourtApp.Web.Extensions
         {
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
             {
-                services.AddDbContext<IdentityContext>(options =>options.UseInMemoryDatabase("IdentityDb"), ServiceLifetime.Transient);
-                services.AddDbContext<ApplicationDbContext>(options =>options.UseInMemoryDatabase("ApplicationDb"));
+                services.AddDbContext<IdentityContext>(options => options.UseInMemoryDatabase("IdentityDb"), ServiceLifetime.Transient);
+                services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("ApplicationDb"));
             }
             else
             {

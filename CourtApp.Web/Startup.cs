@@ -73,7 +73,7 @@ namespace CourtApp.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
+            app.UseMultiLingualFeature();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -89,7 +89,7 @@ namespace CourtApp.Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            app.UseMultiLingualFeature();
+            
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

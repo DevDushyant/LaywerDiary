@@ -304,6 +304,16 @@ namespace CourtApp.Application.Constants
             };
             return _Str;
         }
+        public static Dictionary<int, string> Gender()
+        {
+            var _Str = new Dictionary<int, string>
+            {
+                {1, "Male"},
+                {2, "Female"},
+                {3, "Other"}
+            };
+            return _Str;
+        }
 
     }
 

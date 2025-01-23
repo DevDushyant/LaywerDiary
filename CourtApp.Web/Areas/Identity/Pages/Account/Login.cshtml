@@ -5,6 +5,7 @@
     Layout = null;
 }
 @using CourtApp.Web.Views.Shared.Components.Culture;
+@inject IHtmlLocalizer<SharedResource> localizer
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,7 +51,7 @@
                                         </div>
                                         <form class="user" id="account" method="post">
                                             <div class="form-group">
-                                                <input asp-for="Input.Email" type="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                                                <input asp-for="Input.Email" type="email" class="form-control form-control-user" aria-describedby="emailHelp" placeholder="@localizer["Please enter email"]">
                                                 <small><span asp-validation-for="Input.Email" class="text-danger"></span></small>
                                             </div>
                                             <div class="form-group">
@@ -118,4 +119,4 @@
     <partial name="_Scripts" />
 </body>
 </html>
-@* @await Component.InvokeAsync("Notyf") *@
+@await Component.InvokeAsync("Notyf")

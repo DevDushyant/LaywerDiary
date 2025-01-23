@@ -1,4 +1,5 @@
-﻿using CourtApp.Application.Interfaces.Repositories;
+﻿using CourtApp.Application.CacheKeys;
+using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -25,8 +26,8 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task DeleteAsync(CourtFeeStructureEntity objEntity)
         {
             await _repository.DeleteAsync(objEntity);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtFeeStructureCacheKey.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtFeeStructureCacheKey.GetKey(objEntity.Id));
+            await _distributedCache.RemoveAsync(CourtFeeStructureCacheKey.ListKey);
+            await _distributedCache.RemoveAsync(CourtFeeStructureCacheKey.GetKey(objEntity.Id));
         }
 
         public async Task<CourtFeeStructureEntity> GetByIdAsync(Guid Id)
@@ -42,15 +43,15 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<Guid> InsertAsync(CourtFeeStructureEntity objEntity)
         {
             await _repository.AddAsync(objEntity);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtFeeStructureCacheKey.ListKey);
+            await _distributedCache.RemoveAsync(CourtFeeStructureCacheKey.ListKey);
             return objEntity.Id;
         }
 
         public async Task UpdateAsync(CourtFeeStructureEntity objEntity)
         {
             await _repository.UpdateAsync(objEntity);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtFeeStructureCacheKey.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtFeeStructureCacheKey.GetKey(objEntity.Id));
+            await _distributedCache.RemoveAsync(CourtFeeStructureCacheKey.ListKey);
+            await _distributedCache.RemoveAsync(CourtFeeStructureCacheKey.GetKey(objEntity.Id));
         }
     }
 }

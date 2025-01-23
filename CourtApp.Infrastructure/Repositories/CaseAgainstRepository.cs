@@ -1,6 +1,6 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
-using CourtApp.Infrastructure.CacheKeys;
+using CourtApp.Application.CacheKeys;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;

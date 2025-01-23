@@ -10,6 +10,7 @@ namespace CourtApp.Domain.Entities.FormBuilder
        
         public string TemplateName { get; set; }
         public string TemplatePath { get; set; }
+        public string TemplateBody { get; set; }
         public List<TemplateTagsEntity> Tags { get; set; }
     }
     public class TemplateTagsEntity

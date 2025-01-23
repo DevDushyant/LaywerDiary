@@ -1,14 +1,12 @@
-﻿using CourtApp.Application.Interfaces.Repositories;
+﻿using CourtApp.Application.CacheKeys;
+using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static CourtApp.Application.Constants.Permissions;
-
 namespace CourtApp.Infrastructure.Repositories
 {
     public class CourtTypeRepository:ICourtTypeRepository
@@ -27,8 +25,8 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task DeleteAsync(CourtTypeEntity courtTypeEntity)
         {
             await _repository.DeleteAsync(courtTypeEntity);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtTypeCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtTypeCacheKeys.GetKey(courtTypeEntity.Id));
+            await _distributedCache.RemoveAsync(CourtTypeCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(CourtTypeCacheKeys.GetKey(courtTypeEntity.Id));
         }
 
         public async Task<CourtTypeEntity> GetByIdAsync(Guid CourtTypeId)
@@ -45,15 +43,15 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<Guid> InsertAsync(CourtTypeEntity courtTypeEntity)
         {
             await _repository.AddAsync(courtTypeEntity);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtTypeCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(CourtTypeCacheKeys.ListKey);
             return courtTypeEntity.Id;
         }
 
         public async Task UpdateAsync(CourtTypeEntity courtTypeEntity)
         {
             await _repository.UpdateAsync(courtTypeEntity);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtTypeCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.CourtTypeCacheKeys.GetKey(courtTypeEntity.Id));
+            await _distributedCache.RemoveAsync(CourtTypeCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(CourtTypeCacheKeys.GetKey(courtTypeEntity.Id));
         }
     }
 }

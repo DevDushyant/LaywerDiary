@@ -136,38 +136,33 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 if (response.Succeeded)
                 {
                     var dt = response.Data;
-                    var Content = ReadTemplate(dt.TemplatePath, dt.TemplateName);
+                    //var Content = ReadTemplate(dt.TemplatePath, dt.TemplateName);
                     string FinalContent = string.Empty;
+                    var Content = dt.TemplateBody;
                     foreach (var tg in dt.TagValues)
                     {
                         FinalContent = Content.Replace(tg.Key.Trim(), tg.Value.Trim());
                         Content = FinalContent;
                     }
+                    byte[] wordFile =ConvertHtmlToWord(Content);
+                    return File(wordFile, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Document.docx");
                     // Create a memory stream to hold the document
-                    using (var stream = new MemoryStream())
-                    {
-                        // Create a Wordprocessing document
-                        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
-                        {
-                            // Add a main document part
-                            var mainPart = document.AddMainDocumentPart();
-                            mainPart.Document = new Document();
-                            var body = mainPart.Document.AppendChild(new Body());
+                    //using (var stream = new MemoryStream())
+                    //{
+                    //    // Create a Wordprocessing document
+                    //    using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+                    //    {
+                    //        // Add a main document part
+                    //        var mainPart = document.AddMainDocumentPart();
+                    //        mainPart.Document = new Document();
+                    //        var body = mainPart.Document.AppendChild(new Body());
 
-                            // Add content to the document
-                            //var paragraph = body.AppendChild(new Paragraph());
-                            //var run = paragraph.AppendChild(new Run());
-                            //run.AppendChild(new Text("Hello, this is a sample Word document created using Open XML SDK."));
-                            //run.AppendChild(new Text(Content));
-
-                            // Save the document
-                            // Convert HTML to Open XML elements
-                            ConvertHtmlToOpenXml(body, Content);
-                            mainPart.Document.Save();
-                        }
-                        // Return the document as a file
-                        return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "GeneratedDocument.docx");
-                    }
+                    //        //ConvertHtmlToOpenXml(body, Content);
+                    //        mainPart.Document.Save();
+                    //    }
+                    //    // Return the document as a file
+                    //    return File(stream.ToArray(), "application/vnd.ms-word", "GeneratedDocument.doc");
+                    //}
                 }
 
             }

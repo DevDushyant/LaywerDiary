@@ -1,6 +1,6 @@
 ﻿using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Infrastructure.CacheKeys;
+using CourtApp.Application.CacheKeys;
 using AspNetCoreHero.Extensions.Caching;
 using AspNetCoreHero.ThrowR;
 using Microsoft.Extensions.Caching.Distributed;

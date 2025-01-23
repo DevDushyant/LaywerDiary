@@ -6,6 +6,7 @@ namespace CourtApp.Application.DTOs.FormBuilder
     {
         public string TemplateName { get; set; }
         public string TemplatePath { get; set; }
+        public string TemplateBody { get; set; }
         public List<Tags> Tags { get; set; }
     }
     public class Tags

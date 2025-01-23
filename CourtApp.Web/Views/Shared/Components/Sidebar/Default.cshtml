@@ -86,19 +86,21 @@
                         else
                         {
                             <li class="nav-item">
-                                <a is-active-route asp-area="Client" asp-controller="ManageClient" asp-action="index" class="nav-link">
-                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                <a is-active-route asp-area="Client" asp-controller="ManageClient"
+                                   asp-action="index" class="nav-link">
+                                    <i class="fa fa-user nav-icon" aria-hidden="true"></i>
                                     <p>@localizer["Client"]</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            @*  <li class="nav-item">
                                 <a is-active-route asp-area="LawyerDiary" asp-controller="Lawyer" asp-action="index" class="nav-link">
                                     <i class="fa fa-gavel" aria-hidden="true"></i>
                                     <p>@localizer["Lawyer"]</p>
                                 </a>
-                            </li>
+                            </li> *@
                             <li class="nav-item">
-                                <a is-active-route asp-area="Admin" asp-controller="User" asp-action="index" class="nav-link">
+                                <a is-active-route asp-area="Admin" asp-controller="User" asp-action="index"
+                                   class="nav-link">
                                     <i class="far fa-user-circle nav-icon"></i>
                                     <p>@localizer["Operator"]</p>
                                 </a>
@@ -204,7 +206,7 @@
                             </a>
                         </li>
                     </ul>
-                </li>                
+                </li>
 
                 <li is-active-route asp-area="Tools" class="nav-item has-treeview">
                     <a is-active-route asp-area="Tools" class="nav-link">

@@ -19,11 +19,35 @@
 @model TemplateViewModel
 <form id="frmTemplateBuilder" method="post" asp-controller="TemplateBuilder"
       asp-action="OnPostCreateOrEdit"
-      asp-route-Id="@Model.Id"
-      enctype="multipart/form-data">
+      asp-route-Id="@Model.Id">
     <input type="hidden" id="hdnId" asp-for="@Model.Id" value="@Model.Id" />
     <div class="row">
         <div class="col-md-12">
+            @* <div class="form-group row">
+                <label class="col-md-3 col-form-label">Court Type</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <select name="CourtTypeId" class="form-control select2bs4" id="CourtTypeId"
+                                asp-for="CourtTypeId" placeholder="Select Court Type"
+                                asp-items="@Model.CourtTypes">
+                            <option></option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="CourtTypeId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label">State</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <select name="StateCode" class="form-control select2bs4" id="StateCode" asp-for="StateCode"
+                                asp-items="@Model.States">
+                            <option></option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="StateCode" class="text-danger"></span>
+                </div>
+            </div> *@
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">@localizer["Template Name"]</label>
                 <div class="col-md-9">
@@ -67,28 +91,30 @@
             });
 
             $(document).ready(function() {
-            // $('#frmTemplateBuilder').submit(function(event) {
-            //     event.preventDefault(); // Prevent the form from submitting the default way
-            //     debugger;
-            //     var formData = $(this).serialize(); // Serialize form data
-            // var id = $("#hdnId").val(); // Replace with actual way to get ID if it's dynamic
-            // console.log($("#hdnId").val());
-            //     $.ajax({
-            //         type: 'POST',
-            //         url: '/Admin/TemplateBuilder/OnPostCreateOrEdit?id=' + id, // Adjust the URL accordingly
-            //         data: formData, // Serialize form data
-            //         success: function(response) {
-            //             if (response.success) {
-            //                 Swal.fire('Success', response.message, 'success');
-            //             } else {
-            //                 Swal.fire('Error', response.message, 'error');
-            //             }
-            //         },
-            //         error: function() {
-            //             Swal.fire('Error', 'An unexpected error occurred.', 'error');
-            //         }
-            //     });
-            // });
+            $('#frmTemplateBuilder').submit(function(event) {
+                debugger;
+                event.preventDefault();
+            var url = $("#frmTemplateBuilder").attr("action");
+            var data = $("#frmTemplateBuilder").serialize();
+                $.ajax({
+                    type: 'POST',
+                    //url: '/Admin/TemplateBuilder/OnPostCreateOrEdit?id=' + id, // Adjust the URL accordingly
+                    url:url,
+                    data: data,
+         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire('Success', response.message, 'success');
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'An unexpected error occurred.', 'error');
+                    }
+                });
+            });
         });
     </script>
 }

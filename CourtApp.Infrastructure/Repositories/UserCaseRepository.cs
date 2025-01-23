@@ -1,4 +1,5 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Application.CacheKeys;
 using CourtApp.Domain.Entities.CaseDetails;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -23,8 +24,8 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task DeleteAsync(CaseDetailEntity objEntity)
         {
             await _repository.DeleteAsync(objEntity);
-            await _distributedCache.RemoveAsync(CacheKeys.UserCaseCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.UserCaseCacheKeys.GetKey(objEntity.Id));
+            await _distributedCache.RemoveAsync(UserCaseCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(UserCaseCacheKeys.GetKey(objEntity.Id));
         }
 
         public async Task<CaseDetailEntity> GetByCaseNoYearAsync(string No, int Year)
@@ -96,15 +97,15 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<Guid> InsertAsync(CaseDetailEntity objEntity)
         {
             await _repository.AddAsync(objEntity);
-            await _distributedCache.RemoveAsync(CacheKeys.UserCaseCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(UserCaseCacheKeys.ListKey);
             return objEntity.Id;
         }
 
         public async Task UpdateAsync(CaseDetailEntity objEntity)
         {
             await _repository.UpdateAsync(objEntity);
-            await _distributedCache.RemoveAsync(CacheKeys.UserCaseCacheKeys.ListKey);
-            await _distributedCache.RemoveAsync(CacheKeys.UserCaseCacheKeys.GetKey(objEntity.Id));
+            await _distributedCache.RemoveAsync(UserCaseCacheKeys.ListKey);
+            await _distributedCache.RemoveAsync(UserCaseCacheKeys.GetKey(objEntity.Id));
         }
     }
 }

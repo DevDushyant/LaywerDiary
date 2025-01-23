@@ -8,7 +8,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
     public class CaseWorkingViewModel
     {
         public SelectList WorkTypes { get; set; }
-        public SelectList Works { get; set; }
+        //public SelectList Works { get; set; }
         public DateTime? WorkingDate { get; set; }
         public List<ProcWork> Workdt { get; set; }
 
@@ -16,6 +16,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
     public class ProcWork
     {
         public Guid? WorkTypeId { get; set; }
+        public SelectList Works { get; set; }
         public Guid? WorkId { get; set; }
     }
 }

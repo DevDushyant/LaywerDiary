@@ -136,7 +136,8 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         {
             var ViewModel = new BringCaseViewModel();
             var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-            var allUsersExceptCurrentUser = await _userManager.Users.Where(a => a.Id != currentUser.Id && a.EnrollmentNo != null).ToListAsync();
+            var allUsersExceptCurrentUser = await _userManager.Users
+                .Where(a => a.Id != currentUser.Id).ToListAsync();
             var model = _mapper.Map<IEnumerable<UserViewModel>>(allUsersExceptCurrentUser);
             ViewModel.Lawyers = new SelectList(model, nameof(UserViewModel.Id), nameof(UserViewModel.FirstName), null, null); ;
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_BringCaseDetail", ViewModel) });

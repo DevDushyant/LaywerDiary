@@ -36,8 +36,10 @@ using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.LawyerDiary.Models.Lawyer;
 using CourtApp.Web.Areas.LawyerDiary.Models.Title;
 using CourtApp.Web.Areas.Litigation.Models;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using HtmlAgilityPack;
+using HtmlToOpenXml;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -601,6 +603,68 @@ namespace CourtApp.Web.Abstractions
                 }
             }
             return fileContent;
+        }
+        public byte[] ConvertHtmlToWord(string htmlContent)
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(
+                    memoryStream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+                {
+                    MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
+                    mainPart.Document = new Document();
+                    Body body = new Body();
+
+                    // Initialize HtmlConverter and convert HTML to Word
+                    HtmlConverter converter = new HtmlConverter(mainPart);
+                    converter.ParseHtml(htmlContent);
+
+                    // Apply right alignment and indentation
+                    // Apply specific formatting based on the document's legal style
+                    foreach (var paragraph in mainPart.Document.Body.Elements<Paragraph>())
+                    {
+                        // Create a new paragraph properties
+                        ParagraphProperties paragraphProperties = new ParagraphProperties();
+                        // Apply right alignment for all text
+                        paragraphProperties.Append(new Justification() { Val = JustificationValues.Left });
+
+                        // Set indentation to start from the middle of the page
+                        paragraphProperties.Append(new Indentation() { Left = "3500" }); // 7200 is half of the typical page width in twips (approx 6 inches)
+                        paragraphProperties.Append(new SpacingBetweenLines() { Before = "200", After = "200" });
+
+
+                        // Apply right alignment for headings or important sections
+                        //if (IsHeadingOrImportantSection(paragraph.InnerText))
+                        //{
+                        //    paragraphProperties.Append(new Justification() { Val = JustificationValues.Center });
+                        //}
+                        //else
+                        //{
+                        //    // Apply justified alignment for normal text
+                        //    paragraphProperties.Append(new Justification() { Val = JustificationValues.Both });
+                        //}
+
+                        // Indentation and spacing for paragraphs
+                        //paragraphProperties.Append(new Indentation() { Left = "0", Hanging = "360" });
+                        //paragraphProperties.Append(new SpacingBetweenLines() { Before = "200", After = "200" });
+
+                        // Apply paragraph properties
+                        paragraph.PrependChild(paragraphProperties);
+                    }
+
+                    mainPart.Document.Append(body);
+                    mainPart.Document.Save();
+                }
+
+                return memoryStream.ToArray();
+            }
+        }
+        // Helper method to determine if the paragraph is a heading or an important section
+        private bool IsHeadingOrImportantSection(string text)
+        {
+            // This is a simple example; refine this method based on your specific headings or markers
+            return text.Contains("IN THE HIGH COURT") || text.Contains("S.B. CIVIL MISC. APPEAL") ||
+                   text.Contains("VERSUS") || text.Contains("PRAYER") || text.Contains("GROUNDS");
         }
 
         public void ConvertHtmlToOpenXml(Body body, string htmlContent)

@@ -27,15 +27,7 @@
     <ProjectReference Include="..\CourtApp.Domain\CourtApp.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="CacheRepositories\Client\" />
-    <Folder Include="CacheRepositories\Common\" />
-    <Folder Include="CacheRepositories\LawyerDiary\" />
-    <Folder Include="CacheRepositories\Litigation\" />
     <Folder Include="Migrations\Identity\" />
     <Folder Include="Migrations\App\" />
-    <Folder Include="Repositories\Client\" />
-    <Folder Include="Repositories\Common\" />
-    <Folder Include="Repositories\LawyerDiary\" />
-    <Folder Include="Repositories\Litigation\" />
   </ItemGroup>
 </Project>

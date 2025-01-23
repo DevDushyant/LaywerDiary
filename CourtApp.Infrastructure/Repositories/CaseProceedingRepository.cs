@@ -1,12 +1,14 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
-using CourtApp.Infrastructure.CacheKeys;
+using CourtApp.Application.CacheKeys;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CourtApp.Application.Enums;
+
 
 namespace CourtApp.Infrastructure.Repositories
 {
@@ -105,6 +107,7 @@ namespace CourtApp.Infrastructure.Repositories
         {
             await _repository.UpdateAsync(Entity);
             await _distributedCache.RemoveAsync(AppCacheKeys.ProcHeadKey);
+            
         }
     }
 }

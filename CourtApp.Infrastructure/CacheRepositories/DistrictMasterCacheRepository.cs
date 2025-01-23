@@ -6,7 +6,7 @@ using AspNetCoreHero.Extensions.Caching;
 using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Entities.Common;
-using CourtApp.Infrastructure.CacheKeys;
+using CourtApp.Application.CacheKeys;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace CourtApp.Infrastructure.CacheRepositories

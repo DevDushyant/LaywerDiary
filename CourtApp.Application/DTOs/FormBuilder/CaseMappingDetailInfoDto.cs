@@ -8,6 +8,7 @@ namespace CourtApp.Application.DTOs.FormBuilder
         public string CaseType { get; set; }
         public string TemplateName { get; set; }
         public string TemplatePath { get; set; }
+        public string TemplateBody { get; set; }
         public string Strength { get; set; }
         public string FirstTitle { get; set; }
         public string FirstTitleType { get; set; }

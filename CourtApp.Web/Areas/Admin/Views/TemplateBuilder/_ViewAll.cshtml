@@ -32,10 +32,10 @@
                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
                 {
                     <td>
-                        <a asp-area="admin" asp-controller="TemplateBuilder" asp-action="OnGetCreateOrEdit" asp-route-id="@bt.Id">
+                        <a asp-area="admin" asp-controller="TemplateBuilder" title="Edit the template" asp-action="OnGetCreateOrEdit" asp-route-id="@bt.Id">
                             <i class="fa fa-pencil-square-o"></i>
                         </a>
-                        <a onclick="jQueryModalGet('/Admin/TemplateBuilder/MapFields?id=@bt.Id','Map Form With Template Tags')"><i class="fa fa-map-o"></i></a>                       
+                        <a title="Map the template dynamic fields" onclick="jQueryModalGet('/Admin/TemplateBuilder/MapFields?id=@bt.Id','Map Form With Template Tags')"><i class="fa fa-map-o"></i></a>                       
                     </td>
                 }
             </tr>

@@ -58,7 +58,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditLogs", (string)null);
+                    b.ToTable("AuditLogs");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.Account.CaseFeeEntity", b =>
@@ -280,7 +280,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasIndex("ActID");
 
-                    b.ToTable("ad.m_repealed_rule", (string)null);
+                    b.ToTable("ad.m_repealed_rule");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.Advocate.ActTypeEntity", b =>
@@ -733,7 +733,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasIndex("DistrictId");
 
-                    b.ToTable("m_block", (string)null);
+                    b.ToTable("m_block");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.Common.CityEntity", b =>
@@ -757,7 +757,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasIndex("DistrictId");
 
-                    b.ToTable("m_city", (string)null);
+                    b.ToTable("m_city");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.Common.SubjectEntity", b =>
@@ -814,7 +814,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("m_ward", (string)null);
+                    b.ToTable("m_ward");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.DraftingDetailEntity", b =>
@@ -853,7 +853,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasIndex("TemplateId");
 
-                    b.ToTable("case_petition_detail", (string)null);
+                    b.ToTable("case_petition_detail");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.FormBuilderEntity", b =>
@@ -881,7 +881,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasKey("Id");
 
-                    b.ToTable("m_frm_types", (string)null);
+                    b.ToTable("m_frm_types");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.FormTemplateMappingEntity", b =>
@@ -911,7 +911,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasKey("Id");
 
-                    b.ToTable("m_temp_frm_mapping", (string)null);
+                    b.ToTable("m_temp_frm_mapping");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.TemplateInfoEntity", b =>
@@ -933,6 +933,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("TemplateBody")
+                        .HasColumnType("text");
+
                     b.Property<string>("TemplateName")
                         .HasColumnType("text");
 
@@ -941,7 +944,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasKey("Id");
 
-                    b.ToTable("m_template_info", (string)null);
+                    b.ToTable("m_template_info");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.BookTypeEntity", b =>
@@ -1907,7 +1910,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasIndex("StateId");
 
-                    b.ToTable("m_district", (string)null);
+                    b.ToTable("m_district");
                 });
 
             modelBuilder.Entity("CourtApp.Entities.Common.StateEntity", b =>
@@ -1926,7 +1929,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                     b.HasKey("Id");
 
-                    b.ToTable("m_state", (string)null);
+                    b.ToTable("m_state");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.Account.CaseFeeEntity", b =>
@@ -2181,7 +2184,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("CourtApp.Domain.Entities.CaseDetails.CaseProcedingEntity.ProcWork#CourtApp.Domain.Entities.CaseDetails.ProceedingWorkEntity", "ProcWork", b1 =>
+                    b.OwnsOne("CourtApp.Domain.Entities.CaseDetails.ProceedingWorkEntity", "ProcWork", b1 =>
                         {
                             b1.Property<Guid>("CaseProcedingEntityId")
                                 .HasColumnType("uuid");
@@ -2198,7 +2201,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                             b1.WithOwner()
                                 .HasForeignKey("CaseProcedingEntityId");
 
-                            b1.OwnsMany("CourtApp.Domain.Entities.CaseDetails.CaseProcedingEntity.ProcWork#CourtApp.Domain.Entities.CaseDetails.ProceedingWorkEntity.Works#CourtApp.Domain.Entities.CaseDetails.ProcWorkEntity", "Works", b2 =>
+                            b1.OwnsMany("CourtApp.Domain.Entities.CaseDetails.ProcWorkEntity", "Works", b2 =>
                                 {
                                     b2.Property<Guid>("ProceedingWorkEntityCaseProcedingEntityId")
                                         .HasColumnType("uuid");
@@ -2252,7 +2255,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("CourtApp.Domain.Entities.CaseDetails.CaseTitleEntity.CaseApplicants#CourtApp.Domain.Entities.CaseDetails.CaseApplicantDetailEntity", "CaseApplicants", b1 =>
+                    b.OwnsMany("CourtApp.Domain.Entities.CaseDetails.CaseApplicantDetailEntity", "CaseApplicants", b1 =>
                         {
                             b1.Property<Guid>("CaseTitleEntityId")
                                 .HasColumnType("uuid");
@@ -2362,7 +2365,7 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("CourtApp.Domain.Entities.FormBuilder.DraftingDetailEntity.FieldDetails#CourtApp.Domain.Entities.FormBuilder.FormFieldValueEntity", "FieldDetails", b1 =>
+                    b.OwnsMany("CourtApp.Domain.Entities.FormBuilder.FormFieldValueEntity", "FieldDetails", b1 =>
                         {
                             b1.Property<Guid>("DraftingDetailEntityId")
                                 .HasColumnType("uuid");
@@ -2379,7 +2382,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                             b1.HasKey("DraftingDetailEntityId", "Id");
 
-                            b1.ToTable("case_petition_detail", (string)null);
+                            b1.ToTable("case_petition_detail");
 
                             b1.ToJson("FieldDetails");
 
@@ -2398,21 +2401,21 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.FormBuilderEntity", b =>
                 {
-                    b.OwnsOne("CourtApp.Domain.Entities.FormBuilder.FormBuilderEntity.FieldsDetails#CourtApp.Domain.Entities.FormBuilder.FormFieldsEntity", "FieldsDetails", b1 =>
+                    b.OwnsOne("CourtApp.Domain.Entities.FormBuilder.FormFieldsEntity", "FieldsDetails", b1 =>
                         {
                             b1.Property<Guid>("FormBuilderEntityId")
                                 .HasColumnType("uuid");
 
                             b1.HasKey("FormBuilderEntityId");
 
-                            b1.ToTable("m_frm_types", (string)null);
+                            b1.ToTable("m_frm_types");
 
                             b1.ToJson("FieldsDetails");
 
                             b1.WithOwner()
                                 .HasForeignKey("FormBuilderEntityId");
 
-                            b1.OwnsMany("CourtApp.Domain.Entities.FormBuilder.FormBuilderEntity.FieldsDetails#CourtApp.Domain.Entities.FormBuilder.FormFieldsEntity.Fields#CourtApp.Domain.Entities.FormBuilder.FieldDetailsEntity", "Fields", b2 =>
+                            b1.OwnsMany("CourtApp.Domain.Entities.FormBuilder.FieldDetailsEntity", "Fields", b2 =>
                                 {
                                     b2.Property<Guid>("FormFieldsEntityFormBuilderEntityId")
                                         .HasColumnType("uuid");
@@ -2420,6 +2423,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                                     b2.Property<int>("Id")
                                         .ValueGeneratedOnAdd()
                                         .HasColumnType("integer");
+
+                                    b2.Property<string>("DefaultVal")
+                                        .HasColumnType("text");
 
                                     b2.Property<int>("DispOrder")
                                         .HasColumnType("integer");
@@ -2441,12 +2447,12 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                                     b2.HasKey("FormFieldsEntityFormBuilderEntityId", "Id");
 
-                                    b2.ToTable("m_frm_types", (string)null);
+                                    b2.ToTable("m_frm_types");
 
                                     b2.WithOwner()
                                         .HasForeignKey("FormFieldsEntityFormBuilderEntityId");
 
-                                    b2.OwnsOne("CourtApp.Domain.Entities.FormBuilder.FormBuilderEntity.FieldsDetails#CourtApp.Domain.Entities.FormBuilder.FormFieldsEntity.Fields#CourtApp.Domain.Entities.FormBuilder.FieldDetailsEntity.FieldSize#CourtApp.Domain.Entities.FormBuilder.FieldSizeEntity", "FieldSize", b3 =>
+                                    b2.OwnsOne("CourtApp.Domain.Entities.FormBuilder.FieldSizeEntity", "FieldSize", b3 =>
                                         {
                                             b3.Property<Guid>("FieldDetailsEntityFormFieldsEntityFormBuilderEntityId")
                                                 .HasColumnType("uuid");
@@ -2468,7 +2474,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                                             b3.HasKey("FieldDetailsEntityFormFieldsEntityFormBuilderEntityId", "FieldDetailsEntityId");
 
-                                            b3.ToTable("m_frm_types", (string)null);
+                                            b3.ToTable("m_frm_types");
 
                                             b3.WithOwner()
                                                 .HasForeignKey("FieldDetailsEntityFormFieldsEntityFormBuilderEntityId", "FieldDetailsEntityId");
@@ -2485,7 +2491,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.FormTemplateMappingEntity", b =>
                 {
-                    b.OwnsMany("CourtApp.Domain.Entities.FormBuilder.FormTemplateMappingEntity.FieldsMapping#CourtApp.Domain.Entities.FormBuilder.MappingEntity", "FieldsMapping", b1 =>
+                    b.OwnsMany("CourtApp.Domain.Entities.FormBuilder.MappingEntity", "FieldsMapping", b1 =>
                         {
                             b1.Property<Guid>("FormTemplateMappingEntityId")
                                 .HasColumnType("uuid");
@@ -2502,7 +2508,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                             b1.HasKey("FormTemplateMappingEntityId", "Id");
 
-                            b1.ToTable("m_temp_frm_mapping", (string)null);
+                            b1.ToTable("m_temp_frm_mapping");
 
                             b1.ToJson("FieldsMapping");
 
@@ -2515,7 +2521,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             modelBuilder.Entity("CourtApp.Domain.Entities.FormBuilder.TemplateInfoEntity", b =>
                 {
-                    b.OwnsMany("CourtApp.Domain.Entities.FormBuilder.TemplateInfoEntity.Tags#CourtApp.Domain.Entities.FormBuilder.TemplateTagsEntity", "Tags", b1 =>
+                    b.OwnsMany("CourtApp.Domain.Entities.FormBuilder.TemplateTagsEntity", "Tags", b1 =>
                         {
                             b1.Property<Guid>("TemplateInfoEntityId")
                                 .HasColumnType("uuid");
@@ -2529,7 +2535,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
                             b1.HasKey("TemplateInfoEntityId", "Id");
 
-                            b1.ToTable("m_template_info", (string)null);
+                            b1.ToTable("m_template_info");
 
                             b1.ToJson("Tags");
 

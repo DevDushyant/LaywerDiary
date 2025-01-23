@@ -16,6 +16,7 @@ namespace CourtApp.Application.Features.FormBuilder
     {
         public string TemplateName { get; set; }
         public string TemplatePath { get; set; }
+        public string TemplateBody { get; set; }
         public List<TemplateTags> Tags { get; set; }
     }
     public class TemplateTags
@@ -47,7 +48,8 @@ namespace CourtApp.Application.Features.FormBuilder
                     var entity = new TemplateInfoEntity() { CreatedBy = "" };
                     List<TemplateTagsEntity> tdel = new List<TemplateTagsEntity>();
                     entity.TemplateName = request.TemplateName;
-                    entity.TemplatePath  = request.TemplatePath;                    
+                    entity.TemplatePath  = request.TemplatePath;
+                    entity.TemplateBody = request.TemplateBody;
                     foreach (var item in request.Tags)
                     {                        
                         tdel.Add(new TemplateTagsEntity()

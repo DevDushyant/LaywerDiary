@@ -74,6 +74,7 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<DraftingDetailEntity> CaseTempMappings { get; set; }
         public DbSet<FormTemplateMappingEntity> TempFormMappings { get; set; }
         public DbSet<CadreMasterEntity> Cadres { get; set; }
+        public DbSet<SpecializationEntity> Specilities { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

@@ -24,13 +24,17 @@
                 {
                     <i class="flag-icon flag-icon-gb"></i>
                 }
-                else if (requestCulture.RequestCulture.UICulture.Name == "ar")
+               @*  else if (requestCulture.RequestCulture.UICulture.Name == "ar")
                 {
                     <i class="flag-icon flag-icon-sa"></i>
                 }
                 else if (requestCulture.RequestCulture.UICulture.Name == "fr")
                 {
                     <i class="flag-icon flag-icon-fr"></i>
+                } *@
+                else if (requestCulture.RequestCulture.UICulture.Name == "hi")
+                {
+                    <i class="flag-icon flag-icon-in"></i>
                 }
                 @requestCulture.RequestCulture.UICulture.NativeName
             }
@@ -55,13 +59,13 @@
                     {
                         <i class="flag-icon flag-icon-gb"></i>
                     }
-                    else if (culture.Value == "ar")
+                    @* else if (culture.Value == "ar")
                     {
                         <i class="flag-icon flag-icon-sa"></i>
-                    }
-                    else if (culture.Value == "fr")
+                    } *@
+                    else if (culture.Value == "hi" || culture.Value == "gu")
                     {
-                        <i class="flag-icon flag-icon-fr"></i>
+                        <i class="flag-icon flag-icon-in"></i>
                     }
 
                     @culture.Text

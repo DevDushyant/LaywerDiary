@@ -19,8 +19,17 @@ namespace CourtApp.Web.Areas.Identity.Pages
         public int ImageHeight { get; set; }
         public int ImageWidth { get; set; }
         public List<string> Roles { get; set; }
-
         public bool IsSuperAdmin { get; set; }
+        public string Mobile { get; set; }
+        public string Email { get; set; }
+        public string Address { get; set; }
+        public string Enrollment { get; set; }
+        public string State { get; set; }
+        public string CourtType { get; set; }
+        public string District { get; set; }
+        public string Complex { get; set; }
+        public string Court { get; set; }
+        public int PracticeSince { get; set; }
 
         private readonly UserManager<ApplicationUser> _userManager;
 
@@ -41,6 +50,8 @@ namespace CourtApp.Web.Areas.Identity.Pages
                 FirstName = user.FirstName;
                 LastName = user.LastName;
                 IsActive = user.IsActive;
+                Mobile = user.Mobile;
+                Email = user.Email;                             
                 IsSuperAdmin = roles.Contains("SuperAdmin");
                 Roles = roles.ToList();
             }

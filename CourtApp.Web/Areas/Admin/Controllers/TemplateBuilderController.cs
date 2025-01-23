@@ -49,8 +49,8 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                     var dt = new TemplateViewModel();
                     string TempName = FileName.Split('.')[0];
                     dt.TemplateName = TempName;
-                    string TemplateBody = ReadTemplate(FilePath, FileName);
-                    dt.TemplateBody = TemplateBody;
+                    //string TemplateBody = ReadTemplate(FilePath, FileName);
+                    dt.TemplateBody = response.Data.TemplateBody;
                     dt.Id = id;
                     ViewBag.BtText = "Update";
                     return View("_CreateOrEdit", dt);
@@ -65,17 +65,18 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             if (id == Guid.Empty)
             {
                 List<string> Tags = GetTags(ViewModel.TemplateBody);
-                string FilePath = SaveTemplate(ViewModel);
-                string docPath = FilePath.Split(';')[0];
-                string docName = FilePath.Split(';')[1];
+                //string FilePath = SaveTemplate(ViewModel);
+                //string docPath = FilePath.Split(';')[0];
+                //string docName = FilePath.Split(';')[1];
                 List<TemplateTags> templateTags = new List<TemplateTags>();
                 foreach (string tag in Tags)
                     templateTags.Add(new TemplateTags() { Tag = tag });
                 var result = await _mediator.Send(new CreateTemplateInfoCommand()
                 {
-                    TemplateName = docName,
-                    TemplatePath = "documents/Templates/",
-                    Tags = templateTags
+                    TemplateName = ViewModel.TemplateName,
+                    //TemplatePath = "documents/Templates/",
+                    Tags = templateTags,
+                    TemplateBody=ViewModel.TemplateBody
                 });
                 if (result.Succeeded)
                     return Json(new { success = true, message = "Template info saved successfully." });
@@ -94,9 +95,10 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                 var result = await _mediator.Send(new UpdateTemplateInfoCommand()
                 {
                     Id =id,
-                    TemplateName = docName,
-                    TemplatePath = "documents/Templates/",
-                    Tags = templateTags
+                    TemplateName = ViewModel.TemplateName,
+                    //TemplatePath = "documents/Templates/",
+                    Tags = templateTags,
+                    TemplateBody = ViewModel.TemplateBody
                 });
                 if (result.Succeeded)
                     return Json(new { success = true, message = "Template info updated successfully." });
