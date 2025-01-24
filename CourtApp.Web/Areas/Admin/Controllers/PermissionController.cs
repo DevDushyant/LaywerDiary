@@ -5,6 +5,8 @@ using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Editing;
+using StackExchange.Redis;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -86,6 +88,58 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             //await _signInManager.RefreshSignInAsync(user);
 
             return RedirectToAction("Index", new { roleId = model.RoleId });
+        }
+
+        public async Task<IActionResult> ManagePermissions(string operatorId)
+        {
+            var operatorUser = await _userManager.FindByIdAsync(operatorId);
+            if (operatorUser == null) return NotFound();
+
+            var claims = await _userManager.GetClaimsAsync(operatorUser);
+            var assignedPermissions = claims.Where(c => c.Type == "Permission").Select(c => c.Value).ToList();
+            var model = new OperatorPermissionsViewModel
+            {
+                OperatorId = operatorId,
+                AvailablePermissions = GetAllPermissions(),
+                AssignedPermissions = assignedPermissions
+            };
+            ViewData["Title"] = $"Permissions for {operatorUser.FirstName + " " + operatorUser.LastName} Operator";
+            ViewData["Caption"] = $"Manage {operatorUser.FirstName + " " + operatorUser.LastName}  Permissions.";
+            _notify.Success($"Updated Claims / Permissions for Role '{operatorUser.FirstName + " " + operatorUser.LastName}'");
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ManagePermissions(OperatorPermissionsViewModel model)
+        {
+            var operatorUser = await _userManager.FindByIdAsync(model.OperatorId);
+            if (operatorUser == null) return NotFound();
+
+            var existingClaims = await _userManager.GetClaimsAsync(operatorUser);
+            var permissionClaims = existingClaims.Where(c => c.Type == "Permission").ToList();
+
+            // Remove all existing permission claims
+            foreach (var claim in permissionClaims)
+            {
+                await _userManager.RemoveClaimAsync(operatorUser, claim);
+            }
+
+            // Add selected permissions
+            foreach (var permission in model.AssignedPermissions)
+            {
+                await _userManager.AddClaimAsync(operatorUser, new System.Security.Claims.Claim("Permission", permission));
+            }
+
+            return RedirectToAction("ManagePermissions", new { operatorId=model.OperatorId });
+        }
+
+        private List<string> GetAllPermissions()
+        {
+            return Permissions.Users.GetAllPermissions()
+                .Concat(Permissions.Brands.GetAllPermissions())
+                .Concat(Permissions.Cases.GetAllPermissions())
+                .Concat(Permissions.Publishers.GetAllPermissions())
+                .ToList();
         }
     }
 }

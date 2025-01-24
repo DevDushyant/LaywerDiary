@@ -24,5 +24,6 @@ namespace CourtApp.Web.Areas.Admin.Models
         public string Id { get; set; }
         public string Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public DateTime DateOfJoining { get; set; }
     }
 }

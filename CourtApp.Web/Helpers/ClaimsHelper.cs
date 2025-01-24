@@ -1,4 +1,5 @@
 ﻿using CourtApp.Application.Constants;
+using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Areas.Admin.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -43,6 +44,24 @@ namespace CourtApp.Web.Helpers
             if (!allClaims.Any(a => a.Type == "Permission" && a.Value == permission))
             {
                 await roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.Permission, permission));
+            }
+        }
+
+        public static async Task AddPermissionToOperator(this UserManager<ApplicationUser> userManager, ApplicationUser operatorUser, string permission)
+        {
+            var userClaims = await userManager.GetClaimsAsync(operatorUser);
+            if (!userClaims.Any(c => c.Type == "Permission" && c.Value == permission))
+            {
+                await userManager.AddClaimAsync(operatorUser, new Claim("Permission", permission));
+            }
+        }
+        public static async Task RemovePermissionFromOperator(this UserManager<ApplicationUser> userManager, ApplicationUser operatorUser, string permission)
+        {
+            var userClaims = await userManager.GetClaimsAsync(operatorUser);
+            var claimToRemove = userClaims.FirstOrDefault(c => c.Type == "Permission" && c.Value == permission);
+            if (claimToRemove != null)
+            {
+                await userManager.RemoveClaimAsync(operatorUser, claimToRemove);
             }
         }
     }

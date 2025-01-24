@@ -83,9 +83,22 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             return PartialView("_Operator", fnlRs);
         }
 
-        public async Task<IActionResult> OnGetCreate()
+        public async Task<IActionResult> OnGetCreate(Guid id)
         {
-            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", new UserViewModel()) });
+            if (id == Guid.Empty)
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", new UserViewModel()) });
+            else
+            {
+                //var oprDetail = _identityDbContext
+                //    .Operators
+                //    .Where(w => w.Id == id)
+                //    .FirstOrDefault();
+                var OprUser = await _userManager.Users
+                    .Where(a => a.UserType == "Operator" && a.Id == id.ToString())
+                    .FirstOrDefaultAsync();
+                var model = _mapper.Map<IEnumerable<UserViewModel>>(OprUser);
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", new UserViewModel()) });
+            }
         }
 
         [HttpPost]
@@ -114,18 +127,18 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                     Mobile = userModel.Mobile,
                     Gender = userModel.Gender,
                     DateOfBirth = userModel.DateOfBirth,
-                    UserType = "Operator"
+                    UserType = "Operator"                    
                 };
                 var result = await _userManager.CreateAsync(user, "123Pa$$word!");
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, Roles.User.ToString());
+                    await _userManager.AddToRoleAsync(user, Roles.Operator.ToString());
                     //Link operator to the lawyer
                     var nwopr = new OperatorUser
                     {
                         Id = Guid.Parse(user.Id),
                         LawyerId = lawyer.Id,
-                        DateOfJoining = lawyer.DateOfBirth,
+                        DateOfJoining = userModel.DateOfJoining,
                         AddressInfo = new AddressInfo
                         {
                             StateId = 0,
@@ -133,7 +146,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                             DistrictId = 0,
                             StreetAddress = userModel.Address
                         },
-                         CreatedBy=user.Id,
+                        CreatedBy = user.Id,
                         CreatedOn = DateTime.Now,
                     };
                     _identityDbContext.Operators.Add(nwopr);

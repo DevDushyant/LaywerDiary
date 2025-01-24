@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
 
 namespace CourtApp.Application.Constants
@@ -22,6 +22,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Dashboard.Create";
             public const string Edit = "Permissions.Dashboard.Edit";
             public const string Delete = "Permissions.Dashboard.Delete";
+            public static List<string> GetAllPermissions() =>
+                new List<string> { View, Create, Edit, Delete };
         }
 
         public static class Products
@@ -30,6 +32,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Products.Create";
             public const string Edit = "Permissions.Products.Edit";
             public const string Delete = "Permissions.Products.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
 
         public static class Users
@@ -38,6 +42,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Users.Create";
             public const string Edit = "Permissions.Users.Edit";
             public const string Delete = "Permissions.Users.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
 
         public static class Brands
@@ -46,7 +52,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Brands.Create";
             public const string Edit = "Permissions.Brands.Edit";
             public const string Delete = "Permissions.Brands.Delete";
-        }       
+            public static List<string> GetAllPermissions() => new List<string> { View, Create, Edit, Delete };
+        }
 
         public static class Cases
         {
@@ -54,6 +61,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Cases.Create";
             public const string Edit = "Permissions.Cases.Edit";
             public const string Delete = "Permissions.Cases.Delete";
+            public static List<string> GetAllPermissions() =>
+                           new List<string> { View, Create, Edit, Delete };
         }
 
         public static class Publishers
@@ -62,6 +71,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Publishers.Create";
             public const string Edit = "Permissions.Publishers.Edit";
             public const string Delete = "Permissions.Publishers.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
 
         public static class Subjects
@@ -70,6 +81,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Subjects.Create";
             public const string Edit = "Permissions.Subjects.Edit";
             public const string Delete = "Permissions.Subjects.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
 
         public static class BookTypes
@@ -78,6 +91,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.BookTypes.Create";
             public const string Edit = "Permissions.BookTypes.Edit";
             public const string Delete = "Permissions.BookTypes.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
 
         public static class Books
@@ -86,6 +101,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Books.Create";
             public const string Edit = "Permissions.Books.Edit";
             public const string Delete = "Permissions.Books.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
         public static class Clients
         {
@@ -93,6 +110,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Clients.Create";
             public const string Edit = "Permissions.Clients.Edit";
             public const string Delete = "Permissions.Clients.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
 
         public static class ProceedingHeads
@@ -101,6 +120,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.PHead.Create";
             public const string Edit = "Permissions.PHead.Edit";
             public const string Delete = "Permissions.PHead.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
 
         public static class ProceedingSubHeads
@@ -109,6 +130,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.PSHead.Create";
             public const string Edit = "Permissions.PSHead.Edit";
             public const string Delete = "Permissions.PSHead.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
 
         public static class CaseWorks
@@ -117,6 +140,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.CaseWorks.Create";
             public const string Edit = "Permissions.CaseWorks.Edit";
             public const string Delete = "Permissions.CaseWorks.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
 
         public static class CaseSWorks
@@ -125,6 +150,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.CaseSWorks.Create";
             public const string Edit = "Permissions.CaseSWorks.Edit";
             public const string Delete = "Permissions.CaseSWorks.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
         public static class CaseHearing
         {
@@ -135,6 +162,8 @@ namespace CourtApp.Application.Constants
             public const string Proceeding = "Permissions.Hearing.Proceeding";
             public const string Work = "Permissions.Hearing.Work";
             public const string BringToday = "Permissions.Hearing.BToday";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
 
         public static class DeathClaimPetition
@@ -142,7 +171,9 @@ namespace CourtApp.Application.Constants
             public const string View = "Permissions.Death.View";
             public const string Create = "Permissions.Death.Create";
             public const string Edit = "Permissions.Death.Edit";
-            public const string Delete = "Permissions.Death.Delete";           
+            public const string Delete = "Permissions.Death.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
 
         public static class Titles
@@ -151,6 +182,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Titles.Create";
             public const string Edit = "Permissions.Titles.Edit";
             public const string Delete = "Permissions.Titles.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
         public static class Complex
         {
@@ -158,6 +191,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Complex.Create";
             public const string Edit = "Permissions.Complex.Edit";
             public const string Delete = "Permissions.Complex.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
         public static class Cadre
         {
@@ -165,6 +200,8 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Cadre.Create";
             public const string Edit = "Permissions.Cadre.Edit";
             public const string Delete = "Permissions.Cadre.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
         }
     }
 }

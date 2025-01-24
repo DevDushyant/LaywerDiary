@@ -4,7 +4,6 @@
     {
         SuperAdmin, 
         Lawyer,
-        Operator,
-        User
+        Operator        
     }    
 }
