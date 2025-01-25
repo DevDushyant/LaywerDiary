@@ -116,7 +116,7 @@ namespace CourtApp.Application.Features.CaseDetails
                             againstDt.CisYear = item.CisYear!=null? item.CisYear.Value:0;
                             againstDt.CisNo = item.CisNo;
                             againstDt.CaseId = request.Id;
-                            againstDt.CadreId = item.CadreId;
+                            againstDt.CadreId = item.CadreId != null ? item.CadreId.Value : Guid.Empty;
                             againstDt.CnrNo = item.CnrNo;
                             againstDt.CourtDistrictId = item.CourtDistrictId != Guid.Empty ? item.CourtDistrictId : null;
                             againstDt.ComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null;
@@ -141,7 +141,7 @@ namespace CourtApp.Application.Features.CaseDetails
                             agDt.CisYear = item.CisYear.Value;
                             agDt.CisNo = item.CisNo;
                             agDt.CaseId = request.Id;
-                            agDt.CadreId = item.CadreId;
+                            agDt.CadreId = item.CadreId != null ? item.CadreId.Value : Guid.Empty;
                             agDt.CnrNo = item.CnrNo;
                             agDt.CourtDistrictId = item.CourtDistrictId != Guid.Empty ? item.CourtDistrictId : null;
                             agDt.ComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null;
