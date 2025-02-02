@@ -2,19 +2,16 @@
 
 # V1.0.0 is Released.
 
-[Get the NuGet Package from here!](https://www.nuget.org/packages/CourtApp/)
-
-
 # The Vision
 
-An idea to bring together the best and essential practices / pacakges of ASP.NET Core 5.0 along with Clean Hexagonal Architecture that can be a right fit for small/mid and enterprise level solutions.
+An idea to bring together the best and essential practices / pacakges of ASP.NET Core 9.0 along with Clean Hexagonal Architecture that can be a right fit for small/mid and enterprise level solutions.
 How easy would it be if you are able to run a single line of CLI command on your Console and you get a complete implementation in no time? That's the exact vision I have while building this full fledged Boilerplate template.
 
 ## Technologies Used
 
-- ASP.NET Core 5.0 WebAPI
-- ASP.NET Core 5.0 MVC
-- Entity Framework Core 5.0
+- ASP.NET Core 9.0 WebAPI
+- ASP.NET Core 9.0 MVC
+- Entity Framework Core 9.0
 
 
 ## Contributions / Help Needed
@@ -26,11 +23,11 @@ It would be great if a few of you could contribute to this project. Here are the
 - Someone to add Arabic Transalations throughout the MVC Project. You can find the Dictionary under the Resources Folder in the Web Project.
 - Someone to ensure the code quality.
 
-Let's make this the best .NET 5 Clean Architecture Template.
+Let's make this the best .NET 9 Clean Architecture Template.
 
 ## Features Included
 
-### ASP.NET Core 5.0 MVC Project
+### ASP.NET Core 9.0 MVC Project
 - Slim Controllers using MediatR Library
 - Permissions Management based on Role Claims
 - Toast Notification (includes support for AJAX Calls too)
