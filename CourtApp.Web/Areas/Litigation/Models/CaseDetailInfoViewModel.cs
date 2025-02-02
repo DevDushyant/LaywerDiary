@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CourtApp.Web.Areas.Client.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -11,7 +12,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         [DisplayName("Institution Date")]
         public string InstitutionDate { get; set; }
         public string State { get; set; }
-        public bool IsHighCourt { get; set; }=false;
+        public bool IsHighCourt { get; set; } = false;
         [DisplayName("Court Type")]
         public string CourtType { get; set; }
 
@@ -60,6 +61,31 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string CaseStage { get; set; }
         public bool IsCaseAgainstDecision { get; set; }
         public List<AgainstCaseDecisionViewModel> AgainstCases { get; set; }
-        //public ClientDetailViewModel ClientDetail { get; set; }
+        public LinkCaseInfoViewModel LinkCaseInfo { get; set; }
+        public ClientViewModel ClientDetail { get; set; }
+    }
+
+    public class LinkCaseInfoViewModel
+    {
+        [DisplayName("Institution Date")]
+        public string InstitutionDate { get; set; }
+        public string State { get; set; }
+        public bool IsHighCourt { get; set; }
+        public string CourtType { get; set; }
+        public string CourtBench { get; set; }
+        public string DistrictCourt { get; set; }
+        public string CourtComplex { get; set; }
+        public string CaseNo { get; set; }
+        public string CaseYear { get; set; }
+        public string CaseCategory { get; set; }
+        public string CaseType { get; set; }
+        public string CisNo { get; set; }
+        public string CisYear { get; set; }
+        public string CnrNo { get; set; }
+        public string FirstTitle { get; set; }
+        public string FirstTitleDetail { get; set; }
+        public string SecondTitle { get; set; }
+        public string SecondTitleDetail { get; set; }
+        public string CaseStage { get; set; }
     }
 }

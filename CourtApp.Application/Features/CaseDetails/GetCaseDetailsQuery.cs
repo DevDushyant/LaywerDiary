@@ -6,6 +6,7 @@ using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -70,6 +71,10 @@ namespace CourtApp.Application.Features.UserCase
                 NextHearingDate = e.NextDate.HasValue == true ? e.NextDate.Value : default(DateTime),
                 CaseStage = e.CaseStage.CaseStage,
                 CaseTitle = e.FirstTitle + " V/S " + e.SecondTitle,
+                IsProceedingDone = e.CaseProcEntities != null ?
+                                    e.CaseProcEntities
+                                        .Where(s => s.ProceedingDate == request.HearingDate).Count() > 0
+                                    ? true : false : false
             };
             var predicate = PredicateBuilder.True<CaseDetailEntity>();
             if (predicate != null)
@@ -86,7 +91,9 @@ namespace CourtApp.Application.Features.UserCase
                 proceedingData = _RepoProceeding.Entities
                     .Where(n => n.NextDate.Value == request.HearingDate);
 
-            var td = _RepoCase.Entites.Where(predicate)
+            var td = _RepoCase.Entites
+                .Include(p => p.CaseProcEntities)
+                .Where(predicate)
                 .Select(expression);
             IQueryable<CaseDetailResponse> fnldt;
             if (proceedingData.Count() > 0)
@@ -108,7 +115,7 @@ namespace CourtApp.Application.Features.UserCase
                             SecondTitle = cd.SecondTitle,
                             CaseStage = cd.CaseStage,
                             CaseNumber = cd.CaseNumber,
-                            NextHearingDate = MaxDt!=(default)?MaxDt:cd.NextHearingDate,
+                            NextHearingDate = MaxDt != (default) ? MaxDt : cd.NextHearingDate,
                             CaseTitle = cd.CaseTitle,
                             CaseYear = cd.CaseYear
                         };
@@ -125,7 +132,7 @@ namespace CourtApp.Application.Features.UserCase
                          CourtName = cd.CourtName,
                          Abbreviation = cd.Abbreviation,
                          CaseTypeName = cd.CaseTypeName,
-                         CaseYear=cd.CaseYear,
+                         CaseYear = cd.CaseYear,
                          FTitleType = cd.FTitleType,
                          FirstTitle = cd.FirstTitle,
                          STitleType = cd.STitleType,
@@ -133,7 +140,8 @@ namespace CourtApp.Application.Features.UserCase
                          CaseStage = cd.CaseStage,
                          CaseNumber = cd.CaseNumber,
                          NextHearingDate = cd.NextHearingDate,
-                         CaseTitle = cd.CaseTitle                         
+                         CaseTitle = cd.CaseTitle,
+                         IsProceedingDone = cd.IsProceedingDone
                      };
             if (request.HearingDate! != default(DateTime))
             {

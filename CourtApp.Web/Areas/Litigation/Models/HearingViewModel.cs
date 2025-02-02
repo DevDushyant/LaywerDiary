@@ -11,8 +11,9 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string CaseTypeName { get; set; }
         public DateTime NextHearingDate { get; set; }
         public string CourtName { get; set; }
-        public string CaseTitle { get; set; }        
+        public string CaseTitle { get; set; }
         public bool Selected { get; set; }
+        public bool IsProceedingDone { get; set; }
 
     }
 }

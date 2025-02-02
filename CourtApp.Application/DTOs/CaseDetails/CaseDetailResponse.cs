@@ -9,7 +9,7 @@ namespace CourtApp.Application.DTOs.Case
         public string CourtType { get; set; }
         public string CaseKindName { get; set; }
         public string CaseNumber { get; set; }
-        public string CaseYear{ get; set; }
+        public string CaseYear { get; set; }
         public DateTime NextHearingDate { get; set; }
         public string CaseStage { get; set; }
         public string FTitleType { get; set; }
@@ -18,6 +18,7 @@ namespace CourtApp.Application.DTOs.Case
         public string SecondTitle { get; set; }
         public string CourtName { get; set; }
         public string CaseTitle { get; set; }
-        public string Abbreviation { get; set; }       
+        public string Abbreviation { get; set; }
+        public bool IsProceedingDone { get; set; }
     }
 }

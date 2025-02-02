@@ -87,6 +87,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 hearing.CaseStage = item.CaseStage;
                 hearing.CourtName = item.CourtName;
                 hearing.CaseTypeName = item.CaseTypeName;
+                hearing.IsProceedingDone = item.IsProceedingDone;
                 cdt.Add(hearing);
             }
             model.CaseList = cdt;
@@ -196,6 +197,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 else
                 {
                     var cmd = _mapper.Map<CreateCaseProceedingCommand>(model);
+                    cmd.UserId = CurrentUser.Id;
                     cmd.ProceedingDate = Convert.ToDateTime(TempData["SelectedDate"].ToString());
                     bool hasValues = cmd.ProcWork.GetType().GetProperties()
                                        .Any(prop => prop.GetValue(cmd.ProcWork) != null);

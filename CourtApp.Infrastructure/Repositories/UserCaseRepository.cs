@@ -1,5 +1,5 @@
-﻿using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Application.CacheKeys;
+﻿using CourtApp.Application.CacheKeys;
+using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -68,6 +68,8 @@ namespace CourtApp.Infrastructure.Repositories
                 .Include(d => d.CaseAgainstEntities).ThenInclude(c => c.CaseType)
                 .Include(d => d.CaseAgainstEntities).ThenInclude(c => c.CourtDistrict)
                 .Include(d => d.CaseAgainstEntities).ThenInclude(c => c.Cadre)
+                .Include(d => d.LinkedCase)
+                .Include(c => c.Client)
                 .Where(w => w.Id == CaseUid).FirstAsync();
         }
 

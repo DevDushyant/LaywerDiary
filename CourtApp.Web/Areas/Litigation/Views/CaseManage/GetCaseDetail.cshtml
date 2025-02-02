@@ -24,7 +24,7 @@
 </style>
 <div class="row">
     <div class="col-sm-6"><h4>Case <b>Detail Information</b></h4></div>
-    <div class="col-sm-3 pull-right" >
+    <div class="col-sm-3 pull-right">
         @Html.ActionLink("Edit", "CreateOrUpdate", new { id = Model.Id })
     </div>
     <div class="col-sm-3">
@@ -180,79 +180,183 @@
     </dl>
 </fieldset>
 
-@* <fieldset class="scheduler-border">
-    <legend class="scheduler-border">Client Detail</legend>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ClientDetail.FirstName)
-        </dt>
-        <dd class="col-sm-4">
-            @Html.DisplayFor(model => model.ClientDetail.FirstName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ClientDetail.MiddleName)
-        </dt>
-        <dd class="col-sm-4">
-            @Html.DisplayFor(model => model.ClientDetail.MiddleName)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ClientDetail.LastName)
-        </dt>
-        <dd class="col-sm-4">
-            @Html.DisplayFor(model => model.ClientDetail.LastName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ClientDetail.FatherName)
-        </dt>
-        <dd class="col-sm-4">
-            @Html.DisplayFor(model => model.ClientDetail.FatherName)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ClientDetail.Mobile)
-        </dt>
-        <dd class="col-sm-4">
-            @Html.DisplayFor(model => model.ClientDetail.Mobile)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ClientDetail.Phone)
-        </dt>
-        <dd class="col-sm-4">
-            @Html.DisplayFor(model => model.ClientDetail.Phone)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ClientDetail.Email)
-        </dt>
-        <dd class="col-sm-4">
-            @Html.DisplayFor(model => model.ClientDetail.Email)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ClientDetail.OfficeEmail)
-        </dt>
-        <dd class="col-sm-4">
-            @Html.DisplayFor(model => model.ClientDetail.OfficeEmail)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ClientDetail.Dob)
-        </dt>
-        <dd class="col-sm-4">
-            @Html.DisplayFor(model => model.ClientDetail.Dob)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ClientDetail.Address)
-        </dt>
-        <dd class="col-sm-4">
-            @Html.DisplayFor(model => model.ClientDetail.Address)
-        </dd>
-    </dl>
-</fieldset> *@
+@if (Model.LinkCaseInfo != null)
+{
+    <fieldset class="scheduler-border">
+        <legend class="scheduler-border">Link Case Info</legend>
+
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkCaseInfo.InstitutionDate)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.LinkCaseInfo.InstitutionDate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkCaseInfo.State)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.LinkCaseInfo.State)
+            </dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkCaseInfo.CourtType)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.LinkCaseInfo.CourtType)
+            </dd>
+
+            @if (!Model.IsHighCourt)
+            {
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.LinkCaseInfo.DistrictCourt)
+                </dt>
+                <dd class="col-sm-4">
+                    @Html.DisplayFor(model => model.LinkCaseInfo.DistrictCourt)
+                </dd>
+            }
+            else
+            {
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.LinkCaseInfo.CourtBench)
+                </dt>
+                <dt class="col-sm-4">
+                    @Html.DisplayFor(model => model.LinkCaseInfo.CourtBench)
+                </dt>
+            }
+        </dl>
+
+        @if (!Model.IsHighCourt)
+        {
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.LinkCaseInfo.CourtComplex)
+                </dt>
+                <dd class="col-sm-4">
+                    @Html.DisplayFor(model => model.LinkCaseInfo.CourtComplex)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.LinkCaseInfo.CourtBench)
+                </dt>
+                <dd class="col-sm-4">
+                    @Html.DisplayFor(model => model.LinkCaseInfo.CourtBench)
+                </dd>
+            </dl>
+        }
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkCaseInfo.CaseNo)
+            </dt>
+            <dd class="col-sm-4">
+                @{
+                    string clyear = (Model.LinkCaseInfo.CaseNo + "/" + Model.LinkCaseInfo.CaseYear);
+                }
+                @clyear
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkCaseInfo.CaseCategory)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.LinkCaseInfo.CaseCategory)
+            </dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkCaseInfo.CaseType)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.LinkCaseInfo.CaseType)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkCaseInfo.CisNo)
+            </dt>
+            <dd class="col-sm-4">
+                @{
+                    string lcisno = (Model.LinkCaseInfo.CisNo + "/" + Model.LinkCaseInfo.CisYear);
+                }
+                @lcisno
+            </dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkCaseInfo.FirstTitle)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.LinkCaseInfo.FirstTitle)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkCaseInfo.FirstTitleDetail)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.LinkCaseInfo.FirstTitleDetail)
+            </dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkCaseInfo.SecondTitle)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.LinkCaseInfo.SecondTitle)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkCaseInfo.SecondTitleDetail)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.LinkCaseInfo.SecondTitleDetail)
+            </dd>
+        </dl>
+
+        <dl class="row">
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkCaseInfo.CaseStage)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.LinkCaseInfo.CaseStage)
+            </dd>
+        </dl>
+    </fieldset>
+}
+
+@if (Model.ClientDetail != null)
+{
+    <fieldset class="scheduler-border">
+        <legend class="scheduler-border">Client Detail</legend>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ClientDetail.Name)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.ClientDetail.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ClientDetail.Mobile)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.ClientDetail.Mobile)
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ClientDetail.Email)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.ClientDetail.Email)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ClientDetail.Address)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.ClientDetail.Address)
+            </dd>
+        </dl>
+    </fieldset>
+}
 
 @if (Model.IsCaseAgainstDecision == true)
 {

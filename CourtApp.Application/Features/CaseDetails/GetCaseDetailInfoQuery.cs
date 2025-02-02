@@ -39,14 +39,14 @@ namespace CourtApp.Application.Features.CaseDetails
                 ct.CaseType = detail.CaseType.Name_En;
                 ct.FirstTitle = detail.FirstTitle;
                 ct.FirstTitleDetail = detail.FTitle.Name_En;
-                ct.SecondTitle = detail.SecondTitle; 
+                ct.SecondTitle = detail.SecondTitle;
                 ct.SecondTitleDetail = detail.STitle.Name_En;
                 ct.CaseStage = detail.CaseStage.CaseStage;
                 ct.CisNo = detail.CisNumber;
                 ct.CisYear = detail.CisYear.ToString();
                 ct.CnrNo = detail.CnrNumber;
-                ct.DistrictCourt = detail.CourtDistrict!=null? detail.CourtDistrict.Name_En:"";
-                ct.CourtComplex = detail.Complex !=null?detail.Complex.Name_En :"";
+                ct.DistrictCourt = detail.CourtDistrict != null ? detail.CourtDistrict.Name_En : "";
+                ct.CourtComplex = detail.Complex != null ? detail.Complex.Name_En : "";
                 ct.NextDate = detail.NextDate != null ? detail.NextDate.Value.ToString("dd/MM/yyyy") : "";
                 var againstDetail = detail.CaseAgainstEntities;
                 if (againstDetail != null && againstDetail.Count > 0)
@@ -64,10 +64,10 @@ namespace CourtApp.Application.Features.CaseDetails
                             CaseNo = item.CaseNo != null ? item.CaseNo.ToString() : "",
                             CaseYear = item.CaseYear.ToString(),
                             CisNo = item.CisNo != null ? item.CisNo.ToString() : "",
-                            CisYear =  item.CisYear.ToString(),
+                            CisYear = item.CisYear.ToString(),
                             CnrNo = item.CnrNo != null ? item.CnrNo.ToString() : "",
-                            Cadre = item.Cadre!=null ? item.Cadre.Name_En.ToString():"",
-                            OfficerName = item.OfficerName != null ? item.OfficerName:"",
+                            Cadre = item.Cadre != null ? item.Cadre.Name_En.ToString() : "",
+                            OfficerName = item.OfficerName != null ? item.OfficerName : "",
                             CaseCategory = item.CaseCategory != null ? item.CaseCategory.Name_En : "",
                             CourtComplex = item.Complex != null ? item.Complex.Name_En : "",
                             CaseType = item.CaseType != null ? item.CaseType.Name_En : "",
@@ -79,6 +79,39 @@ namespace CourtApp.Application.Features.CaseDetails
                 else
                     ct.IsCaseAgainstDecision = false;
 
+                if (detail.LinkedCase != null)
+                {
+                    var lncd = detail.LinkedCase;
+                    ct.LinkCaseInfo = new LinkCaseInfo
+                    {
+                        InstitutionDate = lncd.InstitutionDate.Date.ToString("dd/MM/yyyy"),
+                        State = lncd.State.Name_En,
+                        CourtType = lncd.CourtType.CourtType,
+                        CourtBench = lncd.CourtBench != null ? lncd.CourtBench.CourtBench_En : "",
+                        CaseNo = lncd.CaseNo,
+                        CaseYear = lncd.CaseYear.ToString(),
+                        CaseCategory = lncd.CaseCategory.Name_En,
+                        CaseType = lncd.CaseType.Name_En,
+                        FirstTitle = lncd.FirstTitle,
+                        FirstTitleDetail = lncd.FTitle.Name_En,
+                        SecondTitle = lncd.SecondTitle,
+                        SecondTitleDetail = lncd.STitle.Name_En,
+                        CaseStage = lncd.CaseStage != null ? lncd.CaseStage.CaseStage : "",
+                        CisNo = lncd.CisNumber == null ? "" : lncd.CisNumber,
+                        CisYear = lncd.CisYear.ToString()
+                    };
+                }
+                if (detail.Client != null)
+                {
+                    var clnt = detail.Client;
+                    ct.ClientDetail = new Clients.Queries.GetAllCached.GetAllClientCachedResponse()
+                    {
+                        FirstName = clnt.Name,
+                        Mobile = clnt.Mobile,
+                        Appearence = clnt.Appearence != null ? clnt.Appearence.Name_En : "",
+                        Councel = clnt.OppositCounsel != null ? clnt.OppositCounsel.FirstName : ""
+                    };
+                }
             }
             return Result<CaseDetailInfoDto>.Success(ct);
         }

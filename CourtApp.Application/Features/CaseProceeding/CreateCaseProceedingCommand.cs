@@ -22,6 +22,7 @@ namespace CourtApp.Application.Features.CaseProceeding
         public string Remark { get; set; }
         public ProceedingWorkDto ProcWork { get; set; }
         public DateTime? ProceedingDate { get; set; }
+        public string UserId { get; set; }
 
     }
 
@@ -58,7 +59,53 @@ namespace CourtApp.Application.Features.CaseProceeding
             entity.ProceedingDate = request.ProceedingDate;
             await _Repository.AddAsync(entity);
             await _unitOfWork.Commit(cancellationToken);
+            var LcasesDt = GetAllChildrenAsync(request.CaseId, request.UserId);
+            if (LcasesDt != null)
+            {
+                foreach (var it in LcasesDt)
+                {
+                    entity.CaseId = it.Id;
+                    await _Repository.AddAsync(entity);
+                    await _unitOfWork.Commit(cancellationToken);
+                }
+            }
+
             return Result<Guid>.Success(entity.Id); ;
         }
+
+        public List<CaseDetailEntity> GetAllChildrenAsync(Guid parentId, string UserId)
+        {
+            var UserCases = _CaseRepo.Entites.Where(w => w.CreatedBy.Equals(UserId)).ToList();
+            return GetChildrenRecursive(UserCases, parentId);
+        }
+
+        private List<CaseDetailEntity> GetChildrenRecursive(List<CaseDetailEntity> UserCases, Guid parentId)
+        {
+            var children = UserCases.Where(c => c.LinkedCaseId == parentId).ToList();
+            foreach (var child in children)
+            {
+                children.AddRange(GetChildrenRecursive(UserCases, child.Id));
+            }
+            return children;
+        }
+        //public async Task<(CaseDetailEntity Parent, List<CaseDetailEntity> Siblings)> GetParentAndSiblingsAsync(int childId)
+        //{
+        //    var child = await _context.Categories
+        //        .Include(c => c.Parent)
+        //        .FirstOrDefaultAsync(c => c.Id == childId);
+
+        //    if (child?.ParentId == null)
+        //    {
+        //        return (null, new List<CaseDetailEntity>()); // No parent, so no siblings
+        //    }
+
+        //    var siblings = await _context.Categories
+        //        .Where(c => c.ParentId == child.ParentId && c.Id != childId)
+        //        .ToListAsync();
+
+        //    return (child.Parent, siblings);
+        //}
+
+
     }
 }

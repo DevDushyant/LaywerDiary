@@ -3,8 +3,9 @@ using CourtApp.Application.DTOs.Case;
 using CourtApp.Application.DTOs.CaseDetails;
 using CourtApp.Application.Features.Case;
 using CourtApp.Application.Features.CaseDetails;
+using CourtApp.Application.Features.Clients.Queries.GetAllCached;
+using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
-using System;
 using CaseWork = CourtApp.Web.Areas.Litigation.Models.CaseWork;
 using CaseWorkDetail = CourtApp.Web.Areas.Litigation.Models.CaseWorkDetail;
 namespace CourtApp.Web.Areas.Litigation.Mappings
@@ -57,6 +58,8 @@ namespace CourtApp.Web.Areas.Litigation.Mappings
             #endregion
 
             CreateMap<UpdateHearingDtViewModel, CaseHearingDto>();
+            CreateMap<LinkCaseInfo, LinkCaseInfoViewModel>();
+            CreateMap<GetAllClientCachedResponse, ClientViewModel>();
 
         }
     }
