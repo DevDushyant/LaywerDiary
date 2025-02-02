@@ -1,10 +1,7 @@
-﻿using AspNetCoreHero.Results;
-using AspNetCoreHero.ToastNotification.Abstractions;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using AutoMapper;
-using Azure;
 using CourtApp.Application.Constants;
 using CourtApp.Application.DTOs.CourtMaster;
-using CourtApp.Application.Enums;
 using CourtApp.Application.Features.Cadre;
 using CourtApp.Application.Features.CaseCategory;
 using CourtApp.Application.Features.CaseDetails;
@@ -23,13 +20,10 @@ using CourtApp.Application.Features.Lawyer;
 using CourtApp.Application.Features.ProceedingHead;
 using CourtApp.Application.Features.ProceedingSubHead;
 using CourtApp.Application.Features.Queries.Districts;
-using CourtApp.Application.Features.Queries.GAccessDdl;
 using CourtApp.Application.Features.Queries.States;
 using CourtApp.Application.Features.TypeOfCases.Query;
-using CourtApp.Application.Features.UserCase;
 using CourtApp.Application.Features.WorkMaster;
 using CourtApp.Application.Features.WorkMasterSub;
-using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models;
@@ -41,24 +35,17 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using HtmlAgilityPack;
 using HtmlToOpenXml;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.FlowAnalysis;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Syncfusion.DocIO;
-using Syncfusion.DocIO.DLS;
+
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Abstractions
@@ -169,12 +156,12 @@ namespace CourtApp.Web.Abstractions
         }
         public async Task<SelectList> DdlClient(string UserId)
         {
-            var response = await _mediator.Send(new GetAllClientCachedQuery() { UserId=UserId});
+            var response = await _mediator.Send(new GetAllClientCachedQuery() { UserId = UserId });
             var viewModel = _mapper.Map<List<GClientViewModel>>(response.Data);
             Dictionary<Guid, string> Clients = new Dictionary<Guid, string>();
             foreach (var item in viewModel)
             {
-                var name = item.Name + " (" + item.Mobile  + " - "+item.Address+")";
+                var name = item.Name + " (" + item.Mobile + " - " + item.Address + ")";
                 Clients.Add(item.Id, name);
             }
             return new SelectList(Clients, "Key", "Value");
@@ -245,8 +232,8 @@ namespace CourtApp.Web.Abstractions
         }
         public async Task<SelectList> GetCourtComplex(Guid CourtDistrictId)
         {
-            var response = await _mediator.Send(new GetCourtComplexQuery() { CourtDistrictId = CourtDistrictId,PageNumber=1,PageSize=1000 });
-            var viewModel = _mapper.Map<List<CourtComplexViewModel>>(response.Data.OrderBy(o=>o.Name_En));
+            var response = await _mediator.Send(new GetCourtComplexQuery() { CourtDistrictId = CourtDistrictId, PageNumber = 1, PageSize = 1000 });
+            var viewModel = _mapper.Map<List<CourtComplexViewModel>>(response.Data.OrderBy(o => o.Name_En));
             return new SelectList(viewModel, nameof(CourtComplexViewModel.Id), nameof(CourtComplexViewModel.Name_En), null, null);
         }
 
@@ -293,7 +280,7 @@ namespace CourtApp.Web.Abstractions
             var dt = await _mediator.Send(new GetCourtBenchQuery(1, 1000) { StateId = StateId, CourtTypeId = CourtTypeId, CourtId = ComplexId, CourtDistrictId = CourtDistrict });
             if (dt.Succeeded)
             {
-                var fields = dt.Data.OrderBy(o=>o.CourtBench_En);
+                var fields = dt.Data.OrderBy(o => o.CourtBench_En);
                 return new SelectList(fields, nameof(CourtBenchResponse.Id), nameof(CourtBenchResponse.CourtBench_En), null, null); ;
             }
             return null;
@@ -587,23 +574,23 @@ namespace CourtApp.Web.Abstractions
         #endregion
 
         #region Read File
-        public string ReadTemplate(string fPath, string fName)
-        {
-            string DirPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", "Templates");
-            string filePath = Path.Combine(DirPath, fName);
-            if (!System.IO.File.Exists(filePath))
-                return "File Not found";
-            string fileContent = string.Empty;
-            using (FileStream inputFileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                // Load the file stream into a Word document
-                using (WordDocument document = new WordDocument(inputFileStream, FormatType.Automatic))
-                {
-                    fileContent = document.GetText();
-                }
-            }
-            return fileContent;
-        }
+        //public string ReadTemplate(string fPath, string fName)
+        //{
+        //    string DirPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", "Templates");
+        //    string filePath = Path.Combine(DirPath, fName);
+        //    if (!System.IO.File.Exists(filePath))
+        //        return "File Not found";
+        //    string fileContent = string.Empty;
+        //    using (FileStream inputFileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        //    {
+        //        // Load the file stream into a Word document
+        //        using (WordDocument document = new WordDocument(inputFileStream, FormatType.Automatic))
+        //        {
+        //            fileContent = document.GetText();
+        //        }
+        //    }
+        //    return fileContent;
+        //}
         public byte[] ConvertHtmlToWord(string htmlContent)
         {
             using (MemoryStream memoryStream = new MemoryStream())
@@ -617,7 +604,7 @@ namespace CourtApp.Web.Abstractions
 
                     // Initialize HtmlConverter and convert HTML to Word
                     HtmlConverter converter = new HtmlConverter(mainPart);
-                    converter.ParseHtml(htmlContent);
+                    converter.ParseBody(htmlContent);
 
                     // Apply right alignment and indentation
                     // Apply specific formatting based on the document's legal style

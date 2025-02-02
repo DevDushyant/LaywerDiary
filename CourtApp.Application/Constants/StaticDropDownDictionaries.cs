@@ -41,7 +41,7 @@ namespace CourtApp.Application.Constants
         public static Dictionary<string, string> CaseSearchBy()
         {
             var _CaseSearchBy = new Dictionary<string, string>
-            {                
+            {
                 { "ORD", "Order" },
                 { "DFT", "Drafting" },
                 { "YER", "Year" },
@@ -88,7 +88,7 @@ namespace CourtApp.Application.Constants
         }
         public static Dictionary<int, int> Year()
         {
-            var year = DateTime.Now.Year+2;
+            var year = DateTime.Now.Year + 2;
             var _year = new Dictionary<int, int>();
             for (int y = year; y >= 1800; y--)
             {
@@ -287,7 +287,7 @@ namespace CourtApp.Application.Constants
                 {"FNSA", "Notice of Stay Application" },
                 {"FNOA", "Notice of Admission" },
                 {"COPA", "Copying Application" },
-                {"FELP", "Enevlop" },                                
+                {"FELP", "Enevlop" },
             };
             return _Str;
         }
@@ -300,21 +300,20 @@ namespace CourtApp.Application.Constants
                 {3, "DropDownList"},
                 {4, "TextArea"},
                 {5, "Numeric"},
-                              
-            };
-            return _Str;
-        }
-        public static Dictionary<int, string> Gender()
-        {
-            var _Str = new Dictionary<int, string>
-            {
-                {1, "Male"},
-                {2, "Female"},
-                {3, "Other"}
-            };
-            return _Str;
-        }
 
+            };
+            return _Str;
+        }
+        public static Dictionary<string, string> Gender()
+        {
+            var _Str = new Dictionary<string, string>
+            {
+                {"M", "Male"},
+                {"F", "Female"},
+                {"O", "Other"}
+            };
+            return _Str;
+        }
     }
 
 }

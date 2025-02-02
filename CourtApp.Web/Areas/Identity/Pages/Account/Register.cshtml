@@ -75,18 +75,12 @@
                                                 <input asp-for="Input.Email" type="email" class="form-control form-control-user" placeholder="@localizer["Email Address"]">
                                                 <small><span asp-validation-for="Input.Email" class="text-danger"></span></small>
                                             </div>
-                                            @* <div class="form-group">
-                                                <input asp-for="Input.Website" type="text" class="form-control form-control-user" id="InputWebsite" placeholder="@localizer["Website"]">
-                                                <small><span asp-validation-for="Input.Website" class="text-danger"></span></small>
-                                            </div> *@
                                             <div class="form-group">
                                                 <select class="form-control select2bs4"
-                                                        asp-for="Input.Gender" placeholder="Select Court Type">
+                                                        asp-for="Input.Gender"
+                                                        asp-items="@Model.Genders"
+                                                        class="form-control form-control-user">
                                                     <option></option>
-                                                    <option value="M">Male</option>
-                                                    <option value="F">Female</option>
-                                                    <option value="O">Other</option>
-
                                                 </select>
                                                 <small><span asp-validation-for="Input.Gender" class="text-danger"></span></small>
                                             </div>
@@ -104,8 +98,18 @@
                                                 @localizer["Register Account"]
                                             </button>
                                         </form>
+                                        <partial name="_Scripts" />
                                         <script type="text/javascript" language=javascript>
                                             $.validator.unobtrusive.parse(document);
+                                             $(document).ready(function () {
+                                                $("#Input_Gender").select2({
+                                                placeholder: "Select a gender",
+                                                theme: "bootstrap4",
+                                                escapeMarkup: function (m) {
+                                                    return m;
+                                                }
+                                                });
+                                            });
                                         </script>
                                         <hr>
                                         <div class="text-center">

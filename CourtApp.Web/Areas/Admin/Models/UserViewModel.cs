@@ -1,6 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 
 namespace CourtApp.Web.Areas.Admin.Models
 {
@@ -16,14 +15,16 @@ namespace CourtApp.Web.Areas.Admin.Models
         public string Website { get; set; }
         public string Telephone { get; set; }
         public string Address { get; set; }
-        //public string Password { get; set; }
-        //public string ConfirmPassword { get; set; }
-
         public byte[] ProfilePicture { get; set; }
         public bool EmailConfirmed { get; set; }
         public string Id { get; set; }
         public string Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DateTime DateOfJoining { get; set; }
+        public SelectList Genders { get; set; }
+        public Guid RoleId { get; set; }
+        public SelectList Roles { get; set; }
+        public LaywerViewModel LawyerInfo { get; set; }
+        public OperatorViewModel OperInfo { get; set; }
     }
 }

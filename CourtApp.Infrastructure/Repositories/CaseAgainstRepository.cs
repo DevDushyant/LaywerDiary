@@ -1,6 +1,5 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
-using CourtApp.Application.CacheKeys;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
@@ -37,12 +36,12 @@ namespace CourtApp.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<Guid> InsertAsync(List<CaseDetailAgainstEntity> Entity)
-        {
-            await _repository.BulkInsert(Entity);
-            await _distributedCache.RemoveAsync(AppCacheKeys.CourtComplexKey);
-            return Entity.Select(s => s.CaseId).FirstOrDefault();
-        }
+        //public async Task<Guid> InsertAsync(List<CaseDetailAgainstEntity> Entity)
+        //{
+        //    await _repository.BulkInsert(Entity);
+        //    await _distributedCache.RemoveAsync(AppCacheKeys.CourtComplexKey);
+        //    return Entity.Select(s => s.CaseId).FirstOrDefault();
+        //}
 
         public Task UpdateAsync(List<CaseDetailAgainstEntity> Entity)
         {

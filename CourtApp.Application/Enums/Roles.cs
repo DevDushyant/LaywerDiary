@@ -2,8 +2,9 @@
 {
     public enum Roles
     {
-        SuperAdmin, 
+        SuperAdmin,
         Lawyer,
-        Operator        
-    }    
+        Clerk,
+        Associate
+    }
 }

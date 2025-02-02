@@ -1,4 +1,6 @@
+using CourtApp.Infrastructure.DbContexts;
 using CourtApp.Infrastructure.Identity.Models;
+using CourtApp.Web.Areas.Admin.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -22,25 +24,23 @@ namespace CourtApp.Web.Areas.Identity.Pages
         public bool IsSuperAdmin { get; set; }
         public string Mobile { get; set; }
         public string Email { get; set; }
-        public string Address { get; set; }
-        public string Enrollment { get; set; }
-        public string State { get; set; }
-        public string CourtType { get; set; }
-        public string District { get; set; }
-        public string Complex { get; set; }
-        public string Court { get; set; }
-        public int PracticeSince { get; set; }
+        public LaywerViewModel LaywerInfo { get; set; }
 
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IdentityContext _identityContext;
 
-        public ProfileModel(UserManager<ApplicationUser> userManager)
+        public ProfileModel(UserManager<ApplicationUser> userManager, IdentityContext _identityContext)
         {
+            this._identityContext = _identityContext;
             _userManager = userManager;
         }
 
         public async Task OnGetAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
+            var usrdt = _identityContext.Demographics
+                .Where(w => w.Id.Equals(user.Id))
+                .FirstOrDefault();
             if (user != null)
             {
                 var roles = await _userManager.GetRolesAsync(user);
@@ -51,9 +51,22 @@ namespace CourtApp.Web.Areas.Identity.Pages
                 LastName = user.LastName;
                 IsActive = user.IsActive;
                 Mobile = user.Mobile;
-                Email = user.Email;                             
+                Email = user.Email;
                 IsSuperAdmin = roles.Contains("SuperAdmin");
                 Roles = roles.ToList();
+                LaywerInfo = new LaywerViewModel()
+                {
+                    ProfInfo = new ProfessionalInfoViewModel
+                    {
+                        EnrollmentNo = usrdt != null ? usrdt.ProfessionalInfo.EnrollmentNo : "",
+                        PracticeSince = usrdt != null ? usrdt.ProfessionalInfo.PracticeSince.ToString() : "",
+                    },
+                    AddressInfo = new AddressInfoViewModel()
+                    {
+
+                    },
+                    WorkLocInfo = new WorkInfoViewModel() { }
+                };
             }
         }
 

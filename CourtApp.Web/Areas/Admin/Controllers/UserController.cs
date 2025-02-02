@@ -1,26 +1,25 @@
 ﻿using CourtApp.Application.Constants;
 using CourtApp.Application.DTOs.Mail;
 using CourtApp.Application.Enums;
+using CourtApp.Application.Interfaces.Shared;
 using CourtApp.Infrastructure.DbContexts;
 using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
-using System.Text.Encodings.Web;
-using System.Text;
-using System.Threading.Tasks;
-using CourtApp.Application.Interfaces.Shared;
 using System.Linq.Dynamic.Core;
-using System;
+using System.Net.Mail;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Admin.Controllers
 {
@@ -69,14 +68,15 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                     .ToListAsync();
             var fnlRs = from ou in OprUser
                         join od in OperDt on ou.Id equals od.Id.ToString()
-                        select new OperatorViewModel
+                        select new UserViewModel
                         {
-                            FullName = ou.FirstName + " " + ou.LastName,
+                            FirstName = ou.FirstName,
+                            LastName = ou.LastName,
                             Email = ou.Email,
                             Mobile = ou.Mobile,
                             EmailConfirmed = ou.EmailConfirmed,
                             ProfilePicture = ou.ProfilePicture,
-                            Id = od.Id,
+                            Id = ou.Id,
                             IsActive = ou.IsActive,
                             DateOfJoining = od.DateOfJoining
                         };
@@ -86,7 +86,16 @@ namespace CourtApp.Web.Areas.Admin.Controllers
         public async Task<IActionResult> OnGetCreate(Guid id)
         {
             if (id == Guid.Empty)
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", new UserViewModel()) });
+            {
+                var model = new UserViewModel();
+                model.Genders = new SelectList(StaticDropDownDictionaries.Gender(), "Key", "Value");
+                var r = new List<string>() { "SuperAdmin", "Operator", "Lawyer" };
+                var roles = _roleManager.Roles
+                    .Where(w => !r.Contains(w.Name))
+                    .Select(s => new { s.Id, s.Name }).ToList().OrderBy(o => o.Name);
+                model.Roles = new SelectList(roles, "Id", "Name");
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", model) });
+            }
             else
             {
                 //var oprDetail = _identityDbContext
@@ -127,12 +136,12 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                     Mobile = userModel.Mobile,
                     Gender = userModel.Gender,
                     DateOfBirth = userModel.DateOfBirth,
-                    UserType = "Operator"                    
+                    UserType = "Operator"
                 };
                 var result = await _userManager.CreateAsync(user, "123Pa$$word!");
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, Roles.Operator.ToString());
+                    await _userManager.AddToRoleAsync(user, Roles.Clerk.ToString());
                     //Link operator to the lawyer
                     var nwopr = new OperatorUser
                     {

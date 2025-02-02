@@ -5,8 +5,6 @@ using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Editing;
-using StackExchange.Redis;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,8 +44,8 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             allPermissions.GetPermissions(typeof(Permissions.CaseHearing), roleId);
             allPermissions.GetPermissions(typeof(Permissions.Titles), roleId);
             allPermissions.GetPermissions(typeof(Permissions.Complex), roleId);
-            allPermissions.GetPermissions(typeof(Permissions.Cadre), roleId);           
-           
+            allPermissions.GetPermissions(typeof(Permissions.Cadre), roleId);
+
             var role = await _roleManager.FindByIdAsync(roleId);
             model.RoleId = roleId;
             var claims = await _roleManager.GetClaimsAsync(role);
@@ -130,7 +128,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                 await _userManager.AddClaimAsync(operatorUser, new System.Security.Claims.Claim("Permission", permission));
             }
 
-            return RedirectToAction("ManagePermissions", new { operatorId=model.OperatorId });
+            return RedirectToAction("ManagePermissions", new { operatorId = model.OperatorId });
         }
 
         private List<string> GetAllPermissions()

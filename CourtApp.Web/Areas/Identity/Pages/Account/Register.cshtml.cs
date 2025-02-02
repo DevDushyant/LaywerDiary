@@ -1,8 +1,8 @@
-﻿using CourtApp.Application.DTOs.Mail;
+﻿using CourtApp.Application.Constants;
+using CourtApp.Application.DTOs.Mail;
 using CourtApp.Application.Enums;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Application.Interfaces.Shared;
-using CourtApp.Domain.Entities.LawyerDiary;
 using CourtApp.Infrastructure.DbContexts;
 using CourtApp.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,7 +20,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Identity.Pages.Account
@@ -32,6 +32,7 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IMailService _emailSender;
         private readonly IdentityContext _identityDbContext;
+
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -49,10 +50,9 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
 
         [BindProperty]
         public InputModel Input { get; set; }
-
         public string ReturnUrl { get; set; }
-
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        public SelectList Genders { get; set; }
 
         public class InputModel
         {
@@ -111,6 +111,7 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            Genders = new SelectList(StaticDropDownDictionaries.Gender(), "Key", "Value");
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -131,7 +132,7 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                     Gender = Input.Gender,
                     DateOfBirth = Input.DateOfBirth,
                     UserType = "Lawyer",
-                    Demographic= new Demographic
+                    Demographic = new Demographic
                     {
                         CreatedBy = "-",
                         ProfessionalInfo = new ProfessionalInfo
@@ -158,7 +159,7 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                     //_identityDbContext.Demographics.Add(UserDemo);
                     //await _identityDbContext.SaveChangesAsync();
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                  
+
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",

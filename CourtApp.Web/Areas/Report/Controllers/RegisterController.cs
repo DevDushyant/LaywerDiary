@@ -1,5 +1,4 @@
-﻿using Azure;
-using CourtApp.Application.Constants;
+﻿using CourtApp.Application.Constants;
 using CourtApp.Application.Features.CaseWork;
 using CourtApp.Application.Features.Registers;
 using CourtApp.Web.Abstractions;
@@ -43,8 +42,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     var response = await _mediator.Send(new InstitutionRegisterQuery()
                     {
                         PageNumber = 1,
-                        PageSize = 100,
-                        FromDt =fromDt,
+                        PageSize = 10000,
+                        FromDt = fromDt,
                         ToDt = toDt,
                         UserId = CurrentUser.Id
                     });
@@ -84,7 +83,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new DisposalRegisterQuery()
             {
                 PageNumber = 1,
-                PageSize = 100,
+                PageSize = 10000,
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
                 UserId = CurrentUser.Id
@@ -113,7 +112,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new CopyingRegisterQuery()
             {
                 PageNumber = 1,
-                PageSize = 100,
+                PageSize = 10000,
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
                 SearchType = s,
@@ -171,7 +170,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new InstitutionRegisterQuery()
             {
                 PageNumber = 1,
-                PageSize = 100,
+                PageSize = 10000,
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
                 UserId = CurrentUser.Id
@@ -209,7 +208,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new OtherRegisterQuery()
             {
                 PageNumber = 1,
-                PageSize = 100,
+                PageSize = 10000,
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
                 UserId = CurrentUser.Id

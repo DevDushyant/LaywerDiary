@@ -1,8 +1,6 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
-using EFCore.BulkExtensions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +22,7 @@ namespace CourtApp.Infrastructure.Repositories
         {
             await _dbContext.Set<T>().AddAsync(entity);
             return entity;
-        }        
+        }
 
         public Task DeleteAsync(T entity)
         {
@@ -42,7 +40,7 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<T> GetByIdAsync(int id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
-        }        
+        }
 
         public async Task<List<T>> GetPagedReponseAsync(int pageNumber, int pageSize)
         {
@@ -59,21 +57,21 @@ namespace CourtApp.Infrastructure.Repositories
             _dbContext.Entry(entity).CurrentValues.SetValues(entity);
             _dbContext.Entry(entity).State = EntityState.Modified;
             return Task.CompletedTask;
-        }        
-
-        public async Task BulkInsert(List<T> entity)
-        {
-            await _dbContext.BulkInsertAsync(entity);
         }
 
-        public async Task BulkUpdate(List<T> entity)
-        {
-            await _dbContext.BulkUpdateAsync(entity);
-        }
+        //public async Task BulkInsert(List<T> entity)
+        //{
+        //    await _dbContext.BulkInsertAsync(entity);
+        //}
 
-        public async Task BulkDelete(List<T> entity)
-        {
-            await _dbContext.BulkDeleteAsync(entity);
-        }
+        //public async Task BulkUpdate(List<T> entity)
+        //{
+        //    await _dbContext.BulkUpdateAsync(entity);
+        //}
+
+        //public async Task BulkDelete(List<T> entity)
+        //{
+        //    await _dbContext.BulkDeleteAsync(entity);
+        //}
     }
 }
