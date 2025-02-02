@@ -1,11 +1,12 @@
-using AspNetCoreHero.ToastNotification;
-using AspNetCoreHero.ToastNotification.Extensions;
 using CourtApp.Application.Extensions;
 using CourtApp.Infrastructure.Extensions;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Extensions;
 using CourtApp.Web.Permission;
 using CourtApp.Web.Services;
+using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
+using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -16,8 +17,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using System;
 using System.Reflection;
+using System;
+using CourtApp.Web.Areas.LawyerDiary.Models;
+
 namespace CourtApp.Web
 {
     public class Startup
@@ -48,13 +51,13 @@ namespace CourtApp.Web
             services.AddRepositories();
             services.AddSharedInfrastructure(_configuration);
             services.AddMultiLingualSupport();
-
+            
             services.AddFluentValidationAutoValidation();
-            //Syncfusion.Licensing.SyncfusionLicenseProvider
-            //    .RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWX5eeXRXRWJfV0RxXEU=");
+            Syncfusion.Licensing.SyncfusionLicenseProvider
+                .RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWX5eeXRXRWJfV0RxXEU=");
             services.AddControllersWithViews().AddFluentValidation(fv =>
             {
-                fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+                fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());                
             });
             services.AddMvc().AddJsonOptions(options =>
              {
@@ -86,20 +89,20 @@ namespace CourtApp.Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-
+                
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{area=Dashboard}/{controller=Home}/{action=Index}/{id?}");
 
-
+                
                 endpoints.MapRazorPages();
-
+                
             });
         }
     }

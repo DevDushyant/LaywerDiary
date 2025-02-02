@@ -64,9 +64,9 @@ namespace CourtApp.Infrastructure.Repositories
             await _distributedCache.RemoveAsync(CaseTitleCacheKeys.GetKey(CaseTtitle.Id));
         }
 
-        //public async Task BulkInsertAsync(List<CaseTitleEntity> titles)
-        //{
-        //    await _repository.BulkInsert(titles);
-        //}
+        public async Task BulkInsertAsync(List<CaseTitleEntity> titles)
+        {
+            await _repository.BulkInsert(titles);
+        }
     }
 }

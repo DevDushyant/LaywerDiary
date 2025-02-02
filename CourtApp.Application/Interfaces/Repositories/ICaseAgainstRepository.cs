@@ -1,7 +1,9 @@
-﻿using CourtApp.Domain.Entities.CaseDetails;
+﻿using CourtApp.Application.Features.Case;
+using CourtApp.Domain.Entities.CaseDetails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CourtApp.Application.Interfaces.Repositories
@@ -11,7 +13,7 @@ namespace CourtApp.Application.Interfaces.Repositories
         IQueryable<CaseDetailAgainstEntity> Entities { get; }
         Task<List<CaseDetailAgainstEntity>> GetListAsync();
         Task<CaseDetailAgainstEntity> GetByIdAsync(Guid Id);
-        //Task<Guid> InsertAsync(List<CaseDetailAgainstEntity> Entity);
+        Task<Guid> InsertAsync(List<CaseDetailAgainstEntity> Entity);
         Task UpdateAsync(List<CaseDetailAgainstEntity> Entity);
         Task DeleteAsync(CaseDetailAgainstEntity Entity);
     }

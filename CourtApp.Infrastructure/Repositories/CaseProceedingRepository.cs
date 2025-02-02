@@ -1,12 +1,13 @@
-﻿using CourtApp.Application.CacheKeys;
-using CourtApp.Application.Interfaces.Repositories;
+﻿using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
+using CourtApp.Application.CacheKeys;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CourtApp.Application.Enums;
 
 
 namespace CourtApp.Infrastructure.Repositories
@@ -76,8 +77,8 @@ namespace CourtApp.Infrastructure.Repositories
             var data = await _repository
                  .Entities
                  .Include(t => t.ProcWork)
-                 .Include(s => s.Case).ThenInclude(t => t.CaseType)
-                 .Include(s => s.Case).ThenInclude(t => t.CourtBench)
+                 .Include(s => s.Case).ThenInclude(t=>t.CaseType)
+                 .Include(s => s.Case).ThenInclude(t=>t.CourtBench)
 
                  .ToListAsync();
             return data;
@@ -95,18 +96,18 @@ namespace CourtApp.Infrastructure.Repositories
             return data;
         }
 
-        //public async Task<Guid> InsertAsync(List<CaseProcedingEntity> Entity)
-        //{
-        //    await _repository.BulkInsert(Entity);
-        //    await _distributedCache.RemoveAsync(AppCacheKeys.CourtComplexKey);
-        //    return Entity.Select(s => s.CaseId).FirstOrDefault();
-        //}
+        public async Task<Guid> InsertAsync(List<CaseProcedingEntity> Entity)
+        {
+            await _repository.BulkInsert(Entity);
+            await _distributedCache.RemoveAsync(AppCacheKeys.CourtComplexKey);
+            return Entity.Select(s => s.CaseId).FirstOrDefault();
+        }
 
         public async Task UpdateAsync(CaseProcedingEntity Entity)
         {
             await _repository.UpdateAsync(Entity);
             await _distributedCache.RemoveAsync(AppCacheKeys.ProcHeadKey);
-
+            
         }
     }
 }

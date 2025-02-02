@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Azure;
+using System.Collections.Generic;
 
 namespace CourtApp.Web.Models
 {
