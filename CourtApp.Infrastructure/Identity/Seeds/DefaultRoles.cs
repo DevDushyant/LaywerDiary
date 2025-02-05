@@ -12,8 +12,7 @@ namespace CourtApp.Infrastructure.Identity.Seeds
             //Seed Roles
             await roleManager.CreateAsync(new IdentityRole(Roles.SuperAdmin.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.Lawyer.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Roles.Clerk.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Roles.Associate.ToString()));
+            await roleManager.CreateAsync(new IdentityRole(Roles.Operator.ToString()));           
         }
     }
 }

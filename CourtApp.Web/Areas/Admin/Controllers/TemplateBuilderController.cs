@@ -2,6 +2,8 @@
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
 using Microsoft.AspNetCore.Mvc;
+using Syncfusion.DocIO;
+using Syncfusion.DocIO.DLS;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -84,9 +86,9 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             else
             {
                 List<string> Tags = GetTags(ViewModel.TemplateBody);
-                //string FilePath = SaveTemplate(ViewModel);
-                //string docPath = FilePath.Split(';')[0];
-                //string docName = FilePath.Split(';')[1];
+                string FilePath = SaveTemplate(ViewModel);
+                string docPath = FilePath.Split(';')[0];
+                string docName = FilePath.Split(';')[1];
                 List<TemplateTags> templateTags = new List<TemplateTags>();
                 foreach (string tag in Tags)
                     templateTags.Add(new TemplateTags() { Tag = tag });
@@ -134,46 +136,46 @@ namespace CourtApp.Web.Areas.Admin.Controllers
         }
 
         #region Template Save and Read
-        //private string SaveTemplate(TemplateViewModel ViewModel)
-        //{
-        //    // Create a new Word document
-        //    WordDocument document = new WordDocument();
-        //    IWSection section = document.AddSection();
-        //    IWParagraph paragraph = section.AddParagraph();
-        //    paragraph.AppendText(ViewModel.TemplateBody.Trim());
-        //    // Save the document to the wwwroot folder
-        //    string fileName = ViewModel.TemplateName + ".docx";
-        //    string folderPath = Path.Combine("wwwroot/documents", "Templates");
-        //    string wwwRootPath = Path.Combine(Directory.GetCurrentDirectory(), folderPath);
-        //    // Check if the directory exists, if not, create it
-        //    if (!Directory.Exists(wwwRootPath))
-        //    {
-        //        Directory.CreateDirectory(wwwRootPath);
-        //    }
-        //    string filePath = Path.Combine(wwwRootPath, ViewModel.TemplateName + ".docx");
-        //    try
-        //    {
-        //        // Check if file exists with its full path
-        //        if (System.IO.File.Exists(filePath))
-        //        {
-        //            // If file found, delete it
-        //            System.IO.File.Delete(filePath);
-        //            Console.WriteLine("File deleted.");
-        //        }
-        //        else Console.WriteLine("File not found");
-        //    }
-        //    catch (IOException ioExp)
-        //    {
-        //        Console.WriteLine(ioExp.Message);
-        //    }
-        //    using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-        //    {
-        //        document.Save(fileStream, FormatType.Docx);
+        private string SaveTemplate(TemplateViewModel ViewModel)
+        {
+            // Create a new Word document
+            WordDocument document = new WordDocument();
+            IWSection section = document.AddSection();
+            IWParagraph paragraph = section.AddParagraph();
+            paragraph.AppendText(ViewModel.TemplateBody.Trim());
+            // Save the document to the wwwroot folder
+            string fileName = ViewModel.TemplateName + ".docx";
+            string folderPath = Path.Combine("wwwroot/documents", "Templates");
+            string wwwRootPath = Path.Combine(Directory.GetCurrentDirectory(), folderPath);
+            // Check if the directory exists, if not, create it
+            if (!Directory.Exists(wwwRootPath))
+            {
+                Directory.CreateDirectory(wwwRootPath);
+            }
+            string filePath = Path.Combine(wwwRootPath, ViewModel.TemplateName + ".docx");
+            try
+            {
+                // Check if file exists with its full path
+                if (System.IO.File.Exists(filePath))
+                {
+                    // If file found, delete it
+                    System.IO.File.Delete(filePath);
+                    Console.WriteLine("File deleted.");
+                }
+                else Console.WriteLine("File not found");
+            }
+            catch (IOException ioExp)
+            {
+                Console.WriteLine(ioExp.Message);
+            }
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            {
+                document.Save(fileStream, FormatType.Docx);
 
-        //    }
-        //    document.Close();
-        //    return folderPath + ";" + fileName;
-        //}
+            }
+            document.Close();
+            return folderPath + ";" + fileName;
+        }
 
         private List<string> GetTags(string TemplateBody)
         {

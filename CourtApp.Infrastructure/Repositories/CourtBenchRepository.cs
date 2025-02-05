@@ -1,11 +1,15 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Application.CacheKeys;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using static CourtApp.Application.Constants.Permissions;
+
 namespace CourtApp.Infrastructure.Repositories
 {
     public class CourtBenchRepository : ICourtBenchRepository
@@ -42,12 +46,12 @@ namespace CourtApp.Infrastructure.Repositories
             return _repository.Entities.ToListAsync();
         }
 
-        //public async Task<Guid> InsertAsync(List<CourtBenchEntity> Entity)
-        //{
-        //    await _repository.BulkInsert(Entity);
-        //    await _distributedCache.RemoveAsync(AppCacheKeys.CourtComplexKey);
-        //    return Entity.Select(s => s.Id).FirstOrDefault();
-        //}
+        public async Task<Guid> InsertAsync(List<CourtBenchEntity> Entity)
+        {
+            await _repository.BulkInsert(Entity);
+            await _distributedCache.RemoveAsync(AppCacheKeys.CourtComplexKey);
+            return Entity.Select(s => s.Id).FirstOrDefault();
+        }
 
         public Task UpdateAsync(List<CourtBenchEntity> Entity)
         {

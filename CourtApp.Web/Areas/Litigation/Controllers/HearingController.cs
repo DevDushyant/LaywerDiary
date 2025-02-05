@@ -5,6 +5,7 @@ using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,9 +33,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 CallingFrm = "HTD",
                 HearingDate = Convert.ToDateTime(seleDate),
-                UserId = CurrentUser.Id,
-                PageSize = 10000,
-                PageNumber = 1
+                UserId = CurrentUser.Id
             });
             TempData["SelectedDate"] = seleDate;
             if (response.Succeeded)

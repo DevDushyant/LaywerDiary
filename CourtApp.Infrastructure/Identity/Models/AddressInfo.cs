@@ -1,4 +1,10 @@
-﻿namespace CourtApp.Infrastructure.Identity.Models
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CourtApp.Infrastructure.Identity.Models
 {
     public class AddressInfo
     {
