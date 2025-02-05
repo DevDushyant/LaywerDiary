@@ -41,8 +41,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Syncfusion.DocIO;
-using Syncfusion.DocIO.DLS;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -577,23 +575,23 @@ namespace CourtApp.Web.Abstractions
         #endregion
 
         #region Read File
-        public string ReadTemplate(string fPath, string fName)
-        {
-            string DirPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", "Templates");
-            string filePath = Path.Combine(DirPath, fName);
-            if (!System.IO.File.Exists(filePath))
-                return "File Not found";
-            string fileContent = string.Empty;
-            using (FileStream inputFileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                // Load the file stream into a Word document
-                using (WordDocument document = new WordDocument(inputFileStream, FormatType.Automatic))
-                {
-                    fileContent = document.GetText();
-                }
-            }
-            return fileContent;
-        }
+        //public string ReadTemplate(string fPath, string fName)
+        //{
+        //    string DirPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documents", "Templates");
+        //    string filePath = Path.Combine(DirPath, fName);
+        //    if (!System.IO.File.Exists(filePath))
+        //        return "File Not found";
+        //    string fileContent = string.Empty;
+        //    using (FileStream inputFileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        //    {
+        //        // Load the file stream into a Word document
+        //        using (WordDocument document = new WordDocument(inputFileStream, FormatType.Automatic))
+        //        {
+        //            fileContent = document.GetText();
+        //        }
+        //    }
+        //    return fileContent;
+        //}
         public byte[] ConvertHtmlToWord(string htmlContent)
         {
             using (MemoryStream memoryStream = new MemoryStream())
@@ -607,7 +605,7 @@ namespace CourtApp.Web.Abstractions
 
                     // Initialize HtmlConverter and convert HTML to Word
                     HtmlConverter converter = new HtmlConverter(mainPart);
-                    converter.ParseHtml(htmlContent);
+                    converter.ParseBody(htmlContent);
 
                     // Apply right alignment and indentation
                     // Apply specific formatting based on the document's legal style

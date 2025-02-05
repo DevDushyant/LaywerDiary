@@ -1,26 +1,23 @@
 ﻿using CourtApp.Application.Constants;
 using CourtApp.Application.DTOs.Mail;
 using CourtApp.Application.Enums;
+using CourtApp.Application.Interfaces.Shared;
 using CourtApp.Infrastructure.DbContexts;
 using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
-using System.Text.Encodings.Web;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using CourtApp.Application.Interfaces.Shared;
-using System.Linq.Dynamic.Core;
-using System;
 
 namespace CourtApp.Web.Areas.Admin.Controllers
 {
@@ -127,7 +124,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                     Mobile = userModel.Mobile,
                     Gender = userModel.Gender,
                     DateOfBirth = userModel.DateOfBirth,
-                    UserType = "Operator"                    
+                    UserType = "Operator"
                 };
                 var result = await _userManager.CreateAsync(user, "123Pa$$word!");
                 if (result.Succeeded)

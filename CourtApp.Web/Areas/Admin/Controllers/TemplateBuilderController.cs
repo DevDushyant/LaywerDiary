@@ -2,11 +2,8 @@
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
 using Microsoft.AspNetCore.Mvc;
-using Syncfusion.DocIO;
-using Syncfusion.DocIO.DLS;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -76,7 +73,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                     TemplateName = ViewModel.TemplateName,
                     //TemplatePath = "documents/Templates/",
                     Tags = templateTags,
-                    TemplateBody=ViewModel.TemplateBody
+                    TemplateBody = ViewModel.TemplateBody
                 });
                 if (result.Succeeded)
                     return Json(new { success = true, message = "Template info saved successfully." });
@@ -86,15 +83,15 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             else
             {
                 List<string> Tags = GetTags(ViewModel.TemplateBody);
-                string FilePath = SaveTemplate(ViewModel);
-                string docPath = FilePath.Split(';')[0];
-                string docName = FilePath.Split(';')[1];
+                //string FilePath = SaveTemplate(ViewModel);
+                //string docPath = FilePath.Split(';')[0];
+                //string docName = FilePath.Split(';')[1];
                 List<TemplateTags> templateTags = new List<TemplateTags>();
                 foreach (string tag in Tags)
                     templateTags.Add(new TemplateTags() { Tag = tag });
                 var result = await _mediator.Send(new UpdateTemplateInfoCommand()
                 {
-                    Id =id,
+                    Id = id,
                     TemplateName = ViewModel.TemplateName,
                     //TemplatePath = "documents/Templates/",
                     Tags = templateTags,
@@ -105,7 +102,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                 else
                     return Json(new { success = false, message = "Failed to save template info." });
 
-            }           
+            }
         }
 
         [HttpPost]
@@ -136,46 +133,46 @@ namespace CourtApp.Web.Areas.Admin.Controllers
         }
 
         #region Template Save and Read
-        private string SaveTemplate(TemplateViewModel ViewModel)
-        {
-            // Create a new Word document
-            WordDocument document = new WordDocument();
-            IWSection section = document.AddSection();
-            IWParagraph paragraph = section.AddParagraph();
-            paragraph.AppendText(ViewModel.TemplateBody.Trim());
-            // Save the document to the wwwroot folder
-            string fileName = ViewModel.TemplateName + ".docx";
-            string folderPath = Path.Combine("wwwroot/documents", "Templates");
-            string wwwRootPath = Path.Combine(Directory.GetCurrentDirectory(), folderPath);
-            // Check if the directory exists, if not, create it
-            if (!Directory.Exists(wwwRootPath))
-            {
-                Directory.CreateDirectory(wwwRootPath);
-            }
-            string filePath = Path.Combine(wwwRootPath, ViewModel.TemplateName + ".docx");
-            try
-            {
-                // Check if file exists with its full path
-                if (System.IO.File.Exists(filePath))
-                {
-                    // If file found, delete it
-                    System.IO.File.Delete(filePath);
-                    Console.WriteLine("File deleted.");
-                }
-                else Console.WriteLine("File not found");
-            }
-            catch (IOException ioExp)
-            {
-                Console.WriteLine(ioExp.Message);
-            }
-            using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-            {
-                document.Save(fileStream, FormatType.Docx);
+        //private string SaveTemplate(TemplateViewModel ViewModel)
+        //{
+        //    // Create a new Word document
+        //    WordDocument document = new WordDocument();
+        //    IWSection section = document.AddSection();
+        //    IWParagraph paragraph = section.AddParagraph();
+        //    paragraph.AppendText(ViewModel.TemplateBody.Trim());
+        //    // Save the document to the wwwroot folder
+        //    string fileName = ViewModel.TemplateName + ".docx";
+        //    string folderPath = Path.Combine("wwwroot/documents", "Templates");
+        //    string wwwRootPath = Path.Combine(Directory.GetCurrentDirectory(), folderPath);
+        //    // Check if the directory exists, if not, create it
+        //    if (!Directory.Exists(wwwRootPath))
+        //    {
+        //        Directory.CreateDirectory(wwwRootPath);
+        //    }
+        //    string filePath = Path.Combine(wwwRootPath, ViewModel.TemplateName + ".docx");
+        //    try
+        //    {
+        //        // Check if file exists with its full path
+        //        if (System.IO.File.Exists(filePath))
+        //        {
+        //            // If file found, delete it
+        //            System.IO.File.Delete(filePath);
+        //            Console.WriteLine("File deleted.");
+        //        }
+        //        else Console.WriteLine("File not found");
+        //    }
+        //    catch (IOException ioExp)
+        //    {
+        //        Console.WriteLine(ioExp.Message);
+        //    }
+        //    using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+        //    {
+        //        document.Save(fileStream, FormatType.Docx);
 
-            }
-            document.Close();
-            return folderPath + ";" + fileName;
-        }
+        //    }
+        //    document.Close();
+        //    return folderPath + ";" + fileName;
+        //}
 
         private List<string> GetTags(string TemplateBody)
         {
@@ -199,7 +196,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             ViewModel.Forms = await GetForms();
             if (response.Succeeded)
             {
-                var tempFields = response.Data.Tags.Where(w=>! w.Tag.Contains("DB"));
+                var tempFields = response.Data.Tags.Where(w => !w.Tag.Contains("DB"));
                 var mpf = new List<Mapping>();
                 foreach (var field in tempFields)
                     mpf.Add(new Mapping() { Tag = field.Tag });

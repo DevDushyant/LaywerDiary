@@ -1,14 +1,12 @@
-﻿using CourtApp.Application.Enums;
-using CourtApp.Application.Features.BookMasters.Query;
-using CourtApp.Application.Features.WorkMaster;
+﻿using CourtApp.Application.Features.WorkMaster;
 using CourtApp.Application.Features.WorkMasterSub;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers
@@ -23,7 +21,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
         public async Task<IActionResult> LoadAllAsync()
         {
-            var response = await _mediator.Send(new GWorkSubMstQuery() { PageNumber=1,PageSize=1000});
+            var response = await _mediator.Send(new GWorkSubMstQuery() { PageNumber = 1, PageSize = 1000 });
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<WorkMasterSubViewModel>>(response.Data);
@@ -43,9 +41,9 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
             else
             {
-                var response = await _mediator.Send(new GWorkSubMstByIdQuery{ Id = Id });
+                var response = await _mediator.Send(new GWorkSubMstByIdQuery { Id = Id });
                 if (response.Succeeded)
-                {                    
+                {
                     var brandViewModel = _mapper.Map<WorkMasterSubViewModel>(response.Data);
                     var wMasterViewModel = _mapper.Map<List<WorkMasterViewModel>>(wMasterList.Data);
                     brandViewModel.WMasters = new SelectList(wMasterViewModel, nameof(WorkMasterViewModel.Id), nameof(WorkMasterViewModel.Work_En), null, null);
@@ -64,7 +62,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 {
                     try
                     {
-                        var cmd = _mapper.Map<CreateWorkSubMstCommand>(viewModel);                       
+                        var cmd = _mapper.Map<CreateWorkSubMstCommand>(viewModel);
                         var result = await _mediator.Send(cmd);
                         if (result.Succeeded)
                         {
@@ -83,14 +81,15 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     }
                     catch (Exception ex)
                     {
-
+                        Console.WriteLine(ex.Message);
+                        _logger.LogError(ex.Message);
                     }
                 }
                 else
                 {
-                    var cmd = _mapper.Map<UpdateWorkSubMstCommand>(viewModel);                    
+                    var cmd = _mapper.Map<UpdateWorkSubMstCommand>(viewModel);
                     var result = await _mediator.Send(cmd);
-                    if (result.Succeeded)                   
+                    if (result.Succeeded)
                         _notify.Information($"Work Master with ID {result.Data} Updated.");
                 }
                 var response = await _mediator.Send(new GWorkSubMstQuery() { PageNumber = 1, PageSize = 1000 });
@@ -118,7 +117,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         [HttpPost]
         public async Task<JsonResult> OnPostDelete(Guid id)
         {
-            var deleteCommand = await _mediator.Send(new DeleteWorkSubMstCommand { Id = id } );
+            var deleteCommand = await _mediator.Send(new DeleteWorkSubMstCommand { Id = id });
             if (deleteCommand.Succeeded)
             {
                 _notify.Information($"Work Master Sub with ID {id} Deleted.");

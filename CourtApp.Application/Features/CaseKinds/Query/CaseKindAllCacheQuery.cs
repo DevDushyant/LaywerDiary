@@ -1,23 +1,21 @@
-﻿using System;
-using CourtApp.Application.Interfaces.CacheRepositories;
-using AspNetCoreHero.Results;
+﻿using AspNetCoreHero.Results;
 using AutoMapper;
-using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using KT3Core.Areas.Global.Classes;
-using System.Linq.Expressions;
-using System.Linq.Dynamic.Core;
+using MediatR;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using CourtApp.Application.Interfaces.Repositories;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.CaseKinds.Query
 {
     public class CaseKindAllCacheQuery : IRequest<Result<List<CaseKindCacheQueryResponse>>>
     {
-        public Guid CourtTypeId { get; set; }       
+        public Guid CourtTypeId { get; set; }
     }
 
     public class CaseKindAllCacheQueryCommandHandler : IRequestHandler<CaseKindAllCacheQuery, Result<List<CaseKindCacheQueryResponse>>>
@@ -30,16 +28,16 @@ namespace CourtApp.Application.Features.CaseKinds.Query
             this._repository = _repository;
             this._mapper = _mapper;
         }
-        public  Task<Result<List<CaseKindCacheQueryResponse>>> Handle(CaseKindAllCacheQuery request, CancellationToken cancellationToken)
+        public Task<Result<List<CaseKindCacheQueryResponse>>> Handle(CaseKindAllCacheQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<CaseKindEntity, CaseKindCacheQueryResponse>> expression = e => new CaseKindCacheQueryResponse
             {
-                Id=e.Id,
+                Id = e.Id,
                 CourtType = e.CourtType.CourtType,
                 CaseKind = e.CaseKind
             };
             var predicate = PredicateBuilder.True<CaseKindEntity>();
-           
+
             if (request.CourtTypeId != Guid.Empty)
                 predicate = predicate.And(b => b.CourtType.Id == request.CourtTypeId);
 

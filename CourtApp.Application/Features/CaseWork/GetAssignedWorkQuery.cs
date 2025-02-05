@@ -1,20 +1,12 @@
 ﻿using AspNetCoreHero.Results;
 using CourtApp.Application.DTOs.CaseWorking;
-using CourtApp.Application.DTOs.ProceedingHead;
-using CourtApp.Application.Extensions;
-using CourtApp.Application.Features.CaseKinds.Query;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Domain.Entities.CaseDetails;
-using KT3Core.Areas.Global.Classes;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace CourtApp.Application.Features.CaseWork
 {
@@ -52,7 +44,7 @@ namespace CourtApp.Application.Features.CaseWork
                     a.CaseDetail = " (" + c.Case.CaseNo + "/" + c.Case.CaseYear + "/" + c.Case.CaseType.Name_En + "/" + c.Case.CourtBench.CourtBench_En + ") /" + c.Case.FirstTitle + " " + c.Case.SecondTitle;
                     a.AWorks = new List<AssignedWork>();
                     a.LastWorkingDate = c.ProcWork.LastWorkingDate != null ? c.ProcWork.LastWorkingDate.Value : default(DateTime);
-                    foreach (var w in c.ProcWork.Works.Where(w=>w.WorkId!=Guid.Empty).Where(s => s.Status == 0))
+                    foreach (var w in c.ProcWork.Works.Where(w => w.WorkId != Guid.Empty).Where(s => s.Status == 0))
                     {
                         AssignedWork aw = new AssignedWork();
                         aw.Id = c.Id;
@@ -64,13 +56,13 @@ namespace CourtApp.Application.Features.CaseWork
                     awc.Add(a);
                 }
                 var workc = awc.Where(w => w.AWorks.Count > 0).ToList();
-                var works = workc.SelectMany(s => s.AWorks).Where(w=>w.WorkId!=Guid.Empty);                
+                var works = workc.SelectMany(s => s.AWorks).Where(w => w.WorkId != Guid.Empty);
                 if (works.Count() > 0)
-                    return Result<List<AssignedWorkToCaseResponse>>.Success(workc.OrderByDescending(o=>o.LastWorkingDate).ToList()); 
+                    return Result<List<AssignedWorkToCaseResponse>>.Success(workc.OrderByDescending(o => o.LastWorkingDate).ToList());
                 else
                     return Result<List<AssignedWorkToCaseResponse>>.Success("There is no work allocated");
             }
-            return Result<List<AssignedWorkToCaseResponse>>.Fail("There is no record");            
+            return Result<List<AssignedWorkToCaseResponse>>.Fail("There is no record");
         }
     }
 }

@@ -2,7 +2,6 @@
 using CourtApp.Application.Enums;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Application.Interfaces.Shared;
-using CourtApp.Domain.Entities.LawyerDiary;
 using CourtApp.Infrastructure.DbContexts;
 using CourtApp.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -19,7 +18,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Identity.Pages.Account
@@ -131,7 +129,7 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                     Gender = Input.Gender,
                     DateOfBirth = Input.DateOfBirth,
                     UserType = "Lawyer",
-                    Demographic= new Demographic
+                    Demographic = new Demographic
                     {
                         CreatedBy = "-",
                         ProfessionalInfo = new ProfessionalInfo
@@ -146,19 +144,9 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
                     await _userManager.AddToRoleAsync(user, Roles.Lawyer.ToString());
-                    //var UserDemo = new Demographic
-                    //{
-                    //    Id=Guid.Parse(user.Id),
-                    //    ProfessionalInfo = new ProfessionalInfo
-                    //    {
-                    //        EnrollmentNo = Input.EnrollmentNo,
-                    //        BarAssociationNumber= Input.EnrollmentNo
-                    //    }
-                    //};
-                    //_identityDbContext.Demographics.Add(UserDemo);
-                    //await _identityDbContext.SaveChangesAsync();
+
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                  
+
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",

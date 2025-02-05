@@ -1,5 +1,4 @@
-﻿using Azure;
-using CourtApp.Application.Constants;
+﻿using CourtApp.Application.Constants;
 using CourtApp.Application.Features.CaseWork;
 using CourtApp.Application.Features.Registers;
 using CourtApp.Web.Abstractions;
@@ -44,7 +43,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     {
                         PageNumber = 1,
                         PageSize = 100,
-                        FromDt =fromDt,
+                        FromDt = fromDt,
                         ToDt = toDt,
                         UserId = CurrentUser.Id
                     });

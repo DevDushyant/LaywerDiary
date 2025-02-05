@@ -6,7 +6,6 @@ using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using System;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
