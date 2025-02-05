@@ -1,17 +1,12 @@
 ﻿using AspNetCoreHero.Results;
-using CourtApp.Application.DTOs.CaseWorking;
 using CourtApp.Application.DTOs.FormPrint;
-using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -89,8 +84,8 @@ namespace CourtApp.Application.Features.FormPrint
                            //             ? cd.CaseProcEntities.Where(d => d.Abbreviation == "DISP")
                            //             .Select(m => m.LastModifiedOn)
                            //             .FirstOrDefault().Value.ToString("dd/MM/yyyy") : "",
-                           LawyerName = cd.Client != null ? cd.Client.OppositCounsel.FirstName+" "+cd.Client.OppositCounsel.LastName : "",
-                           LawyerAddress = cd.Client != null ? cd.Client.OppositCounsel.Address:"",
+                           //LawyerName = cd.Client != null ? cd.Client.OppositCounsel.FirstName+" "+cd.Client.OppositCounsel.LastName : "",
+                           //LawyerAddress = cd.Client != null ? cd.Client.OppositCounsel.Address : "",
                            NextDate = cd.NextDate.HasValue && cd.CaseProcEntities.Any()
                                        ? cd.CaseProcEntities.Max(p => p.NextDate.HasValue ? p.NextDate.Value : DateTime.MinValue) > cd.NextDate.Value
                                        ? cd.CaseProcEntities.Max(p => p.NextDate.HasValue ? p.NextDate.Value : DateTime.MinValue).ToString("dd/MM/yyyy")

@@ -3,12 +3,12 @@
     <thead>
         <tr>
             <th style="width:5%">Sno.</th>
-            <th style="width:25%">Name</th>
+            <th style="width:45%">Name</th>
             <th style="width:10%">Mobile</th>
             <th style="width:10%">Email</th>
-            <th style="width:20%">Appearence</th>
+            <th style="width:25%">Appearence</th>
             @* <th style="width:15%">Office Email</th> *@
-            <th style="width:25%">Opp. Counsel</th>
+            @* <th style="width:25%">Opp. Counsel</th> *@
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Delete)).Result.Succeeded ||
             (AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Edit)).Result.Succeeded)
             {
@@ -41,9 +41,9 @@
                 @* <td>
                     @bt.OffEmail
                 </td> *@
-                <td>
+                @* <td>
                     @bt.Councel
-                </td>
+                </td> *@
 
                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Delete)).Result.Succeeded ||
                (AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Edit)).Result.Succeeded)

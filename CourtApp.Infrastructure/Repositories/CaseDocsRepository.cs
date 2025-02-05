@@ -1,11 +1,7 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CourtApp.Infrastructure.Repositories
@@ -22,8 +18,12 @@ namespace CourtApp.Infrastructure.Repositories
 
         public async Task<Guid> SaveCaseDocAsync(CaseDocsEntity entity)
         {
-            await _repository.AddAsync(entity);           
+            await _repository.AddAsync(entity);
             return entity.Id;
+        }
+        public async Task DeleteAsync(CaseDocsEntity objEntity)
+        {
+            await _repository.DeleteAsync(objEntity);
         }
     }
 }

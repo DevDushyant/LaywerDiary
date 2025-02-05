@@ -30,6 +30,13 @@ namespace CourtApp.Infrastructure.Repositories
             return Entity.Id;
         }
 
+        public async Task<Guid> AddAsyncRange(List<CaseProcedingEntity> Entity)
+        {
+            await _repository.AddRange(Entity);
+            await _distributedCache.RemoveAsync(AppCacheKeys.ProcHeadKey);
+            return Entity.FirstOrDefault().CaseId;
+        }
+
         public Task DeleteAsync(CaseProcedingEntity Entity)
         {
             throw new NotImplementedException();

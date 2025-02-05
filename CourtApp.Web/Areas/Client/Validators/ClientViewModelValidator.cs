@@ -1,6 +1,5 @@
 ﻿using CourtApp.Web.Areas.Client.Model;
 using FluentValidation;
-using System.Text.RegularExpressions;
 
 namespace CourtApp.Web.Areas.Client.Validators
 {
@@ -30,13 +29,13 @@ namespace CourtApp.Web.Areas.Client.Validators
                .NotEmpty().WithMessage("{PropertyName} is required.")
                .NotNull();
 
-            RuleFor(p => p.FeeDetail.FeeSettled)
-               .NotEmpty().WithMessage("{PropertyName} is required.")
-               .NotNull();               
+            //RuleFor(p => p.FeeDetail.FeeSettled)
+            //   .NotEmpty().WithMessage("{PropertyName} is required.")
+            //   .NotNull();               
 
-            RuleFor(p => p.FeeDetail.FeeAdvance)
-               .NotEmpty().WithMessage("{PropertyName} is required.")
-               .NotNull();
+            //RuleFor(p => p.FeeDetail.FeeAdvance)
+            //   .NotEmpty().WithMessage("{PropertyName} is required.")
+            //   .NotNull();
 
         }
     }

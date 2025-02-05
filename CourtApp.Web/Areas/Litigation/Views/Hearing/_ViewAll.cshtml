@@ -16,6 +16,7 @@
                                 <th>Stage</th>
                                 <th>Title</th>
                                 <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -59,6 +60,11 @@
                                         <input type="hidden" asp-for="@Model.CaseList[i].CaseTitle" />
                                         @Model.CaseList[i].CaseTitle
                                     </td>
+                                    <td>
+                                        <div class="form-check m-1">
+                                            <input asp-for="@Model.CaseList[i].Selected" class="form-check-input" />
+                                        </div>
+                                    </td>
                                     <td style="width:6%">
                                         <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@Model.CaseList[i].Id', 'See History')" title="Case History"> <i class="fa fa-history"></i></a>
                                         <a onclick="jQueryModalGet('/Litigation/hearing/CaseProceeding?CaseId=@Model.CaseList[i].Id', 'Case Proceeding')" title="Add Proceeding/work detail for the case"> <i class="fa fa-plus-square"></i></a>
@@ -74,6 +80,24 @@
 </div>
 <script>
     $(document).ready(function () {
-        JqueryDataTable('tblTHearingCaseDetail','Today Case Hearing','0,1,2,3,4,5,6');
+        $('#tblTHearingCaseDetail').DataTable({
+            language: {"emptyTable": "There are no pending works!"},
+            dom: 'Bfrtip',// B (buttons), f (filter), t (table), p (pagination)
+            buttons:[                    
+                    {
+                        extend: 'excelHtml5',
+                        text: 'Export',
+                        title: 'Today Case Hearing',
+                        filename: function () {
+                            var date = new Date();
+                            return 'Today Case Hearing' +"_"+ date.toISOString().split('T')[0];
+                        },
+                        exportOptions: {
+                            columns: [0,1,2,3,4,5,6]
+                        }
+                    }
+            ]
+        });
     });
+       
 </script>

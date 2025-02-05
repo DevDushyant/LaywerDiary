@@ -1,13 +1,11 @@
-using System;
+using AspNetCoreHero.Results;
+using AutoMapper;
+using CourtApp.Application.Interfaces.Repositories;
+using MediatR;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AspNetCoreHero.Results;
-using AutoMapper;
-using CourtApp.Application.Interfaces.CacheRepositories;
-using CourtApp.Application.Interfaces.Repositories;
-using MediatR;
 
 namespace CourtApp.Application.Features.Queries.Districts
 {
@@ -19,13 +17,13 @@ namespace CourtApp.Application.Features.Queries.Districts
     public class GetDistrictQueryHandler : IRequestHandler<GetDistrictQuery, Result<List<GetDistrictResponse>>>
     {
 
-        private readonly IDsitrictMasterCacheRepository _repositoryCache;
+
         private readonly IDistrictMasterRepository _repository;
         private readonly IMapper _mapper;
         public GetDistrictQueryHandler(IDistrictMasterRepository _repository, IMapper _mapper)
         {
             //this._repositoryCache = _repositoryCache;
-            this._repository= _repository;
+            this._repository = _repository;
             this._mapper = _mapper;
         }
         public async Task<Result<List<GetDistrictResponse>>> Handle(GetDistrictQuery request, CancellationToken cancellationToken)

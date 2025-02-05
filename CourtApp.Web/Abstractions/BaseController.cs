@@ -35,6 +35,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using HtmlAgilityPack;
 using HtmlToOpenXml;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -44,6 +45,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -693,6 +695,42 @@ namespace CourtApp.Web.Abstractions
                 return Json(ViewModel);
             }
             return null;
+        }
+        #endregion
+
+        #region File Compression
+
+        /// <summary>
+        /// File compression code
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="destinationPath"></param>
+        /// <returns></returns>
+        public async Task<string> CompressFileAsync(IFormFile file, string destinationPath)
+        {
+            string zipFilePath = destinationPath + ".zip"; // Adding .zip extension
+            using (var fileStream = new FileStream(zipFilePath, FileMode.Create))
+            using (var zipArchive = new ZipArchive(fileStream, ZipArchiveMode.Create))
+            {
+                // Create a new zip entry and copy the file into it
+                var zipEntry = zipArchive.CreateEntry(file.FileName);
+                using (var entryStream = zipEntry.Open())
+                {
+                    await file.CopyToAsync(entryStream);
+                }
+            }
+            return zipFilePath; // Return the path to the compressed file
+        }
+
+        /// <summary>
+        /// Validates the uploaded file type.
+        /// Allows only PDF and DOCX formats.
+        /// </summary>
+        public bool IsValidFileType(IFormFile file)
+        {
+            string[] allowedExtensions = { ".pdf", ".docx" };
+            string fileExtension = Path.GetExtension(file.FileName).ToLower();
+            return allowedExtensions.Contains(fileExtension);
         }
         #endregion
     }

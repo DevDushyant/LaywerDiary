@@ -1,14 +1,11 @@
-﻿using CourtApp.Application.Interfaces.Repositories;
-using AspNetCoreHero.Results;
+﻿using AspNetCoreHero.Results;
 using AutoMapper;
+using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CourtApp.Domain.Entities.LawyerDiary;
-using System;
-using CourtApp.Domain.Entities.Account;
-using System.Linq;
-using CourtApp.Domain.Entities.Common;
 
 namespace CourtApp.Application.Features.Clients.Commands
 {
@@ -56,7 +53,7 @@ namespace CourtApp.Application.Features.Clients.Commands
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(cld.Id);
             }
-            return Result<Guid>.Fail("There is some problem to process the request");
+            //return Result<Guid>.Fail("There is some problem to process the request");
         }
     }
 }

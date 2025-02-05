@@ -25,7 +25,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new GetAllClientCachedQuery()
             {
                 PageNumber = 1,
-                PageSize = 1000,
+                PageSize = 10000,
                 UserId = CurrentUser.Id
             });
             if (response.Succeeded)
@@ -35,9 +35,6 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
             return null;
         }
-
-
-
         public async Task<IActionResult> CreateOrEditAsync(Guid id)
         {
             try
@@ -59,13 +56,13 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     if (response.Succeeded)
                     {
                         var ViewModel = _mapper.Map<ClientViewModel>(response.Data);
-                        if (response.Data.Fees != null)
-                            ViewModel.FeeDetail = new ClientFeeViewModel()
-                            {
-                                FeeAdvance = response.Data.Fees.AdvanceAmount,
-                                FeeSettled = response.Data.Fees.SettledAmount
-                            };
-                        ViewModel.OppositCounsels = await DdlLawyerAsync();
+                        //if (response.Data.Fees != null)
+                        //    ViewModel.FeeDetail = new ClientFeeViewModel()
+                        //    {
+                        //        FeeAdvance = response.Data.Fees.AdvanceAmount,
+                        //        FeeSettled = response.Data.Fees.SettledAmount
+                        //    };
+                        //ViewModel.OppositCounsels = await DdlLawyerAsync();
                         ViewModel.Appearences = await DdlFSTypes(0);
                         _logger.LogInformation("Form data by id load successfully");
                         return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
@@ -102,13 +99,13 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         {
                             btViewModel.StatusMessage = result.Message;
                             _notify.Success($"Client with ID {result.Data} Created.");
-                            btViewModel.OppositCounsels = await DdlLawyerAsync();
+                            //btViewModel.OppositCounsels = await DdlLawyerAsync();
                             btViewModel.Appearences = await DdlFSTypes(0);
                             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel) });
                         }
                         else
                         {
-                            var res = await _mediator.Send(new GetAllClientCachedQuery() { UserId = CurrentUser.Id, PageNumber = 1, PageSize = 1000 });
+                            var res = await _mediator.Send(new GetAllClientCachedQuery() { UserId = CurrentUser.Id, PageNumber = 1, PageSize = 10000 });
                             if (res.Succeeded)
                             {
                                 var viewModel = _mapper.Map<List<GClientViewModel>>(res.Data);
@@ -121,7 +118,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     {
                         btViewModel.StatusMessage = result.Message;
                         _notify.Error(result.Message);
-                        btViewModel.OppositCounsels = await DdlLawyerAsync();
+                        //btViewModel.OppositCounsels = await DdlLawyerAsync();
                         btViewModel.Appearences = await DdlFSTypes(0);
                         return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel) });
 
@@ -188,7 +185,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             var ViewModel = new ClientViewModel();
             ViewModel.CaseId = CaseId;
-            ViewModel.OppositCounsels = await DdlLawyerAsync();
+            //ViewModel.OppositCounsels = await DdlLawyerAsync();
             ViewModel.Appearences = await DdlFSTypes(0);
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
         }
@@ -200,10 +197,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 ClientId = ClientId,
                 UserId = CurrentUser.Id,
-                Name= Name,
-                Mobile=Mobile
+                Name = Name,
+                Mobile = Mobile
             });
-            return Json(response.Message);            
+            return Json(response.Message);
         }
     }
 }

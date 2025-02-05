@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace CourtApp.Web.Areas.Litigation.Models
-{    
+{
     public class CaseHistoryViewModel
     {
         public Guid Id { get; set; }
@@ -31,10 +31,12 @@ namespace CourtApp.Web.Areas.Litigation.Models
 
     public class CaseDoc
     {
+        public Guid Id { get; set; }
         public string DocType { get; set; }
         public string DocName { get; set; }
         public string DocDate { get; set; }
         public string DocFilePath { get; set; }
+        public string FIcon { get; set; }
     }
     public class CaseWorkDetail
     {

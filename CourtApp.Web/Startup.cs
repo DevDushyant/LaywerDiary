@@ -11,7 +11,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -50,16 +52,26 @@ namespace CourtApp.Web
             services.AddMultiLingualSupport();
 
             services.AddFluentValidationAutoValidation();
-            //Syncfusion.Licensing.SyncfusionLicenseProvider
-            //    .RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWX5eeXRXRWJfV0RxXEU=");
             services.AddControllersWithViews().AddFluentValidation(fv =>
-            {
-                fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            });
+             {
+                 fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+             });
             services.AddMvc().AddJsonOptions(options =>
              {
                  options.JsonSerializerOptions.PropertyNamingPolicy = null;
              });
+            services.Configure<FormOptions>(opt =>
+            {
+                opt.MultipartBodyLengthLimit = 512 * 1024 * 1024; // 512 MB limit
+            });
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                // Example: Setting a custom maximum request body size (for large file uploads)
+                options.Limits.MaxRequestBodySize = 524288000; // 500 MB limit
+
+                // Example: Setting the timeout for connections
+                options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
+            });
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddDistributedMemoryCache();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -82,6 +94,7 @@ namespace CourtApp.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseNotyf();
             app.UseHttpsRedirection();
             app.UseStaticFiles();

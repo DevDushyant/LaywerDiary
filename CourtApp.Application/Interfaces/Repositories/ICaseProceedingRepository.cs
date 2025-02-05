@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CourtApp.Application.Interfaces.Repositories
@@ -15,6 +14,7 @@ namespace CourtApp.Application.Interfaces.Repositories
         Task<CaseProcedingEntity> GetByIdAsync(Guid CaseId, DateTime? SelDate);
         Task<CaseProcedingEntity> GetDetailById(Guid Id);
         Task<Guid> AddAsync(CaseProcedingEntity Entity);
+        Task<Guid> AddAsyncRange(List<CaseProcedingEntity> Entity);
         Task UpdateAsync(CaseProcedingEntity Entity);
         Task DeleteAsync(CaseProcedingEntity Entity);
     }

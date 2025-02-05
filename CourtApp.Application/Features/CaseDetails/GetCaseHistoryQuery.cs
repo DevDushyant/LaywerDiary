@@ -137,6 +137,7 @@ namespace CourtApp.Application.Features.CaseDetails
                     .Include(d => d.DO)
                     .Where(w => w.CaseId == request.CaseId).Select(s => new CaseUploadedDocument
                     {
+                        Id = s.Id,
                         DocType = s.DOTypeId == 1 ? "Drafting" : "Order",
                         DocFilePath = s.Path,
                         DocName = s.DO.Name_En,

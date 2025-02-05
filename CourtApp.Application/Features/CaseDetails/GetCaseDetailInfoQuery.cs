@@ -109,7 +109,7 @@ namespace CourtApp.Application.Features.CaseDetails
                         FirstName = clnt.Name,
                         Mobile = clnt.Mobile,
                         Appearence = clnt.Appearence != null ? clnt.Appearence.Name_En : "",
-                        Councel = clnt.OppositCounsel != null ? clnt.OppositCounsel.FirstName : ""
+                        //Councel = clnt.OppositCounsel != null ? clnt.OppositCounsel.FirstName : ""
                     };
                 }
             }

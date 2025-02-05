@@ -50,7 +50,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 CallingFrm = "HTD",
                 HearingDate = Convert.ToDateTime(SDate),
-                UserId = CurrentUser.Id
+                UserId = CurrentUser.Id,
+                PageSize = 10000,
+                PageNumber = 1
             });
             if (response.Succeeded)
             {
@@ -65,7 +67,13 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         #region Bring Today Hearing Case
         public async Task<JsonResult> GetCaseHearing()
         {
-            var response = await _mediator.Send(new GetCaseDetailsQuery() { CallingFrm = "BTD", UserId = CurrentUser.Id });
+            var response = await _mediator.Send(new GetCaseDetailsQuery()
+            {
+                CallingFrm = "BTD",
+                UserId = CurrentUser.Id,
+                PageSize = 10000,
+                PageNumber = 1
+            });
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<GetCaseViewModel>>(response.Data);
@@ -146,6 +154,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 CaseId = CaseId,
                 SelectedDate = Convert.ToDateTime(SelectedDate)
+
             });
             var model = new CaseProceedingViewModel();
             model.CaseId = CaseId;
