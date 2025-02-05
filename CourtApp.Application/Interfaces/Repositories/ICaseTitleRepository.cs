@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CourtApp.Application.Interfaces.Repositories
@@ -16,6 +15,5 @@ namespace CourtApp.Application.Interfaces.Repositories
         Task<Guid> InsertAsync(CaseTitleEntity CaseTtitle);
         Task UpdateAsync(CaseTitleEntity CaseTtitle);
         Task DeleteAsync(CaseTitleEntity CaseTtitle);
-        Task BulkInsertAsync(List<CaseTitleEntity> titles);
     }
 }

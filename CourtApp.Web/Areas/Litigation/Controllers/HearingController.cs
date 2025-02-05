@@ -5,7 +5,6 @@ using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -219,7 +218,5 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return RedirectToAction("Index", new { SelectedDate = TempData["SelectedDate"].ToString() });
         }
         #endregion
-
-
     }
 }
