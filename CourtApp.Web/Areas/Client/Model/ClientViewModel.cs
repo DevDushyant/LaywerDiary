@@ -6,7 +6,7 @@ namespace CourtApp.Web.Areas.Client.Model
 {
     public class ClientViewModel
     {
-        public Guid Id { get; set; }   
+        public Guid Id { get; set; }
         [TempData]
         public string StatusMessage { get; set; }
         public Guid CaseId { get; set; }

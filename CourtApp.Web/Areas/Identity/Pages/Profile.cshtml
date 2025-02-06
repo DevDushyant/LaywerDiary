@@ -2,35 +2,6 @@
 @model CourtApp.Web.Areas.Identity.Pages.ProfileModel
 @using CourtApp.Web.Views.Shared.Components.Culture;
 @inject IHtmlLocalizer<SharedResource> localizer
-<style>
-    .div_hide {
-        display: none
-    }
-
-    .divider {
-        border-right: 1px solid #ccc;
-        height: 100%;
-    }
-
-    fieldset.scheduler-border {
-        border: 1px groove #ddd !important;
-        padding: 0 1.4em 1.4em 1.4em !important;
-        margin: 0 0 1.5em 0 !important;
-        -webkit-box-shadow: 0px 0px 0px 0px #000;
-        box-shadow: 0px 0px 0px 0px #000;
-        width: 100% !important;
-    }
-
-    legend.scheduler-border {
-        font-size: 1.2em !important;
-        font-weight: bold !important;
-        text-align: left !important;
-        width: auto;
-        padding: 0 10px;
-        border-bottom: none;
-    }
-</style>
-
 <div class="d-sm-flex align-items-center justify-content-between">
     <h1 class="h3 mb-0 text-gray-800">@Model.FirstName @Model.LastName's Profile</h1>
 </div>
@@ -82,14 +53,16 @@
                 </div>
             </div>
         }
+
     }
+
     <div class="row">
         <div class="col-md-3">
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header py-3">
-                            <h4 class="m-0 text-secondary">@localizer["Profile Picture"]</h4>
+                            <h6 class="m-0 text-secondary">@localizer["Profile Picture"]</h6>
                         </div>
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
@@ -115,71 +88,30 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header py-3">
-                            <h4 class="m-0 text-secondary"><strong>@localizer["Lawyer's Complete Information"]</strong></h4>
+                            <h6 class="m-0 text-secondary">@localizer["About"]</h6>
                         </div>
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
-                                <div class="form-group row" style="width:100%">
-                                    <fieldset class="scheduler-border" >
-                                        <legend class="scheduler-border">Personal Info</legend>
-                                        <div class="form-group row">
-                                            <!-- First Name Section -->
-                                            <div class="col-md-5 d-flex">
-                                                <div class="col-sm-4">@localizer["First Name"]</div>
-                                                <div class="col-sm-8">@Model.FirstName</div>
-                                            </div>
-
-                                            <!-- Vertical Divider -->
-                                            <div class="col-md-1 text-center border-right"></div>
-
-                                            <!-- Last Name Section -->
-                                            <div class="col-md-5 d-flex">
-                                                <div class="col-sm-4">@localizer["Last Name"]</div>
-                                                <div class="col-sm-8">@Model.LastName</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <!-- First Name Section -->
-                                            <div class="col-md-5 d-flex">
-                                                <div class="col-sm-4">@localizer["Mobile"]</div>
-                                                <div class="col-sm-8">@Model.Mobile</div>
-                                            </div>
-
-                                            <!-- Vertical Divider -->
-                                            <div class="col-md-1 text-center border-right"></div>
-
-                                            <!-- Last Name Section -->
-                                            <div class="col-md-5 d-flex">
-                                                <div class="col-sm-4">@localizer["Email"]</div>
-                                                <div class="col-sm-8">@Model.Email</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <!-- First Name Section -->
-                                            <div class="col-md-5 d-flex">
-                                                <div class="col-sm-4">@localizer["Date of Birth"]</div>
-                                                <div class="col-sm-8"></div>
-                                            </div>
-
-                                            <!-- Vertical Divider -->
-                                            <div class="col-md-1 text-center border-right"></div>
-
-                                            <!-- Last Name Section -->
-                                            <div class="col-md-5 d-flex">
-                                                <div class="col-sm-4">@localizer["Date of joining"]</div>
-                                                <div class="col-sm-8"></div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset class="scheduler-border">
-                                        <legend class="scheduler-border">Work Info</legend>
-                                    </fieldset>
-                                    <fieldset class="scheduler-border">
-                                        <legend class="scheduler-border">Address Info</legend>
-                                    </fieldset>
-                                </div>                               
+                                <div class="col">
+                                   <table>
+                                       <tr>
+                                            <td>@localizer["Mobile"]</td>
+                                           <td>@Model.Mobile</td>
+                                       </tr>
+                                        <tr>
+                                            <td>@localizer["Email"]</td>
+                                            <td>@Model.Email</td>
+                                        </tr>
+                                        <tr>
+                                            <td>@localizer["Enrollment Number"]</td>
+                                            <td>@Model.Enrollment</td>
+                                        </tr>
+                                        <tr>
+                                            <td>@localizer["Email"]</td>
+                                            <td>@Model.Address</td>
+                                        </tr>
+                                   </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -188,6 +120,7 @@
         </div>
     </div>
 </div>
+
 @section Scripts
 {
     <script src="~/js/imageModal.js"></script>

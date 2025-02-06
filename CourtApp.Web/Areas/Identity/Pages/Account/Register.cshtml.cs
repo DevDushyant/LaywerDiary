@@ -1,5 +1,4 @@
-﻿using CourtApp.Application.Constants;
-using CourtApp.Application.DTOs.Mail;
+﻿using CourtApp.Application.DTOs.Mail;
 using CourtApp.Application.Enums;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Application.Interfaces.Shared;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System;
@@ -32,7 +30,6 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IMailService _emailSender;
         private readonly IdentityContext _identityDbContext;
-
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -50,9 +47,10 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
 
         [BindProperty]
         public InputModel Input { get; set; }
+
         public string ReturnUrl { get; set; }
+
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
-        public SelectList Genders { get; set; }
 
         public class InputModel
         {
@@ -111,7 +109,6 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            Genders = new SelectList(StaticDropDownDictionaries.Gender(), "Key", "Value");
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -147,17 +144,7 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
                     await _userManager.AddToRoleAsync(user, Roles.Lawyer.ToString());
-                    //var UserDemo = new Demographic
-                    //{
-                    //    Id=Guid.Parse(user.Id),
-                    //    ProfessionalInfo = new ProfessionalInfo
-                    //    {
-                    //        EnrollmentNo = Input.EnrollmentNo,
-                    //        BarAssociationNumber= Input.EnrollmentNo
-                    //    }
-                    //};
-                    //_identityDbContext.Demographics.Add(UserDemo);
-                    //await _identityDbContext.SaveChangesAsync();
+
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

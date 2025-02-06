@@ -81,8 +81,8 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex.Message.ToString());
-                        Console.WriteLine(ex);
+                        Console.WriteLine(ex.Message);
+                        _logger.LogError(ex.Message);
                     }
                 }
                 else

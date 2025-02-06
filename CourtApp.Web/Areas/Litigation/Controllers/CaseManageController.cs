@@ -700,7 +700,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 CasesHearingDt = _mapper.Map<List<CaseHearingDto>>(casedts)
             });
-            return Json(response);            
+            return Json(response);
         }
         #endregion
     }

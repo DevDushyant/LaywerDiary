@@ -41,7 +41,7 @@ namespace CourtApp.Web.Extensions
                 var cultures = new List<CultureInfo> {
                     new CultureInfo("en"),
                     new CultureInfo("hi"),
-                    //new CultureInfo("gu"),
+                    new CultureInfo("gu"),
                 };
                 options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en");
                 options.SupportedCultures = cultures;

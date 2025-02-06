@@ -1,4 +1,4 @@
-﻿using AspNetCoreHero.Results;
+using AspNetCoreHero.Results;
 using AutoMapper;
 using CourtApp.Application.DTOs.CaseProceedings;
 using CourtApp.Application.Interfaces.Repositories;

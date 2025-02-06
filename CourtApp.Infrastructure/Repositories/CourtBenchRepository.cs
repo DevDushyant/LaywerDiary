@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 namespace CourtApp.Infrastructure.Repositories
 {
     public class CourtBenchRepository : ICourtBenchRepository
@@ -41,14 +42,6 @@ namespace CourtApp.Infrastructure.Repositories
         {
             return _repository.Entities.ToListAsync();
         }
-
-        //public async Task<Guid> InsertAsync(List<CourtBenchEntity> Entity)
-        //{
-        //    await _repository.BulkInsert(Entity);
-        //    await _distributedCache.RemoveAsync(AppCacheKeys.CourtComplexKey);
-        //    return Entity.Select(s => s.Id).FirstOrDefault();
-        //}
-
         public Task UpdateAsync(List<CourtBenchEntity> Entity)
         {
             throw new NotImplementedException();

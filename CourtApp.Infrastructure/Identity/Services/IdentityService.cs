@@ -1,6 +1,4 @@
-﻿using AspNetCoreHero.Results;
-using AspNetCoreHero.ThrowR;
-using CourtApp.Application.DTOs.Identity;
+﻿using CourtApp.Application.DTOs.Identity;
 using CourtApp.Application.DTOs.Mail;
 using CourtApp.Application.DTOs.Settings;
 using CourtApp.Application.Enums;
@@ -8,6 +6,8 @@ using CourtApp.Application.Exceptions;
 using CourtApp.Application.Interfaces;
 using CourtApp.Application.Interfaces.Shared;
 using CourtApp.Infrastructure.Identity.Models;
+using AspNetCoreHero.Results;
+using AspNetCoreHero.ThrowR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
@@ -150,7 +150,7 @@ namespace CourtApp.Infrastructure.Identity.Services
                 var result = await _userManager.CreateAsync(user, request.Password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, Roles.Clerk.ToString());
+                    await _userManager.AddToRoleAsync(user, Roles.Operator.ToString());
                     var verificationUri = await SendVerificationEmail(user, origin);
                     //TODO: Attach Email Service here and configure it via appsettings
                     await _mailService.SendAsync(new MailRequest() { From = "mail@codewithmukesh.com", To = user.Email, Body = $"Please confirm your account by <a href='{verificationUri}'>clicking here</a>.", Subject = "Confirm Registration" });
@@ -163,7 +163,7 @@ namespace CourtApp.Infrastructure.Identity.Services
             }
             else
             {
-                throw new ApiException($"Email {request.Email} is already registered.");
+                throw new ApiException($"Email {request.Email } is already registered.");
             }
         }
 

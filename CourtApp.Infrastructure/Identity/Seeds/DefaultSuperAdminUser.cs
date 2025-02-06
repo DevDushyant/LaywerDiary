@@ -45,7 +45,7 @@ namespace CourtApp.Infrastructure.Identity.Seeds
 
         public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
-
+           
             var defaultUser = new ApplicationUser
             {
                 UserName = "superadmin",
@@ -62,10 +62,9 @@ namespace CourtApp.Infrastructure.Identity.Seeds
                 if (user == null)
                 {
                     await userManager.CreateAsync(defaultUser, "123Pa$$word!");
-
-                    await userManager.AddToRoleAsync(defaultUser, Roles.Clerk.ToString());
+                   
+                    await userManager.AddToRoleAsync(defaultUser, Roles.Operator.ToString());
                     await userManager.AddToRoleAsync(defaultUser, Roles.Lawyer.ToString());
-                    await userManager.AddToRoleAsync(defaultUser, Roles.Associate.ToString());
                     await userManager.AddToRoleAsync(defaultUser, Roles.SuperAdmin.ToString());
                 }
                 await roleManager.SeedClaimsForSuperAdmin();

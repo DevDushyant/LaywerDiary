@@ -1,4 +1,4 @@
-﻿using CourtApp.Application.Features.Clients.Commands;
+using CourtApp.Application.Features.Clients.Commands;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.Clients.Queries.GetById;
 using CourtApp.Web.Abstractions;

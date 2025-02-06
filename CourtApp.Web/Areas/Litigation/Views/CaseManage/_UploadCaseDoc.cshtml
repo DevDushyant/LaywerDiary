@@ -21,6 +21,7 @@
         padding: 0 10px;
         border-bottom: none;
     }
+
     .custom-file-input {
         opacity: 1 !important;
     }
@@ -89,7 +90,7 @@
         <legend class="scheduler-border">Document Upload</legend>
         <div class="col-md-12">
             <div class="row">
-                
+
                 <table id="tblDocs" border="1" style="width:100%!important">
                     <thead>
                         <tr>
@@ -100,7 +101,7 @@
                             <th width="10%"></th>
                         </tr>
                     </thead>
-                    <tbody class="data-repeater">                       
+                    <tbody class="data-repeater">
                     </tbody>
                 </table>
             </div>
@@ -210,9 +211,9 @@
             incval++;
         } else {
             alert("Please select all the fileds are required");
-        }      
+        }
     }
-    
+
     function BindType(ddl) {
         $.getJSON("/Litigation/casemanage/DOCTypes", function (data) {
             $("#" + ddl).empty();;
@@ -221,16 +222,9 @@
             });
             defaultload();
         });
-        // $("#" + ddl).select2({
-        //     placeholder: "Select a type",
-        //     theme: "bootstrap4",
-        //     escapeMarkup: function (m) {
-        //         return m;
-        //     }
-        // });
-       
+
     }
-    function BindDocument(ddl,v) {        
+    function BindDocument(ddl,v) {
         $("#" + ddl).empty();
         $.getJSON("/Litigation/casemanage/DdlDOTypes?TypeId=" + v, function (data) {
             $.each(data.Data, function (i, item) {

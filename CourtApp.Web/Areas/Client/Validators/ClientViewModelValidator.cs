@@ -1,6 +1,5 @@
 ﻿using CourtApp.Web.Areas.Client.Model;
 using FluentValidation;
-using System.Text.RegularExpressions;
 
 namespace CourtApp.Web.Areas.Client.Validators
 {

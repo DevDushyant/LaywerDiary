@@ -4,11 +4,7 @@ using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
-using HtmlAgilityPack;
 
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
@@ -148,7 +144,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         FinalContent = Content.Replace(tg.Key.Trim(), tg.Value.Trim());
                         Content = FinalContent;
                     }
-                    byte[] wordFile =ConvertHtmlToWord(Content);
+                    byte[] wordFile = ConvertHtmlToWord(Content);
                     return File(wordFile, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Document.docx");
                     // Create a memory stream to hold the document
                     //using (var stream = new MemoryStream())

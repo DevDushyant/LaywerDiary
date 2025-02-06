@@ -7,6 +7,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
 {
     public class CaseAttacheDocumentViewModel
     {
+
         public Guid CaseId { get; set; }
         public Guid DOTypeId { get; set; }
         public Guid DOId { get; set; }

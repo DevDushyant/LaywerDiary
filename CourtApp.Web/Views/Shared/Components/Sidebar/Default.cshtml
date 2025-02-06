@@ -23,7 +23,31 @@
                     </li>
                 }
 
-                @if (!User.IsInRole("Clerk"))
+                @*  <li class="nav-header">@localizer["Admin"]</li> *@
+                @*  <li is-active-route asp-area="Client" class="nav-item has-treeview">
+                    <a is-active-route asp-area="Client" class="nav-link">
+                        <i class="nav-icon fas fa fa-handshake-o"></i>
+                        <p>
+                            @localizer["Client Management"]
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a is-active-route asp-area="Client" asp-controller="ManageClient" asp-action="index" class="nav-link">
+                                <i class="fa fa-user" aria-hidden="true"></i>
+                                <p>@localizer["Client"]</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a is-active-route asp-area="LawyerDiary" asp-controller="Lawyer" asp-action="index" class="nav-link">
+                                <i class="fa fa-gavel" aria-hidden="true"></i>
+                                <p>@localizer["Lawyer"]</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li> *@
+                @if (!User.IsInRole("Operator"))
                 {
                     <li is-active-route asp-area="Admin" class="nav-item has-treeview">
                         <a is-active-route asp-area="Admin" class="nav-link">
@@ -80,7 +104,7 @@
                                     <a is-active-route asp-area="Admin" asp-controller="User" asp-action="index"
                                        class="nav-link">
                                         <i class="far fa-user-circle nav-icon"></i>
-                                        <p>@localizer["Associate/Clerk"]</p>
+                                        <p>@localizer["Operator"]</p>
                                     </a>
                                 </li>
                             }

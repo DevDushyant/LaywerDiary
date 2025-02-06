@@ -27,8 +27,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 var model = new PendingWorkDataViewModel();
                 List<CaseTitleWorkData> work = new List<CaseTitleWorkData>();
-                
-                if (response.Data!=null)
+
+                if (response.Data != null)
                 {
                     foreach (var cd in response.Data)
                     {
@@ -42,14 +42,14 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                             var wt = new WorkDt();
                             wt.Work = w.WorkDetail;
                             wt.Id = w.Id;
-                            wt.WorkId=w.WorkId;
+                            wt.WorkId = w.WorkId;
                             wdt.Add(wt);
                         }
                         PWorkCase.Works = wdt;
                         work.Add(PWorkCase);
                     }
                 }
-                model.PendingWork = work;                
+                model.PendingWork = work;
                 return PartialView("_ViewAll", model);
             }
             return null;
@@ -68,7 +68,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         Works = s.Works.Where(s => s.Selected == true).ToList()
                     });
                     var WorksDl = CaseDl.Select(s => s.Works);
-                    var ProcId = (WorksDl.FirstOrDefault()).Select(s=>s.Id).FirstOrDefault();
+                    var ProcId = (WorksDl.FirstOrDefault()).Select(s => s.Id).FirstOrDefault();
                     List<Guid> WorkIds = new List<Guid>();
                     foreach (var works in WorksDl)
                         foreach (var item in works)
@@ -77,7 +77,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         }
                     if (WorkIds != null)
                     {
-                        var result = await _mediator.Send(new UpdateCWorkStatusCommand { CWorkId = WorkIds, Status = 1,ProcId= ProcId });
+                        var result = await _mediator.Send(new UpdateCWorkStatusCommand { CWorkId = WorkIds, Status = 1, ProcId = ProcId });
                         if (result.Succeeded) _notify.Information($"Case Work with ID {result.Data} Updated.");
                         else _notify.Error(result.Message);
                     }

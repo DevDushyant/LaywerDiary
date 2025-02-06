@@ -22,7 +22,7 @@
             {
                 @if (requestCulture.RequestCulture.UICulture.Name == "en")
                 {
-                    <i class="flag-icon flag-icon-in"></i>
+                    <i class="flag-icon flag-icon-gb"></i>
                 }
                @*  else if (requestCulture.RequestCulture.UICulture.Name == "ar")
                 {
@@ -57,16 +57,16 @@
                 <button type="submit" class="dropdown-item">
                     @if (culture.Value == "en" || culture.Value == "en-US")
                     {
-                        <i class="flag-icon flag-icon-in"></i>
+                        <i class="flag-icon flag-icon-gb"></i>
                     }
                     @* else if (culture.Value == "ar")
                     {
                         <i class="flag-icon flag-icon-sa"></i>
                     } *@
-                    @* else if (culture.Value == "hi" || culture.Value == "gu")
+                    else if (culture.Value == "hi" || culture.Value == "gu")
                     {
                         <i class="flag-icon flag-icon-in"></i>
-                    } *@
+                    }
 
                     @culture.Text
                 </button>
