@@ -1,4 +1,4 @@
-﻿using CourtApp.Application.CacheKeys;
+using CourtApp.Application.CacheKeys;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
 using Microsoft.EntityFrameworkCore;
@@ -30,11 +30,9 @@ namespace CourtApp.Infrastructure.Repositories
             return Entity.Id;
         }
 
-        public async Task<Guid> AddAsyncRange(List<CaseProcedingEntity> Entity)
+        public Task<Guid> AddAsyncRange(List<CaseProcedingEntity> Entity)
         {
-            await _repository.AddRange(Entity);
-            await _distributedCache.RemoveAsync(AppCacheKeys.ProcHeadKey);
-            return Entity.FirstOrDefault().CaseId;
+            throw new NotImplementedException();
         }
 
         public Task DeleteAsync(CaseProcedingEntity Entity)
@@ -101,6 +99,13 @@ namespace CourtApp.Infrastructure.Repositories
                 .ToListAsync();
             return data;
         }
+
+        //public async Task<Guid> InsertAsync(List<CaseProcedingEntity> Entity)
+        //{
+        //    await _repository.BulkInsert(Entity);
+        //    await _distributedCache.RemoveAsync(AppCacheKeys.CourtComplexKey);
+        //    return Entity.Select(s => s.CaseId).FirstOrDefault();
+        //}
 
         public async Task UpdateAsync(CaseProcedingEntity Entity)
         {

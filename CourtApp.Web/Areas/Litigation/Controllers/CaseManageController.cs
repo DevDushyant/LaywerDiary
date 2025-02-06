@@ -683,7 +683,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new GetCaseWohDateQuery()
             {
                 UserId = CurrentUser.Id,
-                PageSize = 1000,
+                PageSize = 10000,
                 PageNumber = 1
             });
             if (response.Succeeded)

@@ -1,4 +1,4 @@
-﻿using CourtApp.Application.Features.Clients.Commands;
+using CourtApp.Application.Features.Clients.Commands;
 using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.Clients.Queries.GetById;
 using CourtApp.Web.Abstractions;
@@ -35,6 +35,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
             return null;
         }
+
+
+
         public async Task<IActionResult> CreateOrEditAsync(Guid id)
         {
             try
@@ -105,7 +108,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         }
                         else
                         {
-                            var res = await _mediator.Send(new GetAllClientCachedQuery() { UserId = CurrentUser.Id, PageNumber = 1, PageSize = 10000 });
+                            var res = await _mediator.Send(new GetAllClientCachedQuery() { UserId = CurrentUser.Id, PageNumber = 1, PageSize = 1000 });
                             if (res.Succeeded)
                             {
                                 var viewModel = _mapper.Map<List<GClientViewModel>>(res.Data);
@@ -200,7 +203,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 Name = Name,
                 Mobile = Mobile
             });
-            return Json(response.Message);
+            return Json(response.Succeeded);
         }
     }
 }

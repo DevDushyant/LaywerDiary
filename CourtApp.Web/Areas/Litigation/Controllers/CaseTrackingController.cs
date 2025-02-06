@@ -23,6 +23,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 Value = value,
                 PageSize = 10000,
                 PageNumber = 1,
+               
                 UserId = CurrentUser.Id
             });
 

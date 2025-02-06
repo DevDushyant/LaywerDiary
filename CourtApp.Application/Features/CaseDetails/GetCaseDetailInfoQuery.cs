@@ -93,9 +93,9 @@ namespace CourtApp.Application.Features.CaseDetails
                         CaseCategory = lncd.CaseCategory.Name_En,
                         CaseType = lncd.CaseType.Name_En,
                         FirstTitle = lncd.FirstTitle,
-                        FirstTitleDetail = lncd.FTitle.Name_En,
+                        FirstTitleDetail = lncd.FTitle != null ? lncd.FTitle.Name_En : "",
                         SecondTitle = lncd.SecondTitle,
-                        SecondTitleDetail = lncd.STitle.Name_En,
+                        SecondTitleDetail = lncd.STitle != null ? lncd.STitle.Name_En : "",
                         CaseStage = lncd.CaseStage != null ? lncd.CaseStage.CaseStage : "",
                         CisNo = lncd.CisNumber == null ? "" : lncd.CisNumber,
                         CisYear = lncd.CisYear.ToString()
@@ -106,8 +106,9 @@ namespace CourtApp.Application.Features.CaseDetails
                     var clnt = detail.Client;
                     ct.ClientDetail = new Clients.Queries.GetAllCached.GetAllClientCachedResponse()
                     {
-                        FirstName = clnt.Name,
+                        Name = clnt.Name,
                         Mobile = clnt.Mobile,
+                        Address = clnt.Address,
                         Appearence = clnt.Appearence != null ? clnt.Appearence.Name_En : "",
                         //Councel = clnt.OppositCounsel != null ? clnt.OppositCounsel.FirstName : ""
                     };

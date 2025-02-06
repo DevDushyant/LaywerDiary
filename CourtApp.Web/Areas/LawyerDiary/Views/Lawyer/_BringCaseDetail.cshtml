@@ -139,17 +139,18 @@
          contentType: 'application/json',
          datatype: "json",
         success: function (response) {
+            debugger;
             var msg=""; txt="";icn="";
-            if (response === "Success") {
+            if (response === true) {
                 msg="Client is created successfully!";
                 txt="Success";
                 icn="success";
                 $("#btnCopyCaseInfo").removeAttr('disabled');
             }
             else{
-                 msg=response;
+                 msg="The client is already exist for the logged in user!";
                 txt="error";
-                icn="error";
+                icn="waning";
             }
             Swal.fire({
                         title: msg,

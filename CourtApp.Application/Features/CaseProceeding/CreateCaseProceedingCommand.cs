@@ -1,4 +1,4 @@
-﻿using AspNetCoreHero.Results;
+using AspNetCoreHero.Results;
 using AutoMapper;
 using CourtApp.Application.DTOs.CaseProceedings;
 using CourtApp.Application.Interfaces.Repositories;
@@ -79,6 +79,12 @@ namespace CourtApp.Application.Features.CaseProceeding
 
                 // ✅ Batch insert child cases
                 await _Repository.AddAsyncRange(childEntities);
+                await _unitOfWork.Commit(cancellationToken);
+                return Result<Guid>.Success(entity.Id);
+            }
+            else
+            {
+                await _Repository.AddAsync(entity);
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(entity.Id);
             }

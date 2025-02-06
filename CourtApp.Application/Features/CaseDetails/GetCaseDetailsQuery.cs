@@ -117,7 +117,8 @@ namespace CourtApp.Application.Features.UserCase
                             CaseNumber = cd.CaseNumber,
                             NextHearingDate = MaxDt != (default) ? MaxDt : cd.NextHearingDate,
                             CaseTitle = cd.CaseTitle,
-                            CaseYear = cd.CaseYear
+                            CaseYear = cd.CaseYear,
+                            IsProceedingDone = cd.IsProceedingDone
                         };
             }
             else

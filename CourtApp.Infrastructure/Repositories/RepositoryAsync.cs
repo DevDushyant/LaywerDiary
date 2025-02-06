@@ -1,4 +1,4 @@
-﻿using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -64,10 +64,9 @@ namespace CourtApp.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
-        public Task UpdateRangeAsync(List<T> entities)
+        public async Task UpdateRangeAsync(List<T> entities)
         {
-            _dbContext.Set<T>().UpdateRange(entities);
-            return Task.CompletedTask;
+            _dbContext.UpdateRange(entities);
         }
     }
 }

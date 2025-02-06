@@ -16,6 +16,11 @@ namespace CourtApp.Infrastructure.Repositories
 
         public IQueryable<CaseDocsEntity> Entities => _repository.Entities;
 
+        public async Task DeleteAsync(CaseDocsEntity objEntity)
+        {
+            await _repository.DeleteAsync(objEntity);
+        }
+
         public async Task<Guid> SaveCaseDocAsync(CaseDocsEntity entity)
         {
             await _repository.AddAsync(entity);
