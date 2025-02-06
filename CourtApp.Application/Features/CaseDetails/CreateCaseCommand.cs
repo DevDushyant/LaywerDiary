@@ -1,17 +1,16 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
+using CourtApp.Application.DTOs.CaseDetails;
 using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
+using KT3Core.Areas.Global.Classes;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using CourtApp.Application.DTOs.CaseDetails;
-using KT3Core.Areas.Global.Classes;
 
 namespace CourtApp.Application.Features.Case
 {
@@ -126,7 +125,7 @@ namespace CourtApp.Application.Features.Case
                 if (request.CaseTypeId != Guid.Empty)
                     predicate = predicate.And(y => request.CaseTypeId == request.CaseTypeId);
                 if (request.CaseNo != null && request.CaseYear != 0)
-                    predicate = predicate.And(y => y.CaseNo.Equals(request.CaseNo) && y.CaseYear == request.CaseYear);
+                    predicate = predicate.And(y => y.CourtTypeId != request.CourtTypeId && y.CaseNo.Equals(request.CaseNo) && y.CaseYear == request.CaseYear);
                 if (request.CaseNo == null && request.FirstTitle != "" && request.SecondTitle != "")
                     predicate = predicate.And(y => y.FirstTitle.Equals(request.FirstTitle) && y.SecondTitle.Equals(request.SecondTitle));
 
@@ -158,9 +157,9 @@ namespace CourtApp.Application.Features.Case
                         ac.CaseTypeId = item.CaseTypeId.Value;
                         ac.StrengthId = item.StrengthId != null ? item.StrengthId.Value : 0;
                         ac.OfficerName = item.OfficerName;
-                        ac.CisYear = item.CisYear!=null ?item.CisYear.Value:0;
+                        ac.CisYear = item.CisYear != null ? item.CisYear.Value : 0;
                         ac.CisNo = item.CisNo;
-                        ac.CadreId = item.CadreId!=null? item.CadreId.Value:Guid.Empty;
+                        ac.CadreId = item.CadreId != null ? item.CadreId.Value : Guid.Empty;
                         ac.CnrNo = item.CnrNo;
                         ac.CourtDistrictId = item.CourtDistrictId != Guid.Empty ? item.CourtDistrictId : null;
                         ac.ComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null;

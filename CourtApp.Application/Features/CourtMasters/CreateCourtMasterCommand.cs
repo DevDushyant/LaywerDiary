@@ -7,7 +7,6 @@ using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -71,7 +70,7 @@ namespace CourtApp.Application.Features.CourtMasters.Command
             //        return Result<Guid>.Success(ent.Id);
             //    }                
             //}
-            return Result<Guid>.Fail("Court/Bench information not provided");
+            //return Result<Guid>.Fail("Court/Bench information not provided");
 
         }
     }

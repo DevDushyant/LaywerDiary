@@ -1,10 +1,8 @@
 ﻿using AspNetCoreHero.Results;
-using CourtApp.Application.DTOs.CaseDetails;
 using CourtApp.Application.Features.Clients.Queries.GetById;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
 using System;
-using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,7 +35,7 @@ namespace CourtApp.Application.Features.CaseDetails
                     client.Address = clientDetail.Address;
                     client.Id = clientDetail.Id;
                     client.AppearenceID = clientDetail.AppearenceID;
-                    client.OppositCounselId = clientDetail.OppositCounselId != null ? clientDetail.OppositCounselId.Value : Guid.Empty;
+                    //client.OppositCounselId = clientDetail.OppositCounselId != null ? clientDetail.OppositCounselId.Value : Guid.Empty;
                     client.Email = clientDetail.Email;
                     return Result<GetClientByIdResponse>.Success(client);
                 }

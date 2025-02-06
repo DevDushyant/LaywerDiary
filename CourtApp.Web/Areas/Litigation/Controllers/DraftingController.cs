@@ -22,7 +22,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new GetCaseDarftingQuery());
+            var response = await _mediator.Send(new GetCaseDarftingQuery()
+            {
+                PageSize = 10000,
+                PageNumber = 1
+            });
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<FormCaseMappingViewModel>>(response.Data);

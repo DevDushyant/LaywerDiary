@@ -1,16 +1,16 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
-using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
-using KT3Core.Areas.Global.Classes;
-using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Application.Extensions;
 using CourtApp.Application.Interfaces.Repositories;
-using System.Linq.Expressions;
+using CourtApp.Domain.Entities.LawyerDiary;
+using KT3Core.Areas.Global.Classes;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using CourtApp.Application.Extensions;
-using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.Clients.Queries.GetAllCached
 {
@@ -41,7 +41,7 @@ namespace CourtApp.Application.Features.Clients.Queries.GetAllCached
                 Name = e.Name,
                 Email = e.Email,
                 Mobile = e.Mobile,
-                Councel = e.OppositCounselId != Guid.Empty ? (e.OppositCounsel.FirstName + " " + e.OppositCounsel.LastName) : "",
+                //Councel = e.OppositCounselId != Guid.Empty ? (e.OppositCounsel.FirstName + " " + e.OppositCounsel.LastName) : "",
                 OffEmail = e.OfficeEmail,
                 Appearence = e.Appearence.Name_En,
                 Address = e.Address

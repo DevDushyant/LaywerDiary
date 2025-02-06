@@ -25,6 +25,7 @@ namespace CourtApp.Application.DTOs.CaseDetails
     }
     public class CaseUploadedDocument
     {
+        public Guid Id { get; set; }
         public string DocType { get; set; }
         public string DocName { get; set; }
         public string DocFilePath { get; set; }

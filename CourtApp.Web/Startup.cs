@@ -1,23 +1,28 @@
-using AspNetCoreHero.ToastNotification;
-using AspNetCoreHero.ToastNotification.Extensions;
 using CourtApp.Application.Extensions;
 using CourtApp.Infrastructure.Extensions;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Extensions;
 using CourtApp.Web.Permission;
 using CourtApp.Web.Services;
+using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
+using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using System;
 using System.Reflection;
+using System;
+using CourtApp.Web.Areas.LawyerDiary.Models;
+
 namespace CourtApp.Web
 {
     public class Startup
@@ -48,10 +53,8 @@ namespace CourtApp.Web
             services.AddRepositories();
             services.AddSharedInfrastructure(_configuration);
             services.AddMultiLingualSupport();
-
+            
             services.AddFluentValidationAutoValidation();
-            //Syncfusion.Licensing.SyncfusionLicenseProvider
-            //    .RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWX5eeXRXRWJfV0RxXEU=");
             services.AddControllersWithViews().AddFluentValidation(fv =>
             {
                 fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
@@ -60,6 +63,18 @@ namespace CourtApp.Web
              {
                  options.JsonSerializerOptions.PropertyNamingPolicy = null;
              });
+            services.Configure<FormOptions>(opt =>
+            {
+                opt.MultipartBodyLengthLimit = 512 * 1024 * 1024; // 512 MB limit
+            });
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                // Example: Setting a custom maximum request body size (for large file uploads)
+                options.Limits.MaxRequestBodySize = 524288000; // 500 MB limit
+
+                // Example: Setting the timeout for connections
+                options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
+            });
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddDistributedMemoryCache();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -82,24 +97,25 @@ namespace CourtApp.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseNotyf();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-
+                
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{area=Dashboard}/{controller=Home}/{action=Index}/{id?}");
 
-
+                
                 endpoints.MapRazorPages();
-
+                
             });
         }
     }

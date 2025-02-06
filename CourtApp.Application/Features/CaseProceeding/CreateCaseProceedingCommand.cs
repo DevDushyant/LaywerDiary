@@ -4,6 +4,7 @@ using CourtApp.Application.DTOs.CaseProceedings;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,55 +58,70 @@ namespace CourtApp.Application.Features.CaseProceeding
             }
             var entity = _mapper.Map<CaseProcedingEntity>(request);
             entity.ProceedingDate = request.ProceedingDate;
-            await _Repository.AddAsync(entity);
-            await _unitOfWork.Commit(cancellationToken);
-            var LcasesDt = GetAllChildrenAsync(request.CaseId, request.UserId);
-            if (LcasesDt != null)
+
+            // ✅ Fetch child cases asynchronously
+            var childCases = await GetAllChildrenAsync(request.CaseId, request.UserId);
+            if (childCases.Any())
             {
-                foreach (var it in LcasesDt)
+                var childEntities = childCases.Select(it => new CaseProcedingEntity
                 {
-                    entity.CaseId = it.Id;
-                    await _Repository.AddAsync(entity);
-                    await _unitOfWork.Commit(cancellationToken);
+                    CaseId = it.Id,
+                    HeadId = entity.HeadId,
+                    SubHeadId = entity.SubHeadId,
+                    StageId = entity.StageId,
+                    NextDate = entity.NextDate,
+                    ProceedingDate = entity.ProceedingDate,
+                    CreatedBy = request.UserId,
+                    CreatedOn = DateTime.UtcNow,
+                    ProcWork = entity.ProcWork
+                }).ToList();
+                childEntities.Add(entity);
+
+                // ✅ Batch insert child cases
+                await _Repository.AddAsyncRange(childEntities);
+                await _unitOfWork.Commit(cancellationToken);
+                return Result<Guid>.Success(entity.Id);
+            }
+            else
+            {
+                await _Repository.AddAsync(entity);
+                await _unitOfWork.Commit(cancellationToken);
+                return Result<Guid>.Success(entity.Id);
+            }
+            return Result<Guid>.Fail();
+        }
+
+        // ✅ Convert to an async method for better performance
+        public async Task<List<CaseDetailEntity>> GetAllChildrenAsync(Guid parentId, string userId)
+        {
+            var userCases = await _CaseRepo.Entites
+                .Where(w => w.CreatedBy == userId)
+                .ToListAsync();
+
+            return GetChildrenIteratively(userCases, parentId);
+        }
+
+        // ✅ Use an iterative approach instead of recursion to prevent StackOverflow
+        private List<CaseDetailEntity> GetChildrenIteratively(List<CaseDetailEntity> userCases, Guid parentId)
+        {
+            var result = new List<CaseDetailEntity>();
+            var stack = new Stack<CaseDetailEntity>();
+            var childCases = userCases.Where(c => c.LinkedCaseId == parentId);
+            foreach (var childCase in childCases)
+            {
+                stack.Push(childCase); // Push each item separately
+            }
+            while (stack.Count > 0)
+            {
+                var current = stack.Pop();
+                result.Add(current);
+                foreach (var child in userCases.Where(c => c.LinkedCaseId == current.Id))
+                {
+                    stack.Push(child);
                 }
             }
-
-            return Result<Guid>.Success(entity.Id); ;
+            return result;
         }
-
-        public List<CaseDetailEntity> GetAllChildrenAsync(Guid parentId, string UserId)
-        {
-            var UserCases = _CaseRepo.Entites.Where(w => w.CreatedBy.Equals(UserId)).ToList();
-            return GetChildrenRecursive(UserCases, parentId);
-        }
-
-        private List<CaseDetailEntity> GetChildrenRecursive(List<CaseDetailEntity> UserCases, Guid parentId)
-        {
-            var children = UserCases.Where(c => c.LinkedCaseId == parentId).ToList();
-            foreach (var child in children)
-            {
-                children.AddRange(GetChildrenRecursive(UserCases, child.Id));
-            }
-            return children;
-        }
-        //public async Task<(CaseDetailEntity Parent, List<CaseDetailEntity> Siblings)> GetParentAndSiblingsAsync(int childId)
-        //{
-        //    var child = await _context.Categories
-        //        .Include(c => c.Parent)
-        //        .FirstOrDefaultAsync(c => c.Id == childId);
-
-        //    if (child?.ParentId == null)
-        //    {
-        //        return (null, new List<CaseDetailEntity>()); // No parent, so no siblings
-        //    }
-
-        //    var siblings = await _context.Categories
-        //        .Where(c => c.ParentId == child.ParentId && c.Id != childId)
-        //        .ToListAsync();
-
-        //    return (child.Parent, siblings);
-        //}
-
 
     }
 }

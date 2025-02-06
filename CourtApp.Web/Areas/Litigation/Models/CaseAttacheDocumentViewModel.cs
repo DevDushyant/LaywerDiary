@@ -9,9 +9,13 @@ namespace CourtApp.Web.Areas.Litigation.Models
     {
         public Guid CaseId { get; set; }
         public Guid DOTypeId { get; set; }
-        public Guid DOId { get; set; }       
-        public SelectList DocTypes { get; set; }        
-        public List<AttachmentModel> Documents { get; set; }              
+        public Guid DOId { get; set; }
+        public string Title { get; set; }
+        public string Court { get; set; }
+        public string CaseNoYear { get; set; }
+        public List<CaseDoc> Docs { get; set; }
+        public SelectList DocTypes { get; set; }
+        public List<AttachmentModel> Documents { get; set; }
     }
 
     public class AttachmentModel

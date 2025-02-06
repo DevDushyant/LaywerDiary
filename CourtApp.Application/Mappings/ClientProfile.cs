@@ -11,11 +11,11 @@ namespace CourtApp.Application.Mappings
     public class ClientProfile : Profile
     {
         public ClientProfile()
-        {          
+        {
             CreateMap<CreateClientCommand, ClientEntity>();
-            CreateMap<ClientFee, CaseFeeEntity>()
-            .ForPath(d => d.AdvanceAmount, s => s.MapFrom(src => src.FeeAdvance))
-            .ForPath(d => d.SettledAmount, s => s.MapFrom(src => src.FeeSettled));
+            //CreateMap<ClientFee, CaseFeeEntity>()
+            //.ForPath(d => d.AdvanceAmount, s => s.MapFrom(src => src.FeeAdvance))
+            //.ForPath(d => d.SettledAmount, s => s.MapFrom(src => src.FeeSettled));
             CreateMap<ClientEntity, GetClientByIdResponse>();
             CreateMap<GetAllClientCachedResponse, ClientEntity>().ReverseMap();
             CreateMap<CaseFeeEntity, ClientFeeDto>();

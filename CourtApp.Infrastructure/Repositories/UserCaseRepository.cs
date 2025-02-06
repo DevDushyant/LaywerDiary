@@ -39,6 +39,7 @@ namespace CourtApp.Infrastructure.Repositories
         {
             return await _repository
                .Entities
+               .Include(pc => pc.CaseProcEntities).ThenInclude(w => w.ProcWork)
                 .Include(d => d.CaseAgainstEntities)
                     .ThenInclude(c => c.CourtType)
                 .Include(d => d.CourtType)

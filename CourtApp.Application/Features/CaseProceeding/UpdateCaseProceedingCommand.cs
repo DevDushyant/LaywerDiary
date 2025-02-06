@@ -4,9 +4,12 @@ using CourtApp.Application.DTOs.CaseProceedings;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.CaseProceeding
 {
@@ -20,6 +23,7 @@ namespace CourtApp.Application.Features.CaseProceeding
         public DateTime ProceedingDate { get; set; }
         public string Remark { get; set; }
         public ProceedingWorkDto ProcWork { get; set; }
+        public string UserId { get; set; }
     }
     public class UpdateCaseProceedingCommandHandler : IRequestHandler<UpdateCaseProceedingCommand, Result<Guid>>
     {
@@ -52,6 +56,7 @@ namespace CourtApp.Application.Features.CaseProceeding
                 await _CaseRepo.UpdateAsync(CaseDetail);
             }
             var entity = await _Repository.GetByIdAsync(request.CaseId, null);
+            //var childCases = await GetAllChildrenAsync(request.CaseId, request.UserId);
             if (entity != null)
             {
                 entity.NextDate = request.NextDate;
@@ -72,6 +77,38 @@ namespace CourtApp.Application.Features.CaseProceeding
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(obj.Id); ;
             }
+        }
+
+        // ✅ Convert to an async method for better performance
+        public async Task<List<CaseDetailEntity>> GetAllChildrenAsync(Guid parentId, string userId)
+        {
+            var userCases = await _CaseRepo.Entites
+                .Where(w => w.CreatedBy == userId)
+                .ToListAsync();
+
+            return GetChildrenIteratively(userCases, parentId);
+        }
+
+        // ✅ Use an iterative approach instead of recursion to prevent StackOverflow
+        private List<CaseDetailEntity> GetChildrenIteratively(List<CaseDetailEntity> userCases, Guid parentId)
+        {
+            var result = new List<CaseDetailEntity>();
+            var stack = new Stack<CaseDetailEntity>();
+            var childCases = userCases.Where(c => c.LinkedCaseId == parentId);
+            foreach (var childCase in childCases)
+            {
+                stack.Push(childCase); // Push each item separately
+            }
+            while (stack.Count > 0)
+            {
+                var current = stack.Pop();
+                result.Add(current);
+                foreach (var child in userCases.Where(c => c.LinkedCaseId == current.Id))
+                {
+                    stack.Push(child);
+                }
+            }
+            return result;
         }
     }
 }

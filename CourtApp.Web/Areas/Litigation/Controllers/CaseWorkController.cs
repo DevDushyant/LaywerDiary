@@ -18,7 +18,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new GetAssignedWorkQuery { PageSize = 10, PageNumber = 1 });
+            var response = await _mediator.Send(new GetAssignedWorkQuery
+            {
+                PageSize = 10000,
+                PageNumber = 1
+            });
             if (response.Succeeded)
             {
                 var model = new PendingWorkDataViewModel();

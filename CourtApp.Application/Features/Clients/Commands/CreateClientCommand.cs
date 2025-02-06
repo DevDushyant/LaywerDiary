@@ -1,14 +1,12 @@
-﻿using CourtApp.Application.Interfaces.Repositories;
-using AspNetCoreHero.Results;
+﻿using AspNetCoreHero.Results;
 using AutoMapper;
+using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CourtApp.Domain.Entities.LawyerDiary;
-using System;
-using CourtApp.Domain.Entities.Account;
-using System.Linq;
-using CourtApp.Domain.Entities.Common;
 
 namespace CourtApp.Application.Features.Clients.Commands
 {
@@ -22,16 +20,16 @@ namespace CourtApp.Application.Features.Clients.Commands
         public string Phone { get; set; }
         public string ReferalBy { get; set; }
         public Guid AppearenceID { get; set; }
-        public Guid? OppositCounselId { get; set; }
+        //public Guid? OppositCounselId { get; set; }
         public Guid CaseId { get; set; }
-        public ClientFee FeeDetail { get; set; }
+        //public ClientFee FeeDetail { get; set; }
         public string UserId { get; set; }
     }
-    public class ClientFee
-    {
-        public Decimal FeeSettled { get; set; }
-        public Decimal FeeAdvance { get; set; }
-    }
+    //public class ClientFee
+    //{
+    //    public Decimal FeeSettled { get; set; }
+    //    public Decimal FeeAdvance { get; set; }
+    //}
 
     public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, Result<Guid>>
     {
@@ -63,7 +61,7 @@ namespace CourtApp.Application.Features.Clients.Commands
             if (detail == null)
             {
                 var entity = _mapper.Map<ClientEntity>(request);
-                entity.CaseFee = _mapper.Map<CaseFeeEntity>(request.FeeDetail);
+                //entity.CaseFee = _mapper.Map<CaseFeeEntity>(request.FeeDetail);
                 await _clientRepository.InsertAsync(entity);
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(entity.Id);

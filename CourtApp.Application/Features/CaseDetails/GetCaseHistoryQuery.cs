@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -61,6 +60,19 @@ namespace CourtApp.Application.Features.CaseDetails
                                 .SelectMany(w => w.Works)
                                 .ToList()
                     }).ToList();
+                //var cprocs = await _ProceedingRepo.GetProceedingByCaseIdAsync(request.CaseId);
+
+                //var PWorks = cprocs
+                //    .Where(pd => pd != null) // Ensure pd is not null
+                //    .GroupBy(pd => pd.ProceedingDate)
+                //    .Select(g => new
+                //    {
+                //        ProceedingDate = g.Key,
+                //        works = g.Select(s => s.ProcWork)
+                //                .Where(pw => pw != null) // Ensure ProcWork is not null
+                //                .SelectMany(w => w.Works) // Ensure Works is not null
+                //                .ToList()
+                //    }).ToList();
 
                 var result = PWorks.Select(pw =>
                 {
@@ -137,6 +149,7 @@ namespace CourtApp.Application.Features.CaseDetails
                     .Include(d => d.DO)
                     .Where(w => w.CaseId == request.CaseId).Select(s => new CaseUploadedDocument
                     {
+                        Id = s.Id,
                         DocType = s.DOTypeId == 1 ? "Drafting" : "Order",
                         DocFilePath = s.Path,
                         DocName = s.DO.Name_En,

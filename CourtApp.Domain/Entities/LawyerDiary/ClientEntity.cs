@@ -7,9 +7,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CourtApp.Domain.Entities.LawyerDiary
 {
 
-    [Table("client", Schema = "ld")]    
+    [Table("client", Schema = "ld")]
     public class ClientEntity : AuditableEntity
-    {        
+    {
         public string Name { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }
@@ -18,9 +18,9 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public string Phone { get; set; }
         public string ReferalBy { get; set; }
         public Guid AppearenceID { get; set; }
-        public Guid? OppositCounselId { get; set; }    
-        public virtual LawyerMasterEntity OppositCounsel { get; set; }        
+        //public Guid? OppositCounselId { get; set; }
+        //public virtual LawyerMasterEntity OppositCounsel { get; set; }
         public virtual CaseFeeEntity CaseFee { get; set; }
-        public virtual FSTitleEntity Appearence{ get; set; }
+        public virtual FSTitleEntity Appearence { get; set; }
     }
 }

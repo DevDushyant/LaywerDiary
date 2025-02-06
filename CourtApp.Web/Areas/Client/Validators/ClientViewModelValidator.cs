@@ -30,13 +30,13 @@ namespace CourtApp.Web.Areas.Client.Validators
                .NotEmpty().WithMessage("{PropertyName} is required.")
                .NotNull();
 
-            RuleFor(p => p.FeeDetail.FeeSettled)
-               .NotEmpty().WithMessage("{PropertyName} is required.")
-               .NotNull();               
+            //RuleFor(p => p.FeeDetail.FeeSettled)
+            //   .NotEmpty().WithMessage("{PropertyName} is required.")
+            //   .NotNull();               
 
-            RuleFor(p => p.FeeDetail.FeeAdvance)
-               .NotEmpty().WithMessage("{PropertyName} is required.")
-               .NotNull();
+            //RuleFor(p => p.FeeDetail.FeeAdvance)
+            //   .NotEmpty().WithMessage("{PropertyName} is required.")
+            //   .NotNull();
 
         }
     }

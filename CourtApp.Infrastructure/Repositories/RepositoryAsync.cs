@@ -24,6 +24,11 @@ namespace CourtApp.Infrastructure.Repositories
             return entity;
         }
 
+        public async Task AddRange(List<T> entity)
+        {
+            await _dbContext.Set<T>().AddRangeAsync(entity);
+        }
+
         public Task DeleteAsync(T entity)
         {
             _dbContext.Set<T>().Remove(entity);
@@ -59,19 +64,9 @@ namespace CourtApp.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
-        //public async Task BulkInsert(List<T> entity)
-        //{
-        //    await _dbContext.BulkInsertAsync(entity);
-        //}
-
-        //public async Task BulkUpdate(List<T> entity)
-        //{
-        //    await _dbContext.BulkUpdateAsync(entity);
-        //}
-
-        //public async Task BulkDelete(List<T> entity)
-        //{
-        //    await _dbContext.BulkDeleteAsync(entity);
-        //}
+        public async Task UpdateRangeAsync(List<T> entities)
+        {
+            _dbContext.UpdateRange(entities);
+        }
     }
 }

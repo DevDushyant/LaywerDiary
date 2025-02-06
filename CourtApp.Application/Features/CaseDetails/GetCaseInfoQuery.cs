@@ -1,19 +1,16 @@
 ﻿using AspNetCoreHero.Results;
-using CourtApp.Application.Extensions;
 using CourtApp.Application.DTOs.CaseDetails;
+using CourtApp.Application.Extensions;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
+using KT3Core.Areas.Global.Classes;
 using MediatR;
-using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using KT3Core.Areas.Global.Classes;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Dynamic.Core;
-using System.Linq;
-using System.Data;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
 namespace CourtApp.Application.Features.CaseDetails
@@ -74,8 +71,8 @@ namespace CourtApp.Application.Features.CaseDetails
                              select new GetCaseInfoDto
                              {
                                  Id = e.Id,
-                                 No=e.CaseNo,
-                                 Year=e.CaseYear.ToString(),
+                                 No = e.CaseNo,
+                                 Year = e.CaseYear.ToString(),
                                  CourtType = e.CourtType.CourtType.ToString(),
                                  CaseType = e.CaseType.Name_En,
                                  Court = e.CourtBench.CourtBench_En,

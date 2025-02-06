@@ -9,6 +9,7 @@ namespace CourtApp.Application.Interfaces.Repositories
     {
         Task<Guid> SaveCaseDocAsync(CaseDocsEntity entity);
         IQueryable<CaseDocsEntity> Entities { get; }
+        Task DeleteAsync(CaseDocsEntity objEntity);
 
     }
 }

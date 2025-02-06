@@ -1,12 +1,10 @@
-﻿using CourtApp.Application.Interfaces.Repositories;
-using AspNetCoreHero.Results;
+﻿using AspNetCoreHero.Results;
+using AutoMapper;
+using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System;
-using CourtApp.Domain.Entities.LawyerDiary;
-using AutoMapper;
-using CourtApp.Domain.Entities.Account;
 
 namespace CourtApp.Application.Features.Clients.Commands
 {
@@ -26,7 +24,8 @@ namespace CourtApp.Application.Features.Clients.Commands
         public int StateCode { get; set; }
         public int DistrictCode { get; set; }
         public string ReferalBy { get; set; }
-        public ClientFee FeeDetail { get; set; }
+        public Guid AppearenceID { get; set; }
+        //public ClientFee FeeDetail { get; set; }
     }
     public class UpdateClientCommandHandler : IRequestHandler<UpdateClientCommand, Result<Guid>>
     {
@@ -61,7 +60,9 @@ namespace CourtApp.Application.Features.Clients.Commands
                 client.Phone = command.Phone;
                 client.Mobile = command.Mobile;
                 client.ReferalBy = command.ReferalBy;
-                client.CaseFee = _mapper.Map<CaseFeeEntity>(command.FeeDetail);
+                client.AppearenceID = command.AppearenceID;
+                client.Address = command.Address;
+                //client.CaseFee = _mapper.Map<CaseFeeEntity>(command.FeeDetail);
                 await _clientRepository.UpdateAsync(client);
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(client.Id);

@@ -7,6 +7,7 @@ using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,6 +21,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     [Area("Litigation")]
     public class CaseManageController : BaseController<CaseManageController>
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private const long MaxFileSize = 200 * 1024 * 1024; // 100MB
+        public CaseManageController(IWebHostEnvironment _webHostEnvironment)
+        {
+            this._webHostEnvironment = _webHostEnvironment;
+        }
 
         #region Case Management Area
         public IActionResult Index()
@@ -31,7 +38,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             var response = await _mediator.Send(new GetCaseInfoQuery()
             {
-                UserId = CurrentUser.Id
+                UserId = CurrentUser.Id,
+                PageSize = 10000,
+                PageNumber = 1
             });
             if (response.Succeeded)
             {
@@ -392,59 +401,126 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         #region Document Upload 
         public async Task<IActionResult> GetFileUploadModel(Guid CaseId)
         {
+            var response = await _mediator.Send(new GetCaseHistoryQuery() { CaseId = CaseId });
+            List<CaseDoc> UDocs = new List<CaseDoc>();
             var model = new CaseAttacheDocumentViewModel();
-            model.CaseId = CaseId;
-            model.DocTypes = DOTypes();
+            if (response.Succeeded)
+            {
+                var docs = response.Data.Docs;
+                var CaseInfo = response.Data;
+                foreach (var item in docs)
+                {
+                    string ext = item.DocFilePath.Split(".")[1];
+                    string Icon = "";
+                    if (ext == "doc" || ext == "docx") Icon = "fa fa-file-word-o";
+                    else Icon = "fa fa-file-pdf";
+                    UDocs.Add(new CaseDoc
+                    {
+                        DocFilePath = item.DocFilePath,
+                        DocName = item.DocName,
+                        DocType = item.DocType,
+                        DocDate = item.DocDate,
+                        Id = item.Id,
+                        FIcon = Icon
+                    });
+                }
+
+                model.CaseId = CaseId;
+                model.DocTypes = DOTypes();
+                model.Docs = UDocs;
+                model.CaseNoYear = CaseInfo.CaseNoYear;
+                model.Title = CaseInfo.Title;
+                model.Court = CaseInfo.Court;
+            }
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_UploadCaseDoc", model) });
         }
 
         public async Task<IActionResult> UploadCaseDocs(CaseAttacheDocumentViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                List<CaseDocumentModel> ddoc = new List<CaseDocumentModel>();
-                string Root = "wwwroot";
-                if (model.Documents.Count() > 0)
+                return new JsonResult(new { isValid = false, message = "Invalid request data." });
+            }
+            List<CaseDocumentModel> ddoc = new List<CaseDocumentModel>();
+            string root = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            if (model.Documents.Count > 0)
+            {
+                foreach (var f in model.Documents)
                 {
-                    foreach (var f in model.Documents)
+                    // Step 1: Validate File
+                    if (!IsValidFileType(f.Document))
                     {
-                        string DcFld = f.TypeId == 1 ? "Draft" : "Order";
-                        string DocPath = "documents/" + DcFld + "/" + model.CaseId;
-                        string FullPath = Root + "/" + DocPath;
-                        string path = Path.Combine(Directory.GetCurrentDirectory(), FullPath);
-                        if (!Directory.Exists(path))
-                            Directory.CreateDirectory(path);
-                        FileInfo fileInfo = new FileInfo(f.Document.FileName);
-                        string fileName = f.Document.FileName;
-
-                        string fileNameWithPath = Path.Combine(path, fileName);
-
-                        using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                        return BadRequest($"Invalid file type: {Path.GetExtension(f.Document.FileName)}. Only PDF and DOCX are allowed.");
+                    }
+                    if (f.Document.Length > MaxFileSize)
+                    {
+                        return BadRequest("File size exceeds the 200MB limit.");
+                    }
+                    try
+                    {
+                        // Step 2: Determine Folder Path
+                        string dcFld = f.TypeId == 1 ? "Draft" : "Order";
+                        string docPath = Path.Combine("documents", dcFld, model.CaseId.ToString());
+                        string fullPath = Path.Combine(root, docPath);
+                        // Step 3: Check & Create Directory If It Doesn't Exist
+                        if (!Directory.Exists(fullPath))
                         {
-                            f.Document.CopyTo(stream);
+                            Directory.CreateDirectory(fullPath);
+                            _logger.LogInformation($"Directory created: {fullPath}");
                         }
+
+                        // Step 3: Generate Unique File Name
+                        string uniqueFileName = $"{Path.GetFileNameWithoutExtension(f.Document.FileName)}_{Guid.NewGuid()}{Path.GetExtension(f.Document.FileName)}";
+                        string fileNameWithPath = Path.Combine(fullPath, uniqueFileName);
+                        // Step 4: Compress & Save File
+                        string compressedFilePath = await CompressFileAsync(f.Document, fileNameWithPath);
                         ddoc.Add(new CaseDocumentModel
                         {
                             DocId = f.DocId,
                             TypeId = f.TypeId,
-                            DocPath = DocPath + "/" + fileName,
+                            DocPath = Path.Combine(docPath, Path.GetFileName(compressedFilePath)),
                             DocDate = f.DocDate
                         });
                     }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"Error uploading file {f.Document.FileName}: {ex.Message}");
+                        return StatusCode(500, "Internal Server Error while processing the file.");
+                    }
                 }
-                var docMapper = _mapper.Map<List<DocumentAttachmentModel>>(ddoc);
-                var respose = await _mediator.Send(new CaseDocsCreateCommand()
-                {
-                    CaseId = model.CaseId,
-                    Documents = docMapper
-                });
-                if (respose.Succeeded)
-                {
-                    return RedirectToAction("Index");
-                }
-                return null;
             }
-            return new JsonResult(new { isValid = true });
+            // Step 5: Map and Save to Database
+            var docMapper = _mapper.Map<List<DocumentAttachmentModel>>(ddoc);
+            var response = await _mediator.Send(new CaseDocsCreateCommand()
+            {
+                CaseId = model.CaseId,
+                Documents = docMapper
+            });
+            if (response.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+            return new JsonResult(new { isValid = false, message = "Failed to process the request." });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteDoc(Guid id, string fPath)
+        {
+            var respose = await _mediator.Send(new DeleteCaseDocumentCommand()
+            {
+                DocId = id
+            });
+            if (respose.Succeeded)
+            {
+                string filePath = Path.Combine(_webHostEnvironment.WebRootPath, fPath);
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+                return Json(new { success = true });
+            }
+            return Json(new { success = respose.Failed, respose.Message });
+
         }
         #endregion
 
@@ -465,7 +541,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         public async Task<IActionResult> OnCreateClientInfoAsync()
         {
             var ViewModel = new ClientViewModel();
-            ViewModel.OppositCounsels = await DdlLawyerAsync();
+            //ViewModel.OppositCounsels = await DdlLawyerAsync();
             ViewModel.Appearences = await DdlFSTypes(0);
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateCaseClient", ViewModel) });
         }
@@ -473,7 +549,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             var ViewModel = new ClientViewModel();
             ViewModel.CaseId = CaseId;
-            ViewModel.OppositCounsels = await DdlLawyerAsync();
+            //ViewModel.OppositCounsels = await DdlLawyerAsync();
             ViewModel.Appearences = await DdlFSTypes(0);
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_ClientInfoDetail", ViewModel) });
         }
@@ -607,7 +683,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new GetCaseWohDateQuery()
             {
                 UserId = CurrentUser.Id,
-                PageSize = 1000,
+                PageSize = 10000,
                 PageNumber = 1
             });
             if (response.Succeeded)

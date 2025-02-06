@@ -2,12 +2,8 @@
 using AutoMapper;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
-using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,7 +32,7 @@ namespace CourtApp.Application.Features.CourtFeeStructure.Command
         }
         public async Task<Result<Guid>> Handle(CreateCourtFeeStructureCommand request, CancellationToken cancellationToken)
         {
-            var mappeddata = mapper.Map<CourtFeeStructureEntity>(request);          
+            var mappeddata = mapper.Map<CourtFeeStructureEntity>(request);
             await repository.InsertAsync(mappeddata);
             await _unitOfWork.Commit(cancellationToken);
             return Result<Guid>.Success(mappeddata.Id);

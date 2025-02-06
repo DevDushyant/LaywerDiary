@@ -12,7 +12,6 @@ namespace CourtApp.Application.Interfaces.Repositories
         Task<List<CourtBenchEntity>> GetListAsync();
         Task<CourtBenchEntity> GetByIdAsync(Guid Id);
         Task<Guid> AddBenchAsync(CourtBenchEntity Entity);
-        //Task<Guid> InsertAsync(List<CourtBenchEntity> Entity);
         Task UpdateAsync(List<CourtBenchEntity> Entity);
         Task DeleteAsync(CourtBenchEntity Entity);
     }
