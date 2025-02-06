@@ -1,4 +1,4 @@
-﻿using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using System;
 using System.Linq;
@@ -25,10 +25,6 @@ namespace CourtApp.Infrastructure.Repositories
         {
             await _repository.AddAsync(entity);
             return entity.Id;
-        }
-        public async Task DeleteAsync(CaseDocsEntity objEntity)
-        {
-            await _repository.DeleteAsync(objEntity);
         }
     }
 }
