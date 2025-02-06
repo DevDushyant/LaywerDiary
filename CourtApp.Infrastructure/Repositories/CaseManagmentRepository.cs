@@ -1,17 +1,15 @@
 ﻿using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CourtApp.Infrastructure.Repositories
 {
-    public class CaseManagmentRepository: ICaseManagmentRepository
+    public class CaseManagmentRepository : ICaseManagmentRepository
     {
         private readonly IRepositoryAsync<CaseDetailEntity> _repository;
         private readonly IDistributedCache _distributedCache;
@@ -24,8 +22,11 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<List<CaseDetailEntity>> GetListAsync()
         {
             try { var data = _repository.Entities.ToListAsync(); return await data; }
-           catch (Exception ex)
-            { return null; }           
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
 
 
         }

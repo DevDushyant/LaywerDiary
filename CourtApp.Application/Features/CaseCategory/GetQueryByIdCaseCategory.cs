@@ -4,13 +4,13 @@ using CourtApp.Application.DTOs.CaseCategory;
 using CourtApp.Application.Interfaces.CacheRepositories;
 using MediatR;
 using System;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.CaseCategory
 {
-    public class GetQueryByIdCaseCategory:IRequest<Result<CaseCategoryByIdResponse>>
+    public class GetQueryByIdCaseCategory : IRequest<Result<CaseCategoryByIdResponse>>
     {
         public Guid Id { get; set; }
     }
@@ -23,12 +23,13 @@ namespace CourtApp.Application.Features.CaseCategory
             this._repository = _repository;
             this.mapper = _mapper;
         }
-        
+
 
         public async Task<Result<CaseCategoryByIdResponse>> Handle(GetQueryByIdCaseCategory request, CancellationToken cancellationToken)
         {
-            var data =   _repository.GetCachedListAsync().Result.Where(w => w.Id == request.Id).FirstOrDefault();
-            var mappeddata = mapper.Map<CaseCategoryByIdResponse>(data);
+            var data = await _repository.GetCachedListAsync();
+            var dt = data.Where(w => w.Id == request.Id).FirstOrDefault();
+            var mappeddata = mapper.Map<CaseCategoryByIdResponse>(dt);
             return Result<CaseCategoryByIdResponse>.Success(mappeddata);
         }
     }

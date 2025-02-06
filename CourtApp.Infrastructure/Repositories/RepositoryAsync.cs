@@ -64,9 +64,10 @@ namespace CourtApp.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task UpdateRangeAsync(List<T> entities)
+        public Task UpdateRangeAsync(List<T> entities)
         {
             _dbContext.UpdateRange(entities);
+            return Task.CompletedTask;
         }
     }
 }

@@ -19,7 +19,6 @@ namespace CourtApp.Application.Features.FormBuilder
     }
     public class GetCaseMappingDetailInfoQueryHandler : IRequestHandler<GetCaseMappingDetailInfoQuery, Result<CaseMappingDetailInfoDto>>
     {
-        private readonly ICaseStageCacheRepository _RepoStage;
         private readonly ICaseNatureCacheRepository _RepoNature;
         private readonly IUserCaseRepository _RepoCase;
         private readonly ICaseDraftingRepository _RepoDrafting;
@@ -73,10 +72,10 @@ namespace CourtApp.Application.Features.FormBuilder
                 var fsTitles = draftingDetail.Case.Titles
                     .Where(t => t.TypeId == 1)
                     .SelectMany(a => a.CaseApplicants);
-                string ftils ="" ;
-                foreach (var item in fsTitles)               
+                string ftils = "";
+                foreach (var item in fsTitles)
                     ftils += item.ApplicantNo + ".    " + item.ApplicantDetail + " <br><br><br>";
-                
+
                 var ssTitles = draftingDetail.Case.Titles.Where(t => t.TypeId == 2)
                     .SelectMany(a => a.CaseApplicants);
                 string stils = "";
@@ -98,14 +97,14 @@ namespace CourtApp.Application.Features.FormBuilder
                     var dbm = new MappingDetails();
                     dbm.Key = it.Tag.Trim();
                     if (it.Tag.Trim() == "#DBStrength#") dbm.Value = draftingDetail.Case.StrengthId == 1 ? "S.B." : "D.B. <br><br>";
-                    else if (it.Tag.Trim() == "#DBStateName#") dbm.Value = draftingDetail.Case.State.Name_En.ToUpper()+" <br>";
+                    else if (it.Tag.Trim() == "#DBStateName#") dbm.Value = draftingDetail.Case.State.Name_En.ToUpper() + " <br>";
                     else if (it.Tag.Trim() == "#DBBench#") dbm.Value = draftingDetail.Case.CourtBench.CourtBench_En.ToUpper();
                     else if (it.Tag.Trim() == "#DBCaseType#") dbm.Value = draftingDetail.Case.CaseType.Name_En;
                     else if (it.Tag.Trim() == "#DBCaseNoYear#") dbm.Value = draftingDetail.Case.CaseNo + "/" + draftingDetail.Case.CaseYear;
                     else if (it.Tag.Trim() == "#DBFTCase#") dbm.Value = ftils;//draftingDetail.Case.FirstTitle;
                     else if (it.Tag.Trim() == "#DBSTCase#") dbm.Value = stils;//draftingDetail.Case.SecondTitle;
-                    
-                    else if (it.Tag.Trim() == "#DBFirstTitleFull#") dbm.Value =draftingDetail.Case.FirstTitle;
+
+                    else if (it.Tag.Trim() == "#DBFirstTitleFull#") dbm.Value = draftingDetail.Case.FirstTitle;
                     else if (it.Tag.Trim() == "#DBSecondTitleFull#") dbm.Value = draftingDetail.Case.SecondTitle;
 
                     else if (it.Tag.Trim() == "#DBFirstTitle#") dbm.Value = draftingDetail.Case.FTitle.Name_En;

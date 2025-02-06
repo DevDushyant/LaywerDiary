@@ -97,10 +97,6 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             }
             else
             {
-                //var oprDetail = _identityDbContext
-                //    .Operators
-                //    .Where(w => w.Id == id)
-                //    .FirstOrDefault();
                 var OprUser = await _userManager.Users
                     .Where(a => a.UserType == "Operator" && a.Id == id.ToString())
                     .FirstOrDefaultAsync();

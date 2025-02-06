@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 namespace CourtApp.Application.Features.FormPrint
@@ -50,7 +49,7 @@ namespace CourtApp.Application.Features.FormPrint
                                         : cd.CaseProcEntities.Max(p => p.NextDate.HasValue ? p.NextDate.Value : DateTime.MinValue).ToString("dd/MM/yyyy")
                         }).ToList();
 
-            return Result<List<PermissionSlipResponse>>.Success(Cases.ToList());
+            return await Result<List<PermissionSlipResponse>>.SuccessAsync(Cases.ToList());
         }
     }
 }

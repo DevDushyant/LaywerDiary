@@ -1,17 +1,13 @@
 ﻿using AspNetCoreHero.Results;
 using CourtApp.Application.DTOs.FormPrint;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Domain.Entities.CaseDetails;
-using KT3Core.Areas.Global.Classes;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using NLog.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using static CourtApp.Application.Constants.Permissions;
 
 namespace CourtApp.Application.Features.FormPrint
 {
@@ -54,7 +50,7 @@ namespace CourtApp.Application.Features.FormPrint
                                     Applicant = a.ApplicantDetail
                                 }).ToList()
                 }).ToList();
-            return Result<List<ShowCauseNoticeResponse>>.Success(query.ToList());
+            return await Result<List<ShowCauseNoticeResponse>>.SuccessAsync(query.ToList());
         }
     }
 }

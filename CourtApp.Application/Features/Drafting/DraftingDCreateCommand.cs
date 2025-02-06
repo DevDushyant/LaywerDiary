@@ -1,14 +1,9 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
-using CourtApp.Application.Features.FSTitle;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.Drafting;
-using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -62,10 +57,7 @@ namespace CourtApp.Application.Features.Drafting
         public async Task<Result<Guid>> Handle(DraftingDCreateCommand request, CancellationToken cancellationToken)
         {
             var entity = _mapper.Map<ClaimPetitionDeathEntity>(request);
-            //await _Repo.InsertAsync(entity);
-            //await _uow.Commit(cancellationToken);
-            //return Result<Guid>.Success(entity.Id);
-            return null;
+            return await Result<Guid>.FailAsync();
         }
     }
 }

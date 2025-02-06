@@ -1,15 +1,12 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
-using CourtApp.Application.DTOs.CaseDetails;
 using CourtApp.Application.DTOs.FormPrint;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,8 +35,8 @@ namespace CourtApp.Application.Features.FormPrint
         }
         public async Task<Result<List<InspectionResponse>>> Handle(GetInspectionQuery request, CancellationToken cancellationToken)
         {
-            
-            var Cases = _CaseRepo.Entites
+
+            var Cases = await _CaseRepo.Entites
                        .Include(a => a.CaseAgainstEntities)
                        .Include(p => p.CaseProcEntities)
                        .Include(c => c.CourtType)
@@ -50,7 +47,7 @@ namespace CourtApp.Application.Features.FormPrint
                        {
                            NoYear = cd.CaseNo + "/" + cd.CaseYear,
                            CaseType = cd.CaseType.Name_En,
-                           Title = cd.FirstTitle + " Vs " + cd.SecondTitle,                           
+                           Title = cd.FirstTitle + " Vs " + cd.SecondTitle,
                            CourtName = cd.CourtBench.CourtBench_En,
                            Appearence = cd.FTitle.Name_En,
                            NextDate = cd.NextDate.HasValue && cd.CaseProcEntities.Any()
@@ -60,7 +57,7 @@ namespace CourtApp.Application.Features.FormPrint
                                        : cd.NextDate.HasValue
                                        ? cd.NextDate.Value.ToString("dd/MM/yyyy")
                                        : cd.CaseProcEntities.Max(p => p.NextDate.HasValue ? p.NextDate.Value : DateTime.MinValue).ToString("dd/MM/yyyy")
-                       }).ToList();
+                       }).ToListAsync();
             return Result<List<InspectionResponse>>.Success(Cases.ToList());
         }
     }

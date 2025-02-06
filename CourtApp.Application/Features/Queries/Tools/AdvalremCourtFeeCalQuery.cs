@@ -1,5 +1,4 @@
 ﻿using AspNetCoreHero.Results;
-using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using KT3Core.Areas.Global.Classes;
@@ -54,7 +53,7 @@ namespace CourtApp.Application.Features.Queries.Tools
             }
             else
                 result = "Given amount is not exist the court fee structure!";
-            return Result<string>.Success(result);
+            return await Result<string>.SuccessAsync(result);
         }
     }
 

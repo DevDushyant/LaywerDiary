@@ -5,12 +5,11 @@ using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CourtApp.Infrastructure.Repositories
 {
-    public class WorkMasterRepository:IWorkMasterRepository
+    public class WorkMasterRepository : IWorkMasterRepository
     {
         private readonly IRepositoryAsync<WorkMasterEntity> _repository;
         private readonly IDistributedCache _distributedCache;
@@ -23,8 +22,11 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<List<WorkMasterEntity>> GetListAsync()
         {
             try { var data = _repository.Entities.ToListAsync(); return await data; }
-           catch (Exception ex)
-            { return null; }           
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
 
 
         }

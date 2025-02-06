@@ -31,15 +31,16 @@ namespace CourtApp.Application.Features.FormPrint
                           .Where(w => request.CaseIds.Contains(w.Id))
                           join t in _TitleRepo.Titles on c.Id equals t.CaseId into CompTitles
                           from ct in CompTitles.DefaultIfEmpty()
-                          select new NoticeOfStayAppResponse {
-                             Petitioner = c.FirstTitle,
-                             Respondent = c.SecondTitle,
-                             //FirstTitle = ct.TypeId == 1 ? ct.Title : "",
-                             //SecondTitle = ct.TypeId == 2 ? ct.Title : "",
-                             CaseNoYear = c.CaseNo + "/" + c.CaseYear,
-                             CaseType = c.CaseType.Name_En
-                          };               
-            return Result<List<NoticeOfStayAppResponse>>.Success(Results.ToList());
+                          select new NoticeOfStayAppResponse
+                          {
+                              Petitioner = c.FirstTitle,
+                              Respondent = c.SecondTitle,
+                              //FirstTitle = ct.TypeId == 1 ? ct.Title : "",
+                              //SecondTitle = ct.TypeId == 2 ? ct.Title : "",
+                              CaseNoYear = c.CaseNo + "/" + c.CaseYear,
+                              CaseType = c.CaseType.Name_En
+                          };
+            return await Result<List<NoticeOfStayAppResponse>>.SuccessAsync(Results.ToList());
         }
     }
 }

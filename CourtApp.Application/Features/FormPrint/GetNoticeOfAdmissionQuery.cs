@@ -32,7 +32,7 @@ namespace CourtApp.Application.Features.FormPrint
                           select new NoticeOfAdmissionResponse
                           {
                               Applent = c.FirstTitle,
-                              Respondent = c.SecondTitle ,
+                              Respondent = c.SecondTitle,
                               NoYear = c.CaseNo + "/" + c.CaseYear,
                               CaseType = c.CaseType.Name_En,
                               CivilNoYear = c.CaseNo,
@@ -43,7 +43,7 @@ namespace CourtApp.Application.Features.FormPrint
                               Date = DateTime.UtcNow.Date.ToString("dd/MM/yyyy")
                           };
 
-            return Result<List<NoticeOfAdmissionResponse>>.Success(Results.ToList());
+            return await Result<List<NoticeOfAdmissionResponse>>.SuccessAsync(Results.ToList());
         }
     }
 }

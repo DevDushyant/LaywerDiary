@@ -25,7 +25,9 @@ namespace CourtApp.Infrastructure.Repositories
             {
                 return await _dbContext.SaveChangesAsync(cancellationToken);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
                 return await _dbContext.SaveChangesAsync(cancellationToken);
             }
         }

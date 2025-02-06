@@ -1,14 +1,13 @@
-﻿using CourtApp.Application.Interfaces.CacheRepositories;
-using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Application.CacheKeys;
-using AspNetCoreHero.Extensions.Caching;
+﻿using AspNetCoreHero.Extensions.Caching;
 using AspNetCoreHero.ThrowR;
+using CourtApp.Application.CacheKeys;
+using CourtApp.Application.Interfaces.CacheRepositories;
+using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Domain.Entities.LawyerDiary;
 using Microsoft.Extensions.Caching.Distributed;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
-using CourtApp.Domain.Entities.LawyerDiary;
-using System.Linq;
 
 namespace CourtApp.Infrastructure.CacheRepositories
 {
@@ -47,12 +46,11 @@ namespace CourtApp.Infrastructure.CacheRepositories
                 }
                 return dataList;
             }
-            catch(Exception ee) {
-                return null;
+            catch (Exception ee)
+            {
+                Console.WriteLine(ee.Message);
             }
-
-
-            
+            return null;
         }
     }
 }

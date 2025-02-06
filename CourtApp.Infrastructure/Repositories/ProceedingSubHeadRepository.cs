@@ -5,12 +5,11 @@ using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CourtApp.Infrastructure.Repositories
 {
-    public class ProceedingSubHeadRepository:IProceedingSubHeadRepository
+    public class ProceedingSubHeadRepository : IProceedingSubHeadRepository
     {
         private readonly IRepositoryAsync<ProceedingSubHeadEntity> _repository;
         private readonly IDistributedCache _distributedCache;
@@ -23,8 +22,11 @@ namespace CourtApp.Infrastructure.Repositories
         public async Task<List<ProceedingSubHeadEntity>> GetListAsync()
         {
             try { var data = _repository.Entities.Include(o => o.Head).ToListAsync(); return await data; }
-           catch (Exception ex)
-            { return null; }           
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
 
 
         }
