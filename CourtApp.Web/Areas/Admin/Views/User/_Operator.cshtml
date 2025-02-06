@@ -1,5 +1,5 @@
 ﻿@using CourtApp.Web.Areas.Admin.Models
-@model IEnumerable<UserViewModel>
+@model IEnumerable<OperatorViewModel>
 <table class="table table-striped" id="tblOperator">
     <thead>
         <tr>
@@ -41,7 +41,7 @@
                         }
                         <div class="col-sm">
                             <a>
-                                @user.FirstName @user.LastName
+                                @user.FullName
                             </a>
                             <br>
                             <small>

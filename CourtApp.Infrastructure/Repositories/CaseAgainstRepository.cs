@@ -35,14 +35,6 @@ namespace CourtApp.Infrastructure.Repositories
         {
             throw new NotImplementedException();
         }
-
-        //public async Task<Guid> InsertAsync(List<CaseDetailAgainstEntity> Entity)
-        //{
-        //    await _repository.BulkInsert(Entity);
-        //    await _distributedCache.RemoveAsync(AppCacheKeys.CourtComplexKey);
-        //    return Entity.Select(s => s.CaseId).FirstOrDefault();
-        //}
-
         public Task UpdateAsync(List<CaseDetailAgainstEntity> Entity)
         {
             throw new NotImplementedException();

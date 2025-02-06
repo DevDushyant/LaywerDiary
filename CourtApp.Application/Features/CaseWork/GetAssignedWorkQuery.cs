@@ -1,4 +1,4 @@
-﻿using AspNetCoreHero.Results;
+using AspNetCoreHero.Results;
 using CourtApp.Application.DTOs.CaseWorking;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;

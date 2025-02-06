@@ -1,4 +1,4 @@
-﻿using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;

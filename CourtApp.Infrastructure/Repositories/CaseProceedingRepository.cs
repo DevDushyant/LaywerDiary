@@ -1,4 +1,4 @@
-﻿using CourtApp.Application.CacheKeys;
+using CourtApp.Application.CacheKeys;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
 using Microsoft.EntityFrameworkCore;

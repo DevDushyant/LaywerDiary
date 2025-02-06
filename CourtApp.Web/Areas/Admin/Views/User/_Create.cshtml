@@ -41,8 +41,12 @@
                 <label class="col-md-2 col-form-label">@localizer["Gender"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <select class="form-control select2bs4"
-                            asp-for="Gender" asp-items="@Model.Genders">
+                            asp-for="Gender" placeholder="Select Court Type">
                         <option></option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                        <option value="O">Other</option>
+
                     </select>
                     <small><span asp-validation-for="Gender" class="text-danger"></span></small>
                 </div>
@@ -62,8 +66,7 @@
                     <input type="date" value="@DateTime.Now" asp-for="DateOfJoining" class="form-control">
                     <span asp-validation-for="DateOfJoining" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="form-group row">
+            
                 <label class="col-md-2 col-form-label">@localizer["User Type"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <select class="form-control select2bs4"
@@ -83,20 +86,4 @@
 </form>
 <script type="text/javascript" language=javascript>
     $.validator.unobtrusive.parse(document);
-    $(document).ready(function () {
-        $("#Gender").select2({
-            placeholder: "Select a gender",
-            theme: "bootstrap4",
-            escapeMarkup: function (m) {
-                return m;
-            }
-        });
-         $("#RoleId").select2({
-            placeholder: "Select a role",
-            theme: "bootstrap4",
-            escapeMarkup: function (m) {
-                return m;
-            }
-        });
-    });
 </script>

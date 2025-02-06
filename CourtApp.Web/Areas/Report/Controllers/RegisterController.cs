@@ -42,7 +42,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     var response = await _mediator.Send(new InstitutionRegisterQuery()
                     {
                         PageNumber = 1,
-                        PageSize = 10000,
+                        PageSize = 100,
                         FromDt = fromDt,
                         ToDt = toDt,
                         UserId = CurrentUser.Id
@@ -83,7 +83,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new DisposalRegisterQuery()
             {
                 PageNumber = 1,
-                PageSize = 10000,
+                PageSize = 100,
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
                 UserId = CurrentUser.Id
@@ -112,7 +112,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new CopyingRegisterQuery()
             {
                 PageNumber = 1,
-                PageSize = 10000,
+                PageSize = 100,
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
                 SearchType = s,
@@ -170,7 +170,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new InstitutionRegisterQuery()
             {
                 PageNumber = 1,
-                PageSize = 10000,
+                PageSize = 100,
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
                 UserId = CurrentUser.Id
@@ -208,7 +208,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new OtherRegisterQuery()
             {
                 PageNumber = 1,
-                PageSize = 10000,
+                PageSize = 100,
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
                 UserId = CurrentUser.Id

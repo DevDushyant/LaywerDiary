@@ -32,9 +32,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 CallingFrm = "HTD",
                 HearingDate = Convert.ToDateTime(seleDate),
-                UserId = CurrentUser.Id,
-                PageSize = 10000,
-                PageNumber = 1
+                UserId = CurrentUser.Id
             });
             TempData["SelectedDate"] = seleDate;
             if (response.Succeeded)
@@ -154,6 +152,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 CaseId = CaseId,
                 SelectedDate = Convert.ToDateTime(SelectedDate)
+
             });
             var model = new CaseProceedingViewModel();
             model.CaseId = CaseId;
@@ -219,7 +218,5 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return RedirectToAction("Index", new { SelectedDate = TempData["SelectedDate"].ToString() });
         }
         #endregion
-
-
     }
 }

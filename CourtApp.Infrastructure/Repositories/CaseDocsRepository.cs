@@ -26,5 +26,9 @@ namespace CourtApp.Infrastructure.Repositories
             await _repository.AddAsync(entity);
             return entity.Id;
         }
+        public async Task DeleteAsync(CaseDocsEntity objEntity)
+        {
+            await _repository.DeleteAsync(objEntity);
+        }
     }
 }

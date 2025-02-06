@@ -4,7 +4,6 @@ using CourtApp.Web.Areas.Admin.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -74,7 +73,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                     TemplateName = ViewModel.TemplateName,
                     //TemplatePath = "documents/Templates/",
                     Tags = templateTags,
-                    TemplateBody=ViewModel.TemplateBody
+                    TemplateBody = ViewModel.TemplateBody
                 });
                 if (result.Succeeded)
                     return Json(new { success = true, message = "Template info saved successfully." });
@@ -92,7 +91,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                     templateTags.Add(new TemplateTags() { Tag = tag });
                 var result = await _mediator.Send(new UpdateTemplateInfoCommand()
                 {
-                    Id =id,
+                    Id = id,
                     TemplateName = ViewModel.TemplateName,
                     //TemplatePath = "documents/Templates/",
                     Tags = templateTags,
@@ -103,7 +102,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                 else
                     return Json(new { success = false, message = "Failed to save template info." });
 
-            }           
+            }
         }
 
         [HttpPost]
@@ -197,7 +196,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             ViewModel.Forms = await GetForms();
             if (response.Succeeded)
             {
-                var tempFields = response.Data.Tags.Where(w=>! w.Tag.Contains("DB"));
+                var tempFields = response.Data.Tags.Where(w => !w.Tag.Contains("DB"));
                 var mpf = new List<Mapping>();
                 foreach (var field in tempFields)
                     mpf.Add(new Mapping() { Tag = field.Tag });
