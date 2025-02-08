@@ -22,7 +22,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     public class CaseManageController : BaseController<CaseManageController>
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private const long MaxFileSize = 200 * 1024 * 1024; // 100MB
+        private const long MaxFileSize = 200 * 1024 * 1024; // 200MB
         public CaseManageController(IWebHostEnvironment _webHostEnvironment)
         {
             this._webHostEnvironment = _webHostEnvironment;
@@ -399,7 +399,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         #endregion
 
         #region Document Upload 
-        public async Task<IActionResult> GetFileUploadModel(Guid CaseId)
+        public async Task<IActionResult> GetFileUploadModel(Guid CaseId, string w)
         {
             var response = await _mediator.Send(new GetCaseHistoryQuery() { CaseId = CaseId });
             List<CaseDoc> UDocs = new List<CaseDoc>();
@@ -431,10 +431,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 model.CaseNoYear = CaseInfo.CaseNoYear;
                 model.Title = CaseInfo.Title;
                 model.Court = CaseInfo.Court;
+                model.Where = w;
             }
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_UploadCaseDoc", model) });
         }
 
+        [RequestSizeLimit(MaxFileSize)]
         public async Task<IActionResult> UploadCaseDocs(CaseAttacheDocumentViewModel model)
         {
             if (!ModelState.IsValid)
@@ -498,7 +500,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             });
             if (response.Succeeded)
             {
-                return RedirectToAction("Index");
+                if (model.Where == "mc")
+                    return RedirectToAction("Index");
+                else
+                    return RedirectToAction("institionregister", "register", new { area = "report" });
             }
             return new JsonResult(new { isValid = false, message = "Failed to process the request." });
         }
@@ -700,7 +705,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 CasesHearingDt = _mapper.Map<List<CaseHearingDto>>(casedts)
             });
-            return Json(response);            
+            return Json(response);
         }
         #endregion
     }

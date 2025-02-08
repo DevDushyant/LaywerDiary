@@ -110,5 +110,10 @@ namespace CourtApp.Infrastructure.Repositories
             await _distributedCache.RemoveAsync(UserCaseCacheKeys.ListKey);
             await _distributedCache.RemoveAsync(UserCaseCacheKeys.GetKey(objEntity.Id));
         }
+
+        public async Task UpdateRangeAsync(List<CaseDetailEntity> casesToUpdate)
+        {
+            await _repository.UpdateRangeAsync(casesToUpdate);
+        }
     }
 }

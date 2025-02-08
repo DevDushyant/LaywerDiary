@@ -112,11 +112,14 @@ namespace CourtApp.Infrastructure.Identity.Services
 
         private string RandomTokenString()
         {
-            using var rngCryptoServiceProvider = new RNGCryptoServiceProvider();
-            var randomBytes = new byte[40];
-            rngCryptoServiceProvider.GetBytes(randomBytes);
-            // convert random bytes to hex string
+            var randomBytes = new byte[40]; // 40 bytes = 80 hex characters
+            RandomNumberGenerator.Fill(randomBytes);
             return BitConverter.ToString(randomBytes).Replace("-", "");
+            //using var rngCryptoServiceProvider = new RNGCryptoServiceProvider();
+            //var randomBytes = new byte[40];
+            //rngCryptoServiceProvider.GetBytes(randomBytes);
+            // convert random bytes to hex string
+            //return BitConverter.ToString(randomBytes).Replace("-", "");
         }
 
         private RefreshToken GenerateRefreshToken(string ipAddress)

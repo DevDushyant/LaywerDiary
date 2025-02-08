@@ -18,5 +18,6 @@ namespace CourtApp.Application.Interfaces.Repositories
         Task UpdateAsync(CaseDetailEntity caseEntity);
         Task DeleteAsync(CaseDetailEntity caseEntity);
         Task<CaseDetailEntity> GetByCaseNoYearAsync(string No, int Year);
+        Task UpdateRangeAsync(List<CaseDetailEntity> casesToUpdate);
     }
 }

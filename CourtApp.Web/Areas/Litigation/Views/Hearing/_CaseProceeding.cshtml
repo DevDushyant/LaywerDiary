@@ -25,12 +25,38 @@
         <div class="form-group row">
             <label class="col-md-2 col-form-label">@localizer["Proceeding Date"]</label>
             <label class="col-md-10 col-form-label">@Model.ProceedingDate</label>
-            @* <label class="col-md-10 col-form-label">@Model.ProceedingDate.Substring(0, @Model.ProceedingDate.IndexOf(' '))</label> *@
         </div>
+        @if (Model.Court != null)
+        {
+            <fieldset class="scheduler-border">
+                <legend class="scheduler-border">Case Detail Information</legend>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">@localizer["Court"]</label>
+                            <label class="col-md-4 col-form-label">@localizer[Model.Court]</label>
+                            <label class="col-md-2 col-form-label">@localizer["Case No/Year"]</label>
+                            <label class="col-md-4 col-form-label"> @localizer[Model.No + "/" + Model.Year]</label>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">@localizer["Case Title"]</label>
+                            <label class="col-md-10 col-form-label">@localizer[Model.FirstTitle + "Vs" + Model.SecondTitle]</label>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        }
         <fieldset class="scheduler-border">
             <legend class="scheduler-border"><strong>Case Proceeding</strong></legend>
             <div class="col-md-12">
                 <input type="hidden" asp-for="CaseId" />
+                @if (Model.MCasIds!=null && Model.MCasIds.Count > 0)
+                {
+                    @for (int i = 0; i < Model.MCasIds.Count; i++)
+                    {
+                        <input type="hidden" asp-for="MCasIds[i]" value="@Model.MCasIds[i]" />
+                    }
+                }
                 <input type="hidden" asp-for="IsUpdate" />
                 <div class="form-group row">
                     <label class="col-md-2 col-form-label">@localizer["Proceeding Type"]</label>
@@ -149,7 +175,7 @@
                     </div>
                 </div>
             </fieldset>
-            
+
         </div>
 
         <div class="form-group justify-content-between" style="margin-bottom: 0px !important">

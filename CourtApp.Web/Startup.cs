@@ -1,12 +1,11 @@
+﻿using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
 using CourtApp.Application.Extensions;
 using CourtApp.Infrastructure.Extensions;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Extensions;
 using CourtApp.Web.Permission;
 using CourtApp.Web.Services;
-using AspNetCoreHero.ToastNotification;
-using AspNetCoreHero.ToastNotification.Extensions;
-using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -19,9 +18,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using System.Reflection;
 using System;
-using CourtApp.Web.Areas.LawyerDiary.Models;
+using System.Reflection;
 
 namespace CourtApp.Web
 {
@@ -53,7 +51,7 @@ namespace CourtApp.Web
             services.AddRepositories();
             services.AddSharedInfrastructure(_configuration);
             services.AddMultiLingualSupport();
-            
+
             services.AddFluentValidationAutoValidation();
             services.AddControllersWithViews().AddFluentValidation(fv =>
             {
@@ -70,7 +68,7 @@ namespace CourtApp.Web
             services.Configure<KestrelServerOptions>(options =>
             {
                 // Example: Setting a custom maximum request body size (for large file uploads)
-                options.Limits.MaxRequestBodySize = 524288000; // 500 MB limit
+                options.Limits.MaxRequestBodySize = 536870912;
 
                 // Example: Setting the timeout for connections
                 options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
@@ -80,6 +78,13 @@ namespace CourtApp.Web
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IViewRenderService, ViewRenderService>();
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                options.SlidingExpiration = true;
+                options.LoginPath = new PathString("/Identity/Account/Login"); // ✅ Correct path for areas
+                options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied"); // ✅ Access Denied Page
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -102,20 +107,20 @@ namespace CourtApp.Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            
+
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{area=Dashboard}/{controller=Home}/{action=Index}/{id?}");
 
-                
+
                 endpoints.MapRazorPages();
-                
+
             });
         }
     }

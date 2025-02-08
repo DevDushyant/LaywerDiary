@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CourtApp.Application.DTOs.CaseDetails;
+using System;
 
 namespace CourtApp.Application.DTOs.CaseProceedings
 {
-    public class CaseProceedingDto
+    public class CaseProceedingDto : CaseDetailDto
     {
         public Guid CaseId { get; set; }
         public Guid HeadId { get; set; }
