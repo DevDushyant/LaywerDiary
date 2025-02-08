@@ -40,9 +40,32 @@
                                         @Title
                                     </td>
                                     <td> @Model.dtmodel[i].InsititutionDate </td>
-                                    <td>
-                                        <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@Model.dtmodel[i].Id', 'See History')" class="fa fa-history"></a>
+                                    <td text-right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu shadow animated--grow-in">
+                                                <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@Model.dtmodel[i].Id', 'See History')"
+                                                   class="dropdown-item" title="See History"><i class="fa fa-history"></i>  History</a>
+                                                <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=@Model.dtmodel[i].Id&w=ir', 'Upload Document')"
+                                                   class="dropdown-item" title="Upload Document"><i class="fas fa-file-alt"></i>  Upload Document</a>
+                                                <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail"
+                                                   asp-route-id="@Model.dtmodel[i].Id" class="dropdown-item" title="View Case Detail"><i class="fa fa-eye"></i>  Case Detail</a>
+                                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded)
+                                                {
+                                                    <form id="form_delete_@Model.dtmodel[i].Id" asp-area="Litigation"
+                                                          asp-controller="casemanage" method="post"
+                                                          asp-action="OnPostDelete" asp-route-id="@Model.dtmodel[i].Id" onsubmit="return jQueryModalDelete(this)">
+                                                        <a href="javascript:$('#form_delete_@Model.dtmodel[i].Id').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a>
+                                                    </form>
+                                                }
+                                            </div>
+                                        </div>
                                     </td>
+                                    @* <td>
+                                        <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@Model.dtmodel[i].Id', 'See History')" class="fa fa-history"></a>
+                                    </td> *@
                                 </tr>
                             }
                         </tbody>

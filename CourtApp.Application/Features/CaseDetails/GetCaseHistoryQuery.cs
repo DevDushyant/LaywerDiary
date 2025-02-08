@@ -60,19 +60,6 @@ namespace CourtApp.Application.Features.CaseDetails
                                 .SelectMany(w => w.Works)
                                 .ToList()
                     }).ToList();
-                //var cprocs = await _ProceedingRepo.GetProceedingByCaseIdAsync(request.CaseId);
-
-                //var PWorks = cprocs
-                //    .Where(pd => pd != null) // Ensure pd is not null
-                //    .GroupBy(pd => pd.ProceedingDate)
-                //    .Select(g => new
-                //    {
-                //        ProceedingDate = g.Key,
-                //        works = g.Select(s => s.ProcWork)
-                //                .Where(pw => pw != null) // Ensure ProcWork is not null
-                //                .SelectMany(w => w.Works) // Ensure Works is not null
-                //                .ToList()
-                //    }).ToList();
 
                 var result = PWorks.Select(pw =>
                 {

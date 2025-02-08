@@ -36,15 +36,15 @@ namespace CourtApp.Infrastructure.Repositories
                 .Where(c => c.Id == Id).FirstOrDefaultAsync();
             return DetailDt;
         }
-        public async Task<Guid> InsertAsync(CaseDetailEntity workMasterEntity)
-        {
-            //foreach (var item in workMasterEntity.AgainstCaseDetails)
-            //{
-            //    item. = workMasterEntity.Id;
-            //}
-            //await _repository.AddAsync(workMasterEntity);
-            return workMasterEntity.Id;
-        }
+        //public async Task<Guid> InsertAsync(CaseDetailEntity workMasterEntity)
+        //{
+        //foreach (var item in workMasterEntity.AgainstCaseDetails)
+        //{
+        //    item. = workMasterEntity.Id;
+        //}
+        //await _repository.AddAsync(workMasterEntity);
+        //return workMasterEntity.Id;
+        //}
 
         public async Task UpdateAsync(CaseDetailEntity workMasterEntity)
         {

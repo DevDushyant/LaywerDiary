@@ -30,9 +30,12 @@ namespace CourtApp.Infrastructure.Repositories
             return Entity.Id;
         }
 
-        public Task<Guid> AddAsyncRange(List<CaseProcedingEntity> Entity)
+        public async Task<Guid> AddAsyncRange(List<CaseProcedingEntity> Entity)
         {
-            throw new NotImplementedException();
+            await _repository.AddRange(Entity);
+            await _distributedCache.RemoveAsync(AppCacheKeys.ProcHeadKey);
+            return Entity.FirstOrDefault().Id;
+
         }
 
         public Task DeleteAsync(CaseProcedingEntity Entity)
@@ -42,6 +45,7 @@ namespace CourtApp.Infrastructure.Repositories
 
         public async Task<CaseProcedingEntity> GetByIdAsync(Guid CaseId, DateTime? SelDate)
         {
+
             if (SelDate != null)
             {
                 var data = await _repository

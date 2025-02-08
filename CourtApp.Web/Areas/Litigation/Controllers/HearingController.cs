@@ -150,7 +150,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             var SelectedDate = TempData["SelectedDate"].ToString();
             TempData.Keep();
-            var ProcExDt = await _mediator.Send(new GetCaseProceedingByIdQuery()
+            var response = await _mediator.Send(new GetCaseProceedingByIdQuery()
             {
                 CaseId = CaseId,
                 SelectedDate = Convert.ToDateTime(SelectedDate)
@@ -158,29 +158,79 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var model = new CaseProceedingViewModel();
             model.CaseId = CaseId;
             model.IsUpdate = false;
-
-            if (ProcExDt.Succeeded && ProcExDt.Data != null)
+            if (response.Succeeded)
             {
-                model = _mapper.Map<CaseProceedingViewModel>(ProcExDt.Data);
-                model.ProceedingTypes = await DdlProcHeads();
-                model.Proceedings = await DdlSubProc(model.HeadId);
-                model.ProcWork.WorkTypes = await DdlWorks();
-                var WorkTypeId = model.ProcWork.Workdt.Select(s => s.WorkTypeId).FirstOrDefault();
-                for (int i = 0; i < model.ProcWork.Workdt.Count(); i++)
+                var dt = response.Data;
+                model.FirstTitle = dt.FirstTitle;
+                model.SecondTitle = dt.SecondTitle;
+                model.No = dt.No;
+                model.Year = dt.Year;
+                model.Court = dt.Court;
+                model.CaseType = dt.CaseType;
+                model.Stage = dt.Stage;
+                if (dt.HeadId != Guid.Empty)
                 {
-                    model.ProcWork.Workdt[i].Works = await DdlSubWork(model.ProcWork.Workdt[i].WorkTypeId.Value);
+                    model = _mapper.Map<CaseProceedingViewModel>(dt);
+                    model.ProceedingTypes = await DdlProcHeads();
+                    model.Proceedings = await DdlSubProc(model.HeadId);
+                    model.ProcWork.WorkTypes = await DdlWorks();
+                    var WorkTypeId = model.ProcWork.Workdt.Select(s => s.WorkTypeId).FirstOrDefault();
+                    for (int i = 0; i < model.ProcWork.Workdt.Count(); i++)
+                    {
+                        model.ProcWork.Workdt[i].Works = await DdlSubWork(model.ProcWork.Workdt[i].WorkTypeId.Value);
+                    }
+                    model.Stages = await DdlCaseStages();
+                    model.IsUpdate = true;
                 }
-                model.Stages = await DdlCaseStages();
-                model.IsUpdate = true;
+                else
+                {
+                    var wmodel = new CaseWorkingViewModel();
+                    wmodel.WorkTypes = await DdlWorks();
+                    model.ProceedingTypes = await DdlProcHeads();
+                    model.Stages = await DdlCaseStages();
+                    model.ProcWork = wmodel;
+                }
             }
-            else
-            {
-                var wmodel = new CaseWorkingViewModel();
-                wmodel.WorkTypes = await DdlWorks();
-                model.ProceedingTypes = await DdlProcHeads();
-                model.Stages = await DdlCaseStages();
-                model.ProcWork = wmodel;
-            }
+            model.ProceedingDate = Convert.ToDateTime(SelectedDate).ToString("dd/MM/yyyy");
+            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", model) });
+
+
+            //if (ProcExDt.Succeeded && ProcExDt.Data != null)
+            //{
+            //    model = _mapper.Map<CaseProceedingViewModel>(ProcExDt.Data);
+            //    model.ProceedingTypes = await DdlProcHeads();
+            //    model.Proceedings = await DdlSubProc(model.HeadId);
+            //    model.ProcWork.WorkTypes = await DdlWorks();
+            //    var WorkTypeId = model.ProcWork.Workdt.Select(s => s.WorkTypeId).FirstOrDefault();
+            //    for (int i = 0; i < model.ProcWork.Workdt.Count(); i++)
+            //    {
+            //        model.ProcWork.Workdt[i].Works = await DdlSubWork(model.ProcWork.Workdt[i].WorkTypeId.Value);
+            //    }
+            //    model.Stages = await DdlCaseStages();
+            //    model.IsUpdate = true;
+            //}
+            //else
+            //{
+            //    var wmodel = new CaseWorkingViewModel();
+            //    wmodel.WorkTypes = await DdlWorks();
+            //    model.ProceedingTypes = await DdlProcHeads();
+            //    model.Stages = await DdlCaseStages();
+            //    model.ProcWork = wmodel;
+            //}
+            //model.ProceedingDate = Convert.ToDateTime(SelectedDate).ToString("dd/MM/yyyy");
+            //return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", model) });
+        }
+        public async Task<JsonResult> BulkProceeding(string CaseIds)
+        {
+            var SelectedDate = TempData["SelectedDate"].ToString();
+            TempData.Keep();
+            var model = new CaseProceedingViewModel();
+            model.MCasIds = CaseIds.Split(',').Select(Guid.Parse).ToList();
+            var wmodel = new CaseWorkingViewModel();
+            wmodel.WorkTypes = await DdlWorks();
+            model.ProceedingTypes = await DdlProcHeads();
+            model.Stages = await DdlCaseStages();
+            model.ProcWork = wmodel;
             model.ProceedingDate = Convert.ToDateTime(SelectedDate).ToString("dd/MM/yyyy");
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", model) });
         }
@@ -219,7 +269,6 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return RedirectToAction("Index", new { SelectedDate = TempData["SelectedDate"].ToString() });
         }
         #endregion
-
 
     }
 }

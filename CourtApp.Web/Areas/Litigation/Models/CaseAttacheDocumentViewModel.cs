@@ -16,6 +16,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public List<CaseDoc> Docs { get; set; }
         public SelectList DocTypes { get; set; }
         public List<AttachmentModel> Documents { get; set; }
+        public string Where { get; set; }
     }
 
     public class AttachmentModel

@@ -24,6 +24,7 @@ namespace CourtApp.Application.Features.CaseProceeding
         public ProceedingWorkDto ProcWork { get; set; }
         public DateTime? ProceedingDate { get; set; }
         public string UserId { get; set; }
+        public List<Guid> MCasIds { get; set; }
 
     }
 
@@ -48,24 +49,49 @@ namespace CourtApp.Application.Features.CaseProceeding
         }
         public async Task<Result<Guid>> Handle(CreateCaseProceedingCommand request, CancellationToken cancellationToken)
         {
-
-            var ProcDetail = await _ProcRepo.GetByIdAsync(request.HeadId);
-            if (ProcDetail != null && ProcDetail.Abbreviation == "DISP")
+            // ✅ Step 1: Fetch Head Details
+            var procDetail = await _ProcRepo.GetByIdAsync(request.HeadId);
+            if (procDetail != null && procDetail.Abbreviation == "DISP")
             {
-                var CaseDetail = await _CaseRepo.GetByIdAsync(request.CaseId);
-                CaseDetail.DisposalDate = DateTime.Now;
-                await _CaseRepo.UpdateAsync(CaseDetail);
+                List<CaseDetailEntity> casesToUpdate = new List<CaseDetailEntity>();
+                if (request.MCasIds != null && request.MCasIds.Any())
+                {
+                    // ✅ Fetch all cases in a single query
+                    casesToUpdate = await _CaseRepo.Entites.Where(w => request.MCasIds.Contains(w.Id)).ToListAsync();
+                }
+                else
+                {
+                    var cd = await _CaseRepo.GetByIdAsync(request.CaseId);
+                    if (cd != null)
+                    {
+                        casesToUpdate.Add(cd);
+                    }
+                }
+                if (casesToUpdate.Any())
+                {
+                    foreach (var caseDetail in casesToUpdate)
+                    {
+                        caseDetail.DisposalDate = DateTime.UtcNow;
+                    }
+
+                    // ✅ Batch update instead of multiple update calls
+                    await _CaseRepo.UpdateRangeAsync(casesToUpdate);
+                }
             }
+
+            // ✅ Step 2: Create Main Entity
             var entity = _mapper.Map<CaseProcedingEntity>(request);
             entity.ProceedingDate = request.ProceedingDate;
+            entity.CreatedOn = DateTime.UtcNow;
 
-            // ✅ Fetch child cases asynchronously
-            var childCases = await GetAllChildrenAsync(request.CaseId, request.UserId);
-            if (childCases.Any())
+            List<CaseProcedingEntity> caseProceedings = new List<CaseProcedingEntity>();
+
+            // ✅ Step 3: Process MCasIds (if available)
+            if (request.MCasIds != null && request.MCasIds.Count > 0)
             {
-                var childEntities = childCases.Select(it => new CaseProcedingEntity
+                caseProceedings = request.MCasIds.Select(id => new CaseProcedingEntity
                 {
-                    CaseId = it.Id,
+                    CaseId = id,
                     HeadId = entity.HeadId,
                     SubHeadId = entity.SubHeadId,
                     StageId = entity.StageId,
@@ -73,22 +99,49 @@ namespace CourtApp.Application.Features.CaseProceeding
                     ProceedingDate = entity.ProceedingDate,
                     CreatedBy = request.UserId,
                     CreatedOn = DateTime.UtcNow,
-                    ProcWork = entity.ProcWork
+                    ProcWork = new ProceedingWorkEntity
+                    {
+                        LastWorkingDate = entity.ProcWork.LastWorkingDate,
+                        Works = entity.ProcWork.Works
+                    }
                 }).ToList();
-                childEntities.Add(entity);
-
-                // ✅ Batch insert child cases
-                await _Repository.AddAsyncRange(childEntities);
-                await _unitOfWork.Commit(cancellationToken);
-                return Result<Guid>.Success(entity.Id);
             }
             else
             {
-                await _Repository.AddAsync(entity);
+                // ✅ Step 4: Fetch Child Cases if No MCasIds
+                var childCases = await GetAllChildrenAsync(request.CaseId, request.UserId);
+                if (childCases.Any())
+                {
+                    caseProceedings = childCases.Select(it => new CaseProcedingEntity
+                    {
+                        CaseId = it.Id,
+                        HeadId = entity.HeadId,
+                        SubHeadId = entity.SubHeadId,
+                        StageId = entity.StageId,
+                        NextDate = entity.NextDate,
+                        ProceedingDate = entity.ProceedingDate,
+                        CreatedBy = request.UserId,
+                        CreatedOn = DateTime.UtcNow,
+                        ProcWork = new ProceedingWorkEntity
+                        {
+                            LastWorkingDate = entity.ProcWork.LastWorkingDate,
+                            Works = entity.ProcWork.Works
+                        }
+                    }).ToList();
+                }
+            }
+
+            // ✅ Step 5: Insert All Entities Efficiently
+            if (request.CaseId != Guid.Empty)
+                caseProceedings.Add(entity); // Always insert the main entity
+
+            if (caseProceedings.Any())
+            {
+                await _Repository.AddAsyncRange(caseProceedings); // Make sure AddRangeAsync supports batch inserts
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(entity.Id);
             }
-            return Result<Guid>.Fail();
+            return Result<Guid>.Fail("No case proceedings added.");
         }
 
         // ✅ Convert to an async method for better performance

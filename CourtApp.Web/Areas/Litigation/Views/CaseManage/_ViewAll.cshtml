@@ -65,7 +65,7 @@
                         <div class="dropdown-menu shadow animated--grow-in">
                             <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')"
                                class="dropdown-item" title="See History"><i class="fa fa-history"></i>  History</a>
-                            <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=@bt.Id', 'Upload Document')"
+                            <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=@bt.Id&w=mc', 'Upload Document')"
                                class="dropdown-item" title="Upload Document"><i class="fas fa-file-alt"></i>  Upload Document</a>
                             <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail"
                                asp-route-id="@bt.Id" class="dropdown-item" title="View Case Detail"><i class="fa fa-eye"></i>  Case Detail</a>
