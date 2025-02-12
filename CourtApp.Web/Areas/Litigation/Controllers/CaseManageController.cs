@@ -72,6 +72,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 cam.ACaseNatures = await LoadCaseNature();
                 if (id == Guid.Empty && (from == null || from == ""))
                 {
+                    //caseViewModel.Courts = await DdlCourts();
                     caseViewModel.InstitutionDate = DateTime.Now;
                     caseViewModel.States = await LoadStates();
                     caseViewModel.CourtTypes = await LoadCourtTypes();

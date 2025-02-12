@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,8 +37,8 @@ namespace CourtApp.Application.Features.CourtMasters
             var predicate = PredicateBuilder.True<CourtMasterEntity>();
             if (request.CourtTypeId != Guid.Empty)
                 predicate = predicate.And(b => b.CourtType.Id == request.CourtTypeId);
-            
-                
+
+
             var dtlist = _repository.Entities
                 .Include(ct => ct.CourtType)
                 .Include(st => st.State)
@@ -50,7 +49,7 @@ namespace CourtApp.Application.Features.CourtMasters
                {
                    Id = e.Id,
                    CourtType = e.CourtType.CourtType,
-                   CourtName = e.Name_En,                   
+                   CourtName = e.Name_En,
                    CourtFullName = e.Name_En,
                    State = e.State.Name_En,
                    District = e.CourtDistrict != null ? e.CourtDistrict.Name_En : null,

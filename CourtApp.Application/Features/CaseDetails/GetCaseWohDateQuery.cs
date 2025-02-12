@@ -2,14 +2,10 @@
 using CourtApp.Application.DTOs.CaseDetails;
 using CourtApp.Application.Extensions;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Domain.Entities.CaseDetails;
-using KT3Core.Areas.Global.Classes;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,36 +26,46 @@ namespace CourtApp.Application.Features.CaseDetails
         }
         public async Task<PaginatedResult<GetCaseInfoDto>> Handle(GetCaseWohDateQuery request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var cases = await _repository
-                    .Entites
-                    .Include(ct => ct.CourtType)
-                    .Include(ct => ct.CaseType)
-                    .Include(cs => cs.CaseStage)
-                    .Include(c => c.CourtBench)
-                    .Where(c => c.CreatedBy.Equals(request.UserId) && c.NextDate==null)
-                    .Select(e => new GetCaseInfoDto
-                    {
-                        Id = e.Id,
-                        No = e.CaseNo,
-                        Year = e.CaseYear.ToString(),
-                        CaseType = e.CaseType.Name_En,
-                        Court = e.CourtBench.CourtBench_En,
-                        CaseStage = e.CaseStage.CaseStage,
-                        DisposalDate = e.DisposalDate,
-                        CaseDetail = e.FirstTitle + " V/S " + e.SecondTitle,
-                        NextDate = ""
-                    })
-                    .OrderByDescending(o => o.Year)
-                    .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-                return cases;
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex);
-                return null;
-            }
+            var today = DateTime.Today.Date;
+            var cases = await _repository.Entites
+                        .Include(c => c.CourtType)
+                        .Include(c => c.CaseType)
+                        .Include(c => c.CaseStage)
+                        .Include(c => c.CourtBench)
+                        .Where(c => c.CreatedBy == request.UserId)
+                        .Select(e => new
+                        {
+                            Case = e,
+                            LatestNextDate = e.CaseProcEntities
+                                                .OrderByDescending(o => o.NextDate.Value)
+                                                .Select(s => (DateTime?)s.NextDate.Value)
+                                                .FirstOrDefault()
+                        })
+                        .Where(x => !x.Case.NextDate.HasValue // if next date is not present.
+                                    || (x.Case.NextDate.HasValue
+                                            && x.LatestNextDate.HasValue
+                                            && x.LatestNextDate.Value > x.Case.NextDate.Value
+                                            ? x.LatestNextDate.Value : x.Case.NextDate.Value) < today
+
+                              )
+                        .Select(x => new GetCaseInfoDto
+                        {
+                            Id = x.Case.Id,
+                            No = x.Case.CaseNo,
+                            Year = x.Case.CaseYear.ToString(),
+                            CaseType = x.Case.CaseType.Name_En,
+                            Court = x.Case.CourtBench.CourtBench_En,
+                            CaseStage = x.Case.CaseStage.CaseStage,
+                            DisposalDate = x.Case.DisposalDate,
+                            CaseDetail = x.Case.FirstTitle + " V/S " + x.Case.SecondTitle,
+                            NextDate = x.LatestNextDate.HasValue
+                                        ? x.LatestNextDate.Value.ToString("dd-MM-yyyy")
+                                        : (x.Case.NextDate.HasValue ?
+                                            x.Case.NextDate.Value.ToString("dd-MM-yyyy") : "")
+                        })
+                        .OrderByDescending(o => o.Year)
+                        .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+            return cases;
         }
     }
 }

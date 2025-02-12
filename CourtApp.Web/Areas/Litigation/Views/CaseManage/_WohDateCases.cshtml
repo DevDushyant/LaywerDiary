@@ -2,20 +2,21 @@
 @{
     ViewData["Title"] = localizer["User Case List Without Hearing Date"];
     ViewData["Caption"] = localizer["You can fill hearing date from here"];
+    ViewData["Note"] = localizer["All (*) marked date will default today date. There is no next date present in database "];
 }
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
         <table id="tblCaseWohd" class="table table-striped" width="100%" cellspacing="0">
             <thead>
                 <tr>
-                    <th style="width:1%!important">Sno.</th>
-                    <th style="width:16%!important">Court</th>
-                    <th style="width:16%!important">Type</th>
+                    <th style="width:5%!important">Sno.</th>
+                    <th style="width:15%!important">Court</th>
+                    <th style="width:15%!important">Type</th>
                     <th style="width:5%!important">No.</th>
                     <th style="width:5%!important">Year</th>
                     <th style="width:30%!important">Title</th>
                     <th style="width:10%!important">Stage</th>
-                    <th style="width:14%!important">Next Date</th>
+                    <th style="width:15%!important">Next Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,6 +27,7 @@
                 {
                     <tr>
                         <td>
+                            <input type="hidden" asp-for="@bt.Id" />
                             @(count = count + 1)
                         </td>
                         <td>
@@ -46,10 +48,17 @@
                         <td>
                             @bt.CaseStage
                         </td>
-
                         <td>
-                            <input type="hidden" asp-for="@bt.Id" />
-                            <input type="date" asp-for="@bt.NextDate" class="form-control" />
+                            @{
+                                DateTime? ndt =null;
+                                if (@bt.NextDate != "")
+                                    ndt = Convert.ToDateTime(@bt.NextDate);
+                            }
+                            <input type="date" asp-for="@ndt" class="form-control" />
+                            @if (ndt == null)
+                            {                                
+                                <span style="color:red">*</span>
+                            }
                         </td>
                     </tr>
                 }
