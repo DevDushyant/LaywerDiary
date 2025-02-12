@@ -4,55 +4,112 @@
         <div class="col-md-12">
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["First Name"] (<span style="color:red">*</span>)</label>
-                <div class="col-md-9">
+                <div class="col-md-4">
                     <div class="input-group">
                         <input type="text" asp-for="FirstName" class="form-control" />
                     </div>
                     <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-md-2 col-form-label">@localizer["Middle Name"]</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <input type="text" asp-for="MiddleName" class="form-control" />
-                    </div>                    
-                </div>
-            </div>
-            <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["Last Name"] (<span style="color:red">*</span>)</label>
-                <div class="col-md-9">
+                <div class="col-md-4">
                     <div class="input-group">
                         <input type="text" asp-for="LastName" class="form-control" />
                     </div>
                     <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group row">
-                <label class="col-md-2 col-form-label">@localizer["Enrollment Number"] (<span style="color:red">*</span>)</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <input type="text" asp-for="EnrollNumber" class="form-control" />
-                    </div>
-                    <span asp-validation-for="EnrollNumber" class="text-danger"></span>
-                </div>
-            </div>
+
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["Mobile"] (<span style="color:red">*</span>)</label>
-                <div class="col-md-9">
+                <div class="col-md-4">
                     <div class="input-group">
                         <input type="text" asp-for="Mobile" class="form-control" />
                     </div>
                     <span asp-validation-for="Mobile" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["Email"] (<span style="color:red">*</span>)</label>
-                <div class="col-md-9">
+                <div class="col-md-4">
                     <div class="input-group">
-                        <input type="text" asp-for="Email" class="form-control" />
+                        <input type="email" asp-for="Email" class="form-control" />
                     </div>
                     <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">@localizer["Enrollment"] (<span style="color:red">*</span>)</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <input type="text" asp-for="EnrollNumber" class="form-control" />
+                    </div>
+                    <span asp-validation-for="EnrollNumber" class="text-danger"></span>
+                </div>
+                <label class="col-md-2 col-form-label">@localizer["Dob"]</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <input type="date" value="@DateTime.Today" asp-for="Dob" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">@localizer["Gender"] (<span style="color:red">*</span>)</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <select class="form-control select2bs4"
+                                asp-for="Gender" asp-items="@Model.Genders">
+                            <option></option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+                <label class="col-md-2 col-form-label">@localizer["Related Person"]</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <input type="text" asp-for="RelatedPerson" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">@localizer["Religon"] @* (<span style="color:red">*</span>) *@</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <select class="form-control select2bs4"
+                                asp-for="Religion" asp-items="@Model.Relegions">
+                            <option></option>
+                        </select>
+                    </div>
+                @* <span asp-validation-for="Gender" class="text-danger"></span> *@
+                </div>
+                <label class="col-md-2 col-form-label">@localizer["Caste"]</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <input type="text" asp-for="Caste" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">@localizer["Address"] (<span style="color:red">*</span>)</label>
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <textarea asp-for="Address" placeholder="Address" class="form-control"></textarea>
+                    </div>
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">@localizer["Profile Picture"] (<span style="color:red">*</span>)</label>
+                <div class="col-md-10">
+                    <div class="input-group ">
+                        <input accept=".png,.jpg,.jpeg,.gif,.tif"
+                               asp-for="ProfilePicture"
+                               type="file" class="custom-file-input"
+                               onchange="document.getElementById('profilePicture').src = window.URL.createObjectURL(this.files[0])"
+                               id="customFile">
+                    </div>
+                    <span asp-validation-for="ProfilePicture" class="text-danger"></span>
                 </div>
             </div>
 
@@ -69,5 +126,5 @@
     </div>
 </form>
 <script type="text/javascript" language=javascript>
-
+    $('#profilePicture').click(function () { $('#customFile').trigger('click'); });
 </script>

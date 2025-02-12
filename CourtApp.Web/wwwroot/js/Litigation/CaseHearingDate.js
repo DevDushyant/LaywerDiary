@@ -2,8 +2,7 @@
     JqueryDataTable('tblCaseWohd', 'User Data List', '0,1,2,3,4,5,6,7');
 });
 $("#btnUpdate").on("click", function (e) {
-    e.preventDefault();
-    debugger;
+    e.preventDefault();   
     var caseDataList = [];
     $('#tblCaseWohd tbody tr').each(function () {
         var caseId = $(this).find('input[type="hidden"]').val();

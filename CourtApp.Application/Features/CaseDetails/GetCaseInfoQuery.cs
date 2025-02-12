@@ -7,7 +7,6 @@ using KT3Core.Areas.Global.Classes;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,48 +46,77 @@ namespace CourtApp.Application.Features.CaseDetails
             }
             try
             {
-                var cases = _repository
-                    .Entites
-                     .Include(ct => ct.CourtType)
-                    .Include(ct => ct.CaseType)
-                    .Include(cs => cs.CaseStage)
-                    .Include(c => c.CourtBench)
-                    .Where(predicate)
-                    ;
+                var cases = await _repository.Entites
+                            .Include(c => c.CourtType)
+                            .Include(c => c.CaseType)
+                            .Include(c => c.CaseStage)
+                            .Include(c => c.CourtBench)
+                            .Where(c => c.CreatedBy == request.UserId)
+                            .Select(e => new GetCaseInfoDto
+                            {
+                                Id = e.Id,
+                                No = e.CaseNo,
+                                Year = e.CaseYear.ToString(),
+                                CourtType = e.CourtType.CourtType.ToString(),
+                                CaseType = e.CaseType.Name_En,
+                                Court = e.CourtBench.CourtBench_En,
+                                CaseStage = e.CaseStage.CaseStage,
+                                DisposalDate = e.DisposalDate,
+                                CaseDetail = e.FirstTitle + " V/S " + e.SecondTitle,
+                                // Selecting the latest NextDate from CaseProcEntities,
+                                // if available, else use case's NextDate
+                                NextDate = e.CaseProcEntities
+                                            .OrderByDescending(o => o.NextDate.Value) // Order by latest date
+                                            .Select(s => s.NextDate.Value.ToString("dd-MM-yyyy"))
+                                            .FirstOrDefault() ??
+                                            (e.NextDate.HasValue ? e.NextDate.Value.ToString("dd-MM-yyyy") : "")
+                            })
+                            .OrderByDescending(o => o.Year)
+                            .ToPaginatedListAsync(request.PageNumber, request.PageSize);
 
-                var caseIds = cases.Select(c => c.Id).ToList();
-                var maxNextDates = _ProcRepo.Entities
-                                    .Where(w => caseIds.Contains(w.CaseId))
-                                    .GroupBy(x => x.CaseId)
-                                    .Select(g => new
-                                    {
-                                        CaseId = g.Key,
-                                        MaxNextDate = g.Max(x => x.NextDate)
-                                    });
-                var query = (from e in cases
-                             join md in maxNextDates on e.Id equals md.CaseId into maxDates
-                             from md in maxDates.DefaultIfEmpty()
-                             select new GetCaseInfoDto
-                             {
-                                 Id = e.Id,
-                                 No = e.CaseNo,
-                                 Year = e.CaseYear.ToString(),
-                                 CourtType = e.CourtType.CourtType.ToString(),
-                                 CaseType = e.CaseType.Name_En,
-                                 Court = e.CourtBench.CourtBench_En,
-                                 CaseStage = e.CaseStage.CaseStage,
-                                 DisposalDate = e.DisposalDate,
-                                 OrderByKey = e.LastModifiedOn != null && e.LastModifiedOn > e.CreatedOn ? e.LastModifiedOn.Value : e.CreatedOn,
-                                 CaseDetail = e.FirstTitle + " V/S " + e.SecondTitle,
-                                 NextDate = (e.NextDate.HasValue && md.MaxNextDate.HasValue)
-                                             ? (e.NextDate.Value > md.MaxNextDate.Value ? e.NextDate.Value
-                                                             : md.MaxNextDate.Value).ToString("dd/MM/yyyy")
-                                             : (e.NextDate.HasValue ? e.NextDate.Value.ToString("dd/MM/yyyy")
-                                             : (md.MaxNextDate.HasValue ? md.MaxNextDate.Value.ToString("dd/MM/yyyy") : ""))
-                             }).OrderByDescending(o => o.OrderByKey);
+                return cases;
+                //var cases = _repository
+                //    .Entites
+                //     .Include(ct => ct.CourtType)
+                //    .Include(ct => ct.CaseType)
+                //    .Include(cs => cs.CaseStage)
+                //    .Include(c => c.CourtBench)
+                //    .Where(predicate)
+                //    ;
 
-                var result = await query.ToPaginatedListAsync(request.PageNumber, request.PageSize);
-                return result;
+                //var caseIds = cases.Select(c => c.Id).ToList();
+                //var maxNextDates = _ProcRepo.Entities
+                //                    .Where(w => caseIds.Contains(w.CaseId))
+                //                    .GroupBy(x => x.CaseId)
+                //                    .Select(g => new
+                //                    {
+                //                        CaseId = g.Key,
+                //                        MaxNextDate = g.Max(x => x.NextDate)
+                //                    });
+                //var query = (from e in cases
+                //             join md in maxNextDates on e.Id equals md.CaseId into maxDates
+                //             from md in maxDates.DefaultIfEmpty()
+                //             select new GetCaseInfoDto
+                //             {
+                //                 Id = e.Id,
+                //                 No = e.CaseNo,
+                //                 Year = e.CaseYear.ToString(),
+                //                 CourtType = e.CourtType.CourtType.ToString(),
+                //                 CaseType = e.CaseType.Name_En,
+                //                 Court = e.CourtBench.CourtBench_En,
+                //                 CaseStage = e.CaseStage.CaseStage,
+                //                 DisposalDate = e.DisposalDate,
+                //                 OrderByKey = e.LastModifiedOn != null && e.LastModifiedOn > e.CreatedOn ? e.LastModifiedOn.Value : e.CreatedOn,
+                //                 CaseDetail = e.FirstTitle + " V/S " + e.SecondTitle,
+                //                 NextDate = (e.NextDate.HasValue && md.MaxNextDate.HasValue)
+                //                             ? (e.NextDate.Value > md.MaxNextDate.Value ? e.NextDate.Value
+                //                                             : md.MaxNextDate.Value).ToString("dd/MM/yyyy")
+                //                             : (e.NextDate.HasValue ? e.NextDate.Value.ToString("dd/MM/yyyy")
+                //                             : (md.MaxNextDate.HasValue ? md.MaxNextDate.Value.ToString("dd/MM/yyyy") : ""))
+                //             }).OrderByDescending(o => o.OrderByKey);
+
+                //var result = await query.ToPaginatedListAsync(request.PageNumber, request.PageSize);
+                //return result;
             }
             catch (Exception ex)
             {

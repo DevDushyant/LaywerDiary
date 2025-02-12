@@ -158,7 +158,12 @@ namespace CourtApp.Web.Abstractions
         }
         public async Task<SelectList> DdlClient(string UserId)
         {
-            var response = await _mediator.Send(new GetAllClientCachedQuery() { UserId = UserId });
+            var response = await _mediator.Send(new GetAllClientCachedQuery()
+            {
+                UserId = UserId,
+                PageSize = 10000,
+                PageNumber = 1
+            });
             var viewModel = _mapper.Map<List<GClientViewModel>>(response.Data);
             Dictionary<Guid, string> Clients = new Dictionary<Guid, string>();
             foreach (var item in viewModel)
@@ -331,6 +336,16 @@ namespace CourtApp.Web.Abstractions
             {
                 var viewModel = _mapper.Map<List<WorkMasterSubViewModel>>(response.Data);
                 return new SelectList(viewModel, nameof(WorkMasterSubViewModel.Id), nameof(WorkMasterSubViewModel.Name_En), null, null);
+            }
+            return null;
+        }
+        public async Task<SelectList> DdlCourts()
+        {
+            var response = await _mediator.Send(new GetCourtBenchQueryByName { CourtName = "" });
+            if (response.Succeeded)
+            {
+                var viewModel = _mapper.Map<List<CourtBenchResponse>>(response.Data);
+                return new SelectList(viewModel, nameof(CourtBenchResponse.Id), nameof(CourtBenchResponse.CourtBench_En), null, null);
             }
             return null;
         }
