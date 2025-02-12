@@ -59,9 +59,9 @@ namespace CourtApp.Application.Features.CaseDetails
                             DisposalDate = x.Case.DisposalDate,
                             CaseDetail = x.Case.FirstTitle + " V/S " + x.Case.SecondTitle,
                             NextDate = x.LatestNextDate.HasValue
-                                        ? x.LatestNextDate.Value.ToString("dd-MM-yyyy")
+                                        ? x.LatestNextDate.Value.ToString()
                                         : (x.Case.NextDate.HasValue ?
-                                            x.Case.NextDate.Value.ToString("dd-MM-yyyy") : "")
+                                            x.Case.NextDate.Value.ToString() : "")
                         })
                         .OrderByDescending(o => o.Year)
                         .ToPaginatedListAsync(request.PageNumber, request.PageSize);
