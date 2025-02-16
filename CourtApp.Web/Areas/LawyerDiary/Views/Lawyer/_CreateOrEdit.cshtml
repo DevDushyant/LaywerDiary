@@ -1,4 +1,16 @@
 ﻿@model LawyerUpsertViewModel
+<style>
+    .custom-file-input {
+        opacity: 1 !important;
+    }
+
+    .input-group > .custom-file {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+</style>
 <form id="create-form" method="post" asp-controller="Lawyer" asp-action="OnPostCreateOrEdit" asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-12">
@@ -23,7 +35,7 @@
                 <label class="col-md-2 col-form-label">@localizer["Mobile"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <input type="text" asp-for="Mobile" class="form-control" />
+                        <input type="text" asp-for="Mobile" maxlength="10" class="form-control" />
                     </div>
                     <span asp-validation-for="Mobile" class="text-danger"></span>
                 </div>
@@ -47,7 +59,7 @@
                 <label class="col-md-2 col-form-label">@localizer["Dob"]</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <input type="date" value="@DateTime.Today" asp-for="Dob" class="form-control" />
+                        <input type="datetime" value="@DateTime.Today" asp-for="Dob" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -80,13 +92,18 @@
                             <option></option>
                         </select>
                     </div>
-                @* <span asp-validation-for="Gender" class="text-danger"></span> *@
+                    <span asp-validation-for="Religion" class="text-danger"></span>
                 </div>
-                <label class="col-md-2 col-form-label">@localizer["Caste"]</label>
+                <label class="col-md-2 col-form-label">@localizer["Profile Picture"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <input type="text" asp-for="Caste" class="form-control" />
+                        <input accept=".png,.jpg,.jpeg,.gif,.tif"
+                               name="ProfileImgFile"
+                               type="file" class="custom-file-input"
+                               onchange="document.getElementById('profilePicture').src = window.URL.createObjectURL(this.files[0])"
+                               id="customFile">
                     </div>
+                    @* <span asp-validation-for="ProfileImgFile" class="text-danger"></span> *@
                 </div>
             </div>
 
@@ -98,26 +115,13 @@
                     </div>
                     <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-md-2 col-form-label">@localizer["Profile Picture"] (<span style="color:red">*</span>)</label>
-                <div class="col-md-10">
-                    <div class="input-group ">
-                        <input accept=".png,.jpg,.jpeg,.gif,.tif"
-                               asp-for="ProfilePicture"
-                               type="file" class="custom-file-input"
-                               onchange="document.getElementById('profilePicture').src = window.URL.createObjectURL(this.files[0])"
-                               id="customFile">
-                    </div>
-                    <span asp-validation-for="ProfilePicture" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class="col-md-3">
-                </div>
+            </div>            
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
             </div>
         </div>
+    </div>
     </div>
 
     <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
@@ -126,5 +130,24 @@
     </div>
 </form>
 <script type="text/javascript" language=javascript>
+    $(document).ready(function () {
+        
+        $("#Gender").select2({
+            placeholder: "Select a gender",
+            theme: "bootstrap4",
+            escapeMarkup: function (m) {
+                return m;
+            }
+        });
+        $("#Religion").select2({
+            placeholder: "Select a relegion",
+            theme: "bootstrap4",
+            escapeMarkup: function (m) {
+                return m;
+            }
+        });
+         
+    });
     $('#profilePicture').click(function () { $('#customFile').trigger('click'); });
 </script>
+

@@ -30,7 +30,7 @@
                 <td>
                     @bt.FixAmount
                 </td>
-            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CourtFee.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.CourtFee.Edit)).Result.Succeeded)
             {
                 <td text-right">
                     <div class="btn-group">
@@ -38,12 +38,12 @@
                             Action
                         </button>
                         <div class="dropdown-menu shadow animated--grow-in">
-                            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+                            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CourtFee.Edit)).Result.Succeeded)
                             {
                                 <a asp-area="LawyerDiary" asp-controller="CourtFee" asp-action="CreateOrUpdate" asp-route-id="@bt.Id" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
 
                             }
-                            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded)
+                            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CourtFee.Delete)).Result.Succeeded)
 
                             {
                                 <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="CourtFee" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">

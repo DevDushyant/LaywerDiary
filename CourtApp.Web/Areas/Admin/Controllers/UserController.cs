@@ -1,17 +1,19 @@
 ﻿using CourtApp.Application.Constants;
 using CourtApp.Application.DTOs.Mail;
-using CourtApp.Application.Enums;
 using CourtApp.Application.Interfaces.Shared;
 using CourtApp.Infrastructure.DbContexts;
 using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
+using CourtApp.Web.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,158 +32,344 @@ namespace CourtApp.Web.Areas.Admin.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IdentityContext _identityDbContext;
         private readonly IMailService _emailSender;
-
+        private readonly BlobService _blobService;
         public UserController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager,
             IdentityContext _identityDbContext,
-            IMailService emailSender)
+            IMailService emailSender, BlobService _blobService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             this._identityDbContext = _identityDbContext;
             _emailSender = emailSender;
+            this._blobService = _blobService;
         }
 
         [Authorize(Policy = Permissions.Users.View)]
         public IActionResult Index()
         {
+
             return View();
+        }
+
+        private async Task<List<UserViewModel>> GetAllUsers()
+        {
+            var model = new List<UserViewModel>();
+            if (CurrentUser.Role.ToUpper() == "SUPERADMIN")
+            {
+                List<string> superAdminUsers = new List<string>() { "LAWYER", "CORPORATE" };
+                var superAdminUsersData = await _userManager.Users
+                    .Where(a => a.Id != CurrentUser.Id && superAdminUsers
+                    .Contains(a.UserType.ToUpper())).Select(user => new UserViewModel
+                    {
+                        Role = user.UserType,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email,
+                        Mobile = user.Mobile,
+                        EmailConfirmed = user.EmailConfirmed,
+                        ProfileImgPath = user.ProfileImgPath,
+                        Id = user.Id,
+                        IsActive = user.IsActive
+                    })
+                    .ToListAsync(); ;
+                model = _mapper.Map<List<UserViewModel>>(superAdminUsersData);
+            }
+            else
+            {
+                var otherLoggedUsers = new HashSet<string> { "ASSOCIATE", "CLERK" };
+                var operatorIds = await _identityDbContext.LawyerUsers
+                    .Where(o => o.LawyerId == CurrentUser.Id)
+                    .Select(o => new { o.Id, o.DateOfJoining })
+                    .ToListAsync();
+                var operatorIdSet = new HashSet<string>(operatorIds.Select(o => o.Id.ToString()));
+                model = await _userManager.Users
+                    .Where(user => user.Id != CurrentUser.Id
+                        && otherLoggedUsers.Contains(user.UserType)
+                        && operatorIdSet.Contains(user.Id))
+                    .Select(user => new UserViewModel
+                    {
+                        Role = user.UserType,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email,
+                        Mobile = user.Mobile,
+                        EmailConfirmed = user.EmailConfirmed,
+                        ProfileImgPath = user.ProfileImgPath,
+                        Id = user.Id,
+                        IsActive = user.IsActive
+                    })
+                    .ToListAsync();
+            }
+            return model;
         }
 
         public async Task<IActionResult> LoadAll()
         {
-            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-            var Roles = await _userManager.GetRolesAsync(currentUser);
-            if (Roles.Contains("SuperAdmin"))
-            {
-                var allUsersExceptCurrentUser = await _userManager.Users
-                    .Where(a => a.Id != currentUser.Id && a.UserType != "Operator").ToListAsync();
-                var model = _mapper.Map<IEnumerable<UserViewModel>>(allUsersExceptCurrentUser);
-                return PartialView("_ViewAll", model);
-            }
-            var OperDt = _identityDbContext.Operators.Where(w => w.LawyerId.Equals(currentUser.Id)).ToList();
-            var OprUser = await _userManager.Users
-                    .Where(a => a.Id != currentUser.Id && a.UserType == "Operator")
-                    .ToListAsync();
-            var fnlRs = from ou in OprUser
-                        join od in OperDt on ou.Id equals od.Id.ToString()
-                        select new UserViewModel
-                        {
-                            FirstName = ou.FirstName,
-                            LastName = ou.LastName,
-                            Email = ou.Email,
-                            Mobile = ou.Mobile,
-                            EmailConfirmed = ou.EmailConfirmed,
-                            ProfilePicture = ou.ProfilePicture,
-                            Id = ou.Id,
-                            IsActive = ou.IsActive,
-                            DateOfJoining = od.DateOfJoining
-                        };
-            return PartialView("_Operator", fnlRs);
+            var model = await GetAllUsers();
+            _logger.LogInformation("User data is loaded successfully!");
+            return PartialView("_ViewAll", model);
         }
 
         public async Task<IActionResult> OnGetCreate(Guid id)
         {
-            if (id == Guid.Empty)
+            var model = new UserViewModel();
+            if (id != Guid.Empty)
             {
-                var model = new UserViewModel();
-                model.Genders = new SelectList(StaticDropDownDictionaries.Gender(), "Key", "Value");
-                var r = new List<string>() { "SuperAdmin", "Operator", "Lawyer" };
-                var roles = _roleManager.Roles
-                    .Where(w => !r.Contains(w.Name))
-                    .Select(s => new { s.Id, s.Name }).ToList().OrderBy(o => o.Name);
-                model.Roles = new SelectList(roles, "Id", "Name");
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", model) });
-            }
-            else
-            {
-                var OprUser = await _userManager.Users
-                    .Where(a => a.UserType == "Operator" && a.Id == id.ToString())
+                var oprUser = await _userManager.Users
+                    .Where(a => a.Id == id.ToString())
                     .FirstOrDefaultAsync();
-                var model = _mapper.Map<IEnumerable<UserViewModel>>(OprUser);
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", new UserViewModel()) });
+                if (oprUser == null)
+                {
+                    throw new Exception("Operator user not found.");
+                }
+                var opDt = await _identityDbContext.LawyerUsers
+                            .Where(w => w.Id == Guid.Parse(oprUser.Id))
+                            .Select(o => new
+                            {
+                                o.AddressInfo.StreetAddress,
+                                o.DateOfJoining,
+                                o.Enrollment
+                            })
+                            .FirstOrDefaultAsync();
+
+                if (opDt == null)
+                {
+                    throw new Exception("Operator details not found.");
+                }
+                model = _mapper.Map<UserViewModel>(oprUser);
+                model.Address = opDt.StreetAddress;
+                model.DateOfJoining = opDt.DateOfJoining;
+                model.EnrollmentNo = opDt.Enrollment;
+                var usrRole = await _userManager.GetRolesAsync(oprUser);
+                model.Role = usrRole.FirstOrDefault().ToUpper();
+                ViewBag.BtnText = "Update";
             }
+            else ViewBag.BtnText = "Save";
+
+            model.Genders = new SelectList(StaticDropDownDictionaries.Gender(), "Key", "Value");
+            var lawyerUserRoles = new List<string> { "ASSOCIATE", "CLERK" };
+            var roles = _roleManager.Roles
+                .Where(w => lawyerUserRoles.Contains(w.NormalizedName))
+                .Select(s => new { s.NormalizedName, s.Name }).ToList().OrderBy(o => o.Name);
+            model.Roles = new SelectList(roles, "NormalizedName", "Name");
+            _logger.LogInformation("User form is loaded successfully!");
+            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", model) });
         }
 
         [HttpPost]
-        public async Task<IActionResult> OnPostCreate(UserViewModel userModel)
+        public async Task<IActionResult> OnPostCreate(UserViewModel uModel, IFormFile ProfileImgFile)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Get Current Lawyer
-                var lawyer = await _userManager.GetUserAsync(User);
-                if (lawyer == null && lawyer.UserType != "Lawyer") return Unauthorized();
-                // Check if operator has already registered email
-                var existingUser = await _userManager.FindByEmailAsync(userModel.Email);
-                if (existingUser != null)
-                {
-                    ModelState.AddModelError("", "An account with this email already exist");
-                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", new UserViewModel()) });
-                }
-                MailAddress address = new MailAddress(userModel.Email);
-                string userName = address.User;
-                var user = new ApplicationUser
-                {
-                    UserName = userName,
-                    Email = userModel.Email,
-                    FirstName = userModel.FirstName,
-                    LastName = userModel.LastName,
-                    Mobile = userModel.Mobile,
-                    Gender = userModel.Gender,
-                    DateOfBirth = userModel.DateOfBirth,
-                    UserType = "Operator"
-                };
-                var result = await _userManager.CreateAsync(user, "123Pa$$word!");
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(user, Roles.Clerk.ToString());
-                    //Link operator to the lawyer
-                    var nwopr = new OperatorUser
-                    {
-                        Id = Guid.Parse(user.Id),
-                        LawyerId = lawyer.Id,
-                        DateOfJoining = userModel.DateOfJoining,
-                        AddressInfo = new AddressInfo
-                        {
-                            StateId = 0,
-                            CityId = 0,
-                            DistrictId = 0,
-                            StreetAddress = userModel.Address
-                        },
-                        CreatedBy = user.Id,
-                        CreatedOn = DateTime.Now,
-                    };
-                    _identityDbContext.Operators.Add(nwopr);
-                    await _identityDbContext.SaveChangesAsync();
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    string returnUrl = Url.Content("~/");
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-                    var mailRequest = new MailRequest
-                    {
-                        Body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
-                        From = "info@sparo.com",
-                        To = userModel.Email,
-                        Subject = "Please verify your email address\r\n"
-                    };
-                    await _emailSender.SendAsync(mailRequest);
-                    _notify.Success($"Kindly confirm the email");
-                    return RedirectToAction("Index");
-                }
-                foreach (var error in result.Errors)
-                {
-                    _notify.Error(error.Description);
-                }
-                var html = await _viewRenderer.RenderViewToStringAsync("_Create", userModel);
+                var html = await _viewRenderer.RenderViewToStringAsync("_Create", uModel);
                 return new JsonResult(new { isValid = false, html = html });
             }
-            return default;
+
+            var lawyer = await _userManager.GetUserAsync(User);
+            if (lawyer == null) return Unauthorized();
+
+            ApplicationUser user;
+            bool isNewUser = string.IsNullOrEmpty(uModel.Id); // Check if it's a new user
+
+            if (isNewUser)
+            {
+                // **Check if Email Already Exists**
+                var existingUser = await _userManager.FindByEmailAsync(uModel.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("", "An account with this email already exists");
+                    return new JsonResult(new { isValid = false, html = await _viewRenderer.RenderViewToStringAsync("_Create", new UserViewModel()) });
+                }
+
+                // **Create a New User**
+                MailAddress address = new MailAddress(uModel.Email);
+                string userName = address.User;
+                user = new ApplicationUser
+                {
+                    UserName = userName,
+                    Email = uModel.Email,
+                    FirstName = uModel.FirstName,
+                    LastName = uModel.LastName,
+                    Mobile = uModel.Mobile,
+                    Gender = uModel.Gender,
+                    DateOfBirth = uModel.DateOfBirth ?? default(DateTime),
+                    UserType = uModel.Role,
+                    IsActive = true
+                };
+
+                var result = await _userManager.CreateAsync(user, "123Pa$$word!");
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors) _notify.Error(error.Description);
+                    return new JsonResult(new { isValid = false, html = await _viewRenderer.RenderViewToStringAsync("_Create", uModel) });
+                }
+
+                await _userManager.AddToRoleAsync(user, uModel.Role);
+            }
+            else
+            {
+                // **Update Existing User**
+                user = await _userManager.FindByIdAsync(uModel.Id);
+                if (user == null) return NotFound("User not found.");
+
+                user.FirstName = uModel.FirstName;
+                user.LastName = uModel.LastName;
+                user.Mobile = uModel.Mobile;
+                user.Gender = uModel.Gender;
+                user.DateOfBirth = uModel.DateOfBirth ?? default(DateTime);
+                user.UserType = uModel.Role;
+
+                var result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors) _notify.Error(error.Description);
+                    return new JsonResult(new { isValid = false, html = await _viewRenderer.RenderViewToStringAsync("_Create", uModel) });
+                }
+            }
+
+            // **Handle Profile Image Upload**
+            if (ProfileImgFile != null)
+            {
+                string fileName = user.Id + System.IO.Path.GetExtension(ProfileImgFile.FileName);
+                using var stream = ProfileImgFile.OpenReadStream();
+                user.ProfileImgPath = await _blobService.UploadOrUpdateFileAsync(stream, fileName, ProfileImgFile.ContentType, "ProfileImage");
+                await _userManager.UpdateAsync(user);
+            }
+
+            // **Handle LawyerUser Data**
+            var lawyerUser = await _identityDbContext.LawyerUsers.FindAsync(Guid.Parse(user.Id));
+            if (lawyerUser == null)
+            {
+                lawyerUser = new OperatorUser
+                {
+                    Id = Guid.Parse(user.Id),
+                    LawyerId = lawyer.Id,
+                    DateOfJoining = uModel.DateOfJoining ?? default(DateTime),
+                    Enrollment = uModel.LawyerInfo?.ProfInfo.EnrollmentNo ?? "",
+                    AddressInfo = new AddressInfo
+                    {
+                        StateId = 0,
+                        CityId = 0,
+                        DistrictId = 0,
+                        StreetAddress = uModel.Address
+                    },
+                    CreatedBy = user.Id,
+                    CreatedOn = DateTime.Now
+                };
+                _identityDbContext.LawyerUsers.Add(lawyerUser);
+            }
+            else
+            {
+                lawyerUser.DateOfJoining = uModel.DateOfJoining ?? default(DateTime);
+                lawyerUser.Enrollment = uModel.LawyerInfo?.ProfInfo.EnrollmentNo ?? "";
+                lawyerUser.AddressInfo.StreetAddress = uModel.Address;
+                _identityDbContext.LawyerUsers.Update(lawyerUser);
+            }
+
+            await _identityDbContext.SaveChangesAsync();
+
+            // **Send Email Only for New Users**
+            if (isNewUser)
+            {
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                string returnUrl = Url.Content("~/");
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                    protocol: Request.Scheme);
+
+                var mailRequest = new MailRequest
+                {
+                    Body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
+                    From = "info@sparo.com",
+                    To = uModel.Email,
+                    Subject = "Please verify your email address\r\n"
+                };
+                await _emailSender.SendAsync(mailRequest);
+            }
+
+            _notify.Success(isNewUser ? "User created successfully!" : "User updated successfully!");
+            var model = await GetAllUsers();
+            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", model) });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var success = await DeleteUserAsync(id);
+            if (success)
+            {
+                var model = await GetAllUsers();
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", model) });
+            }
+            else
+            {
+                _notify.Error("User is unable to delete");
+                return null;
+            }
+        }
+        public async Task<bool> DeleteUserAsync(string userId)
+        {
+            try
+            {
+                // Ensure user exists
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null) return false;
+
+                // Start a transaction
+                using var transaction = await _identityDbContext.Database.BeginTransactionAsync();
+
+                // Remove related Identity records
+                var logins = _identityDbContext.UserLogins.Where(l => l.UserId == userId);
+                _identityDbContext.UserLogins.RemoveRange(logins);
+
+                var roles = _identityDbContext.UserRoles.Where(r => r.UserId == userId);
+                _identityDbContext.UserRoles.RemoveRange(roles);
+
+                var claims = _identityDbContext.UserClaims.Where(c => c.UserId == userId);
+                _identityDbContext.UserClaims.RemoveRange(claims);
+
+                var tokens = _identityDbContext.UserTokens.Where(t => t.UserId == userId);
+                _identityDbContext.UserTokens.RemoveRange(tokens);
+
+                // Ensure `userId` is a valid GUID before parsing
+                if (Guid.TryParse(userId, out Guid parsedUserId))
+                {
+                    var lawyerUser = _identityDbContext.LawyerUsers.Where(t => t.Id == parsedUserId);
+                    _identityDbContext.LawyerUsers.RemoveRange(lawyerUser);
+                }
+
+                await _identityDbContext.SaveChangesAsync(); // Commit changes before deleting user
+
+                // Sign out user if they are logged in
+                await _signInManager.SignOutAsync();
+
+                await transaction.CommitAsync(); // Commit transaction
+
+                // Delete user from Identity
+                var result = await _userManager.DeleteAsync(user);
+                if (!result.Succeeded) throw new Exception("User deletion failed");
+
+                // Delete associated files from Azure Blob Storage
+                if (!string.IsNullOrEmpty(user.ProfileImgPath))
+                {
+                    await _blobService.DeleteFileAsync(user.ProfileImgPath);
+                }
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting user: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

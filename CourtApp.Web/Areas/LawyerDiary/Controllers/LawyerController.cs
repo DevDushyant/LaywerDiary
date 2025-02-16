@@ -1,21 +1,18 @@
-﻿using AspNetCoreHero.Results;
-using CourtApp.Application.Features.CaseCategory;
+﻿using CourtApp.Application.Constants;
 using CourtApp.Application.Features.CaseDetails;
-using CourtApp.Application.Features.Clients.Queries.GetById;
 using CourtApp.Application.Features.Lawyer;
-using CourtApp.Application.Features.UserCase;
 using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Areas.Client.Model;
-using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.LawyerDiary.Models.Lawyer;
 using CourtApp.Web.Areas.Litigation.Models;
+using CourtApp.Web.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Crypto.Macs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +24,11 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
     public class LawyerController : BaseController<LawyerController>
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        public LawyerController(UserManager<ApplicationUser> _userManager)
+        private readonly BlobService _blobService;
+        public LawyerController(UserManager<ApplicationUser> _userManager, BlobService blobService)
         {
             this._userManager = _userManager;
+            _blobService = blobService;
         }
         public IActionResult Index()
         {
@@ -37,7 +36,12 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new LawyerGetAllQuery() { PageNumber = 1, PageSize = 5000 });
+            var response = await _mediator.Send(new LawyerGetAllQuery()
+            {
+                PageNumber = 1,
+                PageSize = 10000
+            }
+            );
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<LawyerLViewModel>>(response.Data);
@@ -49,8 +53,10 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         {
             if (id == Guid.Empty)
             {
-                var ViewModel = new LawyerUpsertViewModel();
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
+                var model = new LawyerUpsertViewModel();
+                model.Genders = new SelectList(StaticDropDownDictionaries.Gender(), "Key", "Value");
+                model.Relegions = new SelectList(StaticDropDownDictionaries.Relegions(), "Key", "Value");
+                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", model) });
             }
             else
             {
@@ -58,6 +64,8 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 if (response.Succeeded)
                 {
                     var ViewModel = _mapper.Map<LawyerUpsertViewModel>(response.Data);
+                    ViewModel.Genders = new SelectList(StaticDropDownDictionaries.Gender(), "Key", "Value");
+                    ViewModel.Relegions = new SelectList(StaticDropDownDictionaries.Relegions(), "Key", "Value");
                     return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
                 }
                 return null;
@@ -65,24 +73,39 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostCreateOrEdit(Guid id, LawyerUpsertViewModel ViewModel)
+        public async Task<JsonResult> OnPostCreateOrEdit(LawyerUpsertViewModel ViewModel, IFormFile ProfileImgFile)
         {
             if (ModelState.IsValid)
             {
-                if (id == Guid.Empty)
+                bool isUpdating = ViewModel.Id == Guid.Empty ? false : true;
+                string oldImagePath = string.Empty;
+                string newImagePath = string.Empty;
+                if (ProfileImgFile != null)
                 {
-                    var createCommand = _mapper.Map<LawyerCreateCommand>(ViewModel);
-                    var result = await _mediator.Send(createCommand);
+                    string fileName = Guid.NewGuid() + System.IO.Path.GetExtension(ProfileImgFile.FileName);
+                    using var stream = ProfileImgFile.OpenReadStream();
+                    newImagePath = await _blobService.UploadOrUpdateFileAsync(stream, fileName, ProfileImgFile.ContentType, "ProfileImage");
+                }
+                if (!isUpdating)
+                {
+                    var ldModel = _mapper.Map<LawyerCreateCommand>(ViewModel);
+                    ldModel.ProfileImgPath = newImagePath;
+                    var result = await _mediator.Send(ldModel);
                     if (result.Succeeded)
                         _notify.Success($"Lawyer with ID {result.Data} Created.");
                     else _notify.Error(result.Message);
                 }
                 else
                 {
-                    var updateCommand = _mapper.Map<LawyerUpdateCommand>(ViewModel);
-                    var result = await _mediator.Send(updateCommand);
+                    var upModel = _mapper.Map<LawyerUpdateCommand>(ViewModel);
+                    upModel.ProfileImgPath = newImagePath;
+                    var result = await _mediator.Send(upModel);
                     if (result.Succeeded)
+                    {
+                        if (result.Data != null)
+                            await _blobService.DeleteFileAsync(result.Message);
                         _notify.Information($"Lawyer with ID {result.Data} Updated.");
+                    }
                 }
                 var response = await _mediator.Send(new LawyerGetAllQuery());
                 if (response.Succeeded)
@@ -107,9 +130,10 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         [HttpPost]
         public async Task<JsonResult> OnPostDelete(Guid id)
         {
-            var deleteCommand = await _mediator.Send(new LawyerDeleteCommand { Id = id });
-            if (deleteCommand.Succeeded)
+            var result = await _mediator.Send(new LawyerDeleteCommand { Id = id });
+            if (result.Succeeded)
             {
+                await _blobService.DeleteFileAsync(result.Message);
                 _notify.Information($"Lawyer with Id {id} Deleted.");
                 var response = await _mediator.Send(new LawyerGetAllQuery());
                 if (response.Succeeded)
@@ -126,7 +150,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
             else
             {
-                _notify.Error(deleteCommand.Message);
+                _notify.Error(result.Message);
                 return null;
             }
         }

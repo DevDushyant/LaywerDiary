@@ -27,8 +27,6 @@ namespace CourtApp.Infrastructure.Identity.Seeds
         {
             var adminRole = await roleManager.FindByNameAsync("SuperAdmin");
             await roleManager.AddPermissionClaim(adminRole, "Users");
-            await roleManager.AddPermissionClaim(adminRole, "Products");
-            await roleManager.AddPermissionClaim(adminRole, "Brands");
             await roleManager.AddPermissionClaim(adminRole, "Cases");
             await roleManager.AddPermissionClaim(adminRole, "Publishers");
             await roleManager.AddPermissionClaim(adminRole, "Subjects");
@@ -37,10 +35,25 @@ namespace CourtApp.Infrastructure.Identity.Seeds
             await roleManager.AddPermissionClaim(adminRole, "Clients");
             await roleManager.AddPermissionClaim(adminRole, "ProceedingHeads");
             await roleManager.AddPermissionClaim(adminRole, "ProceedingSubHeads");
-            await roleManager.AddPermissionClaim(adminRole, "CaseWorks");
             await roleManager.AddPermissionClaim(adminRole, "Titles");
             await roleManager.AddPermissionClaim(adminRole, "Cadre");
             await roleManager.AddPermissionClaim(adminRole, "Complex");
+            await roleManager.AddPermissionClaim(adminRole, "WorkType");
+            await roleManager.AddPermissionClaim(adminRole, "Work");
+            await roleManager.AddPermissionClaim(adminRole, "CaseKind");
+            await roleManager.AddPermissionClaim(adminRole, "DeathClaimPetition");
+            await roleManager.AddPermissionClaim(adminRole, "CaseSWorks");
+            await roleManager.AddPermissionClaim(adminRole, "CaseWorks");
+            await roleManager.AddPermissionClaim(adminRole, "TypeOfCase");
+            await roleManager.AddPermissionClaim(adminRole, "LawyerDirectory");
+            await roleManager.AddPermissionClaim(adminRole, "DocType");
+            await roleManager.AddPermissionClaim(adminRole, "CaseCateogy");
+            await roleManager.AddPermissionClaim(adminRole, "CaseStage");
+            await roleManager.AddPermissionClaim(adminRole, "CourtDistrict");
+            await roleManager.AddPermissionClaim(adminRole, "CourtFee");
+            await roleManager.AddPermissionClaim(adminRole, "Court");
+            await roleManager.AddPermissionClaim(adminRole, "CourtType");
+            await roleManager.AddPermissionClaim(adminRole, "ExpenceHead");
         }
 
         public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)

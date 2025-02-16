@@ -9,11 +9,16 @@ namespace CourtApp.Application.Mappings
     {
         public LawyerProfileMapping()
         {
-            CreateMap<LawyerCreateCommand, LawyerMasterEntity>();
-            CreateMap<LawyerMasterEntity, LawyerResponseById>();
-            CreateMap<LawyerMasterEntity, LawyerResponse>()
-                 .ForPath(d => d.Name,
-                 opt => opt.MapFrom(src => src.FirstName + "" + src.MiddleName + "" + src.LastName));
+            CreateMap<LawyerCreateCommand, LawyerMasterEntity>()
+                .ForPath(d => d.RelPerson, sr => sr.MapFrom(m => m.RelatedPerson))
+                ;
+            CreateMap<LawyerMasterEntity, LawyerResponseById>()
+                .ForPath(d => d.RelatedPerson, sr => sr.MapFrom(m => m.RelPerson))
+                .ForPath(d => d.Religion, sr => sr.MapFrom(m => m.Relegion))
+                .ForPath(d => d.Dob, sr => sr.MapFrom(m => m.Dob));
+            CreateMap<LawyerMasterEntity, LawyerResponse>();
+            //.ForPath(d => d.Name,
+            //opt => opt.MapFrom(src => src.FirstName + "" + src.MiddleName + "" + src.LastName));
         }
     }
 }

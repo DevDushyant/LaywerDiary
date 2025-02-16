@@ -5,7 +5,7 @@
 @model CourtFeeTypeViewModel
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
-        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Create)).Result.Succeeded)
+        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CourtFee.Create)).Result.Succeeded)
         {
             <a onclick="jQueryModalGet('/lawyerdiary/CourtFeeType/OnGetCreateOrEdit','Create Court Fee Type')" class="btn bg-success">
                 <i class="fa fa-plus-square"></i> Create

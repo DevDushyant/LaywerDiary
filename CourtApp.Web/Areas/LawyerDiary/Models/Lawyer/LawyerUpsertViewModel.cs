@@ -19,6 +19,6 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models.Lawyer
         public SelectList Relegions { get; set; }
         public string Caste { get; set; }
         public string RelatedPerson { get; set; }
-        public byte[] ProfilePicture { get; set; }
+        public string ProfileImgPath { get; set; }
     }
 }

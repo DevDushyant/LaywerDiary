@@ -18,7 +18,7 @@ namespace CourtApp.Infrastructure.Migrations.Identity
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("Identity")
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "9.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -86,6 +86,9 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("ProfileImgPath")
+                        .HasColumnType("text");
+
                     b.Property<byte[]>("ProfilePicture")
                         .HasColumnType("bytea");
 
@@ -115,6 +118,31 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("Users", "Identity");
+                });
+
+            modelBuilder.Entity("CourtApp.Infrastructure.Identity.Models.CorporateUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirmName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirmType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Owner")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RegistrationNo")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Corporates", "Identity");
                 });
 
             modelBuilder.Entity("CourtApp.Infrastructure.Identity.Models.Demographic", b =>
@@ -172,6 +200,9 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                     b.Property<DateTime>("DateOfJoining")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("Enrollment")
+                        .HasColumnType("text");
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
@@ -185,7 +216,7 @@ namespace CourtApp.Infrastructure.Migrations.Identity
 
                     b.HasIndex("LawyerId");
 
-                    b.ToTable("operator", "Identity");
+                    b.ToTable("lawerusers", "Identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -327,6 +358,17 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                         .HasForeignKey("CourtApp.Infrastructure.Identity.Models.ApplicationUser", "DemographicId");
 
                     b.Navigation("Demographic");
+                });
+
+            modelBuilder.Entity("CourtApp.Infrastructure.Identity.Models.CorporateUser", b =>
+                {
+                    b.HasOne("CourtApp.Infrastructure.Identity.Models.ApplicationUser", "User")
+                        .WithOne()
+                        .HasForeignKey("CourtApp.Infrastructure.Identity.Models.CorporateUser", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CourtApp.Infrastructure.Identity.Models.OperatorUser", b =>

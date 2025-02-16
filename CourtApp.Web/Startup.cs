@@ -85,6 +85,7 @@ namespace CourtApp.Web
                 options.LoginPath = new PathString("/Identity/Account/Login"); // ✅ Correct path for areas
                 options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied"); // ✅ Access Denied Page
             });
+            services.AddSingleton<BlobService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,7 +95,6 @@ namespace CourtApp.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
             }
             else
             {

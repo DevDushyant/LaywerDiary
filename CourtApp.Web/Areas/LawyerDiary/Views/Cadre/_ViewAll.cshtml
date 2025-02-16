@@ -21,7 +21,7 @@
                 <td> @(counter = counter + 1)</td>
                 <td>@bt.Name_En</td>
                 
-                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cadre.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cadre.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Cadre.Edit)).Result.Succeeded)
                 {
                     <td text-right">
                         <div class="btn-group">

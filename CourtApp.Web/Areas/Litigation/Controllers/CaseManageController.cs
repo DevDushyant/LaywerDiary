@@ -45,6 +45,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<GetCaseInfoViewModel>>(response.Data);
+                _logger.LogInformation("Load all the user's cases successfully!");
                 return PartialView("_ViewAll", viewModel);
             }
             return null;
@@ -91,7 +92,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     var agcl = new List<CaseAgainstModel>();
                     agcl.Add(cam);
                     caseViewModel.AgainstCaseDetails = agcl;
-                    _logger.LogInformation("Case form load");
+                    _logger.LogInformation("Case entry form loaded successfully!");
                     return View("_CreateOrEdit", caseViewModel);
                 }
                 else
@@ -176,9 +177,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         }
                         else
                         {
+                            _logger.LogInformation("Case form is access by Repeat");
                             ViewBag.ActionType = "Save";
                             ViewBag.Id = Guid.Empty.ToString();
                             CaseDetail.Id = Guid.Empty;
+                            CaseDetail.LinkedCaseId = Guid.Empty;
                             ViewBag.from = from;
                         }
                         return View("_CreateOrEdit", CaseDetail);

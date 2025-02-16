@@ -9,10 +9,11 @@ namespace CourtApp.Infrastructure.Identity.Models
         public Guid? DemographicId { get; set; }
         public Demographic Demographic { get; set; }
         public string FirstName { get; set; }
-        public string LastName { get; set; }       
+        public string LastName { get; set; }
         public string Mobile { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Gender { get; set; }
+        public string ProfileImgPath { get; set; }
         public byte[] ProfilePicture { get; set; }
         public bool IsActive { get; set; } = false;
 

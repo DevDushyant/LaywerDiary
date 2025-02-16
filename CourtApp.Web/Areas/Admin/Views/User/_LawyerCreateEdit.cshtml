@@ -13,10 +13,10 @@
             <label class="col-md-2 col-form-label">@localizer["User Type"] (<span style="color:red">*</span>)</label>
             <div class="col-md-4">
                 <select class="form-control select2bs4"
-                        asp-for="RoleId" asp-items="@Model.Roles">
+                        asp-for="Role" asp-items="@Model.Roles">
                     <option></option>
                 </select>
-                <small><span asp-validation-for="RoleId" class="text-danger"></span></small>
+                <small><span asp-validation-for="Role" class="text-danger"></span></small>
             </div>
         </div>
     </div>

@@ -29,9 +29,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
         {
             var model = new PermissionViewModel();
             var allPermissions = new List<RoleClaimsViewModel>();
-            allPermissions.GetPermissions(typeof(Permissions.Brands), roleId);
             allPermissions.GetPermissions(typeof(Permissions.Dashboard), roleId);
-            allPermissions.GetPermissions(typeof(Permissions.Products), roleId);
             allPermissions.GetPermissions(typeof(Permissions.Users), roleId);
             allPermissions.GetPermissions(typeof(Permissions.Books), roleId);
             allPermissions.GetPermissions(typeof(Permissions.BookTypes), roleId);
@@ -45,6 +43,13 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             allPermissions.GetPermissions(typeof(Permissions.Titles), roleId);
             allPermissions.GetPermissions(typeof(Permissions.Complex), roleId);
             allPermissions.GetPermissions(typeof(Permissions.Cadre), roleId);
+            allPermissions.GetPermissions(typeof(Permissions.LawyerDirectory), roleId);
+            allPermissions.GetPermissions(typeof(Permissions.FormBuilder), roleId);
+            allPermissions.GetPermissions(typeof(Permissions.Role), roleId);
+            allPermissions.GetPermissions(typeof(Permissions.TempDesign), roleId);
+            allPermissions.GetPermissions(typeof(Permissions.CaseDrafting), roleId);
+            allPermissions.GetPermissions(typeof(Permissions.WorkType), roleId);
+            allPermissions.GetPermissions(typeof(Permissions.Work), roleId);
 
             var role = await _roleManager.FindByIdAsync(roleId);
             model.RoleId = roleId;
@@ -94,7 +99,8 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             if (operatorUser == null) return NotFound();
 
             var claims = await _userManager.GetClaimsAsync(operatorUser);
-            var assignedPermissions = claims.Where(c => c.Type == "Permission").Select(c => c.Value).ToList();
+            var assignedPermissions = claims.Where(c => c.Type == "Permission")
+                .Select(c => c.Value).ToList();
             var model = new OperatorPermissionsViewModel
             {
                 OperatorId = operatorId,
@@ -134,9 +140,11 @@ namespace CourtApp.Web.Areas.Admin.Controllers
         private List<string> GetAllPermissions()
         {
             return Permissions.Users.GetAllPermissions()
-                .Concat(Permissions.Brands.GetAllPermissions())
                 .Concat(Permissions.Cases.GetAllPermissions())
-                .Concat(Permissions.Publishers.GetAllPermissions())
+                .Concat(Permissions.CaseHearing.GetAllPermissions())
+                .Concat(Permissions.LawyerDirectory.GetAllPermissions())
+                .Concat(Permissions.Cadre.GetAllPermissions())
+                .Concat(Permissions.CaseDrafting.GetAllPermissions())
                 .ToList();
         }
     }

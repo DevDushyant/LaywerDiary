@@ -1,5 +1,5 @@
-using CourtApp.Infrastructure.Identity.Models;
 using AspNetCoreHero.Extensions.Logging;
+using CourtApp.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,14 +30,14 @@ namespace CourtApp.Web
                     await Infrastructure.Identity.Seeds.DefaultSuperAdminUser.SeedAsync(userManager, roleManager);
                     await Infrastructure.Identity.Seeds.DefaultBasicUser.SeedAsync(userManager, roleManager);
                     logger.LogInformation("Finished Seeding Default Data");
-                    logger.LogInformation("Application Starting");                    
+                    logger.LogInformation("Application Starting");
                 }
                 catch (Exception ex)
                 {
                     logger.LogWarning(ex, "An error occurred seeding the DB");
                 }
             }
-            host.Run();
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

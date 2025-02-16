@@ -1,8 +1,19 @@
 ﻿@using CourtApp.Web.Areas.Admin.Models
 @model UserViewModel
-<form id="create-form" method="post" asp-area="Admin" asp-controller="User"
-      asp-action="OnPostCreate"
-      onsubmit="return jQueryModalPost(this);">
+<style>
+    .custom-file-input {
+        opacity: 1 !important;
+    }
+
+    .input-group > .custom-file {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+</style>
+<form id="frmUserCreate" method="post" asp-area="Admin" asp-controller="User" asp-action="OnPostCreate"
+      asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);">
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
@@ -48,7 +59,7 @@
                 </div>
                 <label class="col-md-2 col-form-label">@localizer["Date Of Birth"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
-                    <input type="date" value="@DateTime.Now" asp-for="DateOfBirth" class="form-control">
+                    <input type="date" asp-for="DateOfBirth" class="form-control">
                     <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                 </div>
             </div>
@@ -59,29 +70,90 @@
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["Joining Date"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
-                    <input type="date" value="@DateTime.Now" asp-for="DateOfJoining" class="form-control">
+                    <input type="date" asp-for="DateOfJoining" class="form-control">
                     <span asp-validation-for="DateOfJoining" class="text-danger"></span>
                 </div>
                 <label class="col-md-2 col-form-label">@localizer["User Type"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <select class="form-control select2bs4"
-                            asp-for="RoleId" asp-items="@Model.Roles">
+                            asp-for="Role" asp-items="@Model.Roles">
                         <option></option>
                     </select>
-                    <small><span asp-validation-for="RoleId" class="text-danger"></span></small>
+                    <small><span asp-validation-for="Role" class="text-danger"></span></small>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
-    <div class="row" id="divPartial"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">@localizer["Profile Picture"] </label>
+                <div class="col-md-4">
+                    <div class="input-group ">
+                        <input accept=".png,.jpg,.jpeg,.gif,.tif"
+                               name="ProfileImgFile"
+                               type="file" class="custom-file-input"
+                               onchange="document.getElementById('profilePicture').src = window.URL.createObjectURL(this.files[0])"
+                               id="customFile">
+                    </div>
+                    <span asp-validation-for="ProfileImgPath" class="text-danger"></span>
+                </div>
+                <label class="col-md-2 col-form-label">@localizer["Enrollment No"]</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" asp-for="EnrollmentNo"></input>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* @if (Model.Role != "" && Model.Role == "ASSOCIATE" && Model.Id != string.Empty)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">@localizer["Enrollment No"] (<span style="color:red">*</span>)</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" asp-for="EnrollmentNo"></input>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row" id="divAssociate" style="display:none">
+            <div class="col-md-12">
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">@localizer["Enrollment No"] (<span style="color:red">*</span>)</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" asp-for="EnrollmentNo"></input>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+ *@
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">@localizer["Address"] (<span style="color:red">*</span>)</label>
+                <div class="col-md-10">
+                    <textarea asp-for="Address" class="form-control"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
-        <button type="submit" class="btn btn-success">Save</button>
+        @{
+            var btnText = ViewBag.BtnText ?? "Save"; // Default to 'Submit' if ViewBag is null
+        }
+        <button type="submit" class="btn btn-success">@btnText</button>
         <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
     </div>
 </form>
 <script type="text/javascript" language=javascript>
-    $.validator.unobtrusive.parse(document);
+    //$.validator.unobtrusive.parse(document);
     $(document).ready(function () {
+        $("#divAssociate").hide();
         $("#Gender").select2({
             placeholder: "Select a gender",
             theme: "bootstrap4",
@@ -89,11 +161,20 @@
                 return m;
             }
         });
-         $("#RoleId").select2({
+         $("#Role").select2({
             placeholder: "Select a role",
             theme: "bootstrap4",
             escapeMarkup: function (m) {
                 return m;
+            }
+        });
+        $("#Role").on("change",function(){
+            var role=$("#Role").val();
+            if(role==="ASSOCIATE"){
+            $("#divAssociate").show();
+            }
+            else{
+                $("#divAssociate").hide();
             }
         });
     });

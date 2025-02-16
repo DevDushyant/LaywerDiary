@@ -1,0 +1,77 @@
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+
+namespace CourtApp.Web.Services
+{
+    public class BlobService
+    {
+        private readonly string _connectionString;
+        private readonly IConfiguration _configuration;
+        public BlobService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+            _connectionString = _configuration["AzureBlobStorage:ConnectionString"];
+        }
+        private BlobContainerClient GetContainerClient(string containerName)
+        {
+            var containerClient = new BlobContainerClient(_connectionString, containerName);
+            containerClient.CreateIfNotExists(PublicAccessType.Blob);
+            return containerClient;
+        }
+        public async Task<string> UploadOrUpdateFileAsync(Stream fileStream, string fileName, string contentType, string documentType)
+        {
+            try
+            {
+                // Determine the correct container based on the document type
+                string containerName = documentType switch
+                {
+                    "ProfileImage" => _configuration["AzureBlobStorage:Containers:ProfileImages"],
+                    "PDF" => _configuration["AzureBlobStorage:Containers:PDFDocuments"],
+                    "Word" => _configuration["AzureBlobStorage:Containers:WordDocuments"],
+                    _ => throw new ArgumentException("Invalid document type")
+                };
+                // Get the container client
+                var containerClient = GetContainerClient(containerName);
+
+                // Upload file to Azure Blob Storage
+                BlobClient blobClient = containerClient.GetBlobClient(fileName);
+                var blobHttpHeaders = new BlobHttpHeaders { ContentType = contentType };
+                await blobClient.UploadAsync(fileStream, new BlobUploadOptions
+                {
+                    HttpHeaders = blobHttpHeaders
+                }, cancellationToken: default);
+
+                return blobClient.Uri.ToString(); // Return the file URL
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"File upload failed: {ex.Message}");
+            }
+        }
+
+        public async Task<bool> DeleteFileAsync(string fileUrl)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(fileUrl)) return false;
+
+                Uri uri = new Uri(fileUrl);
+                string blobName = uri.AbsolutePath.TrimStart('/').Split('/', 2)[1]; // Extract blob name
+
+                string containerName = uri.AbsolutePath.TrimStart('/').Split('/')[0]; // Extract container name
+                var containerClient = GetContainerClient(containerName);
+                BlobClient blobClient = containerClient.GetBlobClient(blobName);
+
+                return await blobClient.DeleteIfExistsAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"File deletion failed: {ex.Message}");
+            }
+        }
+    }
+}
