@@ -196,5 +196,22 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
         }
         #endregion
+
+        #region Load Lawyer by name
+
+        public async Task<JsonResult> GetLawyer(string refral)
+        {
+            var result = await _mediator.Send(new GetLawyerByNameQuery { Referal = refral });
+            if (result.Succeeded)
+            {
+                return Json(result.Data);
+            }
+            else
+            {
+                _notify.Error(result.Message);
+                return null;
+            }
+        }
+        #endregion
     }
 }
