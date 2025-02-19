@@ -21,6 +21,10 @@
         display: none;
     }
 
+    .text-capitalize {
+        text-transform: capitalize;
+    }
+
 </style>
 @model CaseUpseartViewModel
 <div class="card">
@@ -160,7 +164,7 @@
                         <label class="col-md-2 col-form-label"> Title First (<span style="color:red">*</span>)</label>
                         <div class="col-md-8">
                             <div class="input-group">
-                                <input type="text" placeholder="First title" asp-for="FirstTitle" name="FirstTitle" id="TitleFirst" class="form-control" />
+                                <input type="text" placeholder="First title" asp-for="FirstTitle" name="FirstTitle" id="TitleFirst" class="form-control text-capitalize" />
                             </div>
                             <span asp-validation-for="FirstTitle" class="text-danger"></span>
                         </div>
@@ -184,7 +188,7 @@
                         <label class="col-md-2 col-form-label">Title Second (<span style="color:red">*</span>)</label>
                         <div class="col-md-8">
                             <div class="input-group">
-                                <input type="text" placeholder="Second title" asp-for="SecondTitle" name="SecondTitle" id="TitleSecond" class="form-control" />
+                                <input type="text" placeholder="Second title" asp-for="SecondTitle" name="SecondTitle" id="TitleSecond" class="form-control text-capitalize" />
                             </div>
                             <span asp-validation-for="SecondTitle" class="text-danger"></span>
                         </div>
@@ -285,19 +289,23 @@
             </div>
 
             <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
-                <button type="submit" class="btn btn-success">@ViewBag.ActionType</button>
-                @* <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetClientInfo?CaseId=@Model.Id','Add Client')" class="btn btn-outline-success" style="dis">
-                <i class="fa fa-plus-square"></i> Add Client
-                </a> *@
+                <button type="submit" class="btn btn-success">@ViewBag.ActionType</button>  
+                <a asp-area="Litigation" asp-controller="CaseManage" asp-action="index"
+                   class="btn btn-secondary" onclick="return confirm('Are you sure you want to cancel?')">
+                    <i class="fa fa-arrow-left"></i> Cancel
+                </a>
             </div>
         </form>
     </div>
 </div>
 @section Scripts
 {
+
     <script src="~/js/litigation/managecase.js"></script>
     <script>
         $(document).ready(function () {
+            $("#hypButton").css("display", "block");
+            $("#hypRepeatButton").css("display", "block");
             var showHighCourt = @((bool)ViewBag.ShowHighCourt ? "true" : "false");
             var AgIsHighCourt = @((bool)ViewBag.AgIsHighCourt ? "true" : "false");
             var CaseId = "@(ViewBag.Id)";
@@ -310,10 +318,6 @@
                     $('.highCourt').css('display', 'none');
                     $('.Court').css('display', 'block');
                 }
-            }
-            else{
-             $("#hypButton").css("display", "block");
-            $("#hypRepeatButton").css("display", "block");
             }
             if (CaseId != "00000000-0000-0000-0000-000000000000") {
                 if (AgIsHighCourt == true) {
@@ -345,7 +349,6 @@
                 }
             }
         });
-
     </script>
 
 }

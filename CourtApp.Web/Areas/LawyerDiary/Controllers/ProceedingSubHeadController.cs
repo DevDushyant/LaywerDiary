@@ -1,15 +1,11 @@
-﻿using CourtApp.Application.Features.ProceedingHead;
+﻿using CourtApp.Application.Features.ProceedingSubHead;
+using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
+using CourtApp.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CourtApp.Web.Abstractions;
-using CourtApp.Application.Features.ProceedingSubHead;
-using System;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using CourtApp.Web.Models;
-using DocumentFormat.OpenXml.Wordprocessing;
-using System.Linq;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 {
@@ -49,8 +45,8 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         {
             var response = await _mediator.Send(new GetProceedingSubHeadQuery
             {
-                PageNumber = (request.Start / request.Length) + 1,
-                PageSize = request.Length
+                PageNumber = 1,
+                PageSize = 10
             });
 
             if (response.Succeeded)
@@ -59,37 +55,37 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 var totalRecords = response.TotalCount;
 
                 // Filter data if needed (based on request.Search.Value)
-                if (!string.IsNullOrEmpty(request.Search.Value))
-                {
-                    result = result.Where(r => r.Name_En.Contains(request.Search.Value)).ToList();
-                }
+                //if (!string.IsNullOrEmpty(request.Search.Value))
+                //{
+                //    result = result.Where(r => r.Name_En.Contains(request.Search.Value)).ToList();
+                //}
 
-                var filteredRecords = result.Count;
+                //var filteredRecords = result.Count;
 
-                // Apply sorting
-                if (request.Order.Count > 0)
-                {
-                    var sortColumn = request.Columns[request.Order[0].Column].Data;
-                    var sortDirection = request.Order[0].Dir;
+                //// Apply sorting
+                //if (request.Order.Count > 0)
+                //{
+                //    var sortColumn = request.Columns[request.Order[0].Column].Data;
+                //    var sortDirection = request.Order[0].Dir;
 
-                    if (sortDirection == "asc")
-                    {
-                        result = result.OrderBy(x => x.GetType().GetProperty(sortColumn)?.GetValue(x, null)).ToList();
-                    }
-                    else
-                    {
-                        result = result.OrderByDescending(x => x.GetType().GetProperty(sortColumn)?.GetValue(x, null)).ToList();
-                    }
-                }
+                //    if (sortDirection == "asc")
+                //    {
+                //        result = result.OrderBy(x => x.GetType().GetProperty(sortColumn)?.GetValue(x, null)).ToList();
+                //    }
+                //    else
+                //    {
+                //        result = result.OrderByDescending(x => x.GetType().GetProperty(sortColumn)?.GetValue(x, null)).ToList();
+                //    }
+                //}
 
                 // Apply pagination to the filtered and sorted data
                 //result = result.Skip(request.Start).Take(request.Length).ToList();
 
                 // Create DataTableResponse
-                var dataTableResponse = new 
+                var dataTableResponse = new
                 {
-                    draw = request.Draw,
-                    recordsTotal = (int)totalRecords,
+                    draw = 10,
+                    recordsTotal = 1000,
                     recordsFiltered = (int)totalRecords,
                     data = result,
                     totalPages = response.TotalPages

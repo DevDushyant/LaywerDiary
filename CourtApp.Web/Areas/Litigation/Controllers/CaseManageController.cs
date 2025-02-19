@@ -51,6 +51,31 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return null;
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> LoadAll([FromBody] DataTableRequest request)
+        //{
+        //    var response = await _mediator.Send(new GetCaseInfoQuery()
+        //    {
+        //        UserId = CurrentUser.Id,
+        //        PageSize = request.PageSize,
+        //        PageNumber = request.PageNumber
+        //    });
+        //    if (response.Succeeded)
+        //    {
+        //        var viewModel = _mapper.Map<List<GetCaseInfoViewModel>>(response.Data);
+        //        _logger.LogInformation("Loaded paginated cases successfully!");
+
+        //        return Json(new
+        //        {
+        //            draw = request.PageNumber,
+        //            recordsTotal = response.TotalCount, // Total records count before filtering
+        //            recordsFiltered = response.TotalPages, // Records after filtering
+        //            data = viewModel
+        //        });
+        //    }
+        //    return null;
+        //}
+
 
         public async Task<IActionResult> CreateOrUpdateAsync(Guid id, string from)
         {
@@ -92,6 +117,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     var agcl = new List<CaseAgainstModel>();
                     agcl.Add(cam);
                     caseViewModel.AgainstCaseDetails = agcl;
+                    ViewBag.Id = id.ToString();
                     _logger.LogInformation("Case entry form loaded successfully!");
                     return View("_CreateOrEdit", caseViewModel);
                 }
@@ -215,45 +241,14 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     if (result.Succeeded)
                     {
                         ViewModel.StatusMessage = "Case information created successfully!";
-                        ViewModel.Id = result.Data;
-                        ViewModel.InstitutionDate = DateTime.Now;
-                        ViewModel.CourtTypes = await LoadCourtTypes();
-                        ViewModel.CaseNatures = await LoadCaseNature();
-                        ViewModel.FirstTitleList = await DdlFSTypes(1);
-                        ViewModel.SecondTitleList = await DdlFSTypes(2);
-                        ViewModel.Years = DdlYears();
-                        ViewModel.CaseStatusList = await DdlCaseStages();
-                        ViewModel.LinkedBy = await UserCaseTitle(Guid.Empty);
-                        ViewModel.Cadres = await DdlCadres();
-                        ViewModel.Strengths = DdlStrength();
-                        ViewModel.States = await LoadStates();
                         _notify.Success($"Case created with ID {result.Data} Created.");
-
                     }
                     else
                     {
                         _notify.Error(result.Message);
-                        ViewModel.InstitutionDate = DateTime.Now;
-                        ViewModel.CourtTypes = await LoadCourtTypes();
-                        ViewModel.CaseNatures = await LoadCaseNature();
-                        ViewModel.FirstTitleList = await DdlFSTypes(1);
-                        ViewModel.SecondTitleList = await DdlFSTypes(2);
-                        ViewModel.Years = DdlYears();
-                        ViewModel.CaseStatusList = await DdlCaseStages();
-                        ViewModel.LinkedBy = await UserCaseTitle(Guid.Empty);
-                        ViewModel.Cadres = await DdlCadres();
-                        ViewModel.Strengths = DdlStrength();
-                        ViewModel.States = await LoadStates();
                         ViewBag.from = "repeat";
                         if (ViewModel.BenchId != null)
-                        {
                             showHighCourt = true;
-                            //need to add the dropdown for high court
-                        }
-                        else
-                        {
-                            //district court
-                        }
                         if (ViewModel.AgainstCaseDetails[0].BenchId != null)
                         {
                             AgIsHighCourt = true;
@@ -261,7 +256,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     }
                     ViewBag.ShowHighCourt = showHighCourt;
                     ViewBag.AgIsHighCourt = AgIsHighCourt;
-                    return View("_CreateOrEdit", ViewModel);
+                    return RedirectToAction("CreateOrUpdate", "CaseManage", new { area = "Litigation" });
                 }
                 else
                 {
@@ -270,42 +265,26 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     var result = await _mediator.Send(updateCommand);
                     if (result.Succeeded)
                     {
-                        _notify.Information($"Case information  with ID {result.Data} Updated.");
-                        ViewModel.InstitutionDate = DateTime.Now;
-                        ViewModel.CourtTypes = await LoadCourtTypes();
-                        ViewModel.CaseNatures = await LoadCaseNature();
-                        ViewModel.FirstTitleList = await DdlFSTypes(1);
-                        ViewModel.SecondTitleList = await DdlFSTypes(2);
-                        ViewModel.Years = DdlYears();
-                        ViewModel.CaseStatusList = await DdlCaseStages();
-                        ViewModel.LinkedBy = await UserCaseTitle(Id);
-                        ViewModel.Cadres = await DdlCadres();
-                        ViewModel.Strengths = DdlStrength();
-                        ViewModel.States = await LoadStates();
-                        ViewModel.StatusMessage = "Case information updated successfully!";
+                        _notify.Information($"Case information with ID {result.Data} Updated.");
+                        return RedirectToAction("getcasedetail", new { id = Id });
                     }
-                    ViewBag.ShowHighCourt = showHighCourt;
-                    ViewBag.AgIsHighCourt = AgIsHighCourt;
-                    return RedirectToAction("getcasedetail", new { id = Id });
                 }
             }
-            else
-            {
-                ViewModel.InstitutionDate = DateTime.Now;
-                ViewModel.CaseNatures = await LoadCaseNature();
-                ViewModel.CaseKinds = await LoadCaseKinds();
-                ViewModel.CourtTypes = await LoadCourtTypes();
-                ViewModel.CaseStages = await DdlCaseStages();
-                ViewModel.FirstTitleList = FirstTtitleList();
-                ViewModel.SecondTitleList = SecondTtitleList();
-                ViewModel.Years = DdlYears();
-                ViewModel.CaseStatusList = DdlCaseStatus();
-                ViewModel.LinkedBy = DdlClient(CurrentUser.Id).Result;
-                ViewBag.ShowHighCourt = showHighCourt;
-                ViewBag.AgIsHighCourt = AgIsHighCourt;
-                var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
-                return new JsonResult(new { isValid = false, html = html });
-            }
+
+            ViewModel.InstitutionDate = DateTime.Now;
+            ViewModel.CaseNatures = await LoadCaseNature();
+            ViewModel.CaseKinds = await LoadCaseKinds();
+            ViewModel.CourtTypes = await LoadCourtTypes();
+            ViewModel.CaseStages = await DdlCaseStages();
+            ViewModel.FirstTitleList = FirstTtitleList();
+            ViewModel.SecondTitleList = SecondTtitleList();
+            ViewModel.Years = DdlYears();
+            ViewModel.CaseStatusList = DdlCaseStatus();
+            ViewModel.LinkedBy = DdlClient(CurrentUser.Id).Result;
+            ViewBag.ShowHighCourt = showHighCourt;
+            ViewBag.AgIsHighCourt = AgIsHighCourt;
+            var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
+            return new JsonResult(new { isValid = false, html = html });
         }
 
         [HttpPost]
