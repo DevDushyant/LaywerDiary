@@ -5,8 +5,8 @@
             <th style="width:5%;">Sr.</th>
             <th style="width:20%;">Form Name</th>
             <th style="width:70%;">Fields</th>
-            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded
-            || (AuthorizationService.AuthorizeAsync(User, Permissions.Books.Edit)).Result.Succeeded)
+            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.FormBuilder.Delete)).Result.Succeeded
+            || (AuthorizationService.AuthorizeAsync(User, Permissions.FormBuilder.Edit)).Result.Succeeded)
             {
                 <th style="width:5%;">Actions</th>
             }
@@ -27,9 +27,9 @@
                 </td>
                 <td>
                     @bt.Fields
-                </td>              
-              
-                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+                </td>
+
+                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.FormBuilder.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.FormBuilder.Edit)).Result.Succeeded)
                 {
                     <td text-right">
                         <div class="btn-group">
@@ -37,11 +37,11 @@
                                 Action
                             </button>
                             <div class="dropdown-menu shadow animated--grow-in">
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Edit)).Result.Succeeded)
+                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.FormBuilder.Edit)).Result.Succeeded)
                                 {
                                     <a onclick="jQueryModalGet('/admin/generateform/OnGetCreateOrEdit?id=@bt.Id','Edit Book Master')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
                                 }
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded)
+                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.FormBuilder.Delete)).Result.Succeeded)
                                 {
                                     <form id="form_delete_@bt.Id" asp-area="admin" asp-controller="generateform" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">
                                         <a href="javascript:$('#form_delete_@bt.Id').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a>

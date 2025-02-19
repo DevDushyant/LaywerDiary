@@ -3,10 +3,9 @@
     ViewData["Caption"] = localizer["Manage Case Stage"];
 }
 @model CaseStageViewModel
-@* <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
- *@<div class="card">
+<div class="card">
     <div class="col-sm-12" style="padding:20px">
-        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Create)).Result.Succeeded)
+        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseStage.Create)).Result.Succeeded)
         {
             <a onclick="jQueryModalGet('/lawyerdiary/CaseStage/OnGetCreateOrEdit','Create Case Stage')" class="btn bg-success">
                 <i class="fa fa-plus-square"></i> Create

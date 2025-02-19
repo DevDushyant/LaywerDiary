@@ -4,8 +4,8 @@
         <tr>
             <th>Court Type</th>
             <th>Kind</th>
-            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded
-            || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseKind.Delete)).Result.Succeeded
+            || (AuthorizationService.AuthorizeAsync(User, Permissions.CaseKind.Edit)).Result.Succeeded)
             {
                 <th>Actions</th>
             }
@@ -22,7 +22,7 @@
                 <td>
                     @bt.CaseKind
                 </td>
-                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseKind.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.CaseKind.Edit)).Result.Succeeded)
                 {
                     <td text-right">
                         <div class="btn-group">
@@ -30,12 +30,12 @@
                                 Action
                             </button>
                             <div class="dropdown-menu shadow animated--grow-in">
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseKind.Edit)).Result.Succeeded)
                                 {
                                     <a onclick="jQueryModalGet('/LawyerDiary/CaseKind/OnGetCreateOrEdit?id=@bt.Id','Edit Case Kind')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
 
                                 }
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded)
+                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseKind.Delete)).Result.Succeeded)
 
                                 {
                                     <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="casekind" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">

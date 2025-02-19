@@ -18,8 +18,8 @@
                 <td>
                     @bt.Name_En
                 </td>
-                
-                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.BookTypes.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+
+                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.BookTypes.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.BookTypes.Edit)).Result.Succeeded)
                 {
                     <td text-right">
                         <div class="btn-group">

@@ -3,7 +3,7 @@
     <thead>
         <tr>
             <th>Sno.</th>
-            <th>Work</th>
+            <th>Type</th>
             <th>Name(En)</th>
             <th>Name(Hn)</th>           
             <th>Actions</th>
@@ -27,8 +27,8 @@
                     @bt.Name_Hn
                 </td>
                
-                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded ||
-               (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.WorkType.Delete)).Result.Succeeded ||
+               (AuthorizationService.AuthorizeAsync(User, Permissions.WorkType.Edit)).Result.Succeeded)
                 {
                     <td text-right">
                         <div class="btn-group">
@@ -36,12 +36,12 @@
                                 Action
                             </button>
                             <div class="dropdown-menu shadow animated--grow-in">
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.WorkType.Edit)).Result.Succeeded)
                                 {
                                     <a onclick="jQueryModalGet('/LawyerDiary/WorkMasterSub/OnGetCreateOrEdit?id=@bt.Id','Edit Work Master Sub Type')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
 
                                 }
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Delete)).Result.Succeeded)
+                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.WorkType.Delete)).Result.Succeeded)
                                 {
                                     <form id="form_delete_@bt.Id" asp-area="LawyerDiary"
                                           asp-controller="WorkMasterSub" method="post" asp-action="OnPostDelete"

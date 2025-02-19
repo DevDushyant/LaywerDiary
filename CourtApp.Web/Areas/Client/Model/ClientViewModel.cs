@@ -6,7 +6,7 @@ namespace CourtApp.Web.Areas.Client.Model
 {
     public class ClientViewModel
     {
-        public Guid Id { get; set; }   
+        public Guid Id { get; set; }
         [TempData]
         public string StatusMessage { get; set; }
         public Guid CaseId { get; set; }
@@ -23,10 +23,13 @@ namespace CourtApp.Web.Areas.Client.Model
         public string ReferalBy { get; set; }
         public Guid AppearenceID { get; set; }
         public SelectList Appearences { get; set; } //it will be Title FIrst union title secound
-        //public Guid? OppositCounselId { get; set; }
-        //public SelectList OppositCounsels { get; set; }
-        //public ClientFeeViewModel FeeDetail { get; set; }
+                                                    //public Guid? OppositCounselId { get; set; }
+                                                    //public SelectList OppositCounsels { get; set; }
+                                                    //public ClientFeeViewModel FeeDetail { get; set; }
+
         #endregion
+        public string ClientType { get; set; }
+        public CorporateViewModel CorporateViewModel { get; set; } = null;
 
     }
 }

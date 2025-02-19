@@ -7,8 +7,8 @@
             @* <th>District</th> *@
             <th>Name</th>
             @* <th>Abbreviation</th> *@
-            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded
-            || (AuthorizationService.AuthorizeAsync(User, Permissions.Books.Edit)).Result.Succeeded)
+            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CourtDistrict.Delete)).Result.Succeeded
+            || (AuthorizationService.AuthorizeAsync(User, Permissions.CourtDistrict.Edit)).Result.Succeeded)
             {
                 <th>Actions</th>
             }
@@ -36,7 +36,7 @@
                @*  <td>
                     @bt.Abbreviation
                 </td> *@
-                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CourtDistrict.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.CourtDistrict.Edit)).Result.Succeeded)
                 {
                     <td text-right">
                         <div class="btn-group">
@@ -44,12 +44,12 @@
                                 Action
                             </button>
                             <div class="dropdown-menu shadow animated--grow-in">
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Edit)).Result.Succeeded)
+                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CourtDistrict.Edit)).Result.Succeeded)
                                 {
                                     <a onclick="jQueryModalGet('/lawyerdiary/CourtDistrict/OnGetCreateOrEdit?id=@bt.Id','Edit Court District')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
 
                                 }
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded)
+                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CourtDistrict.Delete)).Result.Succeeded)
 
                                 {
                                     <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="CourtDistrict" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">

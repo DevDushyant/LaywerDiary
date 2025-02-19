@@ -13,6 +13,7 @@ namespace CourtApp.Application.Constants
                 $"Permissions.{module}.View",
                 $"Permissions.{module}.Edit",
                 $"Permissions.{module}.Delete",
+                $"Permissions.{module}.MenuAccess",
             };
         }
 
@@ -22,18 +23,20 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Dashboard.Create";
             public const string Edit = "Permissions.Dashboard.Edit";
             public const string Delete = "Permissions.Dashboard.Delete";
+            public const string MenuAccess = "Permissions.ExpenceHead.MenuAccess";
             public static List<string> GetAllPermissions() =>
-                new List<string> { View, Create, Edit, Delete };
+                new List<string> { View, Create, Edit, Delete, MenuAccess };
         }
 
-        public static class Products
+        public static class DocType
         {
-            public const string View = "Permissions.Products.View";
-            public const string Create = "Permissions.Products.Create";
-            public const string Edit = "Permissions.Products.Edit";
-            public const string Delete = "Permissions.Products.Delete";
+            public const string View = "Permissions.DocType.View";
+            public const string Create = "Permissions.DocType.Create";
+            public const string Edit = "Permissions.DocType.Edit";
+            public const string Delete = "Permissions.DocType.Delete";
+            public const string MenuAccess = "Permissions.DocType.MenuAccess";
             public static List<string> GetAllPermissions() =>
-               new List<string> { View, Create, Edit, Delete };
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
         }
 
         public static class Users
@@ -42,18 +45,61 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Users.Create";
             public const string Edit = "Permissions.Users.Edit";
             public const string Delete = "Permissions.Users.Delete";
+            public const string MenuAccess = "Permissions.Users.MenuAccess";
             public static List<string> GetAllPermissions() =>
-               new List<string> { View, Create, Edit, Delete };
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+        public static class LawyerDirectory
+        {
+            public const string View = "Permissions.LawyerDirectory.View";
+            public const string Create = "Permissions.LawyerDirectory.Create";
+            public const string Edit = "Permissions.LawyerDirectory.Edit";
+            public const string Delete = "Permissions.LawyerDirectory.Delete";
+            public const string MenuAccess = "Permissions.LawyerDirectory.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+        public static class Role
+        {
+            public const string View = "Permissions.Role.View";
+            public const string Create = "Permissions.Role.Create";
+            public const string Edit = "Permissions.Role.Edit";
+            public const string Delete = "Permissions.Role.Delete";
+            public const string MenuAccess = "Permissions.Role.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+        public static class FormBuilder
+        {
+            public const string View = "Permissions.FormBuilder.View";
+            public const string Create = "Permissions.FormBuilder.Create";
+            public const string Edit = "Permissions.FormBuilder.Edit";
+            public const string Delete = "Permissions.FormBuilder.Delete";
+            public const string MenuAccess = "Permissions.FormBuilder.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+        public static class TempDesign
+        {
+            public const string View = "Permissions.TempDesign.View";
+            public const string Create = "Permissions.TempDesign.Create";
+            public const string Edit = "Permissions.TempDesign.Edit";
+            public const string Delete = "Permissions.TempDesign.Delete";
+            public const string MenuAccess = "Permissions.TempDesign.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+        public static class CaseDrafting
+        {
+            public const string View = "Permissions.CaseDrafting.View";
+            public const string Create = "Permissions.CaseDrafting.Create";
+            public const string Edit = "Permissions.CaseDrafting.Edit";
+            public const string Delete = "Permissions.CaseDrafting.Delete";
+            public const string MenuAccess = "Permissions.CaseDrafting.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
         }
 
-        public static class Brands
-        {
-            public const string View = "Permissions.Brands.View";
-            public const string Create = "Permissions.Brands.Create";
-            public const string Edit = "Permissions.Brands.Edit";
-            public const string Delete = "Permissions.Brands.Delete";
-            public static List<string> GetAllPermissions() => new List<string> { View, Create, Edit, Delete };
-        }
 
         public static class Cases
         {
@@ -61,8 +107,9 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Cases.Create";
             public const string Edit = "Permissions.Cases.Edit";
             public const string Delete = "Permissions.Cases.Delete";
+            public const string MenuAccess = "Permissions.Cases.MenuAccess";
             public static List<string> GetAllPermissions() =>
-                           new List<string> { View, Create, Edit, Delete };
+                           new List<string> { View, Create, Edit, Delete, MenuAccess };
         }
 
         public static class Publishers
@@ -71,8 +118,9 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Publishers.Create";
             public const string Edit = "Permissions.Publishers.Edit";
             public const string Delete = "Permissions.Publishers.Delete";
+            public const string MenuAccess = "Permissions.Publishers.MenuAccess";
             public static List<string> GetAllPermissions() =>
-               new List<string> { View, Create, Edit, Delete };
+                           new List<string> { View, Create, Edit, Delete, MenuAccess };
         }
 
         public static class Subjects
@@ -109,9 +157,9 @@ namespace CourtApp.Application.Constants
             public const string View = "Permissions.Clients.View";
             public const string Create = "Permissions.Clients.Create";
             public const string Edit = "Permissions.Clients.Edit";
-            public const string Delete = "Permissions.Clients.Delete";
+            public const string Delete = "Permissions.Clients.Delete"; public const string MenuAccess = "Permissions.Publishers.Menu";
             public static List<string> GetAllPermissions() =>
-               new List<string> { View, Create, Edit, Delete };
+                           new List<string> { View, Create, Edit, Delete, MenuAccess };
         }
 
         public static class ProceedingHeads
@@ -130,6 +178,15 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.PSHead.Create";
             public const string Edit = "Permissions.PSHead.Edit";
             public const string Delete = "Permissions.PSHead.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
+        }
+        public static class TypeOfCase
+        {
+            public const string View = "Permissions.TypeOfCase.View";
+            public const string Create = "Permissions.TypeOfCase.Create";
+            public const string Edit = "Permissions.TypeOfCase.Edit";
+            public const string Delete = "Permissions.TypeOfCase.Delete";
             public static List<string> GetAllPermissions() =>
                new List<string> { View, Create, Edit, Delete };
         }
@@ -162,8 +219,9 @@ namespace CourtApp.Application.Constants
             public const string Proceeding = "Permissions.Hearing.Proceeding";
             public const string Work = "Permissions.Hearing.Work";
             public const string BringToday = "Permissions.Hearing.BToday";
+            public const string MenuAccess = "Permissions.Publishers.MenuAccess";
             public static List<string> GetAllPermissions() =>
-               new List<string> { View, Create, Edit, Delete };
+                           new List<string> { View, Create, Edit, Delete, MenuAccess, Proceeding, Work, BringToday, MenuAccess };
         }
 
         public static class DeathClaimPetition
@@ -172,8 +230,9 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Death.Create";
             public const string Edit = "Permissions.Death.Edit";
             public const string Delete = "Permissions.Death.Delete";
+            public const string MenuAccess = "Permissions.Death.MenuAccess";
             public static List<string> GetAllPermissions() =>
-               new List<string> { View, Create, Edit, Delete };
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
         }
 
         public static class Titles
@@ -182,8 +241,9 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Titles.Create";
             public const string Edit = "Permissions.Titles.Edit";
             public const string Delete = "Permissions.Titles.Delete";
+            public const string MenuAccess = "Permissions.Titles.MenuAccess";
             public static List<string> GetAllPermissions() =>
-               new List<string> { View, Create, Edit, Delete };
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
         }
         public static class Complex
         {
@@ -200,8 +260,107 @@ namespace CourtApp.Application.Constants
             public const string Create = "Permissions.Cadre.Create";
             public const string Edit = "Permissions.Cadre.Edit";
             public const string Delete = "Permissions.Cadre.Delete";
+            public const string MenuAccess = "Permissions.Cadre.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+        public static class WorkType
+        {
+            public const string View = "Permissions.Work.View";
+            public const string Create = "Permissions.Work.Create";
+            public const string Edit = "Permissions.Work.Edit";
+            public const string Delete = "Permissions.Work.Delete";
             public static List<string> GetAllPermissions() =>
                new List<string> { View, Create, Edit, Delete };
+        }
+        public static class Work
+        {
+            public const string View = "Permissions.SubWork.View";
+            public const string Create = "Permissions.SubWork.Create";
+            public const string Edit = "Permissions.SubWork.Edit";
+            public const string Delete = "Permissions.SubWork.Delete";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete };
+        }
+        public static class CaseKind
+        {
+            public const string View = "Permissions.CaseKind.View";
+            public const string Create = "Permissions.CaseKind.Create";
+            public const string Edit = "Permissions.CaseKind.Edit";
+            public const string Delete = "Permissions.CaseKind.Delete";
+            public const string MenuAccess = "Permissions.CaseKind.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+        public static class CaseCateogy
+        {
+            public const string View = "Permissions.CaseCateogy.View";
+            public const string Create = "Permissions.CaseCateogy.Create";
+            public const string Edit = "Permissions.CaseCateogy.Edit";
+            public const string Delete = "Permissions.CaseCateogy.Delete";
+            public const string MenuAccess = "Permissions.CaseCateogy.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+        public static class CaseStage
+        {
+            public const string View = "Permissions.CaseStage.View";
+            public const string Create = "Permissions.CaseStage.Create";
+            public const string Edit = "Permissions.CaseStage.Edit";
+            public const string Delete = "Permissions.CaseStage.Delete";
+            public const string MenuAccess = "Permissions.CaseStage.Menu";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+        public static class CourtDistrict
+        {
+            public const string View = "Permissions.CourtDistrict.View";
+            public const string Create = "Permissions.CourtDistrict.Create";
+            public const string Edit = "Permissions.CourtDistrict.Edit";
+            public const string Delete = "Permissions.CourtDistrict.Delete";
+            public const string MenuAccess = "Permissions.CourtDistrict.Menu";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+        public static class CourtFee
+        {
+            public const string View = "Permissions.CourtFee.View";
+            public const string Create = "Permissions.CourtFee.Create";
+            public const string Edit = "Permissions.CourtFee.Edit";
+            public const string Delete = "Permissions.CourtFee.Delete";
+            public const string MenuAccess = "Permissions.CourtFee.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+        public static class Court
+        {
+            public const string View = "Permissions.Court.View";
+            public const string Create = "Permissions.Court.Create";
+            public const string Edit = "Permissions.Court.Edit";
+            public const string Delete = "Permissions.Court.Delete";
+            public const string MenuAccess = "Permissions.Court.Menu";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+        public static class CourtType
+        {
+            public const string View = "Permissions.CourtType.View";
+            public const string Create = "Permissions.CourtType.Create";
+            public const string Edit = "Permissions.CourtType.Edit";
+            public const string Delete = "Permissions.CourtType.Delete";
+            public const string MenuAccess = "Permissions.CourtType.Menu";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+        public static class ExpenceHead
+        {
+            public const string View = "Permissions.ExpenceHead.View";
+            public const string Create = "Permissions.ExpenceHead.Create";
+            public const string Edit = "Permissions.ExpenceHead.Edit";
+            public const string Delete = "Permissions.ExpenceHead.Delete";
+            public const string MenuAccess = "Permissions.ExpenceHead.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
         }
     }
 }

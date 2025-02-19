@@ -36,7 +36,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return null;
         }
 
-
+        [HttpGet]
+        public IActionResult LoadCorporatForm()
+        {
+            // This action will return the partial view for Corporat
+            return PartialView("_CorporateProfile");
+        }
 
         public async Task<IActionResult> CreateOrEditAsync(Guid id)
         {
@@ -125,7 +130,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         btViewModel.Appearences = await DdlFSTypes(0);
                         return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel) });
 
-                    };
+                    }
+                    ;
                     return View("_CreateOrEdit", btViewModel);
                 }
                 else

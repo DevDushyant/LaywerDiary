@@ -1,16 +1,12 @@
 ﻿using AspNetCoreHero.Results;
-using CourtApp.Application.DTOs.FSTitle;
 using CourtApp.Application.DTOs.Lawyer;
 using CourtApp.Application.Extensions;
-using CourtApp.Application.Features.FSTitle;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,9 +30,13 @@ namespace CourtApp.Application.Features.Lawyer
             {
                 Id = e.Id,
                 Email = e.Email,
-                Enrollment=e.EnrollNumber,
-                Name=e.FirstName+" "+e.MiddleName+" "+e.LastName,
-                Mobile=e.Mobile
+                EnrollNumber = e.EnrollNumber,
+                FirstName = e.FirstName,
+                LastName = e.LastName,
+                Dob = e.Dob,
+                Address = e.Address,
+                Mobile = e.Mobile,
+                ProfileImgPath = e.ProfileImgPath
             };
             var paginatedList = await _repository.Entities
                 .Select(expression)

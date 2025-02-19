@@ -32,3 +32,31 @@ $(document).ready(function () {
 loadData = function () {
     $('#viewAll').load('/Litigation/CaseManage/LoadAll');
 }
+
+$(document).ready(function () {
+    $('#tblUserCase').DataTable({
+        "paging": true,
+        "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]], // Dropdown for selecting page size
+        "pageLength": 10, // Default page size
+        "ordering": true,
+        "searching": true,
+        "processing": true,
+        "serverSide": true, // Enable server-side processing
+        "ajax": {
+            "url": "/Litigation/CaseManage/LoadAll", // Endpoint for data retrieval
+            "type": "GET",
+            "datatype": "json"
+        },
+        "columns": [
+            { "data": "sno" },
+            { "data": "court" },
+            { "data": "caseType" },
+            { "data": "no" },
+            { "data": "year" },
+            { "data": "caseDetail" },
+            { "data": "caseStage" },
+            { "data": "nextDate" },
+            { "data": "actions", "orderable": false } // Disable ordering for action buttons
+        ]
+    });
+});

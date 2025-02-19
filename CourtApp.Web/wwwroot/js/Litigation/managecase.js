@@ -433,4 +433,3 @@ BindAgainstCaseCategory = function (CategoryId) {
         });
     });
 }
-

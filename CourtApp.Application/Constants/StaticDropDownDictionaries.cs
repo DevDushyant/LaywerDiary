@@ -93,7 +93,8 @@ namespace CourtApp.Application.Constants
             for (int y = year; y >= 1800; y--)
             {
                 _year.Add(y, y);
-            };
+            }
+            ;
             return _year;
         }
 
@@ -311,6 +312,18 @@ namespace CourtApp.Application.Constants
                 {"M", "Male"},
                 {"F", "Female"},
                 {"O", "Other"}
+            };
+            return _Str;
+        }
+        public static Dictionary<string, string> Relegions()
+        {
+            var _Str = new Dictionary<string, string>
+            {
+                {"Hindu", "Hindu"},
+                {"Muslim", "Muslim"},
+                {"Sikh", "Sikh"},
+                {"Buddhism", "Buddhism"},
+                {"Cristian", "Cristian"},
             };
             return _Str;
         }

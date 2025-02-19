@@ -1,21 +1,17 @@
 ﻿using AspNetCoreHero.Results;
-using CourtApp.Application.Features.FSTitle;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.Lawyer
 {
-    public class LawyerDeleteCommand:IRequest<Result<Guid>>
+    public class LawyerDeleteCommand : IRequest<Result<string>>
     {
         public Guid Id { get; set; }
     }
-    public class LawyerDeleteCommandHandler : IRequestHandler<LawyerDeleteCommand, Result<Guid>>
+    public class LawyerDeleteCommandHandler : IRequestHandler<LawyerDeleteCommand, Result<string>>
     {
         private readonly ILawyerRepository _Repo;
         private IUnitOfWork _uow { get; set; }
@@ -24,12 +20,12 @@ namespace CourtApp.Application.Features.Lawyer
             this._Repo = _Repo;
             this._uow = _uow;
         }
-        public async Task<Result<Guid>> Handle(LawyerDeleteCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(LawyerDeleteCommand request, CancellationToken cancellationToken)
         {
             var enity = await _Repo.GetByIdAsync(request.Id);
             await _Repo.DeleteAsync(enity);
             await _uow.Commit(cancellationToken);
-            return Result<Guid>.Success(enity.Id);
+            return Result<string>.Success(enity.ProfileImgPath);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using CourtApp.Web.Areas.LawyerDiary.Models;
-using DocumentFormat.OpenXml.Drawing.Charts;
 using System.Collections.Generic;
 
 namespace CourtApp.Web.Models
@@ -7,16 +6,15 @@ namespace CourtApp.Web.Models
     public class DataTableRequest
     {
         public int Draw { get; set; }
-        public int Start { get; set; }
-        public int Length { get; set; }
-        public Search Search { get; set; }
-        public List<Order> Order { get; set; }
-        public List<Column> Columns { get; set; }
+        public int PageSize { get; set; }
+        public int PageNumber { get; set; }
+        public string SearchValue { get; set; }
+        public string SortColumn { get; set; }
+        public string SortDirection { get; set; }
     }
     public class Search
     {
         public string Value { get; set; }
-        public bool Regex { get; set; }
     }
 
     public class Order
@@ -29,9 +27,7 @@ namespace CourtApp.Web.Models
     {
         public string Data { get; set; }
         public string Name { get; set; }
-        public bool Searchable { get; set; }
         public bool Orderable { get; set; }
-        public Search Search { get; set; }
     }
 
     public class DataTableResponse

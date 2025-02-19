@@ -4,6 +4,12 @@
     <thead>
         <tr>
             <th>
+                @localizer["Srno."]
+            </th>
+            <th>
+                @localizer["Type"]
+            </th>
+            <th>
                 @localizer["User"]
             </th>
             <th>
@@ -18,15 +24,22 @@
         </tr>
     </thead>
     <tbody>
+        @{
+            int counter = 0;
+        }
         @foreach (var user in Model)
         {
             <tr>
+                <td>@(++counter)</td>
+                <td>@user.Role</td>
                 <td>
                     <div class="row">
-                        @if (@user.ProfilePicture != null && user.ProfilePicture.Length > 0)
+                        @if (@user.ProfileImgPath != null && user.ProfileImgPath != "")
                         {
                             <div class="col-sm" style=" max-width: 80px;margin-right: 20px;">
-                                <img class="img-profile rounded-circle" style="height: 75px;width:75px;object-fit: cover;" src="data:image/*;base64,@(Convert.ToBase64String(@user.ProfilePicture))">
+                                <img class="img-profile rounded-circle" style="height: 75px;width:75px;object-fit: cover;" src="@user.ProfileImgPath" alt="Profile Image">
+
+                                @* <img class="img-profile rounded-circle" style="height: 75px;width:75px;object-fit: cover;" src="data:image/*;base64,@(Convert.ToBase64String(@user.ProfilePicture))"> *@
                             </div>
                         }
                         else
@@ -82,9 +95,28 @@
                             <a style='margin-right:16px' asp-area="Identity" asp-page="/Profile" asp-route-userId="@user.Id" class="dropdown-item">
                                 <i class="fas fa-user"></i> @localizer["Profile"]
                             </a>
-                            <a style='margin-right:16px' asp-controller="UserRole" asp-action="Index" asp-route-userId="@user.Id" class="dropdown-item">
-                                <i class="fas fa-wrench"></i> @localizer["Manage Roles"]
-                            </a>
+                            <a onclick="jQueryModalGet('/Admin/User/OnGetCreate?id=@user.Id','Edit Operator Detail')"
+                               class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
+                            @if (user.IsActive)
+                            {
+                                <a style='margin-right:16px' asp-controller="Permission"
+                                   asp-action="ManagePermissions" asp-route-operatorId="@user.Id.ToString()"
+                                   class="dropdown-item">
+                                    <i class="fas fa-wrench"></i> @localizer["Manage Permissions"]
+                                </a>
+                                <a style='margin-right:16px' asp-controller="UserRole" asp-action="Index" asp-route-userId="@user.Id" class="dropdown-item">
+                                    <i class="fas fa-wrench"></i> @localizer["Manage Roles"]
+                                </a>
+                            }
+                            <form id="form_delete_@user.Id" asp-area="Admin"
+                                  asp-controller="User" method="post"
+                                  asp-action="DeleteUser"
+                                  asp-route-id="@user.Id"
+                                  onsubmit="return jQueryModalDelete(this)">
+                                <a href="javascript:$('#form_delete_@user.Id').submit();" class="dropdown-item">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </a>
+                            </form>
                         </div>
                     </div>
                 </td>

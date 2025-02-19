@@ -3,7 +3,6 @@ using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,19 +29,13 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             ViewData["Title"] = $"{user.UserName} - Roles";
             ViewData["Caption"] = $"Manage {user.Email}'s Roles.";
-            //var roles = await _roleManager.Roles.ToListAsync();
-            //var tasks = roles.Select(async role =>
-            //{
-            //    var userRolesViewModel = new UserRolesViewModel
-            //    {
-            //        RoleName = role.Name,
-            //        Selected = await _userManager.IsInRoleAsync(user, role.Name)
-            //    };
-            //    return userRolesViewModel;
-            //});
-
-            //viewModel = (await Task.WhenAll(tasks)).ToList();
-            foreach (var role in _roleManager.Roles)
+            var Roles = _roleManager.Roles;
+            if (CurrentUser.Role.ToUpper() == "LAWYER")
+            {
+                Roles = Roles.Where(w => w.NormalizedName != "SUPERADMIN"
+                && w.NormalizedName != "LAWYER");
+            }
+            foreach (var role in Roles)
             {
                 var userRolesViewModel = new UserRolesViewModel
                 {
@@ -63,7 +56,6 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                 UserId = userId,
                 UserRoles = viewModel
             };
-
             return View(model);
         }
 

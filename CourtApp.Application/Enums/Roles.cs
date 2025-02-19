@@ -5,6 +5,7 @@
         SuperAdmin,
         Lawyer,
         Clerk,
-        Associate
+        Associate,
+        Corporate
     }
 }

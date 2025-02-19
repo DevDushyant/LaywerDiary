@@ -28,7 +28,7 @@
                 <td>
                     @bt.TemplateName
                 </td>
-                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Books.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.Brands.Edit)).Result.Succeeded)
+                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.CaseDrafting.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.CaseDrafting.Edit)).Result.Succeeded)
                 {
                     <td>
                         <a asp-area="Litigation" asp-controller="Drafting" asp-action="Petition" asp-route-id="@bt.Id" title="Edit Drafting">

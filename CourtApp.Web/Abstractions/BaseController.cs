@@ -67,6 +67,7 @@ namespace CourtApp.Web.Abstractions
                     Id = User.FindFirstValue(ClaimTypes.NameIdentifier),
                     UserName = User.FindFirstValue(ClaimTypes.Name),
                     Email = User.FindFirstValue(ClaimTypes.Email),
+                    Role = User.FindFirstValue(ClaimTypes.Role)
                     // Retrieve other claims as needed
                 };
             }
@@ -453,7 +454,7 @@ namespace CourtApp.Web.Abstractions
         {
             var response = await _mediator.Send(new LawyerGetAllCacheQuery());
             var ViewModel = _mapper.Map<List<LawyerLViewModel>>(response.Data);
-            return new SelectList(ViewModel, nameof(LawyerLViewModel.Id), nameof(LawyerLViewModel.Name), null, null);
+            return new SelectList(ViewModel, nameof(LawyerLViewModel.Id), nameof(LawyerLViewModel.FirstName), null, null);
         }
         #endregion
 
@@ -561,7 +562,8 @@ namespace CourtApp.Web.Abstractions
                         d.Id = item.ApplicantNo.ToString();
                         d.Name = item.ApplicantDetail;
                         titles.Add(d);
-                    };
+                    }
+                ;
                 var fn = titles.Distinct().OrderBy(o => o.Name).ToList();
                 return Json(fn);
             }

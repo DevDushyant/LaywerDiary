@@ -38,7 +38,7 @@ namespace CourtApp.Web.Areas.Identity.Pages
         public async Task OnGetAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            var usrdt = _identityContext.Demographics
+            var usrdt = _identityContext.Lawyers
                 .Where(w => w.Id.Equals(user.Id))
                 .FirstOrDefault();
             if (user != null)

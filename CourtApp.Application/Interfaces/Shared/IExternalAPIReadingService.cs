@@ -2,8 +2,8 @@
 
 namespace CourtApp.Application.Interfaces.Shared
 {
-    public interface IExternalAPIReadingService
+    public interface IExternalAPIReadingService<T> where T : class
     {
-        Task<T> GetAPIData<T>(string url, string method, string authheader);
+        Task<T> GetAPIData(string url, string method, string authheader);
     }
 }

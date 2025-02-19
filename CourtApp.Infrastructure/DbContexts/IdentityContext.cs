@@ -9,12 +9,14 @@ namespace CourtApp.Infrastructure.DbContexts
 {
     public class IdentityContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<Demographic> Demographics { get; set; }
-        public DbSet<OperatorUser> Operators { get; set; }
+
         public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
+        public DbSet<Demographic> Lawyers { get; set; }
+        public DbSet<OperatorUser> LawyerUsers { get; set; }
+        public DbSet<CorporateUser> Corporates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -24,6 +26,7 @@ namespace CourtApp.Infrastructure.DbContexts
             {
                 entity.ToTable(name: "Users");
             });
+
             // configure Application User and Demographic relationship.
             builder.Entity<ApplicationUser>().
                 HasOne(e => e.Demographic).WithOne(d => d.User)
@@ -98,6 +101,12 @@ namespace CourtApp.Infrastructure.DbContexts
                      v => JsonSerializer.Deserialize<AddressInfo>(v, (JsonSerializerOptions)null))
                  .HasColumnType("jsonb");
             });
+
+            builder.Entity<CorporateUser>()
+               .HasOne(c => c.User)
+               .WithOne()
+               .HasForeignKey<CorporateUser>(c => c.Id)
+               .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
