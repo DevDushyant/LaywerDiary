@@ -38,6 +38,7 @@ namespace CourtApp.Domain.Entities.CaseDetails
         /// </summary>
         public Guid? LinkedCaseId { get; set; }
         public Guid? ClientId { get; set; }
+        public Guid AppearenceID { get; set; }
 
         /// <summary>
         /// Lower case court Id will be usefull for maintaining the history of the case.
@@ -73,11 +74,13 @@ namespace CourtApp.Domain.Entities.CaseDetails
         public virtual CourtComplexEntity Complex { get; set; }
         public virtual CaseStageEntity CaseStage { get; set; }
         public virtual CaseDetailEntity LinkedCase { get; set; }
+
         public ICollection<CaseDetailAgainstEntity> CaseAgainstEntities { get; set; } = new List<CaseDetailAgainstEntity>();
         public ICollection<CaseProcedingEntity> CaseProcEntities { get; set; }
         public ICollection<CaseTitleEntity> Titles { get; set; }
         public virtual ICollection<CaseDetailEntity> LinkedCases { get; set; } = new List<CaseDetailEntity>();
         public ClientEntity Client { get; set; }
+        public virtual FSTitleEntity Appearence { get; set; }
 
         #endregion
     }

@@ -71,6 +71,7 @@ namespace CourtApp.Infrastructure.Repositories
                 .Include(d => d.CaseAgainstEntities).ThenInclude(c => c.Cadre)
                 .Include(d => d.LinkedCase)
                 .Include(c => c.Client)
+                .Include(a => a.Appearence)
                 .Where(w => w.Id == CaseUid).FirstAsync();
         }
 

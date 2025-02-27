@@ -11,6 +11,7 @@ namespace CourtApp.Application.Features.Clients.Queries.GetAllCached
         public string OffEmail { get; set; }
         public string Councel { get; set; }
         public string Appearence { get; set; }
+        public string ReferalBy { get; set; }
         public string Email { get; set; }
         public string Mobile { get; set; }
         public string Name { get; set; }

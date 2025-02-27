@@ -114,6 +114,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     ViewBag.ShowHighCourt = showHighCourt;
                     ViewBag.AgIsHighCourt = AgIsHighCourt;
                     caseViewModel.ClientList = await DdlClient(CurrentUser.Id);
+                    caseViewModel.Appearences = await DdlFSTypes(0);
                     var agcl = new List<CaseAgainstModel>();
                     agcl.Add(cam);
                     caseViewModel.AgainstCaseDetails = agcl;

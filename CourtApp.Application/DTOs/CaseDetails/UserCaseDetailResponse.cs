@@ -1,5 +1,4 @@
-﻿using CourtApp.Application.Features.Case;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace CourtApp.Application.DTOs.CaseDetails
@@ -27,6 +26,7 @@ namespace CourtApp.Application.DTOs.CaseDetails
         public Guid? LinkedCaseId { get; set; }
         public Guid? LCaseId { get; set; }
         public Guid? ClientId { get; set; }
+        public Guid AppearenceID { get; set; }
         public List<UpseartAgainstCaseDto> AgainstCaseDetails { get; set; }
         #endregion
 

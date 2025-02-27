@@ -29,6 +29,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public Guid? CaseStageId { get; set; }
         public Guid? LinkedCaseId { get; set; }
         public Guid? ClientId { get; set; }
+        public Guid AppearenceID { get; set; }
         public Guid? LCaseId { get; set; }
         public List<CaseAgainstModel> AgainstCaseDetails { get; set; }
         #endregion
@@ -63,6 +64,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public SelectList ComplexBenchs { get; set; }
         public SelectList States { get; set; }
         public SelectList Strengths { get; set; }
+        public SelectList Appearences { get; set; }
 
         #endregion
 
