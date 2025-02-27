@@ -142,6 +142,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         CaseDetail.SecondTitleList = await DdlFSTypes(2);
                         CaseDetail.CaseStatusList = await DdlCaseStages();
                         CaseDetail.LinkedBy = await UserCaseTitle(id);
+                        CaseDetail.Appearences = await DdlFSTypes(0);
                         if (CaseDetail.IsHighCourt == true)
                         {
                             CaseDetail.Courts = await LoadBenches(CaseDetail.CourtTypeId, CaseDetail.StateId, Guid.Empty, Guid.Empty);

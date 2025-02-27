@@ -60,7 +60,7 @@ namespace CourtApp.Application.Features.Clients.Commands
                 client.Phone = command.Phone;
                 client.Mobile = command.Mobile;
                 client.ReferalBy = command.ReferalBy;
-                client.AppearenceID = command.AppearenceID;
+                //client.AppearenceID = command.AppearenceID;
                 client.Address = command.Address;
                 //client.CaseFee = _mapper.Map<CaseFeeEntity>(command.FeeDetail);
                 await _clientRepository.UpdateAsync(client);

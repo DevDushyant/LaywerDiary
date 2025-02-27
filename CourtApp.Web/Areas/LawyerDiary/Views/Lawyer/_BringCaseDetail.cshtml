@@ -1,4 +1,6 @@
-﻿@model BringCaseViewModel
+﻿@{
+    ViewData["Note"] = localizer["For selected lawyer only disposal case will be display in dropdown!"];
+}
 <style>
     .div_hide {
         display: none
@@ -22,6 +24,7 @@
         border-bottom: none;
     }
 </style>
+@model BringCaseViewModel
 <form id="BringDetail" method="post"
       asp-controller="Lawyer"
       asp-action="OnPostCaseByLawyer"

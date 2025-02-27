@@ -1,6 +1,5 @@
 ﻿using CourtApp.Web.Areas.Client.Model;
 using FluentValidation;
-using System.Text.RegularExpressions;
 
 namespace CourtApp.Web.Areas.Client.Validators
 {
@@ -18,9 +17,9 @@ namespace CourtApp.Web.Areas.Client.Validators
             .MinimumLength(10).WithMessage("{PropertyName} must not be less than 10 characters.");
             //.Matches(new Regex(@"((\(\d{3}\) ?)|(\d{3}-))?\d{3}-\d{4}")).WithMessage("{PropertyName} not valid");
 
-            RuleFor(p => p.AppearenceID)
-               .NotEmpty().WithMessage("{PropertyName} is required.")
-               .NotNull();
+            //RuleFor(p => p.AppearenceID)
+            //   .NotEmpty().WithMessage("{PropertyName} is required.")
+            //   .NotNull();
 
             RuleFor(p => p.ReferalBy)
                .NotEmpty().WithMessage("{PropertyName} is required.")

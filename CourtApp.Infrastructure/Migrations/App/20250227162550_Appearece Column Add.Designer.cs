@@ -3,6 +3,7 @@ using System;
 using CourtApp.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CourtApp.Infrastructure.Migrations.App
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250227162550_Appearece Column Add")]
+    partial class AppeareceColumnAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1128,6 +1131,9 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("Address")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("AppearenceID")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1160,6 +1166,8 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppearenceID");
 
                     b.ToTable("client", "ld");
                 });
@@ -2625,6 +2633,17 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .IsRequired();
 
                     b.Navigation("CourtType");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.ClientEntity", b =>
+                {
+                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.FSTitleEntity", "Appearence")
+                        .WithMany()
+                        .HasForeignKey("AppearenceID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Appearence");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtBenchEntity", b =>

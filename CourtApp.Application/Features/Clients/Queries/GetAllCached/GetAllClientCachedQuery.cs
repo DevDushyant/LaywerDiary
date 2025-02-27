@@ -5,7 +5,6 @@ using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -43,14 +42,14 @@ namespace CourtApp.Application.Features.Clients.Queries.GetAllCached
                 Mobile = e.Mobile,
                 //Councel = e.OppositCounselId != Guid.Empty ? (e.OppositCounsel.FirstName + " " + e.OppositCounsel.LastName) : "",
                 OffEmail = e.OfficeEmail,
-                Appearence = e.Appearence.Name_En,
+                //Appearence = e.Appearence.Name_En,
                 Address = e.Address
             };
             var predicate = PredicateBuilder.True<ClientEntity>();
             var paginatedList = await
                 _RepoClient
                 .Clients
-                .Include(a => a.Appearence)
+                //.Include(a => a.Appearence)
                 .Where(w => w.CreatedBy.Equals(request.UserId))
                 .Select(expression)
                 .ToPaginatedListAsync(request.PageNumber, request.PageSize);

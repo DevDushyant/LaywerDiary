@@ -180,7 +180,12 @@ namespace CourtApp.Web.Abstractions
         {
             var response = await _mediator.Send(new GetCaseInfoQuery() { PageNumber = 1, PageSize = 5000, UserId = CurrentUser.Id });
             var viewModel = _mapper.Map<List<GetCaseInfoViewModel>>(CaseId != null && CaseId != Guid.Empty ? response.Data.Where(w => w.Id != CaseId.Value) : response.Data);
-            return new SelectList(viewModel, nameof(GetCaseInfoViewModel.Id), nameof(GetCaseInfoViewModel.CaseDetail), null, null);
+            var selectListItems = viewModel.Select(v => new
+            {
+                Id = v.Id,
+                CaseDisplay = v.CaseDetail != null ? $"{v.CaseDetail}[{v.No}/{v.Year}]" : "[N/A]"
+            }).ToList();
+            return new SelectList(selectListItems, "Id", "CaseDisplay");
         }
         #endregion
 

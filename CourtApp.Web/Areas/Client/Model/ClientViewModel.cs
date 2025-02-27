@@ -21,7 +21,8 @@ namespace CourtApp.Web.Areas.Client.Model
         //public Guid ReferalId { get; set; }
         //public SelectList Referals { get; set; }
         public string ReferalBy { get; set; }
-        public Guid AppearenceID { get; set; }
+        //public Guid AppearenceID { get; set; }
+        public string Appearence { get; set; }
         public SelectList Appearences { get; set; } //it will be Title FIrst union title secound
                                                     //public Guid? OppositCounselId { get; set; }
                                                     //public SelectList OppositCounsels { get; set; }

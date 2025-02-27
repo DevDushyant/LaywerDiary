@@ -34,7 +34,7 @@ namespace CourtApp.Application.Features.CaseDetails
                     client.Mobile = clientDetail.Mobile;
                     client.Address = clientDetail.Address;
                     client.Id = clientDetail.Id;
-                    client.AppearenceID = clientDetail.AppearenceID;
+                    //client.AppearenceID = clientDetail.AppearenceID;
                     //client.OppositCounselId = clientDetail.OppositCounselId != null ? clientDetail.OppositCounselId.Value : Guid.Empty;
                     client.Email = clientDetail.Email;
                     return Result<GetClientByIdResponse>.Success(client);

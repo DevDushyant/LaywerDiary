@@ -14,6 +14,13 @@
             return m;
         }
     });
+    $("#AppearenceID").select2({
+        placeholder: "Select a appearence",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
     $("#AgStateId").select2({
         placeholder: "Select a state",
         theme: "bootstrap4",
@@ -281,8 +288,10 @@
     $("#CourtTypeId").on("change", function () {
         CourtTypeChange(this);
     });
+    $("#StateId").on("change", function () {
+        CourtTypeChange(this);
+    });
     function CourtTypeChange() {
-
         var selectedValue = $('#CourtTypeId').val();
         $("#CaseCategoryId").empty();
         if ($("#CourtTypeId option:selected").text() === "HIGH COURT".toUpperCase()) {

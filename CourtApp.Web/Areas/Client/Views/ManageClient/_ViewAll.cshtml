@@ -6,7 +6,7 @@
             <th style="width:45%">Name</th>
             <th style="width:10%">Mobile</th>
             <th style="width:10%">Email</th>
-            <th style="width:25%">Appearence</th>
+            @* <th style="width:25%">Appearence</th> *@
             @* <th style="width:15%">Office Email</th> *@
             @* <th style="width:25%">Opp. Counsel</th> *@
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Delete)).Result.Succeeded ||
@@ -35,9 +35,9 @@
                 <td>
                     @bt.Email
                 </td>
-                <td>
+                @* <td>
                     @bt.Appearence
-                </td>
+                </td> *@
                 @* <td>
                     @bt.OffEmail
                 </td> *@

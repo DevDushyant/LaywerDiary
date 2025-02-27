@@ -9,6 +9,10 @@
         display: none
     }
 
+    .text-capitalize {
+        text-transform: capitalize;
+    }
+
     fieldset.scheduler-border {
         border: 1px groove #ddd !important;
         padding: 0 1.4em 1.4em 1.4em !important;
@@ -62,7 +66,8 @@
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["Name"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
-                    <input type="text" placeholder="Please enter name" asp-for="Name" class="form-control" />
+                    <input type="text" placeholder="Please enter name" asp-for="Name"
+                           class="form-control text-capitalize" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <label class="col-md-2 col-form-label">@localizer["Mobile"] (<span style="color:red">*</span>)</label>
@@ -81,11 +86,11 @@
                 <label class="col-md-2 col-form-label">@localizer["Email"] @* (<span style="color:red">*</span>) *@</label>
                 <div class="col-md-4">
                     <input type="email" placeholder="Please enter email" asp-for="Email" class="form-control" />
-                    @* <span asp-validation-for="Email" class="text-danger"></span> *@
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
                 <label class="col-md-2 col-form-label">Office Email</label>
                 <div class="col-md-4">
-                    <input type="email" maxlength="10" placeholder="Please enter office email" asp-for="OfficeEmail" class="form-control" />
+                    <input type="email" placeholder="Please enter office email" asp-for="OfficeEmail" class="form-control" />
                 </div>
             </div>
         </div>
@@ -97,18 +102,18 @@
                 <label class="col-md-2 col-form-label">@localizer["Referal By"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <input type="text" placeholder="Please referals name"
-                           asp-for="ReferalBy" class="form-control" />
+                           asp-for="ReferalBy" class="form-control text-capitalize" />
                     <div id="suggestions" class="suggestions-box" style="display: none; position: absolute; border: 1px solid #ddd; max-height: 150px; overflow-y: auto; background: #fff; width: 200px; z-index: 1000;"></div>
                     <span asp-validation-for="ReferalBy" class="text-danger"></span>
                 </div>
-                <label class="col-md-2 col-form-label">@localizer["Appearance"] (<span style="color:red">*</span>)</label>
+                @* <label class="col-md-2 col-form-label">@localizer["Appearance"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <select class="form-control select2bs4" asp-for="AppearenceID"
                             asp-items="@Model.Appearences">
                         <option></option>
                     </select>
                     <span asp-validation-for="AppearenceID" class="text-danger"></span>
-                </div>
+                </div> *@
             </div>
         </div>
     </div>
@@ -120,7 +125,7 @@
                 <div class="col-md-10">
                     <textarea type="text"
                               placeholder="Please enter the client complete address"
-                              asp-for="Address" class="form-control"> </textarea>
+                              asp-for="Address" class="form-control text-capitalize"> </textarea>
                     <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
             </div>
