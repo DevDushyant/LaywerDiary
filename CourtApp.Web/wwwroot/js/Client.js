@@ -6,23 +6,7 @@
         escapeMarkup: function (m) {
             return m;
         }
-    });
-    $("#AppearenceID").select2({
-        placeholder: "Select a appearance",
-        theme: "bootstrap4",
-        escapeMarkup: function (m) {
-            return m;
-        }
-    });
-
-    // Automatically open the Select2 dropdown when the user tabs to the input
-    $("#AppearenceID").on("focus", function () {
-        console.log("Focus event triggered");
-        setTimeout(() => {
-            $(this).select2('open');
-            console.log("Dropdown opened");
-        }, 10);
-    });
+    });        
 
     let selectedIndex = -1; // Track the index of the currently highlighted suggestion
 
@@ -91,23 +75,4 @@
             $("#suggestions").hide();
         }
     });
-
-    //function toggleClientTypeFields() {
-    //    var clientType = $("#ClientType").val();
-    //    if (clientType === "Corporate") {
-    //        $("div#CorporateProfile").show();
-    //        $("div#IndividualProfile").hide();
-    //    } else {
-    //        $("div#CorporateProfile").hide();
-    //        $("div#IndividualProfile").show();
-    //    }
-    //}
-
-    // Call function on page load (in case of edit mode)
-    //toggleClientTypeFields();
-
-    // Bind the change event to the dropdown
-    //$("#ClientType").change(function () {
-    //    toggleClientTypeFields();
-    //});
 });
