@@ -3,12 +3,10 @@
     <thead>
         <tr>
             <th style="width:5%">Sno.</th>
+            <th style="width:25%">Client Type</th>
             <th style="width:45%">Name</th>
             <th style="width:10%">Mobile</th>
-            <th style="width:10%">Email</th>
-            @* <th style="width:25%">Appearence</th> *@
-            @* <th style="width:15%">Office Email</th> *@
-            @* <th style="width:25%">Opp. Counsel</th> *@
+            <th style="width:10%">Email</th>            
             @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Delete)).Result.Succeeded ||
             (AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Edit)).Result.Succeeded)
             {
@@ -27,6 +25,9 @@
                     @(++count)
                 </td>
                 <td>
+                    @bt.ClientType
+                </td>
+                <td>
                     @bt.Name
                 </td>
                 <td>
@@ -34,16 +35,7 @@
                 </td>
                 <td>
                     @bt.Email
-                </td>
-                @* <td>
-                    @bt.Appearence
-                </td> *@
-                @* <td>
-                    @bt.OffEmail
-                </td> *@
-                @* <td>
-                    @bt.Councel
-                </td> *@
+                </td>               
 
                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Delete)).Result.Succeeded ||
                (AuthorizationService.AuthorizeAsync(User, Permissions.Clients.Edit)).Result.Succeeded)

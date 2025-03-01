@@ -19,17 +19,11 @@ namespace CourtApp.Application.Features.Clients.Commands
         public string OfficeEmail { get; set; }
         public string Phone { get; set; }
         public string ReferalBy { get; set; }
-        //public Guid AppearenceID { get; set; }
-        //public Guid? OppositCounselId { get; set; }
-        public Guid CaseId { get; set; }
-        //public ClientFee FeeDetail { get; set; }
+        public string RegNo { get; set; }
+        public string Properiter { get; set; }
+        public string ClientType { get; set; }
         public string UserId { get; set; }
     }
-    //public class ClientFee
-    //{
-    //    public Decimal FeeSettled { get; set; }
-    //    public Decimal FeeAdvance { get; set; }
-    //}
 
     public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, Result<Guid>>
     {
@@ -61,7 +55,6 @@ namespace CourtApp.Application.Features.Clients.Commands
             if (detail == null)
             {
                 var entity = _mapper.Map<ClientEntity>(request);
-                //entity.CaseFee = _mapper.Map<CaseFeeEntity>(request.FeeDetail);
                 await _clientRepository.InsertAsync(entity);
                 await _unitOfWork.Commit(cancellationToken);
                 return Result<Guid>.Success(entity.Id);

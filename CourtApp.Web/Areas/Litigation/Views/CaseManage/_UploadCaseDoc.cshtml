@@ -71,7 +71,7 @@
                         <td style="border: 1px solid #ddd; padding: 8px;">@Model.Docs[i].DocName</td>
                         <td style="border: 1px solid #ddd; padding: 8px;">
                             <p>
-                                <a href="~/@Model.Docs[i].DocFilePath" target="_blank">
+                                <a href="@Model.Docs[i].DocFilePath" target="_blank">
                                     <i style="font-size:20px" class="@Model.Docs[i].FIcon"></i>
                                 </a> |
                                 <a href="javascript:void(0);" onclick="ConfirmDelete('@Model.Docs[i].Id','@Model.Docs[i].DocFilePath')">

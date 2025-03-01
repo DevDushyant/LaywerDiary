@@ -7,6 +7,7 @@ using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
+using CourtApp.Web.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,9 +24,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private const long MaxFileSize = 200 * 1024 * 1024; // 200MB
-        public CaseManageController(IWebHostEnvironment _webHostEnvironment)
+        private readonly BlobService _blobService;
+        public CaseManageController(IWebHostEnvironment _webHostEnvironment, BlobService _blobService)
         {
             this._webHostEnvironment = _webHostEnvironment;
+            this._blobService = _blobService;
         }
 
         #region Case Management Area
@@ -428,8 +431,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 return new JsonResult(new { isValid = false, message = "Invalid request data." });
             }
+
             List<CaseDocumentModel> ddoc = new List<CaseDocumentModel>();
-            string root = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            //string root = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
             if (model.Documents.Count > 0)
             {
                 foreach (var f in model.Documents)
@@ -445,29 +449,48 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     }
                     try
                     {
-                        // Step 2: Determine Folder Path
-                        string dcFld = f.TypeId == 1 ? "Draft" : "Order";
-                        string docPath = Path.Combine("documents", dcFld, model.CaseId.ToString());
-                        string fullPath = Path.Combine(root, docPath);
-                        // Step 3: Check & Create Directory If It Doesn't Exist
-                        if (!Directory.Exists(fullPath))
-                        {
-                            Directory.CreateDirectory(fullPath);
-                            _logger.LogInformation($"Directory created: {fullPath}");
-                        }
-
-                        // Step 3: Generate Unique File Name
+                        // Step 2: Generate Unique File Name
                         string uniqueFileName = $"{Path.GetFileNameWithoutExtension(f.Document.FileName)}_{Guid.NewGuid()}{Path.GetExtension(f.Document.FileName)}";
-                        string fileNameWithPath = Path.Combine(fullPath, uniqueFileName);
-                        // Step 4: Compress & Save File
-                        string compressedFilePath = await CompressFileAsync(f.Document, fileNameWithPath);
+                        string containerName = f.TypeId == 1 ? "Draft" : "Order";
+
+                        // Step 3: Upload to Azure Blob Storage
+                        using var docStream = f.Document.OpenReadStream();
+                        string cloudFilePath = await _blobService.UploadOrUpdateFileAsync(docStream, uniqueFileName, f.Document.ContentType, containerName);
+
+
+                        // Step 2: Determine Folder Path
+                        //string dcFld = f.TypeId == 1 ? "Draft" : "Order";
+                        //string docPath = Path.Combine("documents", dcFld, model.CaseId.ToString());
+
+                        // Step 4: Map Data for Database Entry
                         ddoc.Add(new CaseDocumentModel
                         {
                             DocId = f.DocId,
                             TypeId = f.TypeId,
-                            DocPath = Path.Combine(docPath, Path.GetFileName(compressedFilePath)),
+                            DocPath = cloudFilePath,  // Cloud file URL
                             DocDate = f.DocDate
                         });
+
+                        //string fullPath = Path.Combine(root, docPath);
+                        //// Step 3: Check & Create Directory If It Doesn't Exist
+                        //if (!Directory.Exists(fullPath))
+                        //{
+                        //    Directory.CreateDirectory(fullPath);
+                        //    _logger.LogInformation($"Directory created: {fullPath}");
+                        //}
+
+                        //// Step 3: Generate Unique File Name
+                        //string uniqueFileName = $"{Path.GetFileNameWithoutExtension(f.Document.FileName)}_{Guid.NewGuid()}{Path.GetExtension(f.Document.FileName)}";
+                        //string fileNameWithPath = Path.Combine(fullPath, uniqueFileName);
+                        // Step 4: Compress & Save File
+                        //string compressedFilePath = await CompressFileAsync(f.Document, fileNameWithPath);
+                        //ddoc.Add(new CaseDocumentModel
+                        //{
+                        //    DocId = f.DocId,
+                        //    TypeId = f.TypeId,
+                        //    DocPath = Path.Combine(docPath, Path.GetFileName(compressedFilePath)),
+                        //    DocDate = f.DocDate
+                        //});
                     }
                     catch (Exception ex)
                     {
@@ -532,7 +555,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             var ViewModel = new ClientViewModel();
             //ViewModel.OppositCounsels = await DdlLawyerAsync();
-            ViewModel.Appearences = await DdlFSTypes(0);
+            //ViewModel.Appearences = await DdlFSTypes(0);
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateCaseClient", ViewModel) });
         }
         public async Task<JsonResult> OnGetClientInfo(Guid CaseId)
@@ -540,7 +563,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var ViewModel = new ClientViewModel();
             ViewModel.CaseId = CaseId;
             //ViewModel.OppositCounsels = await DdlLawyerAsync();
-            ViewModel.Appearences = await DdlFSTypes(0);
+            //ViewModel.Appearences = await DdlFSTypes(0);
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_ClientInfoDetail", ViewModel) });
         }
         [HttpPost]

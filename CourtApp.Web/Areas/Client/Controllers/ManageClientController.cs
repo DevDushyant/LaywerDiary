@@ -47,16 +47,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             try
             {
-
                 TempData["Where"] = "Client";
                 if (id == Guid.Empty)
                 {
                     var ViewModel = new ClientViewModel();
-                    //ViewModel.OppositCounsels = await ddlSharableByName("lawyer");
-                    // ViewModel.Appearences = await DdlFSTypes(0);
                     _logger.LogInformation("Form load successfully");
                     return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
-                    //return View("_CreateOrEdit", ViewModel);
                 }
                 else
                 {
@@ -64,17 +60,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     if (response.Succeeded)
                     {
                         var ViewModel = _mapper.Map<ClientViewModel>(response.Data);
-                        //if (response.Data.Fees != null)
-                        //    ViewModel.FeeDetail = new ClientFeeViewModel()
-                        //    {
-                        //        FeeAdvance = response.Data.Fees.AdvanceAmount,
-                        //        FeeSettled = response.Data.Fees.SettledAmount
-                        //    };
-                        //ViewModel.OppositCounsels = await DdlLawyerAsync();
-                        //ViewModel.Appearences = await DdlFSTypes(0);
                         _logger.LogInformation("Form data by id load successfully");
                         return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
-                        //return View("_CreateOrEdit", ViewModel);
                     }
                     return null;
                 }
@@ -195,7 +182,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var ViewModel = new ClientViewModel();
             ViewModel.CaseId = CaseId;
             //ViewModel.OppositCounsels = await DdlLawyerAsync();
-            ViewModel.Appearences = await DdlFSTypes(0);
+            //ViewModel.Appearences = await DdlFSTypes(0);
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
         }
 

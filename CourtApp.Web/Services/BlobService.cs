@@ -30,8 +30,8 @@ namespace CourtApp.Web.Services
                 string containerName = documentType switch
                 {
                     "ProfileImage" => _configuration["AzureBlobStorage:Containers:ProfileImages"],
-                    "PDF" => _configuration["AzureBlobStorage:Containers:PDFDocuments"],
-                    "Word" => _configuration["AzureBlobStorage:Containers:WordDocuments"],
+                    "Draft" => _configuration["AzureBlobStorage:Containers:DraftDocuments"],
+                    "Order" => _configuration["AzureBlobStorage:Containers:OrderDocuments"],
                     _ => throw new ArgumentException("Invalid document type")
                 };
                 // Get the container client

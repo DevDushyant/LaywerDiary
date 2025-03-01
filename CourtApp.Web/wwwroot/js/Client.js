@@ -1,5 +1,12 @@
 ﻿$(document).ready(function () {
 
+    $("#ClientType").select2({
+        placeholder: "Select a client type",
+        theme: "bootstrap4",
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
     $("#AppearenceID").select2({
         placeholder: "Select a appearance",
         theme: "bootstrap4",
@@ -84,32 +91,23 @@
             $("#suggestions").hide();
         }
     });
+
+    //function toggleClientTypeFields() {
+    //    var clientType = $("#ClientType").val();
+    //    if (clientType === "Corporate") {
+    //        $("div#CorporateProfile").show();
+    //        $("div#IndividualProfile").hide();
+    //    } else {
+    //        $("div#CorporateProfile").hide();
+    //        $("div#IndividualProfile").show();
+    //    }
+    //}
+
+    // Call function on page load (in case of edit mode)
+    //toggleClientTypeFields();
+
+    // Bind the change event to the dropdown
+    //$("#ClientType").change(function () {
+    //    toggleClientTypeFields();
+    //});
 });
-
-
-//$(document).ready(function () {     
-//    $("#ReferalBy").autocomplete({
-//        source: function (request, response) {
-//            $.ajax({               
-//                url: "/LawyerDiary/Lawyer/GetLawyer",
-//                type: 'GET',
-//                dataType: 'json',
-//                data: { refral: request.term },
-//                success: function (data) {                    
-//                    response(data);
-//                },                
-//                error: function (xhr, status, error) {
-//                    console.log("AJAX Error:", error);
-//                }
-//            });
-//        },
-//        minLength: 2,
-//        onSelect: function (event, ui) {
-//            debugger;
-//            console.log("Selected Item:", ui.item);
-//            $("#ReferalBy").val(ui.item.value); // Just set the name
-//            return false; // Prevent default behavior
-//        }
-//    });
-
-//});

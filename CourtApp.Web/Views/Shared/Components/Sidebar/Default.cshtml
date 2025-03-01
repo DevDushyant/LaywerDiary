@@ -11,7 +11,7 @@
     <div class="sidebar">
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                @if (User.IsInRole("SuperAdmin") || User.IsInRole("Lawyer"))
+                @if (User.IsInRole("SuperAdmin") || User.IsInRole("LAWYER"))
                 {
                     <li class="nav-item">
                         <a href="/" class="nav-link">
@@ -24,7 +24,7 @@
                     </li>
                 }
 
-                @if (!User.IsInRole("Clerk"))
+                @if (!User.IsInRole("CLERK"))
                 {
                     <li is-active-route asp-area="Admin" class="nav-item has-treeview">
                         <a is-active-route asp-area="Admin" class="nav-link">

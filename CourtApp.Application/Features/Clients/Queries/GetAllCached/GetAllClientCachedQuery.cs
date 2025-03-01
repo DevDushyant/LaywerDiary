@@ -40,16 +40,12 @@ namespace CourtApp.Application.Features.Clients.Queries.GetAllCached
                 Name = e.Name,
                 Email = e.Email,
                 Mobile = e.Mobile,
-                //Councel = e.OppositCounselId != Guid.Empty ? (e.OppositCounsel.FirstName + " " + e.OppositCounsel.LastName) : "",
-                OffEmail = e.OfficeEmail,
-                //Appearence = e.Appearence.Name_En,
-                Address = e.Address
+                ClientType = e.ClientType
             };
             var predicate = PredicateBuilder.True<ClientEntity>();
             var paginatedList = await
                 _RepoClient
                 .Clients
-                //.Include(a => a.Appearence)
                 .Where(w => w.CreatedBy.Equals(request.UserId))
                 .Select(expression)
                 .ToPaginatedListAsync(request.PageNumber, request.PageSize);

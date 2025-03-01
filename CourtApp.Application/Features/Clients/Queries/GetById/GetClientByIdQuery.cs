@@ -1,12 +1,10 @@
-﻿using CourtApp.Application.Interfaces.CacheRepositories;
-using AspNetCoreHero.Results;
+﻿using AspNetCoreHero.Results;
 using AutoMapper;
+using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System;
-using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Application.DTOs.Client;
 
 namespace CourtApp.Application.Features.Clients.Queries.GetById
 {
@@ -29,7 +27,6 @@ namespace CourtApp.Application.Features.Clients.Queries.GetById
         {
             var client = await _Repository.GetByIdAsync(query.Id);
             var mappedClient = _mapper.Map<GetClientByIdResponse>(client);
-            mappedClient.Fees = _mapper.Map<ClientFeeDto>(client.CaseFee);
             return Result<GetClientByIdResponse>.Success(mappedClient);
         }
     }

@@ -11,6 +11,10 @@
         -ms-flex-align: center;
         align-items: center;
     }
+
+    .text-capitalize {
+        text-transform: capitalize;
+    }
 </style>
 <form id="frmUserCreate" method="post" asp-area="Admin" asp-controller="User" asp-action="OnPostCreate"
       asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);">
@@ -19,19 +23,16 @@
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["First Name"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
-                    <input type="text" asp-for="FirstName" class="form-control">
+                    <input type="text" asp-for="FirstName" class="form-control text-capitalize">
                     <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
                 <label class="col-md-2 col-form-label">@localizer["Last Name"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
-                    <input type="text" asp-for="LastName" class="form-control">
+                    <input type="text" asp-for="LastName" class="form-control text-capitalize">
                     <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["Email"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
@@ -40,14 +41,11 @@
                 </div>
                 <label class="col-md-2 col-form-label">@localizer["Mobile"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
-                    <input type="text" asp-for="Mobile" name="Mobile" class="form-control">
+                    <input type="text" asp-for="Mobile" maxlength="10" name="Mobile" class="form-control">
                     <span asp-validation-for="Mobile" class="text-danger"></span>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["Gender"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
@@ -63,10 +61,7 @@
                     <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["Joining Date"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
@@ -82,10 +77,7 @@
                     <small><span asp-validation-for="Role" class="text-danger"></span></small>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["Profile Picture"] </label>
                 <div class="col-md-4">
@@ -103,55 +95,26 @@
                     <input type="text" class="form-control" asp-for="EnrollmentNo"></input>
                 </div>
             </div>
-        </div>
-    </div>
-    @* @if (Model.Role != "" && Model.Role == "ASSOCIATE" && Model.Id != string.Empty)
-    {
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group row">
-                    <label class="col-md-2 col-form-label">@localizer["Enrollment No"] (<span style="color:red">*</span>)</label>
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" asp-for="EnrollmentNo"></input>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-    else
-    {
-        <div class="row" id="divAssociate" style="display:none">
-            <div class="col-md-12">
-                <div class="form-group row">
-                    <label class="col-md-2 col-form-label">@localizer["Enrollment No"] (<span style="color:red">*</span>)</label>
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" asp-for="EnrollmentNo"></input>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
- *@
-    <div class="row">
-        <div class="col-md-12">
+
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["Address"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-10">
-                    <textarea asp-for="Address" class="form-control"></textarea>
+                    <textarea asp-for="Address" class="form-control text-capitalize"></textarea>
                 </div>
             </div>
         </div>
     </div>
+    
     <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
         @{
-            var btnText = ViewBag.BtnText ?? "Save"; // Default to 'Submit' if ViewBag is null
-        }
-        <button type="submit" class="btn btn-success">@btnText</button>
+            string ButtonText = "Save";
+            if (Model.Id != string.Empty) ButtonText = "Update";
+        }       
+        <button type="submit" class="btn btn-success">@ButtonText</button>
         <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
     </div>
 </form>
-<script type="text/javascript" language=javascript>
-    //$.validator.unobtrusive.parse(document);
+<script type="text/javascript" language=javascript>   
     $(document).ready(function () {
         $("#divAssociate").hide();
         $("#Gender").select2({
@@ -167,15 +130,6 @@
             escapeMarkup: function (m) {
                 return m;
             }
-        });
-        $("#Role").on("change",function(){
-            var role=$("#Role").val();
-            if(role==="ASSOCIATE"){
-            $("#divAssociate").show();
-            }
-            else{
-                $("#divAssociate").hide();
-            }
-        });
+        });        
     });
 </script>

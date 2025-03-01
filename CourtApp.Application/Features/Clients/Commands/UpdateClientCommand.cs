@@ -11,21 +11,16 @@ namespace CourtApp.Application.Features.Clients.Commands
     public class UpdateClientCommand : IRequest<Result<Guid>>
     {
         public Guid Id { get; set; }
-        public string FirstName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }
-        public string FatherName { get; set; }
-        public string Dob { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
         public string Email { get; set; }
+        public string Mobile { get; set; }
         public string OfficeEmail { get; set; }
         public string Phone { get; set; }
-        public string Mobile { get; set; }
-        public string Address { get; set; }
-        public int StateCode { get; set; }
-        public int DistrictCode { get; set; }
         public string ReferalBy { get; set; }
-        public Guid AppearenceID { get; set; }
-        //public ClientFee FeeDetail { get; set; }
+        public string RegNo { get; set; }
+        public string Properiter { get; set; }
+        public string ClientType { get; set; }
     }
     public class UpdateClientCommandHandler : IRequestHandler<UpdateClientCommand, Result<Guid>>
     {
@@ -47,25 +42,26 @@ namespace CourtApp.Application.Features.Clients.Commands
 
         }
 
-        public async Task<Result<Guid>> Handle(UpdateClientCommand command, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(UpdateClientCommand cmd, CancellationToken cancellationToken)
         {
-            var client = await _clientRepository.GetByIdAsync(command.Id);
-            if (client == null)
+            var detail = await _clientRepository.GetByIdAsync(cmd.Id);
+            if (detail == null)
                 return Result<Guid>.Fail($"Client Not Found.");
             else
             {
-
-                client.Email = command.Email;
-                client.OfficeEmail = command.OfficeEmail;
-                client.Phone = command.Phone;
-                client.Mobile = command.Mobile;
-                client.ReferalBy = command.ReferalBy;
-                //client.AppearenceID = command.AppearenceID;
-                client.Address = command.Address;
-                //client.CaseFee = _mapper.Map<CaseFeeEntity>(command.FeeDetail);
-                await _clientRepository.UpdateAsync(client);
+                detail.ClientType = cmd.ClientType;
+                detail.Name = cmd.Name;
+                detail.Email = cmd.Email;
+                detail.OfficeEmail = cmd.OfficeEmail;
+                detail.Phone = cmd.Phone;
+                detail.Mobile = cmd.Mobile;
+                detail.ReferalBy = cmd.ReferalBy;
+                detail.Properiter = cmd.Properiter;
+                detail.RegNo = cmd.RegNo;
+                detail.Address = cmd.Address;
+                await _clientRepository.UpdateAsync(detail);
                 await _unitOfWork.Commit(cancellationToken);
-                return Result<Guid>.Success(client.Id);
+                return Result<Guid>.Success(cmd.Id);
             }
         }
     }

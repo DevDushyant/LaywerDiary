@@ -7,19 +7,24 @@ namespace CourtApp.Web.Areas.Client.Validators
     {
         public ClientViewModelValidator()
         {
+            RuleFor(x => x.ClientType)
+            .NotEmpty().WithMessage("Client Type is required.")
+            .Must(type => type == "Individual" || type == "Corporate")
+            .WithMessage("Invalid Client Type selected.");
+
             RuleFor(p => p.Name)
-               .NotEmpty().WithMessage("{PropertyName} is required.")
+               .NotEmpty().WithMessage("Name is required.")
                .NotNull();
 
-            RuleFor(p => p.Mobile)
-             .NotEmpty().WithMessage("{PropertyName} is required.")
-             .NotNull()
-            .MinimumLength(10).WithMessage("{PropertyName} must not be less than 10 characters.");
-            //.Matches(new Regex(@"((\(\d{3}\) ?)|(\d{3}-))?\d{3}-\d{4}")).WithMessage("{PropertyName} not valid");
+            RuleFor(x => x.Mobile)
+           .NotEmpty().WithMessage("Mobile number is required.")
+           .Matches(@"^[0-9]{10}$").WithMessage("Enter a valid 10-digit mobile number.");
 
-            //RuleFor(p => p.AppearenceID)
-            //   .NotEmpty().WithMessage("{PropertyName} is required.")
-            //   .NotNull();
+            RuleFor(x => x.Phone)
+                .Matches(@"^\+?[0-9]{7,15}$")
+                .WithMessage("Enter a valid phone number.")
+                .When(x => !string.IsNullOrEmpty(x.Phone)); // Validate only if entered
+
 
             RuleFor(p => p.ReferalBy)
                .NotEmpty().WithMessage("{PropertyName} is required.")
@@ -29,13 +34,9 @@ namespace CourtApp.Web.Areas.Client.Validators
                .NotEmpty().WithMessage("{PropertyName} is required.")
                .NotNull();
 
-            //RuleFor(p => p.FeeDetail.FeeSettled)
-            //   .NotEmpty().WithMessage("{PropertyName} is required.")
-            //   .NotNull();               
-
-            //RuleFor(p => p.FeeDetail.FeeAdvance)
-            //   .NotEmpty().WithMessage("{PropertyName} is required.")
-            //   .NotNull();
+            RuleFor(x => x.RegNo)
+            .NotEmpty().WithMessage("Registration Number is required for Corporate clients.")
+            .When(x => x.ClientType == "Corporate");
 
         }
     }

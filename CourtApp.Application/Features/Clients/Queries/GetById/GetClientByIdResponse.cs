@@ -1,5 +1,4 @@
-﻿using CourtApp.Application.DTOs.Client;
-using System;
+﻿using System;
 
 namespace CourtApp.Application.Features.Clients.Queries.GetById
 {
@@ -13,8 +12,8 @@ namespace CourtApp.Application.Features.Clients.Queries.GetById
         public string OfficeEmail { get; set; }
         public string Phone { get; set; }
         public string ReferalBy { get; set; }
-        public Guid AppearenceID { get; set; }
-        public Guid OppositCounselId { get; set; }
-        public ClientFeeDto Fees { get; set; }
-    }    
+        public string RegNo { get; set; }
+        public string Properiter { get; set; }
+        public string ClientType { get; set; }
+    }
 }

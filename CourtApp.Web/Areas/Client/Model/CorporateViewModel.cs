@@ -10,7 +10,8 @@ namespace CourtApp.Web.Areas.Client.Model
         public string FirmContact { get; set; }
         public string FirmType { get; set; }
         public string Address { get; set; }
-        public string RegistrationNo { get; set; }
+        public string RegNo { get; set; }
         public string Owner { get; set; }
+        public string OfficeNo { get; set; }
     }
 }

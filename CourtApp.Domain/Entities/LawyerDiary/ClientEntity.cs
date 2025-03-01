@@ -1,5 +1,4 @@
 using AuditTrail.Abstrations;
-using CourtApp.Domain.Entities.Account;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,10 +15,8 @@ namespace CourtApp.Domain.Entities.LawyerDiary
         public string OfficeEmail { get; set; }
         public string Phone { get; set; }
         public string ReferalBy { get; set; }
-        //public Guid AppearenceID { get; set; }
-        //public Guid? OppositCounselId { get; set; }
-        //public virtual LawyerMasterEntity OppositCounsel { get; set; }
-        public virtual CaseFeeEntity CaseFee { get; set; }
-        //public virtual FSTitleEntity Appearence { get; set; }
+        public string RegNo { get; set; }
+        public string Properiter { get; set; }
+        public string ClientType { get; set; }
     }
 }

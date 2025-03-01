@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 
 namespace CourtApp.Web.Areas.Client.Model
@@ -10,6 +9,7 @@ namespace CourtApp.Web.Areas.Client.Model
         [TempData]
         public string StatusMessage { get; set; }
         public Guid CaseId { get; set; }
+        public string Appearence { get; set; }
 
         #region Client Properties
         public string Name { get; set; }
@@ -18,19 +18,12 @@ namespace CourtApp.Web.Areas.Client.Model
         public string Mobile { get; set; }
         public string OfficeEmail { get; set; }
         public string Phone { get; set; }
-        //public Guid ReferalId { get; set; }
-        //public SelectList Referals { get; set; }
         public string ReferalBy { get; set; }
-        //public Guid AppearenceID { get; set; }
-        public string Appearence { get; set; }
-        public SelectList Appearences { get; set; } //it will be Title FIrst union title secound
-                                                    //public Guid? OppositCounselId { get; set; }
-                                                    //public SelectList OppositCounsels { get; set; }
-                                                    //public ClientFeeViewModel FeeDetail { get; set; }
+        public string RegNo { get; set; }
+        public string Properiter { get; set; }
+        public string ClientType { get; set; }
 
         #endregion
-        public string ClientType { get; set; }
-        public CorporateViewModel CorporateViewModel { get; set; } = null;
 
     }
 }
