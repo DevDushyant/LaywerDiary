@@ -4,6 +4,69 @@
     {
         foreach (var a in d.Applicants)
         {
+            <div class="print-container form-section">
+                <center>
+                    <h1>Notice to Show Cause</h1>
+                    [ Appendix H Form 4 ]<br />
+                    <strong>In the High Court of Judicature for <br /> Rajasthan at Jaipur</strong>
+                    <br /><br />
+                </center>
+
+                <p>Petitioner: <strong>@d.Petitioner</strong> &nbsp;V/s&nbsp; <strong>@d.Respondent</strong> (Respondent)</p>
+                <p>State of Rajasthan</p>
+                <br />
+
+                <p>S.B. Civil Appeal/ Revision No: <strong>@d.CaseType</strong> &nbsp;&nbsp; <strong>@d.CaseNoYear</strong> (Date)</p>
+                <br /><br />
+
+                <p>To, <br /><br /> <strong>@a.Applicant</strong></p>
+
+                <div class="applicant-number">
+                    @a.ApplicantNo
+                </div>
+
+                <br /><br />
+
+                <div class="content">
+                    <p>
+                        _________________________________________________________________________________
+                        Whereas the above-named petitioner/Appellant has made an Application to this Court that...
+                        ..............................................................................................................................................
+                        ___________________________________________________________________________________
+                    </p>
+
+                    <p>
+                        You are hereby informed that you may appear in person or by a pleader duly instructed on
+                        the <strong>19</strong> at _______ to show cause against the Application, failing which the said Application
+                        will be heard and admitted ex-parte.
+                    </p>
+
+                    <p>
+                        Given under my hand and the seal of the Court, this day of <strong>19</strong>.
+                    </p>
+
+                    <br />
+
+                    <div class="signature">
+                        Judge,<br />
+                        Rajasthan High Court, Jaipur
+                    </div>
+                </div>
+
+                <hr />
+            </div>
+        }
+    }
+</div>
+
+
+
+@* @model FmpShowCauseViewModel
+<div id="printableArea">
+    @foreach (var d in Model.ShowCauses)
+    {
+        foreach (var a in d.Applicants)
+        {
             <div style="width:800px; padding-left:100px;page-break-after: always;">
                 <center>
                     <h1>    Notice to Show Cause</h1>
@@ -65,4 +128,4 @@
             </div>
         }
     }
-</div>
+</div> *@

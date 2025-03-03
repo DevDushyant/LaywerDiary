@@ -187,6 +187,36 @@ namespace CourtApp.Web.Abstractions
             }).ToList();
             return new SelectList(selectListItems, "Id", "CaseDisplay");
         }
+
+        public async Task<JsonResult> DdlReferBy()
+        {
+            var response = await _mediator.Send(new GetClientInfoCacheQuery() { UserId = CurrentUser.Id });
+            if (response.Succeeded)
+            {
+                var dt = response.Data;
+                var result = dt.Where(d => d.ReferalBy != string.Empty)
+                    .OrderBy(r => r.ReferalBy)
+                    .DistinctBy(d => d.ReferalBy).ToList();
+                var ViewModel = _mapper.Map<List<DropDownSViewModel>>(result);
+                return Json(ViewModel);
+            }
+            return null;
+        }
+        public async Task<JsonResult> DdlClients()
+        {
+            var response = await _mediator.Send(new GetClientInfoCacheQuery() { UserId = CurrentUser.Id });
+            if (response.Succeeded)
+            {
+                var dt = response.Data;
+                var result = dt.Where(d => d.Name != string.Empty)
+                    .OrderBy(r => r.Name)
+                    .DistinctBy(d => d.Name).ToList();
+                var ViewModel = _mapper.Map<List<DropDownGViewModel>>(result);
+                return Json(ViewModel);
+            }
+            return null;
+        }
+
         #endregion
 
         public async Task<JsonResult> LoadDistricts(int StateCode)

@@ -457,11 +457,6 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         using var docStream = f.Document.OpenReadStream();
                         string cloudFilePath = await _blobService.UploadOrUpdateFileAsync(docStream, uniqueFileName, f.Document.ContentType, containerName);
 
-
-                        // Step 2: Determine Folder Path
-                        //string dcFld = f.TypeId == 1 ? "Draft" : "Order";
-                        //string docPath = Path.Combine("documents", dcFld, model.CaseId.ToString());
-
                         // Step 4: Map Data for Database Entry
                         ddoc.Add(new CaseDocumentModel
                         {
@@ -470,27 +465,6 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                             DocPath = cloudFilePath,  // Cloud file URL
                             DocDate = f.DocDate
                         });
-
-                        //string fullPath = Path.Combine(root, docPath);
-                        //// Step 3: Check & Create Directory If It Doesn't Exist
-                        //if (!Directory.Exists(fullPath))
-                        //{
-                        //    Directory.CreateDirectory(fullPath);
-                        //    _logger.LogInformation($"Directory created: {fullPath}");
-                        //}
-
-                        //// Step 3: Generate Unique File Name
-                        //string uniqueFileName = $"{Path.GetFileNameWithoutExtension(f.Document.FileName)}_{Guid.NewGuid()}{Path.GetExtension(f.Document.FileName)}";
-                        //string fileNameWithPath = Path.Combine(fullPath, uniqueFileName);
-                        // Step 4: Compress & Save File
-                        //string compressedFilePath = await CompressFileAsync(f.Document, fileNameWithPath);
-                        //ddoc.Add(new CaseDocumentModel
-                        //{
-                        //    DocId = f.DocId,
-                        //    TypeId = f.TypeId,
-                        //    DocPath = Path.Combine(docPath, Path.GetFileName(compressedFilePath)),
-                        //    DocDate = f.DocDate
-                        //});
                     }
                     catch (Exception ex)
                     {

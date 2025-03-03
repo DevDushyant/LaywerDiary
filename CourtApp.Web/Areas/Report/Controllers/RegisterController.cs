@@ -73,6 +73,40 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return PartialView(viewName, md);
         }
 
+        public async Task<IActionResult> Search(Guid ClientId, string ReferalBy, string Status)
+        {
+            var viewName = ""; dynamic md = null;
+            var response = await _mediator.Send(new CaseSearchableDataQuery()
+            {
+                UserId = CurrentUser.Id,
+                ClientId = ClientId,
+                ReferalBy = ReferalBy,
+                Status = Status
+            });
+            InstitutionRegisterViewMode model = new InstitutionRegisterViewMode();
+            List<InstituteModel> inmd = new List<InstituteModel>();
+            if (response != null && response.Succeeded)
+            {
+                foreach (var d in response.Data)
+                {
+                    InstituteModel rd = new InstituteModel();
+                    rd.Id = d.Id;
+                    rd.Court = d.Court;
+                    rd.CaseType = d.CaseType;
+                    rd.Year = d.Year;
+                    rd.No = d.No;
+                    rd.FirstTitle = d.FirstTitle;
+                    rd.SecondTitle = d.SecondTitle;
+                    rd.InsititutionDate = d.InsititutionDate;
+                    inmd.Add(rd);
+                }
+                model.dtmodel = inmd;
+                viewName = "_Instition";
+                md = model;
+            }
+            return PartialView(viewName, md);
+        }
+
         #region Disposal Register
         public IActionResult DisposalRegister()
         {

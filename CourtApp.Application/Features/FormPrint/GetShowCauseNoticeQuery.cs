@@ -32,14 +32,14 @@ namespace CourtApp.Application.Features.FormPrint
             if (request.ApplicantNo != null)
                 Titles = request.ApplicantNo.Split(',').Select(int.Parse).ToList();
             var query = _CaseRepo.Entites
-                .Include(c => c.CaseType)
+                .Include(c => c.CaseCategory)
                 .Include(t => t.Titles.Where(t => t.TypeId == 2))
                     .ThenInclude(a => a.CaseApplicants)
                 .Where(c => request.CaseIds.Contains(c.Id))
                 .Select(s => new ShowCauseNoticeResponse
                 {
                     CaseNoYear = s.CaseNo + "/" + s.CaseYear,
-                    CaseType = s.CaseType.Name_En,
+                    CaseType = s.CaseCategory.Name_En,
                     Petitioner = s.FirstTitle,
                     Respondent = s.SecondTitle,
                     Applicants = s.Titles.Where(t => t.TypeId == 2).SelectMany(t => t.CaseApplicants)
