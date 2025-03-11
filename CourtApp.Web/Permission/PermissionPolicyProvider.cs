@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
-using System;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Permission
@@ -23,13 +22,30 @@ namespace CourtApp.Web.Permission
         // The policy name must match the permission that is needed.
         public Task<AuthorizationPolicy> GetPolicyAsync(string policyName)
         {
-            if (policyName.StartsWith("Permissions", StringComparison.OrdinalIgnoreCase))
+            //if (policyName.StartsWith("Permissions", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    var policy = new AuthorizationPolicyBuilder();
+            //    policy.AddRequirements(new PermissionRequirement(policyName));
+            //    return Task.FromResult(policy.Build());
+            //}
+            //if (policyName.StartsWith("AdminPanel", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    var policy = new AuthorizationPolicyBuilder();
+            //    policy.AddRequirements(new PermissionRequirement(policyName));
+            //    return Task.FromResult(policy.Build());
+            //}
+            //if (policyName.StartsWith("CasePanel", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    var policy = new AuthorizationPolicyBuilder();
+            //    policy.AddRequirements(new PermissionRequirement(policyName));
+            //    return Task.FromResult(policy.Build());
+            //}
+            if (policyName != string.Empty)
             {
                 var policy = new AuthorizationPolicyBuilder();
                 policy.AddRequirements(new PermissionRequirement(policyName));
                 return Task.FromResult(policy.Build());
             }
-
             // Policy is not for permissions, try the default provider.
             return FallbackPolicyProvider.GetPolicyAsync(policyName);
         }

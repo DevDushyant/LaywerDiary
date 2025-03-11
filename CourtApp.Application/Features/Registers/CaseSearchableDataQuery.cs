@@ -43,7 +43,7 @@ namespace CourtApp.Application.Features.Registers
                 if (!string.IsNullOrEmpty(request.ReferalBy))
                 {
                     var clientIds = (await client.GetCachedListAsync())
-                        .Where(r => r.ReferalBy.ToList().Equals(request.ReferalBy.ToLower()))
+                        .Where(r => r.ReferalBy.Trim().Equals(request.ReferalBy.Trim().ToLower()))
                         .Select(s => s.Id).ToList();
                     predicate = predicate.And(c => clientIds.Contains(c.ClientId.Value));
                 }

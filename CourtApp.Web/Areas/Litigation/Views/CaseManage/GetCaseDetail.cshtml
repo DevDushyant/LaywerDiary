@@ -7,6 +7,7 @@
     .text-capitalize {
         text-transform: capitalize;
     }
+
     fieldset.scheduler-border {
         border: 1px groove #ddd !important;
         padding: 0 1.4em 1.4em 1.4em !important;
@@ -27,9 +28,12 @@
 </style>
 <div class="row">
     <div class="col-sm-6"><h4>Case <b>Detail Information</b></h4></div>
-    <div class="col-sm-3 pull-right">
-        @Html.ActionLink("Edit", "CreateOrUpdate", new { id = Model.Id })
-    </div>
+    @if (Model.Reference.ToLower() == "self")
+    {
+        <div class="col-sm-3 pull-right">
+            @Html.ActionLink("Edit", "CreateOrUpdate", new { id = Model.Id })
+        </div>
+    }
     <div class="col-sm-3">
         <button type="button" onclick="location.href='@Url.Action("index", "CaseManage")'" class="btn btn-info btn-style float-lg-right"><i class="fa fa-arrow-left"></i> Back to list</button>
     </div>
@@ -498,6 +502,10 @@
         }
     </fieldset>
 }
-<div>
-    @Html.ActionLink("Edit", "CreateOrUpdate", new { id = Model.Id })
-</div>
+
+@if (Model.Reference.ToLower() == "self")
+{
+    <div class="col-sm-3 pull-right">
+        @Html.ActionLink("Edit", "CreateOrUpdate", new { id = Model.Id })
+    </div>
+}

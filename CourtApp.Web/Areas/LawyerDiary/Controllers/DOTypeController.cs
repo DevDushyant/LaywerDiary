@@ -1,9 +1,6 @@
-﻿using CourtApp.Application.Constants;
-using CourtApp.Application.Features.DOType;
+﻿using CourtApp.Application.Features.DOType;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
-using CourtApp.Web.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -21,35 +18,16 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
         public async Task<IActionResult> LoadAll()
         {
-            //var response = await _mediator.Send(new GetAllDOTypeCachedQuery());
             var response = await _mediator.Send(new GetAllDOTypeCachedQuery());
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<DOTypeViewModel>>(response.Data);
-                var count=viewModel.Count();
+                var count = viewModel.Count();
                 return PartialView("_ViewAll", viewModel);
             }
             return null;
         }
 
-        //public async Task<JsonResult> LoadAll(JqueryDatatableParam param)
-        //{           
-        //    var response = await _mediator.Send(new GetAllDOTypeQuery(param.iDisplayStart,param.iDisplayLength));
-        //    if (response.Succeeded)
-        //    {
-        //        var viewModel = _mapper.Map<List<DOTypeViewModel>>(response.Data);
-        //        return Json(new
-        //        {
-        //            param.sEcho,
-        //            iTotalRecords = viewModel.Count(),
-        //            iTotalDisplayRecords = viewModel.Count(),
-        //            aaData = viewModel
-        //        });
-        //    }
-        //    return null;
-        //}
-
-        [Authorize(Policy = Permissions.Users.View)]
         public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
         {
             if (id == Guid.Empty)

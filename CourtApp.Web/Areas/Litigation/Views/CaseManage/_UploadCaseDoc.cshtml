@@ -73,10 +73,13 @@
                             <p>
                                 <a href="@Model.Docs[i].DocFilePath" target="_blank">
                                     <i style="font-size:20px" class="@Model.Docs[i].FIcon"></i>
-                                </a> |
-                                <a href="javascript:void(0);" onclick="ConfirmDelete('@Model.Docs[i].Id','@Model.Docs[i].DocFilePath')">
-                                    <i style="font-size:20px" class="fa">&#xf00d;</i>
                                 </a>
+                                @if (Model.Reference.ToLower() == "self")
+                                {
+                                    <a href="javascript:void(0);" onclick="ConfirmDelete('@Model.Docs[i].Id','@Model.Docs[i].DocFilePath')">
+                                        <i style="font-size:20px" class="fa">&#xf00d;</i>
+                                    </a>
+                                }
                             </p>
 
                         </td>

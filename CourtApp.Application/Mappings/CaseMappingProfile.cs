@@ -4,7 +4,6 @@ using CourtApp.Application.DTOs.CaseDetails;
 using CourtApp.Application.Features.Case;
 using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Domain.Entities.CaseDetails;
-using System;
 
 namespace CourtApp.Application.Mappings
 {
@@ -17,16 +16,10 @@ namespace CourtApp.Application.Mappings
             CreateMap<CreateCaseCommand, CaseDetailEntity>();
             CreateMap<UpdateCaseDetailCommand, CaseDetailEntity>();
             CreateMap<CaseAgainstEntityModel, CaseDetailAgainstEntity>();
-                 
-
             CreateMap<CaseDetailEntity, CaseDetailResponse>();
-            CreateMap<CaseDetailEntity, UserCaseDetailResponse>()
-                 
-                 ;
-
+            CreateMap<CaseDetailEntity, UserCaseDetailResponse>();
             CreateMap<CaseDetailEntity, CaseDetailInfoDto>();
-
-
+            CreateMap<CreateCaseAssignedCommand, AssignCaseEntity>();
         }
     }
 }

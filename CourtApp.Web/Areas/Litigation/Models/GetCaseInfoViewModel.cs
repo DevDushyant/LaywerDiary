@@ -5,6 +5,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
     public class GetCaseInfoViewModel
     {
         public Guid Id { get; set; }
+        public string Reference { get; set; }
         public string CourtType { get; set; }
         public string Court { get; set; }
         public string CaseType { get; set; }

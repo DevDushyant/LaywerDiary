@@ -1,54 +1,161 @@
 ﻿
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CourtApp.Application.Constants
 {
     public static class Permissions
     {
-        public static List<string> GeneratePermissionsForModule(string module)
-        {
-            return new List<string>()
-            {
-                $"Permissions.{module}.Create",
-                $"Permissions.{module}.View",
-                $"Permissions.{module}.Edit",
-                $"Permissions.{module}.Delete",
-                $"Permissions.{module}.MenuAccess",
-            };
-        }
 
-        public static class Dashboard
+        public static readonly Dictionary<string, Dictionary<string, List<string>>> Modules = new()
         {
-            public const string View = "Permissions.Dashboard.View";
-            public const string Create = "Permissions.Dashboard.Create";
-            public const string Edit = "Permissions.Dashboard.Edit";
-            public const string Delete = "Permissions.Dashboard.Delete";
-            public const string MenuAccess = "Permissions.ExpenceHead.MenuAccess";
-            public static List<string> GetAllPermissions() =>
-                new List<string> { View, Create, Edit, Delete, MenuAccess };
-        }
+            { "Admin", new Dictionary<string, List<string>>
+                {
+                    { "Menu",
+                        new()
+                        {
+                            "AdminPanel.Menu.canAccessAdminPanel",
+                            "AdminPanel.Menu.User",
+                            "AdminPanel.Menu.Role",
+                            "AdminPanel.Menu.FormBuilder",
+                            "AdminPanel.Menu.LawyerDirectory",
+                            "AdminPanel.Menu.Client",
+                            "AdminPanel.Menu.Associate",
+                            "AdminPanel.Menu.Template"
+                        }
+                    },
+                    { "User", new() { "AdminPanel.User.Create", "AdminPanel.User.View", "AdminPanel.User.Edit", "AdminPanel.User.Delete" } },
+                    { "Role", new() { "AdminPanel.Role.Create", "AdminPanel.Role.View", "AdminPanel.Role.Edit", "AdminPanel.Role.Delete" } },
+                    { "FormBuilder", new() { "AdminPanel.FormBuilder.Create", "AdminPanel.FormBuilder.View", "AdminPanel.FormBuilder.Edit", "AdminPanel.FormBuilder.Delete" } },
+                    { "LawyerDirectory", new() { "AdminPanel.LawyerDirectory.Create", "AdminPanel.LawyerDirectory.View", "AdminPanel.LawyerDirectory.Edit", "AdminPanel.LawyerDirectory.Delete" } },
+                    { "Client", new() { "AdminPanel.Client.Create", "AdminPanel.Client.View", "AdminPanel.Client.Edit", "AdminPanel.Client.Delete" } },
+                    { "Associate", new() { "AdminPanel.Associate.Create", "AdminPanel.Associate.View", "AdminPanel.Associate.Edit", "AdminPanel.Associate.Delete" } },
+                    { "Template", new() { "AdminPanel.Template.Create", "AdminPanel.Template.View", "AdminPanel.Template.Edit", "AdminPanel.Template.Delete" } },
+                }
+            },
+            { "Case", new Dictionary<string, List<string>>
+                {
+                    { "Menu",
+                        new()
+                        {
+                            "CasePanel.Menu.canAccessCasePanel",
+                            "CasePanel.Menu.ManageCase",
+                            "CasePanel.Menu.CompleteTitle",
+                            "CasePanel.Menu.TodayHearing",
+                            "CasePanel.Menu.WithoutHearingDate",
+                            "CasePanel.Menu.PendingWork",
+                            "CasePanel.Menu.CaseSearch",
+                            "CasePanel.Menu.CaseDrafting",
+                            "CasePanel.Menu.FormPrint",
+                        }
+                    },
+                    { "ManageCase", new() { "CasePanel.ManageCase.Create", "CasePanel.ManageCase.View", "CasePanel.ManageCase.Edit", "CasePanel.ManageCase.Delete", "CasePanel.ManageCase.DocUpload", "CasePanel.ManageCase.Detail"} },
+                    { "CompleteTitle", new() { "CasePanel.CompleteTitle.Create", "CasePanel.CompleteTitle.View", "CasePanel.CompleteTitle.Edit", "CasePanel.CompleteTitle.Delete"} }
+                }
+            },
+            { "Register", new Dictionary<string, List<string>>
+                {
+                    { "Menu",
+                        new()
+                        {
+                            "Register.Menu.canAccessCasePanel",
+                            "Register.Menu.Disposal",
+                            "Register.Menu.Copying",
+                            "Register.Menu.Institue",
+                            "Register.Menu.Other"
+                        }
+                    }
+                 }
+            },
 
-        public static class DocType
-        {
-            public const string View = "Permissions.DocType.View";
-            public const string Create = "Permissions.DocType.Create";
-            public const string Edit = "Permissions.DocType.Edit";
-            public const string Delete = "Permissions.DocType.Delete";
-            public const string MenuAccess = "Permissions.DocType.MenuAccess";
-            public static List<string> GetAllPermissions() =>
-               new List<string> { View, Create, Edit, Delete, MenuAccess };
-        }
+            { "Accounting", new Dictionary<string, List<string>>
+                {
+                    { "Menu", new() { "AccountingPanel.Menu.canAccessAccountingPanel", "AccountingPanel.Menu.Billing" } },
+                    { "Billing", new() { "AccountingPanel.Billing.Create", "AccountingPanel.Billing.View", "AccountingPanel.Billing.Edit", "AccountingPanel.Billing.Delete" } }
+                }
+            }
+        };
 
-        public static class Users
-        {
-            public const string View = "Permissions.Users.View";
-            public const string Create = "Permissions.Users.Create";
-            public const string Edit = "Permissions.Users.Edit";
-            public const string Delete = "Permissions.Users.Delete";
-            public const string MenuAccess = "Permissions.Users.MenuAccess";
-            public static List<string> GetAllPermissions() =>
-               new List<string> { View, Create, Edit, Delete, MenuAccess };
-        }
+        // Get all modules
+        public static List<string> GetModules() => Modules.Keys.ToList();
+
+        // Get all permissions
+        public static List<string> GetAllPermissions() =>
+            Modules.Values.SelectMany(module => module.Values).SelectMany(perms => perms).Distinct().ToList();
+
+        // Get permissions for a specific module
+        public static List<string> GetPermissionsForModule(string module) =>
+            Modules.TryGetValue(module, out var permissions) ? permissions.Values.SelectMany(p => p).ToList() : new List<string>();
+
+
+
+
+
+
+
+        //public static List<string> GeneratePermissionsForModule(string panel, string module)
+        //{
+        //    return new List<string>()
+        //    {
+        //        $"{panel}.{module}.Create",
+        //        $"{panel}.{module}.View",
+        //        $"{panel}.{module}.Edit",
+        //        $"{panel}.{module}.Delete"
+        //    };
+        //}
+
+        //public static class Admin
+        //{
+        //    public const string AdminPanel = "AdminPanel.Menu.canAccessAdminPanel";
+        //    public const string Users = "AdminPanel.Menu.User";
+        //    public const string FormBuilder = "AdminPanel.Menu.FormBuilder";
+        //    public const string Roles = "AdminPanel.Menu.Role";
+        //    public const string Template = "AdminPanel.Menu.Template";
+        //    public const string LawyerDirectory = "AdminPanel.Menu.LawyerDirectory";
+        //    public const string Client = "AdminPanel.Menu.Client";
+        //    public const string Associate = "AdminPanel.Menu.Associate";
+        //    public static List<string> Menues() =>
+        //        new List<string> { AdminPanel, Users, FormBuilder, Roles, Template,
+        //            LawyerDirectory, Associate };
+
+        //    // User Actions
+        //    public const string UserCreate = "AdminPanel.User.Create";
+        //    public const string UserView = "AdminPanel.User.View";
+        //    public const string UserDelete = "AdminPanel.User.Delete";
+        //    public const string UserEdit = "AdminPanel.User.Edit";  // Fixed duplicate View key
+
+        //    public static List<string> UserActions() =>
+        //        new List<string> { UserCreate, UserView, UserDelete, UserEdit };
+
+        //    // Lawyer Directory Actions
+        //    public const string LawyerDirectoryCreate = "AdminPanel.LawyerDirectory.Create";
+        //    public const string LawyerDirectoryView = "AdminPanel.LawyerDirectory.View";
+        //    public const string LawyerDirectoryDelete = "AdminPanel.LawyerDirectory.Delete";
+        //    public const string LawyerDirectoryEdit = "AdminPanel.LawyerDirectory.Edit";
+
+        //    public static List<string> LawyerDirectoryActions() =>
+        //        new List<string> { LawyerDirectoryCreate, LawyerDirectoryView, LawyerDirectoryDelete, LawyerDirectoryEdit };
+
+        //    // Client Actions
+        //    public const string ClientCreate = "AdminPanel.Client.Create";
+        //    public const string ClientView = "AdminPanel.Client.View";
+        //    public const string ClientDelete = "AdminPanel.Client.Delete";
+        //    public const string ClientEdit = "AdminPanel.Client.Edit";
+
+        //    public static List<string> ClientActions() =>
+        //        new List<string> { ClientCreate, ClientView, ClientDelete, ClientEdit };
+
+        //    // Associate Actions
+        //    public const string AssociateCreate = "AdminPanel.Associate.Create";
+        //    public const string AssociateView = "AdminPanel.Associate.View";
+        //    public const string AssociateDelete = "AdminPanel.Associate.Delete";
+        //    public const string AssociateEdit = "AdminPanel.Associate.Edit";
+
+        //    public static List<string> AssociateActions() =>
+        //        new List<string> { AssociateCreate, AssociateView, AssociateDelete, AssociateEdit };
+        //}
+
+
         public static class LawyerDirectory
         {
             public const string View = "Permissions.LawyerDirectory.View";
@@ -89,6 +196,32 @@ namespace CourtApp.Application.Constants
             public static List<string> GetAllPermissions() =>
                new List<string> { View, Create, Edit, Delete, MenuAccess };
         }
+
+
+
+        public static class Dashboard
+        {
+            public const string View = "Permissions.Dashboard.View";
+            public const string Create = "Permissions.Dashboard.Create";
+            public const string Edit = "Permissions.Dashboard.Edit";
+            public const string Delete = "Permissions.Dashboard.Delete";
+            public const string MenuAccess = "Permissions.Dashboard.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+                new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+
+        public static class DocType
+        {
+            public const string View = "Permissions.DocType.View";
+            public const string Create = "Permissions.DocType.Create";
+            public const string Edit = "Permissions.DocType.Edit";
+            public const string Delete = "Permissions.DocType.Delete";
+            public const string MenuAccess = "Permissions.DocType.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { View, Create, Edit, Delete, MenuAccess };
+        }
+
+
         public static class CaseDrafting
         {
             public const string View = "Permissions.CaseDrafting.View";
@@ -362,5 +495,19 @@ namespace CourtApp.Application.Constants
             public static List<string> GetAllPermissions() =>
                new List<string> { View, Create, Edit, Delete, MenuAccess };
         }
+        public static class Report
+        {
+            public const string MenuAccess = "Permissions.Report.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { MenuAccess };
+        }
+
+        public static class Tool
+        {
+            public const string MenuAccess = "Permissions.Tool.MenuAccess";
+            public static List<string> GetAllPermissions() =>
+               new List<string> { MenuAccess };
+        }
+
     }
 }

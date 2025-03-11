@@ -3,6 +3,7 @@
     <thead>
         <tr>
             <th style="width:1%!important">Sno.</th>
+            <th style="width:16%!important">Reference</th>
             <th style="width:16%!important">Court</th>
             <th style="width:16%!important">Type</th>
             <th style="width:5%!important">No.</th>
@@ -22,6 +23,9 @@
             <tr>
                 <td>
                     @(count = count + 1)
+                </td>
+                <td>
+                    @bt.Reference
                 </td>
                 <td>
                     @bt.Court
@@ -57,11 +61,11 @@
                         <div class="dropdown-menu shadow animated--grow-in">
                             <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')"
                                class="dropdown-item" title="See History"><i class="fa fa-history"></i>  History</a>
-                            <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=@bt.Id&w=mc', 'Upload Document')"
+                            <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=@bt.Id&w=mc&reft=@bt.Reference', 'Upload Document')"
                                class="dropdown-item" title="Upload Document"><i class="fas fa-file-alt"></i>  Upload Document</a>
                             <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail"
-                               asp-route-id="@bt.Id" class="dropdown-item" title="View Case Detail"><i class="fa fa-eye"></i>  Case Detail</a>
-                            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded)
+                               asp-route-id="@bt.Id" asp-route-reft="@bt.Reference" class="dropdown-item" title="View Case Detail"><i class="fa fa-eye"></i>  Case Detail</a>
+                            @if ((AuthorizationService.AuthorizeAsync(User, "CasePanel.ManageCase.Delete")).Result.Succeeded)
                             {
                                 <form id="form_delete_@bt.Id" asp-area="Litigation"
                                       asp-controller="casemanage" method="post"
@@ -69,6 +73,8 @@
                                     <a href="javascript:$('#form_delete_@bt.Id').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a>
                                 </form>
                             }
+                            <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetAssignCase?CaseId=@bt.Id', 'Assigned case to other lawyer')"
+                               class="dropdown-item" title="Assigned case to other lawyer"><i class="fa fa-tasks" aria-hidden="true"></i> Assigned Case</a>
                         </div>
                     </div>
                 </td>

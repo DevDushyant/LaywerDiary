@@ -7,8 +7,8 @@
             <th>Enrollment</th>
             <th>Mobile</th>
             <th>Email</th>
-            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.LawyerDirectory.Delete)).Result.Succeeded
-            || (AuthorizationService.AuthorizeAsync(User, Permissions.LawyerDirectory.Edit)).Result.Succeeded)
+            @if ((AuthorizationService.AuthorizeAsync(User, "AdminPanel.LawyerDirectory.Delete")).Result.Succeeded
+            || (AuthorizationService.AuthorizeAsync(User, "AdminPanel.LawyerDirectory.Edit")).Result.Succeeded)
             {
                 <th>Actions</th>
             }
@@ -30,8 +30,8 @@
                         @if (@bt.ProfileImgPath != null && bt.ProfileImgPath != "")
                         {
                             <div class="col-sm" style=" max-width: 80px;margin-right: 20px;">
-                                <img class="img-profile rounded-circle" style="height: 75px;width:75px;object-fit: cover;" 
-                                src="@bt.ProfileImgPath" alt="Profile Image">
+                                <img class="img-profile rounded-circle" style="height: 75px;width:75px;object-fit: cover;"
+                                     src="@bt.ProfileImgPath" alt="Profile Image">
                             </div>
                         }
                         else
@@ -62,7 +62,8 @@
                     @bt.Email
                 </td>
 
-                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.LawyerDirectory.Delete)).Result.Succeeded || (AuthorizationService.AuthorizeAsync(User, Permissions.LawyerDirectory.Edit)).Result.Succeeded)
+                @if ((AuthorizationService.AuthorizeAsync(User, "AdminPanel.LawyerDirectory.Delete")).Result.Succeeded
+               || (AuthorizationService.AuthorizeAsync(User, "AdminPanel.LawyerDirectory.Edit")).Result.Succeeded)
                 {
                     <td text-right">
                         <div class="btn-group">
@@ -70,12 +71,12 @@
                                 Action
                             </button>
                             <div class="dropdown-menu shadow animated--grow-in">
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.LawyerDirectory.Edit)).Result.Succeeded)
+                                @if ((AuthorizationService.AuthorizeAsync(User, "AdminPanel.LawyerDirectory.Edit")).Result.Succeeded)
                                 {
                                     <a onclick="jQueryModalGet('/lawyerdiary/lawyer/OnGetCreateOrEdit?id=@bt.Id','Edit Lawyer Information')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
 
                                 }
-                                @if ((AuthorizationService.AuthorizeAsync(User, Permissions.LawyerDirectory.Delete)).Result.Succeeded)
+                                @if ((AuthorizationService.AuthorizeAsync(User, "AdminPanel.LawyerDirectory.Delete")).Result.Succeeded)
 
                                 {
                                     <form id="form_delete_@bt.Id" asp-area="LawyerDiary" asp-controller="Lawyer" method="post" asp-action="OnPostDelete" asp-route-id="@bt.Id" onsubmit="return jQueryModalDelete(this)">

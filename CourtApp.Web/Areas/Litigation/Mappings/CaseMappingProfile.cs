@@ -43,6 +43,7 @@ namespace CourtApp.Web.Areas.Litigation.Mappings
             CreateMap<UpdateHearingDtViewModel, CaseHearingDto>();
             CreateMap<LinkCaseInfo, LinkCaseInfoViewModel>();
             CreateMap<GetAllClientCachedResponse, ClientViewModel>();
+            CreateMap<AssignCaseViewModel, CreateCaseAssignedCommand>();
         }
     }
 }

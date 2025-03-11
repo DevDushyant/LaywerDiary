@@ -1,20 +1,20 @@
-﻿using CourtApp.Application.Interfaces.Contexts;
+﻿using AuditTrail.Abstrations;
+using CourtApp.Application.Interfaces.Contexts;
 using CourtApp.Application.Interfaces.Shared;
+using CourtApp.Domain.Entities.CaseDetails;
+using CourtApp.Domain.Entities.Common;
+using CourtApp.Domain.Entities.FormBuilder;
+using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Entities.Common;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CourtApp.Entities.Common;
-using CourtApp.Domain.Entities.LawyerDiary;
-using CourtApp.Domain.Entities.Common;
-using AuditTrail.Abstrations;
-using System;
-using CourtApp.Domain.Entities.CaseDetails;
-using CourtApp.Domain.Entities.FormBuilder;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System.Collections.Generic;
-using Newtonsoft.Json;
 namespace CourtApp.Infrastructure.DbContexts
 {
     public class ApplicationDbContext : AuditableContext, IApplicationDbContext
@@ -32,10 +32,7 @@ namespace CourtApp.Infrastructure.DbContexts
         }
 
         public IDbConnection Connection => Database.GetDbConnection();
-
         public bool HasChanges => ChangeTracker.HasChanges();
-
-
         public DbSet<StateEntity> States { get; set; }
         public DbSet<DistrictEntity> Districts { get; set; }
         public DbSet<CityEntity> CityEntities { get; set; }
@@ -75,6 +72,7 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<FormTemplateMappingEntity> TempFormMappings { get; set; }
         public DbSet<CadreMasterEntity> Cadres { get; set; }
         public DbSet<SpecializationEntity> Specilities { get; set; }
+        public DbSet<AssignCaseEntity> AssignedCases { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -88,7 +86,7 @@ namespace CourtApp.Infrastructure.DbContexts
                         break;
 
                     case EntityState.Modified:
-                        entry.Entity.LastModifiedOn = entry.Entity.LastModifiedOn!=null? entry.Entity.LastModifiedOn: _dateTime.NowUtc;
+                        entry.Entity.LastModifiedOn = entry.Entity.LastModifiedOn != null ? entry.Entity.LastModifiedOn : _dateTime.NowUtc;
                         entry.Entity.LastModifiedBy = _authenticatedUser.UserId;
                         break;
 

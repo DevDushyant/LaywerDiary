@@ -47,7 +47,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             this._blobService = _blobService;
         }
 
-        [Authorize(Policy = Permissions.Users.View)]
+       
         public IActionResult Index()
         {
 

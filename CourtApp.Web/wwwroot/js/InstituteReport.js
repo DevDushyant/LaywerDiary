@@ -13,7 +13,7 @@
 
     // Define filter dropdowns (id, label)
     var filters = [
-        { id: "ddlStatus", label: "Status" },
+       /* { id: "ddlStatus", label: "Status" },*/
         { id: "ddlReferral", label: "Referral" },
         { id: "ddlClient", label: "Client" }
     ];
@@ -90,11 +90,11 @@
     $(".customFilter").on("change", function () {
         let client = $("#ddlClient").val();
         let referral = $("#ddlReferral").val();
-        let status = $("#ddlStatus").val();
+       // let status = $("#ddlStatus").val();
         $.ajax({
             url: "/Report/Register/Search",
             type: "GET",
-            data: { ClientId: client, ReferalBy: referral, Status: status },
+            data: { ClientId: client, ReferalBy: referral, Status: "" },
             success: function (response) {
                 table.clear().draw(); // Clear existing data and re-draw without destroying the table
                 $("#tblRegister tbody").html(response); // Update only tbody with new rows

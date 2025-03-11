@@ -17,7 +17,7 @@ namespace CourtApp.Application.Interfaces.Contexts
 
         EntityEntry Entry(object entity);
 
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken);        
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
         DbSet<StateEntity> States { get; set; }
         DbSet<DistrictEntity> Districts { get; set; }
         DbSet<BookTypeEntity> BookTypes { get; set; }
@@ -48,6 +48,7 @@ namespace CourtApp.Application.Interfaces.Contexts
         DbSet<FormTemplateMappingEntity> TempFormMappings { get; set; }
         DbSet<CadreMasterEntity> Cadres { get; set; }
         DbSet<SpecializationEntity> Specilities { get; set; }
+        DbSet<AssignCaseEntity> AssignedCases { get; set; }
 
     }
 }

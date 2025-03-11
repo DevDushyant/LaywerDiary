@@ -1,14 +1,14 @@
 ﻿using CourtApp.Application.Interfaces.CacheRepositories;
+using CourtApp.Application.Interfaces.CacheRepositories.FormBuilder;
 using CourtApp.Application.Interfaces.Contexts;
 using CourtApp.Application.Interfaces.Repositories;
+using CourtApp.Application.Interfaces.Repositories.FormBuilder;
 using CourtApp.Infrastructure.CacheRepositories;
 using CourtApp.Infrastructure.DbContexts;
 using CourtApp.Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-using CourtApp.Application.Interfaces.CacheRepositories.FormBuilder;
-using CourtApp.Application.Interfaces.Repositories.FormBuilder;
 
 namespace CourtApp.Infrastructure.Extensions
 {
@@ -24,8 +24,8 @@ namespace CourtApp.Infrastructure.Extensions
         {
             #region Repositories
 
-            services.AddTransient(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));           
-            
+            services.AddTransient(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));
+
             services.AddTransient<ILogRepository, LogRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
@@ -72,7 +72,7 @@ namespace CourtApp.Infrastructure.Extensions
             services.AddTransient<IClientCacheRepository, ClientCacheRepository>();
 
             services.AddTransient<ICourtTypeRepository, CourtTypeRepository>();
-            services.AddTransient<ICourtTypeCacheRepository, CourtTypeCacheRepository>();           
+            services.AddTransient<ICourtTypeCacheRepository, CourtTypeCacheRepository>();
 
             services.AddTransient<IUserCaseRepository, UserCaseRepository>();
             services.AddTransient<IUserCaseCacheRepository, UserCaseCacheRepository>();
@@ -114,12 +114,9 @@ namespace CourtApp.Infrastructure.Extensions
             services.AddTransient<ILawyerRepository, LawyerMasterRepository>();
             #endregion
 
-            #region FormBuilder & Case Mapping
+            #region FormBuilder 
             services.AddTransient<IFormBuilderCacheRepository, FormBuilderCacheRepository>();
             services.AddTransient<IFormBuilderRepository, FormBuilderRepository>();
-
-            services.AddTransient<ICaseDraftingCacheRepository, CaseDraftingCacheRepository>();
-            services.AddTransient<ICaseDraftingRepository, CaseDraftingRepository>();
 
             services.AddTransient<ITemplateInfoCacheRepository, TemplateInfoCacheRepository>();
             services.AddTransient<ITemplateInfoRepository, TemplateInfoRepository>();
@@ -130,6 +127,13 @@ namespace CourtApp.Infrastructure.Extensions
             #region Specility 
             services.AddTransient<ISpecilityCacheRepository, SpecilityCacheRepository>();
             services.AddTransient<ISpecilityRepository, SpecilityRepository>();
+            #endregion
+
+            #region Case Related 
+            services.AddTransient<ICaseDraftingCacheRepository, CaseDraftingCacheRepository>();
+            services.AddTransient<ICaseDraftingRepository, CaseDraftingRepository>();
+
+            services.AddTransient<ICaseAssignedRepository, CaseAssignedRepository>();
             #endregion
         }
     }

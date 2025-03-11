@@ -1,6 +1,5 @@
 ﻿using CourtApp.Application.Constants;
 using CourtApp.Application.DTOs.Mail;
-using CourtApp.Application.Enums;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Application.Interfaces.Shared;
 using CourtApp.Infrastructure.DbContexts;
@@ -13,7 +12,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -50,6 +48,9 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
 
         [BindProperty]
         public InputModel Input { get; set; }
+
+        //[BindProperty]
+        //public RegisterViewModel RegData { get; set; } = new();
         public string ReturnUrl { get; set; }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
         public SelectList Genders { get; set; }
@@ -57,34 +58,24 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [Display(Name = "First Name")]
-            public string FirstName { get; set; }
+            public string UserType { get; set; }
 
             [Required]
-            [Display(Name = "Last Name")]
-            public string LastName { get; set; }
+            [Display(Name = "Name")]
+            public string Name { get; set; }
+
+            [Required]
+            public string EnrollmentNo { get; set; }
 
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required]
-            [Display(Name = "Enrollment No")]
-            public string EnrollmentNo { get; set; }
 
             [Required]
             [Display(Name = "Mobile No")]
             public string Mobile { get; set; }
-
-            [Required]
-            [Display(Name = "Gender")]
-            public string Gender { get; set; }
-
-            [Required]
-            [Display(Name = "Date Of Birth")]
-            public DateTime DateOfBirth { get; set; }
-
 
             [Display(Name = "Website")]
             public string Website { get; set; }
@@ -120,19 +111,18 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                string emailId = string.Empty;
+                ApplicationUser user = new ApplicationUser();
                 MailAddress address = new MailAddress(Input.Email);
                 string userName = address.User;
-                var user = new ApplicationUser
+                user = new ApplicationUser
                 {
-                    UserName = userName,
+                    UserType = Input.UserType.ToUpper(),
+                    UserName = userName.ToUpper(),
                     Email = Input.Email,
-                    FirstName = Input.FirstName,
-                    LastName = Input.LastName,
+                    FirstName = Input.Name.ToUpper(),
                     Mobile = Input.Mobile,
-                    Gender = Input.Gender,
-                    DateOfBirth = Input.DateOfBirth,
-                    UserType = "Lawyer",
-                    Demographic = new Demographic
+                    Demographic = Input.UserType.ToUpper() == "LAWYER" ? new Demographic
                     {
                         CreatedBy = "-",
                         ProfessionalInfo = new ProfessionalInfo
@@ -140,26 +130,24 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                             EnrollmentNo = Input.EnrollmentNo,
                             BarAssociationNumber = Input.EnrollmentNo
                         }
-                    }
+                    } : null, // Only assign Demographic if UserType is Lawyer
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    await _userManager.AddToRoleAsync(user, Roles.Lawyer.ToString());
-                    //var UserDemo = new Demographic
-                    //{
-                    //    Id=Guid.Parse(user.Id),
-                    //    ProfessionalInfo = new ProfessionalInfo
-                    //    {
-                    //        EnrollmentNo = Input.EnrollmentNo,
-                    //        BarAssociationNumber= Input.EnrollmentNo
-                    //    }
-                    //};
-                    //_identityDbContext.Demographics.Add(UserDemo);
-                    //await _identityDbContext.SaveChangesAsync();
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    await _userManager.AddToRoleAsync(user, Input.UserType.ToUpper().ToString());
+                    if (Input.UserType.ToUpper() == "Corporate".ToUpper())
+                    {
+                        CorporateUser cur = new CorporateUser();
+                        cur.FirmName = Input.Name;
+                        cur.Id = user.Id;
+                        cur.RegistrationNo = Input.EnrollmentNo;
+                        _identityDbContext.Corporates.Add(cur);
+                        await _identityDbContext.SaveChangesAsync();
+                    }
 
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
@@ -190,7 +178,6 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
             // If we got this far, something failed, redisplay form
             return Page();
         }

@@ -4,12 +4,17 @@ using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.CaseProceeding;
 using CourtApp.Application.Features.Clients.Commands;
 using CourtApp.Application.Features.UserCase;
+using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
+using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
 using CourtApp.Web.Services;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -25,10 +30,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private const long MaxFileSize = 200 * 1024 * 1024; // 200MB
         private readonly BlobService _blobService;
-        public CaseManageController(IWebHostEnvironment _webHostEnvironment, BlobService _blobService)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public CaseManageController(IWebHostEnvironment _webHostEnvironment, BlobService _blobService, UserManager<ApplicationUser> _userManager)
         {
             this._webHostEnvironment = _webHostEnvironment;
             this._blobService = _blobService;
+            this._userManager = _userManager;
         }
 
         #region Case Management Area
@@ -387,7 +394,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         #endregion
 
         #region Document Upload 
-        public async Task<IActionResult> GetFileUploadModel(Guid CaseId, string w)
+        public async Task<IActionResult> GetFileUploadModel(Guid CaseId, string w, string reft)
         {
             var response = await _mediator.Send(new GetCaseHistoryQuery() { CaseId = CaseId });
             List<CaseDoc> UDocs = new List<CaseDoc>();
@@ -409,7 +416,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         DocType = item.DocType,
                         DocDate = item.DocDate,
                         Id = item.Id,
-                        FIcon = Icon
+                        FIcon = Icon,
                     });
                 }
 
@@ -419,6 +426,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 model.CaseNoYear = CaseInfo.CaseNoYear;
                 model.Title = CaseInfo.Title;
                 model.Court = CaseInfo.Court;
+                model.Reference = reft;
                 model.Where = w;
             }
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_UploadCaseDoc", model) });
@@ -433,16 +441,18 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
 
             List<CaseDocumentModel> ddoc = new List<CaseDocumentModel>();
-            //string root = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
             if (model.Documents.Count > 0)
             {
                 foreach (var f in model.Documents)
                 {
                     // Step 1: Validate File
-                    if (!IsValidFileType(f.Document))
+                    var fileExtension = Path.GetExtension(f.Document.FileName).ToLower();
+                    if (fileExtension != ".pdf" && fileExtension != ".docx")
                     {
-                        return BadRequest($"Invalid file type: {Path.GetExtension(f.Document.FileName)}. Only PDF and DOCX are allowed.");
+                        return new JsonResult(new { isValid = false, message = "Only PDF and DOCX are allowed." });
+                        //return BadRequest($"Invalid file type: {fileExtension}. Only PDF and DOCX are allowed.");
                     }
+
                     if (f.Document.Length > MaxFileSize)
                     {
                         return BadRequest("File size exceeds the 200MB limit.");
@@ -512,7 +522,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         #endregion
 
         #region Case Detail
-        public async Task<IActionResult> GetCaseDetailAsync(Guid id)
+        public async Task<IActionResult> GetCaseDetailAsync(Guid id, string reft)
         {
             var response = await _mediator.Send(new GetCaseDetailInfoQuery() { CaseId = id });
             if (response.Succeeded)
@@ -688,6 +698,47 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 CasesHearingDt = _mapper.Map<List<CaseHearingDto>>(casedts)
             });
             return Json(response);
+        }
+        #endregion
+
+        #region Assign Case To Other Lawyer
+        public async Task<JsonResult> OnGetAssignCase(Guid CaseId)
+        {
+            var model = new AssignCaseViewModel();
+            var allUsersExceptCurrentUser = await _userManager.Users
+                .Where(a => a.Id != CurrentUser.Id).ToListAsync();
+            var lUsers = _mapper.Map<IEnumerable<UserViewModel>>(allUsersExceptCurrentUser);
+            model.Lawyers = new SelectList(lUsers, nameof(UserViewModel.Id), nameof(UserViewModel.FirstName), null, null);
+            model.CaseId = CaseId;
+            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_AssignCase", model) });
+        }
+        [HttpPost]
+        public async Task<JsonResult> OnPostAssignCase(Guid Id, AssignCaseViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (Id == Guid.Empty)
+                {
+                    try
+                    {
+                        var cmd = _mapper.Map<CreateCaseAssignedCommand>(model);
+                        cmd.UserId = Guid.Parse(CurrentUser.Id);
+                        var result = await _mediator.Send(cmd);
+                        if (result.Succeeded)
+                        {
+                            Id = result.Data;
+                            _notify.Success($"Case is assigned to the selected lawyer successfully!");
+                            return new JsonResult(new { isValid = true, html = "" });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.Message.ToString());
+                        Console.WriteLine(ex);
+                    }
+                }
+            }
+            return new JsonResult(new { isValid = false, html = "html" });
         }
         #endregion
     }

@@ -13,6 +13,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string Title { get; set; }
         public string Court { get; set; }
         public string CaseNoYear { get; set; }
+        public string Reference { get; set; }
         public List<CaseDoc> Docs { get; set; }
         public SelectList DocTypes { get; set; }
         public List<AttachmentModel> Documents { get; set; }

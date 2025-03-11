@@ -19,8 +19,8 @@ namespace CourtApp.Web.Areas.Client.Mappings
             CreateMap<CreateClientCommand, ClientViewModel>();
             CreateMap<UpdateClientCommand, ClientViewModel>();
             CreateMap<GetClientInfoDto, DropDownSViewModel>()
-                 .ForPath(d => d.Id, sr => sr.MapFrom(s => s.ReferalBy.ToUpper()))
-                 .ForPath(d => d.Name, sr => sr.MapFrom(s => s.ReferalBy.ToUpper()));
+                 .ForPath(d => d.Id, sr => sr.MapFrom(s => s.ReferalBy.Trim().ToUpper()))
+                 .ForPath(d => d.Name, sr => sr.MapFrom(s => s.ReferalBy.Trim().ToUpper()));
             CreateMap<GetClientInfoDto, DropDownGViewModel>();
 
         }

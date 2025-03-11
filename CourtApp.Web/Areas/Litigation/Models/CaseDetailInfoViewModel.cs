@@ -8,6 +8,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
     public class CaseDetailInfoViewModel
     {
         public Guid Id { get; set; }
+        public string Reference { get; set; }
 
         [DisplayName("Institution Date")]
         public string InstitutionDate { get; set; }
