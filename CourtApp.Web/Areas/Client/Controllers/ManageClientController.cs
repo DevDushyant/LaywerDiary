@@ -87,15 +87,13 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     {
                         id = result.Data;
                         TempData["ClientId"] = id;
-                        // _notify.Success($"Client with ID {result.Data} Created.");
+                        _notify.Success($"Client with ID {result.Data} Created.");
                         var frm = TempData["Where"];
                         btViewModel.StatusMessage = "Record created successfully";
                         if (frm.Equals("Case"))
                         {
                             btViewModel.StatusMessage = result.Message;
                             _notify.Success($"Client with ID {result.Data} Created.");
-                            //btViewModel.OppositCounsels = await DdlLawyerAsync();
-                            //btViewModel.Appearences = await DdlFSTypes(0);
                             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel) });
                         }
                         else
@@ -113,13 +111,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     {
                         btViewModel.StatusMessage = result.Message;
                         _notify.Error(result.Message);
-                        //btViewModel.OppositCounsels = await DdlLawyerAsync();
-                        //btViewModel.Appearences = await DdlFSTypes(0);
                         return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel) });
-
                     }
-                    ;
-                    return View("_CreateOrEdit", btViewModel);
+                    //return View("_CreateOrEdit", btViewModel);
                 }
                 else
                 {

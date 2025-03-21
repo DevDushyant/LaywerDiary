@@ -6,7 +6,6 @@ using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +46,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             this._blobService = _blobService;
         }
 
-       
+
         public IActionResult Index()
         {
 
@@ -74,7 +73,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                         Id = user.Id,
                         IsActive = user.IsActive
                     })
-                    .ToListAsync(); ;
+                    .ToListAsync();
                 model = _mapper.Map<List<UserViewModel>>(superAdminUsersData);
             }
             else
@@ -248,7 +247,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                     Id = Guid.Parse(user.Id),
                     LawyerId = lawyer.Id,
                     DateOfJoining = uModel.DateOfJoining ?? default(DateTime),
-                    Enrollment = uModel.LawyerInfo?.ProfInfo.EnrollmentNo ?? "",
+                    Enrollment = uModel.EnrollmentNo,
                     AddressInfo = new AddressInfo
                     {
                         StateId = 0,
@@ -264,7 +263,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             else
             {
                 lawyerUser.DateOfJoining = uModel.DateOfJoining ?? default(DateTime);
-                lawyerUser.Enrollment = uModel.LawyerInfo?.ProfInfo.EnrollmentNo ?? "";
+                lawyerUser.Enrollment = uModel.EnrollmentNo;
                 lawyerUser.AddressInfo.StreetAddress = uModel.Address;
                 _identityDbContext.LawyerUsers.Update(lawyerUser);
             }

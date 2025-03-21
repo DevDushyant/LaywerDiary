@@ -1,4 +1,6 @@
 ﻿$(document).ready(function () {
+    
+
 
     $("#ClientType").select2({
         placeholder: "Select a client type",
@@ -76,3 +78,33 @@
         }
     });
 });
+
+$(document).ready(function () {
+    // Function to add the red asterisk
+    function addAsterisk() {       
+        var regNoLabel = $('#RegNoLabel');
+        if ($('#ClientType').val() === "Corporate") {
+            // Check if the asterisk is already added to avoid duplication
+            if ($('#RegNoLabel span').length === 0) {
+                regNoLabel.append(' <span style="color:red"> (*)</span>');
+            }
+        } else {
+            // Remove the asterisk if ClientType is not Corporate
+            $('#RegNoLabel span').remove();
+        }
+    }
+
+    // Initially check the selected value of ClientType and update RegNo label
+    addAsterisk();
+
+    // Event listener for changes to the ClientType dropdown
+    $('#ClientType').change(function () {       
+        addAsterisk(); // Call the function to update the label when the value changes
+    });
+});
+
+function restrictInput(event) {
+    const input = event.target;
+    // Remove any non-numeric characters except the "+" sign
+    input.value = input.value.replace(/[^0-9+]/g, '');
+}

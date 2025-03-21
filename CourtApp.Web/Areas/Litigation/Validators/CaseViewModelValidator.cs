@@ -7,10 +7,17 @@ namespace CourtApp.Web.Areas.Litigation.Validators
     {
         public CaseViewModelValidator()
         {
+
+            RuleFor(p => p.ClientId.Value)
+                .NotEmpty().WithMessage("Client detail is required.")
+                .NotNull();
+            RuleFor(p => p.AppearenceID)
+               .NotEmpty().WithMessage("Appearence detail is required.")
+               .NotNull();
+
             RuleFor(p => p.InstitutionDate)
                 .NotEmpty().WithMessage("Institution date is required.")
                 .NotNull();
-
             RuleFor(p => p.StateId)
                 .NotEmpty().WithMessage("State is required.")
                 .NotNull();
@@ -18,14 +25,6 @@ namespace CourtApp.Web.Areas.Litigation.Validators
             RuleFor(p => p.CourtTypeId)
                 .NotEmpty().WithMessage("Court type is required.")
                 .NotNull();
-
-            //RuleFor(p => p.CaseNo)
-            //    .NotEmpty().WithMessage("Case number is required.")
-            //    .NotNull();
-
-            //RuleFor(p => p.CaseNo)
-            //   .NotEmpty().WithMessage("Year is required.")
-            //   .NotNull();
 
             RuleFor(p => p.CaseCategoryId)
               .NotEmpty().WithMessage("Case category is required.")
@@ -39,21 +38,21 @@ namespace CourtApp.Web.Areas.Litigation.Validators
               .NotEmpty().WithMessage("First title is required.")
               .NotNull();
 
-            //RuleFor(p => p.Fir)
-            //  .NotEmpty().WithMessage("First title, title is required.")
-            //  .NotNull();
+            RuleFor(p => p.FTitleId)
+              .NotEmpty().WithMessage("First title,title is required.")
+              .NotNull();
 
             RuleFor(p => p.SecondTitle)
              .NotEmpty().WithMessage("Second title is required.")
              .NotNull();
 
-            //RuleFor(p => p.SecoundTitleCode)
-            //  .NotEmpty().WithMessage("Second title, title is required.")
-            //  .NotNull();
+            RuleFor(p => p.STitleId)
+              .NotEmpty().WithMessage("Second title, title is required.")
+              .NotNull();
 
-            //RuleFor(p => p.CaseStageCode)
-            //  .NotEmpty().WithMessage("Case stage is required.")
-            //  .NotNull();
+            RuleFor(p => p.CaseStageId)
+              .NotEmpty().WithMessage("Case stage is required.")
+              .NotNull();
         }
     }
 }

@@ -50,7 +50,7 @@ namespace CourtApp.Application.Features.Clients.Commands
         {
             var detail = _clientRepository.Clients
                 .Where(w => w.CreatedBy.Equals(request.UserId) && w.Name.ToLower().Equals(request.Name.ToLower())
-                && w.Mobile.Equals(request.Mobile))
+                && w.Mobile.Equals(request.Mobile) && w.Address.ToLower().Equals(request.Address.ToLower()))
                 .FirstOrDefault();
             if (detail == null)
             {

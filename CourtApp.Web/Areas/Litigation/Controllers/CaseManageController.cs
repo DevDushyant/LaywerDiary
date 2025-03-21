@@ -109,6 +109,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 if (id == Guid.Empty && (from == null || from == ""))
                 {
                     //caseViewModel.Courts = await DdlCourts();
+                    ViewBag.Title = "Add New";
                     caseViewModel.InstitutionDate = DateTime.Now;
                     caseViewModel.States = await LoadStates();
                     caseViewModel.CourtTypes = await LoadCourtTypes();
@@ -134,6 +135,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 }
                 else
                 {
+                    ViewBag.Title = "Update";
                     var response = await _mediator.Send(new GetUserCaseDetailByIdQuery
                     {
                         CaseId = id,
@@ -528,6 +530,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<CaseDetailInfoViewModel>(response.Data);
+                viewModel.Reference = reft;
                 return View(viewModel);
             }
             return null;
@@ -739,6 +742,22 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 }
             }
             return new JsonResult(new { isValid = false, html = "html" });
+        }
+        #endregion
+
+        #region Load searchable officer's name 
+        public async Task<JsonResult> GetOfficerName(Guid CourtId, string officerName)
+        {
+            var result = await _mediator.Send(new GetOfficerQuery { CourtId = CourtId, OfficerName = officerName });
+            if (result.Succeeded)
+            {
+                return Json(result.Data);
+            }
+            else
+            {
+                _notify.Error(result.Message);
+                return null;
+            }
         }
         #endregion
     }

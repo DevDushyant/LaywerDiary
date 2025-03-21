@@ -1,4 +1,9 @@
-﻿@model IEnumerable<LawyerLViewModel>
+﻿<style>
+    .text-capitalize {
+        text-transform: capitalize;
+    }
+</style>
+@model IEnumerable<LawyerLViewModel>
 <table id="tblLawyer" class="table table-striped" width="100%" cellspacing="0">
     <thead>
         <tr>
@@ -41,7 +46,7 @@
                                      src="~/images/default-user.png">
                             </div>
                         }
-                        <div class="col-sm">
+                            <div class="col-sm text-capitalize">
                             <a>
                                 @bt.FirstName @bt.LastName
                             </a>
@@ -52,7 +57,7 @@
                         </div>
                     </div>
                 </td>
-                <td>
+                    <td style="text-transform: uppercase;">
                     @bt.EnrollNumber
                 </td>
                 <td>

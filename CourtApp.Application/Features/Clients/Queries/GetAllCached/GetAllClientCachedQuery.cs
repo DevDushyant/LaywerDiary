@@ -37,10 +37,12 @@ namespace CourtApp.Application.Features.Clients.Queries.GetAllCached
             Expression<Func<ClientEntity, GetAllClientCachedResponse>> expression = e => new GetAllClientCachedResponse
             {
                 Id = e.Id,
-                Name = e.Name,
+                Name = e.Name.ToUpper(),
                 Email = e.Email,
                 Mobile = e.Mobile,
-                ClientType = e.ClientType
+                ClientType = e.ClientType,
+                ReferalBy = e.ReferalBy,
+                Address = e.Address.ToUpper()
             };
             var predicate = PredicateBuilder.True<ClientEntity>();
             var paginatedList = await

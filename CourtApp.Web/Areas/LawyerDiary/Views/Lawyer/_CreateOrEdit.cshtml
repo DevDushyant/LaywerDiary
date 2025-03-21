@@ -10,6 +10,9 @@
         -ms-flex-align: center;
         align-items: center;
     }
+    .text-capitalize {
+        text-transform: capitalize;
+    }
 </style>
 <form id="create-form" method="post" asp-controller="Lawyer" asp-action="OnPostCreateOrEdit" asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
     <div class="row">
@@ -18,14 +21,14 @@
                 <label class="col-md-2 col-form-label">@localizer["First Name"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <input type="text" asp-for="FirstName" class="form-control" />
+                        <input type="text" asp-for="FirstName" class="form-control text-capitalize" />
                     </div>
                     <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
                 <label class="col-md-2 col-form-label">@localizer["Last Name"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <input type="text" asp-for="LastName" class="form-control" />
+                        <input type="text" asp-for="LastName" class="form-control text-capitalize" />
                     </div>
                     <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
@@ -57,10 +60,11 @@
                     <span asp-validation-for="EnrollNumber" class="text-danger"></span>
                 </div>
                 <label class="col-md-2 col-form-label">@localizer["Dob"]</label>
-                <div class="col-md-4">
+                <div class="col-md-4">                    
                     <div class="input-group">
-                        <input type="datetime" value="@DateTime.Today" asp-for="Dob" class="form-control" />
+                        <input type="date" asp-for="Dob" class="form-control">
                     </div>
+                    <span asp-validation-for="Dob" class="text-danger"></span>
                 </div>
             </div>
 
@@ -78,7 +82,7 @@
                 <label class="col-md-2 col-form-label">@localizer["Related Person"]</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <input type="text" asp-for="RelatedPerson" class="form-control" />
+                        <input type="text" asp-for="RelatedPerson" class="form-control text-capitalize" />
                     </div>
                 </div>
             </div>
@@ -111,7 +115,7 @@
                 <label class="col-md-2 col-form-label">@localizer["Address"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-10">
                     <div class="input-group">
-                        <textarea asp-for="Address" placeholder="Address" class="form-control"></textarea>
+                        <textarea asp-for="Address" placeholder="Address" class="form-control text-capitalize"></textarea>
                     </div>
                     <span asp-validation-for="Address" class="text-danger"></span>
                 </div>

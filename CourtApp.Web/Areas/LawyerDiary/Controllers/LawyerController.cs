@@ -39,7 +39,9 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             var response = await _mediator.Send(new LawyerGetAllQuery()
             {
                 PageNumber = 1,
-                PageSize = 10000
+                PageSize = 10000,
+                UserId = CurrentUser.Id,
+                Role = CurrentUser.Role
             }
             );
             if (response.Succeeded)

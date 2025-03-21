@@ -16,10 +16,30 @@
         text-transform: capitalize;
     }
 </style>
-<form id="frmUserCreate" method="post" asp-area="Admin" asp-controller="User" asp-action="OnPostCreate"
-      asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);">
+<form id="frmUserCreate" method="post" 
+    asp-area="Admin" 
+    asp-controller="User" 
+    asp-action="OnPostCreate"
+    asp-route-id="@Model.Id" 
+    onsubmit="return jQueryModalPost(this);"
+    enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">@localizer["User Type"] (<span style="color:red">*</span>)</label>
+                <div class="col-md-4">
+                    <select class="form-control select2bs4"
+                            asp-for="Role" asp-items="@Model.Roles">
+                        <option></option>
+                    </select>
+                    <small><span asp-validation-for="Role" class="text-danger"></span></small>
+                </div>
+                <label class="col-md-2 col-form-label" id="RegNoLabel">@localizer["Enrollment No"]</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" asp-for="EnrollmentNo"></input>
+                </div>
+            </div>
+
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["First Name"] (<span style="color:red">*</span>)</label>
                 <div class="col-md-4">
@@ -68,17 +88,6 @@
                     <input type="date" asp-for="DateOfJoining" class="form-control">
                     <span asp-validation-for="DateOfJoining" class="text-danger"></span>
                 </div>
-                <label class="col-md-2 col-form-label">@localizer["User Type"] (<span style="color:red">*</span>)</label>
-                <div class="col-md-4">
-                    <select class="form-control select2bs4"
-                            asp-for="Role" asp-items="@Model.Roles">
-                        <option></option>
-                    </select>
-                    <small><span asp-validation-for="Role" class="text-danger"></span></small>
-                </div>
-            </div>
-
-            <div class="form-group row">
                 <label class="col-md-2 col-form-label">@localizer["Profile Picture"] </label>
                 <div class="col-md-4">
                     <div class="input-group ">
@@ -89,10 +98,6 @@
                                id="customFile">
                     </div>
                     <span asp-validation-for="ProfileImgPath" class="text-danger"></span>
-                </div>
-                <label class="col-md-2 col-form-label">@localizer["Enrollment No"]</label>
-                <div class="col-md-4">
-                    <input type="text" class="form-control" asp-for="EnrollmentNo"></input>
                 </div>
             </div>
 
@@ -108,12 +113,15 @@
     <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
         @{
             string ButtonText = "Save";
-            if (Model.Id != string.Empty) ButtonText = "Update";
+            if (!string.IsNullOrEmpty(Model.Id)) ButtonText = "Update";
         }       
         <button type="submit" class="btn btn-success">@ButtonText</button>
         <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
     </div>
 </form>
+<script type="text/javascript" language=javascript>
+    $.validator.unobtrusive.parse(document);
+</script>
 <script type="text/javascript" language=javascript>   
     $(document).ready(function () {
         $("#divAssociate").hide();
@@ -132,4 +140,27 @@
             }
         });        
     });
+
+    $(document).ready(function () {   
+    function addAsterisk() {           
+        var regNoLabel = $('#RegNoLabel');
+          if ($('#Role').val() === "ASSOCIATE") {           
+            if ($('#RegNoLabel span').length === 0) {
+                regNoLabel.append(' <span style="color:red"> (*)</span>');
+            }
+        } else {
+            // Remove the asterisk if ClientType is not Corporate
+            $('#RegNoLabel span').remove();
+        }
+    }
+
+    // Initially check the selected value of ClientType and update RegNo label
+    addAsterisk();
+
+    // Event listener for changes to the ClientType dropdown
+    $('#Role').change(function () {
+        debugger;
+        addAsterisk(); // Call the function to update the label when the value changes
+    });
+});
 </script>

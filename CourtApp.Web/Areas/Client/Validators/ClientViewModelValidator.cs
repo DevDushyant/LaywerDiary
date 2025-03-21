@@ -37,7 +37,6 @@ namespace CourtApp.Web.Areas.Client.Validators
             RuleFor(x => x.RegNo)
             .NotEmpty().WithMessage("Registration Number is required for Corporate clients.")
             .When(x => x.ClientType == "Corporate");
-
         }
     }
 }

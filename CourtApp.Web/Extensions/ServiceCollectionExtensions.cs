@@ -89,8 +89,10 @@ namespace CourtApp.Web.Extensions
         {
             services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
             services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
+            services.Configure<WhatsUpSettings>(configuration.GetSection("WhatsAppSettings"));
             services.AddTransient<IDateTimeService, SystemDateTimeService>();
             services.AddTransient<IMailService, SMTPMailService>();
+            services.AddTransient<WhatsAppService>();
             services.AddTransient<IAuthenticatedUserService, AuthenticatedUserService>();
         }
     }
