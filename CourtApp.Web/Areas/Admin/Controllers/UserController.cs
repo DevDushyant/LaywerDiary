@@ -234,7 +234,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             {
                 string fileName = user.Id + System.IO.Path.GetExtension(ProfileImgFile.FileName);
                 using var stream = ProfileImgFile.OpenReadStream();
-                user.ProfileImgPath = await _blobService.UploadOrUpdateFileAsync(stream, fileName, ProfileImgFile.ContentType, "ProfileImage");
+                user.ProfileImgPath = await _blobService.UploadOrUpdateFileAsync(stream, fileName, ProfileImgFile.ContentType, "ProfileImage", cancellationToken: System.Threading.CancellationToken.None);
                 await _userManager.UpdateAsync(user);
             }
 

@@ -86,7 +86,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 {
                     string fileName = Guid.NewGuid() + System.IO.Path.GetExtension(ProfileImgFile.FileName);
                     using var stream = ProfileImgFile.OpenReadStream();
-                    newImagePath = await _blobService.UploadOrUpdateFileAsync(stream, fileName, ProfileImgFile.ContentType, "ProfileImage");
+                    newImagePath = await _blobService.UploadOrUpdateFileAsync(stream, fileName, ProfileImgFile.ContentType, "ProfileImage", System.Threading.CancellationToken.None);
                 }
                 if (!isUpdating)
                 {

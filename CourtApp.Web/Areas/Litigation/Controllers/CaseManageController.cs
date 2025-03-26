@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
@@ -480,7 +481,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
                         // Step 5: Upload the compressed file to Azure Blob Storage
                         string compressedFileName = $"{Path.GetFileNameWithoutExtension(f.Document.FileName)}_{Guid.NewGuid()}.zip";
-                        string cloudFilePath = await _blobService.UploadOrUpdateFileAsync(memoryStream, compressedFileName, "application/zip", containerName);
+                        string cloudFilePath = await _blobService.UploadOrUpdateFileAsync(memoryStream, compressedFileName, "application/zip", containerName, CancellationToken.None);
 
                         // Step 6: Map Data for Database Entry
                         ddoc.Add(new CaseDocumentModel
