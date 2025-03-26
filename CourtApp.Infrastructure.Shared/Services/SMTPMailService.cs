@@ -3,9 +3,9 @@ using CourtApp.Application.DTOs.Settings;
 using CourtApp.Application.Interfaces.Shared;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
+using System;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace CourtApp.Infrastructure.Shared.Services
@@ -25,23 +25,30 @@ namespace CourtApp.Infrastructure.Shared.Services
         {
             try
             {
-                var email = new MimeMessage();
-                email.Sender = MailboxAddress.Parse(_mailSettings.From);
-                email.To.Add(MailboxAddress.Parse(request.To));
-                email.Subject = request.Subject;
-                var builder = new BodyBuilder();
-                builder.HtmlBody = request.Body;
-                email.Body = builder.ToMessageBody();
-                using var smtp = new SmtpClient();
-                await smtp.ConnectAsync(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
-                smtp.Authenticate(_mailSettings.UserName, _mailSettings.Password);
-                await smtp.SendAsync(email);
-                smtp.Disconnect(true);
+                var smtpClient = new SmtpClient(_mailSettings.Host)
+                {
+                    Port = _mailSettings.Port,
+                    Credentials = new NetworkCredential(_mailSettings.UserName, _mailSettings.Password),
+                    EnableSsl = true,
+                    Timeout = 300000
+                };
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(_mailSettings.From),
+                    Subject = string.IsNullOrWhiteSpace(request.Subject) ? "" : request.Subject.Trim(),
+                    Body = request.Body,
+                    IsBodyHtml = true,
+                };
+                mailMessage.To.Add(request.To);
+                await smtpClient.SendMailAsync(mailMessage);
+                smtpClient.Dispose();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
+                Console.WriteLine("Error sending email: " + ex.Message);
                 _logger.LogError(ex.Message, ex);
             }
+
         }
     }
 }

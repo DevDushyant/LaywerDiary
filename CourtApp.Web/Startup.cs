@@ -65,10 +65,14 @@ namespace CourtApp.Web
             {
                 opt.MultipartBodyLengthLimit = 512 * 1024 * 1024; // 512 MB limit
             });
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.MaxRequestBodySize = 200 * 1024 * 1024; // 200MB
+            });
             services.Configure<KestrelServerOptions>(options =>
             {
                 // Example: Setting a custom maximum request body size (for large file uploads)
-                options.Limits.MaxRequestBodySize = 536870912;
+                options.Limits.MaxRequestBodySize = 200 * 1024 * 1024; // 200MB
 
                 // Example: Setting the timeout for connections
                 options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
