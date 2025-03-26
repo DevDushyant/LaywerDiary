@@ -109,7 +109,7 @@
                                 </a>
                             }
                             <form id="form_delete_@user.Id" asp-area="Admin"
-                                  asp-controller="User" method="post"
+                                  asp-controller="User" method="POST"
                                   asp-action="DeleteUser"
                                   asp-route-id="@user.Id"
                                   onsubmit="return jQueryModalDelete(this)">

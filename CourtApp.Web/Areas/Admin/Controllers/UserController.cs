@@ -312,6 +312,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                 return null;
             }
         }
+
         public async Task<bool> DeleteUserAsync(string userId)
         {
             try

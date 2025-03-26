@@ -32,7 +32,11 @@ namespace CourtApp.Application.Features.CaseDetails
                 predicate = predicate.And(b => b.CourtBenchId == request.CourtId);
             if (!string.IsNullOrEmpty(request.OfficerName))
                 predicate = predicate.And(b => b.OfficerName.ToLower().Contains(request.OfficerName.ToLower()));
-            var result = await againstRepository.Entities.Where(predicate).Select(s => s.OfficerName).ToListAsync();
+            var result = await againstRepository.Entities
+                .Where(predicate)
+                .Select(s => s.OfficerName.ToUpper())
+                .Distinct()
+                .ToListAsync();
             return await Result<List<string>>.SuccessAsync(result);
         }
     }

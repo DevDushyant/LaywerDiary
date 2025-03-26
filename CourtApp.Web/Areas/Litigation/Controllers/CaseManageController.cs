@@ -19,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -465,11 +466,23 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         string uniqueFileName = $"{Path.GetFileNameWithoutExtension(f.Document.FileName)}_{Guid.NewGuid()}{Path.GetExtension(f.Document.FileName)}";
                         string containerName = f.TypeId == 1 ? "Draft" : "Order";
 
-                        // Step 3: Upload to Azure Blob Storage
+                        // Step 3: Compress the File into a ZIP
                         using var docStream = f.Document.OpenReadStream();
-                        string cloudFilePath = await _blobService.UploadOrUpdateFileAsync(docStream, uniqueFileName, f.Document.ContentType, containerName);
+                        using var memoryStream = new MemoryStream();
+                        using (var zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                        {
+                            var zipEntry = zipArchive.CreateEntry(f.Document.FileName);
+                            using var entryStream = zipEntry.Open();
+                            await docStream.CopyToAsync(entryStream);
+                        }
+                        // Step 4: Prepare the compressed stream for upload
+                        memoryStream.Seek(0, SeekOrigin.Begin);  // Reset the memory stream position to the start
 
-                        // Step 4: Map Data for Database Entry
+                        // Step 5: Upload the compressed file to Azure Blob Storage
+                        string compressedFileName = $"{Path.GetFileNameWithoutExtension(f.Document.FileName)}_{Guid.NewGuid()}.zip";
+                        string cloudFilePath = await _blobService.UploadOrUpdateFileAsync(memoryStream, compressedFileName, "application/zip", containerName);
+
+                        // Step 6: Map Data for Database Entry
                         ddoc.Add(new CaseDocumentModel
                         {
                             DocId = f.DocId,
@@ -485,7 +498,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     }
                 }
             }
-            // Step 5: Map and Save to Database
+            // Step 7: Map and Save to Database
             var docMapper = _mapper.Map<List<DocumentAttachmentModel>>(ddoc);
             var response = await _mediator.Send(new CaseDocsCreateCommand()
             {
