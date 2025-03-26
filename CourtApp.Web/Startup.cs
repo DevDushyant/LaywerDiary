@@ -122,8 +122,6 @@ namespace CourtApp.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{area=Dashboard}/{controller=Home}/{action=Index}/{id?}");
-
-
                 endpoints.MapRazorPages();
 
             });

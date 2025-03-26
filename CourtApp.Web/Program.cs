@@ -45,6 +45,11 @@ namespace CourtApp.Web
             .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureKestrel(options =>
+                    {
+                        // Set the max request size to 200MB (or larger)
+                        options.Limits.MaxRequestBodySize = 500 * 1024 * 1024; // 200 MB
+                    });
                     webBuilder.UseStartup<Startup>();
                 });
     }
