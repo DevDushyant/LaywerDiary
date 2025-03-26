@@ -1,8 +1,10 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure.Storage;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Services
@@ -22,7 +24,7 @@ namespace CourtApp.Web.Services
             containerClient.CreateIfNotExists(PublicAccessType.Blob);
             return containerClient;
         }
-        public async Task<string> UploadOrUpdateFileAsync(Stream fileStream, string fileName, string contentType, string documentType)
+        public async Task<string> UploadOrUpdateFileAsync(Stream fileStream, string fileName, string contentType, string documentType, CancellationToken cancellationToken)
         {
             try
             {
@@ -34,22 +36,42 @@ namespace CourtApp.Web.Services
                     "Order" => _configuration["AzureBlobStorage:Containers:OrderDocuments"],
                     _ => throw new ArgumentException("Invalid document type")
                 };
+
                 // Get the container client
                 var containerClient = GetContainerClient(containerName);
 
-                // Upload file to Azure Blob Storage
+                // Create a BlobClient for the target blob in Azure Blob Storage
                 BlobClient blobClient = containerClient.GetBlobClient(fileName);
-                var blobHttpHeaders = new BlobHttpHeaders { ContentType = contentType };
-                await blobClient.UploadAsync(fileStream, new BlobUploadOptions
-                {
-                    HttpHeaders = blobHttpHeaders
-                }, cancellationToken: default);
 
-                return blobClient.Uri.ToString(); // Return the file URL
+                // Set up the HTTP headers for the blob
+                var blobHttpHeaders = new BlobHttpHeaders { ContentType = contentType };
+
+                // Upload the file in chunks (using StreamUploadOptions)
+                var uploadOptions = new BlobUploadOptions
+                {
+                    HttpHeaders = blobHttpHeaders,
+                    TransferOptions = new StorageTransferOptions
+                    {
+                        MaximumConcurrency = 4,  // Number of concurrent upload threads (adjust as necessary)
+                        MaximumTransferSize = 4 * 1024 * 1024  // Set to 4MB per chunk (adjust as needed)
+                    }
+                };
+
+                // Upload the file to the Blob Storage with cancellation support
+                await blobClient.UploadAsync(fileStream, uploadOptions, cancellationToken);
+
+                // Return the URI of the uploaded file
+                return blobClient.Uri.ToString();
+            }
+            catch (OperationCanceledException)
+            {
+                // Handle operation cancellation (optional)
+                throw new Exception("File upload was canceled.");
             }
             catch (Exception ex)
             {
-                throw new Exception($"File upload failed: {ex.Message}");
+                // Log or handle the exception (more specific error handling can be added as needed)
+                throw new Exception($"File upload failed: {ex.Message}", ex);
             }
         }
 
