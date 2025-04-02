@@ -87,7 +87,7 @@
         placeholder: "Select",
         allowClear: true
     });
-    $(".customFilter").on("change", function () {
+    $(".customFilter").on("change", function () {       
         let client = $("#ddlClient").val();
         let referral = $("#ddlReferral").val();
        // let status = $("#ddlStatus").val();

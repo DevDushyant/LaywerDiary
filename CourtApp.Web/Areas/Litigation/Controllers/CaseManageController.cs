@@ -221,6 +221,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         {
                             _logger.LogInformation("Case form is access by Repeat");
                             ViewBag.ActionType = "Save";
+                            ViewBag.Title = "Add New";
                             ViewBag.Id = Guid.Empty.ToString();
                             CaseDetail.Id = Guid.Empty;
                             CaseDetail.LinkedCaseId = Guid.Empty;
@@ -312,7 +313,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 _notify.Information($"Case info with Id {id} Deleted.");
                 var response = await _mediator.Send(new GetCaseInfoQuery()
                 {
-                    UserId = CurrentUser.Id
+                    UserId = CurrentUser.Id,
+                    PageSize = 10000,
+                    PageNumber = 1
                 });
                 if (response.Succeeded)
                 {
@@ -605,6 +608,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             bool showHighCourt = false;
             bool AgIsHighCourt = false;
+            ViewBag.Title = "Add New";
             if (ModelState.IsValid)
             {
                 var response = await _mediator.Send(new GetUserCaseDetailByIdQuery { CaseId = id, UserId = CurrentUser.Id });

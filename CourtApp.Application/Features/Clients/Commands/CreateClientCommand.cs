@@ -49,9 +49,11 @@ namespace CourtApp.Application.Features.Clients.Commands
         public async Task<Result<Guid>> Handle(CreateClientCommand request, CancellationToken cancellationToken)
         {
             var detail = _clientRepository.Clients
-                .Where(w => w.CreatedBy.Equals(request.UserId) && w.Name.ToLower().Equals(request.Name.ToLower())
-                && w.Mobile.Equals(request.Mobile) && w.Address.ToLower().Equals(request.Address.ToLower()))
-                .FirstOrDefault();
+                .Where(w => w.CreatedBy.Equals(request.UserId)
+                        && w.Name.Trim().ToLower().Equals(request.Name.Trim().ToLower())
+                        && w.Mobile.Equals(request.Mobile)
+                        && w.Address.Trim().ToLower().Equals(request.Address.Trim().ToLower())
+                ).FirstOrDefault();
             if (detail == null)
             {
                 var entity = _mapper.Map<ClientEntity>(request);
