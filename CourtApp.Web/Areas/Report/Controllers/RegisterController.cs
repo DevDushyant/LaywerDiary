@@ -167,7 +167,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     rd.Court = d.Court;
                     rd.CaseType = d.CaseType;
                     rd.No = d.No;
-                    rd.Year = d.Year;
+                    rd.Year = d.Year = d.Year == "0" ? "" : d.Year; ;
                     rdd.Add(rd);
                 }
                 model.copyingCases = rdd;
@@ -219,7 +219,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     rd.Id = d.Id;
                     rd.Court = d.Court;
                     rd.CaseType = d.CaseType;
-                    rd.Year = d.Year;
+                    rd.Year = d.Year == "0" ? "" : d.Year;
                     rd.No = d.No;
                     rd.FirstTitle = d.FirstTitle;
                     rd.SecondTitle = d.SecondTitle;

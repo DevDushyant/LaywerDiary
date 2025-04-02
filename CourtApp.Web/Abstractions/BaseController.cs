@@ -178,7 +178,12 @@ namespace CourtApp.Web.Abstractions
 
         public async Task<SelectList> UserCaseTitle(Guid? CaseId)
         {
-            var response = await _mediator.Send(new GetCaseInfoQuery() { PageNumber = 1, PageSize = 5000, UserId = CurrentUser.Id });
+            var response = await _mediator.Send(new GetCaseInfoQuery()
+            {
+                PageSize = 10000,
+                PageNumber = 1,
+                UserId = CurrentUser.Id
+            });
             var viewModel = _mapper.Map<List<GetCaseInfoViewModel>>(CaseId != null && CaseId != Guid.Empty ? response.Data.Where(w => w.Id != CaseId.Value) : response.Data);
             var selectListItems = viewModel.Select(v => new
             {
@@ -737,7 +742,9 @@ namespace CourtApp.Web.Abstractions
         {
             var response = await _mediator.Send(new GetCaseInfoQuery()
             {
-                UserId = UserId
+                UserId = UserId,
+                PageNumber = 1,
+                PageSize = 10000
             });
             if (response.Succeeded)
             {

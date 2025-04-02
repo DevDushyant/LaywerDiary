@@ -16,6 +16,7 @@ namespace CourtApp.Application.Features.CaseWork
         public DateTime WorkingDate { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public string UserId { get; set; }
     }
     public class GetAssignedWorkQueryHandler : IRequestHandler<GetAssignedWorkQuery, Result<List<AssignedWorkToCaseResponse>>>
     {
@@ -34,10 +35,11 @@ namespace CourtApp.Application.Features.CaseWork
         public async Task<Result<List<AssignedWorkToCaseResponse>>> Handle(GetAssignedWorkQuery request, CancellationToken cancellationToken)
         {
             var CaseWorkDetail = await _ProcRepo.GetListAsync();
-            if (CaseWorkDetail.Any())
+            var UserPendingWork = CaseWorkDetail.Where(w => w.CreatedBy.Equals(request.UserId));
+            if (UserPendingWork.Any())
             {
                 List<AssignedWorkToCaseResponse> awc = new List<AssignedWorkToCaseResponse>();
-                foreach (var c in CaseWorkDetail.Distinct())
+                foreach (var c in UserPendingWork.Distinct())
                 {
                     AssignedWorkToCaseResponse a = new AssignedWorkToCaseResponse();
                     a.CaseId = c.CaseId;

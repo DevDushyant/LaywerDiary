@@ -110,8 +110,7 @@
             $("#CaseId").empty();
                 $.getJSON("/Litigation/CaseManage/ddlCaseInfoByLawyer?UserId=" + $("#LawyerId").val(), function (data) {
                     console.log(data);
-                    $.each(data, function (i, item) {
-                        console.log(item.Name);
+                    $.each(data, function (i, item) {                       
                         $("#CaseId").append(`<option /><option value="${item.Id}">${item.Name}</option>`);
                     });
                 });
@@ -141,8 +140,7 @@
         type: "POST",
          contentType: 'application/json',
          datatype: "json",
-        success: function (response) {
-            debugger;
+        success: function (response) {           
             var msg=""; txt="";icn="";
             if (response === true) {
                 msg="Client is created successfully!";

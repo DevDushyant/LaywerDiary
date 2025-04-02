@@ -109,11 +109,21 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     }
                     else
                     {
-                        btViewModel.StatusMessage = result.Message;
+
                         _notify.Error(result.Message);
-                        return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel) });
+                        var res = await _mediator.Send(new GetAllClientCachedQuery() { UserId = CurrentUser.Id, PageNumber = 1, PageSize = 1000 });
+                        if (res.Succeeded)
+                        {
+                            var viewModel = _mapper.Map<List<GClientViewModel>>(res.Data);
+                            var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+                            return new JsonResult(new { isValid = true, html = html });
+                        }
+                        else
+                        {
+                            _notify.Error(res.Message);
+                            return null;
+                        }
                     }
-                    //return View("_CreateOrEdit", btViewModel);
                 }
                 else
                 {

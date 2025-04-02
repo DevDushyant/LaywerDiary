@@ -54,7 +54,8 @@ namespace CourtApp.Application.Features.CaseDetails
                                   join ac in _assignRepo.Entities
                                   on c.Id equals ac.CaseId into caseAssignments
                                   from ac in caseAssignments.DefaultIfEmpty()
-                                  where c.CreatedBy == request.UserId || ac.LawyerId == Guid.Parse(request.UserId) // Check if user is the creator or assigned lawyer
+                                  where c.CreatedBy == request.UserId
+                                  || ac.LawyerId == Guid.Parse(request.UserId) // Check if user is the creator or assigned lawyer
                                   select new GetCaseInfoDto
                                   {
                                       Id = c.Id,
