@@ -2,7 +2,6 @@
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -68,17 +67,22 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         CaseTitle = s.CaseTitle,
                         Works = s.Works.Where(s => s.Selected == true).ToList()
                     });
-                    var WorksDl = CaseDl.Select(s => s.Works);
-                    var ProcId = (WorksDl.FirstOrDefault()).Select(s => s.Id).FirstOrDefault();
-                    List<Guid> WorkIds = new List<Guid>();
-                    foreach (var works in WorksDl)
-                        foreach (var item in works)
-                        {
-                            WorkIds.Add(item.WorkId);
-                        }
-                    if (WorkIds != null)
+                    var WorkDetails = CaseDl.SelectMany(s => s.Works)
+                                        .GroupBy(w => w.Id) // Group by ProcId
+                                        .Select(g => new ProcWorks
+                                        {
+                                            ProcId = g.Key,
+                                            WorkIds = g.Select(w => w.WorkId).ToList()
+                                        }).ToList();
+                    if (WorkDetails != null)
                     {
-                        var result = await _mediator.Send(new UpdateCWorkStatusCommand { CWorkId = WorkIds, Status = 1, ProcId = ProcId });
+                        var result = await _mediator.Send(new UpdateCWorkStatusCommand
+                        {
+                            //CWorkId = null,
+                            Status = 1,
+                            //ProcId = Guid.Empty,
+                            ProcWorksDetails = WorkDetails
+                        });
                         if (result.Succeeded) _notify.Information($"Case Work with ID {result.Data} Updated.");
                         else _notify.Error(result.Message);
                     }

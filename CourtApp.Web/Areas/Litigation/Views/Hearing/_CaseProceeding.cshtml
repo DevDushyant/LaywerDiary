@@ -49,8 +49,8 @@
         <fieldset class="scheduler-border">
             <legend class="scheduler-border"><strong>Case Proceeding</strong></legend>
             <div class="col-md-12">
-                <input type="hidden" asp-for="CaseId" />
-                @if (Model.MCasIds!=null && Model.MCasIds.Count > 0)
+                <input type="hidden" asp-for="@Model.CaseId" />
+                @if (Model != null && Model.MCasIds!=null)
                 {
                     @for (int i = 0; i < Model.MCasIds.Count; i++)
                     {
@@ -125,14 +125,14 @@
                                     <td>
                                         <select class="form-control select2bs4"
                                                 asp-for="@Model.ProcWork.Workdt[0].WorkTypeId"
-                                                asp-items="@Model.ProcWork.WorkTypes">
+                                                asp-items="@(Model!=null && Model.ProcWork.WorkTypes != null ? Model.ProcWork.WorkTypes : new List<SelectListItem>())">
                                             <option></option>
                                         </select>
                                     </td>
                                     <td>
                                         <select class="form-control select2bs4"
                                                 asp-for="@Model.ProcWork.Workdt[0].WorkId"
-                                                asp-items="@(Model.ProcWork.Workdt != null ? Model.ProcWork.Workdt[0].Works : new List<SelectListItem>())">
+                                                asp-items="@(Model!=null && Model.ProcWork.Workdt != null ? Model.ProcWork.Workdt[0].Works : new List<SelectListItem>())">
                                             <option></option>
                                         </select>
                                     </td>

@@ -194,31 +194,6 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             model.ProceedingDate = Convert.ToDateTime(SelectedDate).ToString("dd/MM/yyyy");
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", model) });
 
-
-            //if (ProcExDt.Succeeded && ProcExDt.Data != null)
-            //{
-            //    model = _mapper.Map<CaseProceedingViewModel>(ProcExDt.Data);
-            //    model.ProceedingTypes = await DdlProcHeads();
-            //    model.Proceedings = await DdlSubProc(model.HeadId);
-            //    model.ProcWork.WorkTypes = await DdlWorks();
-            //    var WorkTypeId = model.ProcWork.Workdt.Select(s => s.WorkTypeId).FirstOrDefault();
-            //    for (int i = 0; i < model.ProcWork.Workdt.Count(); i++)
-            //    {
-            //        model.ProcWork.Workdt[i].Works = await DdlSubWork(model.ProcWork.Workdt[i].WorkTypeId.Value);
-            //    }
-            //    model.Stages = await DdlCaseStages();
-            //    model.IsUpdate = true;
-            //}
-            //else
-            //{
-            //    var wmodel = new CaseWorkingViewModel();
-            //    wmodel.WorkTypes = await DdlWorks();
-            //    model.ProceedingTypes = await DdlProcHeads();
-            //    model.Stages = await DdlCaseStages();
-            //    model.ProcWork = wmodel;
-            //}
-            //model.ProceedingDate = Convert.ToDateTime(SelectedDate).ToString("dd/MM/yyyy");
-            //return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CaseProceeding", model) });
         }
         public async Task<JsonResult> BulkProceeding(string CaseIds)
         {
