@@ -216,6 +216,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 foreach (var d in response.Data)
                 {
                     InstituteModel rd = new InstituteModel();
+                    rd.Reference = d.Reference;
                     rd.Id = d.Id;
                     rd.Court = d.Court;
                     rd.CaseType = d.CaseType;

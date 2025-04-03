@@ -7,6 +7,7 @@
                 <input type="hidden" asp-for="@Model.dtmodel[i].Id" />
                 @(i + 1)
             </td>
+            <td> @Model.dtmodel[i].Reference </td>
             <td> @Model.dtmodel[i].Court </td>
             <td>@Model.dtmodel[i].CaseType</td>
             <td>@Model.dtmodel[i].No</td>
@@ -29,7 +30,7 @@
                         <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=@Model.dtmodel[i].Id&w=ir', 'Upload Document')"
                            class="dropdown-item" title="Upload Document"><i class="fas fa-file-alt"></i>  Upload Document</a>
                         <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail"
-                           asp-route-id="@Model.dtmodel[i].Id" class="dropdown-item" title="View Case Detail"><i class="fa fa-eye"></i>  Case Detail</a>
+                           asp-route-id="@Model.dtmodel[i].Id" asp-route-reft="@Model.dtmodel[i].Reference" class="dropdown-item" title="View Case Detail"><i class="fa fa-eye"></i>  Case Detail</a>
                         @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Delete)).Result.Succeeded)
                         {
                             <form id="form_delete_@Model.dtmodel[i].Id" asp-area="Litigation"

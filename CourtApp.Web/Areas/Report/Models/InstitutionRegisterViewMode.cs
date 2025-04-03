@@ -8,6 +8,6 @@ namespace CourtApp.Web.Areas.Report.Models
     }
     public class InstituteModel : CaseDetailViewModel
     {
-
+        public string Reference { get; set; }
     }
 }
