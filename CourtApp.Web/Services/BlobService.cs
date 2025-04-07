@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure.Storage;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -16,6 +17,12 @@ namespace CourtApp.Web.Services
         {
             _configuration = configuration;
             _connectionString = _configuration["AzureBlobStorage:ConnectionString"];
+        }
+
+        public string BaseUri()
+        {
+            string basePath = _configuration["AzureBlobStorage:BaseUrl"];
+            return basePath;
         }
         private BlobContainerClient GetContainerClient(string containerName)
         {
@@ -45,13 +52,22 @@ namespace CourtApp.Web.Services
                 // Set up the HTTP headers for the blob
                 var blobHttpHeaders = new BlobHttpHeaders { ContentType = contentType };
 
-                // Stream upload (efficient for large files)
-                await using (var blobStream = await blobClient.OpenWriteAsync(overwrite: true, cancellationToken: cancellationToken))
+                // Upload the file in chunks (using StreamUploadOptions)
+                var uploadOptions = new BlobUploadOptions
                 {
-                    await fileStream.CopyToAsync(blobStream, cancellationToken);
-                }
+                    HttpHeaders = blobHttpHeaders,
+                    TransferOptions = new StorageTransferOptions
+                    {
+                        MaximumConcurrency = 4,  // Number of concurrent upload threads (adjust as necessary)
+                        MaximumTransferSize = 4 * 1024 * 1024  // Set to 4MB per chunk (adjust as needed)
+                    }
+                };
 
-                return blobClient.Uri.ToString();
+                // Upload the file to the Blob Storage with cancellation support
+                await blobClient.UploadAsync(fileStream, uploadOptions, cancellationToken);
+                return $"{containerName}/{fileName}";
+                // Return the URI of the uploaded file
+                //return blobClient.Uri.ToString();
             }
             catch (OperationCanceledException)
             {

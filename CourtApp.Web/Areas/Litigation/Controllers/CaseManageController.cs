@@ -283,7 +283,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     if (result.Succeeded)
                     {
                         _notify.Information($"Case information with ID {result.Data} Updated.");
-                        return RedirectToAction("getcasedetail", new { id = Id });
+                        return RedirectToAction("getcasedetail", new { id = Id, reft = TempData["referenceType"] });
                     }
                 }
             }
@@ -310,7 +310,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var deleteCommand = await _mediator.Send(new DeleteCaseDetailCommand { Id = id });
             if (deleteCommand.Succeeded)
             {
-                _notify.Information($"Case info with Id {id} Deleted.");
+                _notify.Information($"Case with Id {id} is deleted.");
                 var response = await _mediator.Send(new GetCaseInfoQuery()
                 {
                     UserId = CurrentUser.Id,
@@ -418,12 +418,14 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     else Icon = "fa fa-file-pdf";
                     UDocs.Add(new CaseDoc
                     {
-                        DocFilePath = item.DocFilePath,
+                        //DocFilePath = item.DocFilePath,
+                        DocFilePath = _blobService.BaseUri() + "/" + item.DocFilePath,
                         DocName = item.DocName,
                         DocType = item.DocType,
                         DocDate = item.DocDate,
                         Id = item.Id,
                         FIcon = Icon,
+                        Reference = reft
                     });
                 }
 
@@ -437,6 +439,27 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 model.Where = w;
             }
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_UploadCaseDoc", model) });
+        }
+
+        public async Task<IActionResult> GetUpdatedDocs(Guid caseId, string reft)
+        {
+            var response = await _mediator.Send(new CaseDocumentQuery() { CaseId = caseId });
+            if (response.Succeeded)
+            {
+
+                var caseDocs = response.Data.Select(s => new CaseDoc
+                {
+                    Reference = reft,
+                    DocDate = s.DocDate,
+                    DocFilePath = s.DocFilePath,
+                    DocName = s.DocName,
+                    DocType = s.DocType,
+                    FIcon = s.DocFilePath.Split(".")[1].Contains("doc") ? "fa fa-file-word-o" : "fa fa-file-pdf",
+                    Id = s.Id
+                }).ToList();
+                return PartialView("_CaseDocuments", caseDocs);
+            }
+            return null;
         }
 
         [RequestSizeLimit(MaxFileSize)]
@@ -484,14 +507,14 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
                         // Step 5: Upload the compressed file to Azure Blob Storage
                         string compressedFileName = $"{Path.GetFileNameWithoutExtension(f.Document.FileName)}_{Guid.NewGuid()}.zip";
-                        string cloudFilePath = await _blobService.UploadOrUpdateFileAsync(memoryStream, compressedFileName, "application/zip", containerName, CancellationToken.None);
+                        string filePath = await _blobService.UploadOrUpdateFileAsync(memoryStream, compressedFileName, "application/zip", containerName, CancellationToken.None);
 
                         // Step 6: Map Data for Database Entry
                         ddoc.Add(new CaseDocumentModel
                         {
                             DocId = f.DocId,
                             TypeId = f.TypeId,
-                            DocPath = cloudFilePath,  // Cloud file URL
+                            DocPath = filePath,  // Cloud file URL
                             DocDate = f.DocDate
                         });
                     }
@@ -512,7 +535,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (response.Succeeded)
             {
                 if (model.Where == "mc")
-                    return RedirectToAction("Index");
+                    return Json(new { success = response.Succeeded, caseId = model.CaseId, caseType = model.Reference });
+                //return RedirectToAction("Index");
                 else
                     return RedirectToAction("institionregister", "register", new { area = "report" });
             }
@@ -548,6 +572,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 var viewModel = _mapper.Map<CaseDetailInfoViewModel>(response.Data);
                 viewModel.Reference = reft;
+                TempData["referenceType"] = reft;
                 return View(viewModel);
             }
             return null;
@@ -659,6 +684,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     ViewBag.ActionType = "Save";
                     //Reset the main case variable. 
                     CaseDetail.ClientList = await DdlClient(CurrentUser.Id);
+                    CaseDetail.Appearences = await DdlFSTypes(0);
                     CaseDetail.States = await LoadStates();
                     CaseDetail.CourtTypes = await LoadCourtTypes();
                     CaseDetail.CaseNatures = await LoadCaseNatureByCourtType(CaseDetail.CourtTypeId);

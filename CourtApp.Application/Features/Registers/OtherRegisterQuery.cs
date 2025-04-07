@@ -1,17 +1,11 @@
 ﻿using AspNetCoreHero.Results;
-using CourtApp.Application.DTOs.CourtMaster;
 using CourtApp.Application.DTOs.Registers;
-using CourtApp.Application.Extensions;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Domain.Entities.CaseDetails;
-using KT3Core.Areas.Global.Classes;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,88 +24,59 @@ namespace CourtApp.Application.Features.Registers
         private readonly IUserCaseRepository _caseRepo;
         private readonly ICaseProceedingRepository _ProcRepo;
         private readonly IWorkMasterRepository _wRepo;
+        private readonly IUserCaseRepository _repository;
+        private readonly ICaseAssignedRepository _assignRepo;
         public OtherRegisterQueryHandler(IUserCaseRepository _caseRepo,
             IWorkMasterRepository _wRepo,
-            ICaseProceedingRepository procRepo)
+            ICaseProceedingRepository procRepo,
+            IUserCaseRepository _repository,
+            ICaseAssignedRepository _assignRepo
+            )
         {
             this._caseRepo = _caseRepo;
             this._wRepo = _wRepo;
             _ProcRepo = procRepo;
+            this._repository = _repository;
+            this._assignRepo = _assignRepo;
         }
         public async Task<Result<List<OtherRegisterResponse>>> Handle(OtherRegisterQuery request, CancellationToken cancellationToken)
         {
-
-            //Expression<Func<CaseWorkEntity, OtherRegisterResponse>> expression = e => new OtherRegisterResponse
-            //{
-            //    Id = e.CaseId,
-            //    Title = e.Case.CaseType.Abbreviation + "(" + e.Case.CaseNo.ToString() + "/" + e.Case.CaseYear.ToString() + ")" + e.Case.FirstTitle + "Vs" + e.Case.SecondTitle,
-            //    WorkDate = e.Status == 1 && e.LastModifiedOn != null ? e.LastModifiedOn.Value.ToString("dd/MM/yyyy") : "",
-            //    WorkDone = e.Work.Name_En,
-            //    WorkType = e.WorkType.Work_En
-            //};
-            //var predicate = PredicateBuilder.True<CaseWorkEntity>();
-            //DateTime to = DateTime.Now;
-            //if (request.ToDt != default(DateTime)) to = request.ToDt;
-            //if (request.FromDt != default(DateTime))
-            //    predicate = predicate.And(b => b.LastModifiedOn.Value >= request.FromDt && b.LastModifiedOn.Value <= to);
-            //predicate = predicate.And(w => w.WorkType.Abbreviation != "COPY" && w.WorkType.Abbreviation != "DISP");
-            //var fndt = _wRepo.Entities.Where(predicate)
-            //    .Select(expression)
-            //    .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-            var distinctCases = await _ProcRepo.Entities
-                                .Where(w => w.CreatedBy.Equals(request.UserId))
-                             .Include(c => c.Case)
-                                 .ThenInclude(c => c.CaseType)
-                              .Include(c => c.Case)
-                                 .ThenInclude(c => c.CourtBench)
-                             .Include(c => c.ProcWork)
-                                 .ThenInclude(pw => pw.Works)
-                             .ToListAsync(); // Load into memory           
-            if (distinctCases.Any())
-            {
-
-                var CaseWorkDetailsWithWork = distinctCases
-                        .SelectMany(c => c.ProcWork.Works
-                        .Select(work => new // Flatten Works and retain Case reference
+            var caseResponses = await (
+                        from p in _ProcRepo.Entities
+                            .Where(w => w.CreatedBy.Equals(request.UserId))
+                            .Include(p => p.Case)
+                                .ThenInclude(c => c.CaseType)
+                            .Include(p => p.Case)
+                                .ThenInclude(c => c.CourtBench)
+                            .Include(p => p.ProcWork)
+                                .ThenInclude(pw => pw.Works)
+                        join ac in _assignRepo.Entities on p.Case.Id equals ac.CaseId
+                                                into caseAssignments
+                        from ac in caseAssignments.DefaultIfEmpty()
+                        from work in p.ProcWork.Works
+                        join w in _wRepo.Entities.Where(w => !w.Abbreviation.Equals("COPY"))
+                            on work.WorkTypeId equals w.Id
+                        let c = p.Case
+                        where c != null && (c.CreatedBy == request.UserId ||
+                                (ac != null && ac.LawyerId == Guid.Parse(request.UserId)))
+                        select new OtherRegisterResponse
                         {
-                            Case = c.Case,
-                            Work = work,
-                            LastModifiedDate = c.LastModifiedOn
-                        }))
-                        .Join(
-                            _wRepo.Entities
-                            .Where(w => !w.Abbreviation.Equals("COPY")), // Filtered WorkRepo entries
-                            cw => cw.Work.WorkTypeId, // Key from CaseWorkDetail (WorkTypeId)
-                            w => w.Id,                // Key from _WorkRepo (Id)
-                            (cw, w) => new            // Project result with CaseWorkDetail and Work
-                            {
-                                Case = cw.Case,
-                                CaseWorkDetail = cw.Work,
-                                Work = w
-
-                            }
-                        )
-                        .ToList();
-                List<OtherRegisterResponse> awc = new List<OtherRegisterResponse>();
-                if (CaseWorkDetailsWithWork.Count() > 0)
-                {
-                    foreach (var cd in CaseWorkDetailsWithWork)
-                    {
-                        OtherRegisterResponse a = new OtherRegisterResponse();
-                        a.Id = cd.Case.Id;
-                        a.FirstTitle = cd.Case.FirstTitle;
-                        a.SecondTitle = cd.Case.SecondTitle;
-                        a.No = cd.Case.CaseNo;
-                        a.Year = cd.Case.CaseYear.ToString();
-                        a.Court = cd.Case.CourtBench.CourtBench_En.ToString();
-                        a.CaseType = cd.Case.CaseType.Name_En;
-                        a.WorkDone = cd.Work.Work_En;
-                        a.WorkDate = cd.Work.LastModifiedOn != null ? cd.Work.LastModifiedOn.Value.ToString("dd/MM/yyyy") : "-";
-                        awc.Add(a);
-                    }
-                }
-                return Result<List<OtherRegisterResponse>>.Success(awc.ToList());
-            }
+                            Id = c.Id,
+                            Reference = ac != null && ac.LawyerId == Guid.Parse(request.UserId) ? "Assigned" : "Self",
+                            CaseType = c.CaseType != null ? c.CaseType.Name_En : string.Empty,
+                            Year = c.CaseYear.ToString(),
+                            Court = c.CourtBench != null ? c.CourtBench.CourtBench_En : string.Empty,
+                            FirstTitle = c.FirstTitle,
+                            SecondTitle = c.SecondTitle,
+                            No = c.CaseNo,
+                            WorkDone = w.Work_En,
+                            WorkDate = w.LastModifiedOn.HasValue
+                                ? w.LastModifiedOn.Value.ToString("dd/MM/yyyy")
+                                : "-"
+                        }
+                        ).ToListAsync();
+            if (caseResponses.Count > 0)
+                return Result<List<OtherRegisterResponse>>.Success(caseResponses);
             return Result<List<OtherRegisterResponse>>.Fail("No record found");
         }
     }

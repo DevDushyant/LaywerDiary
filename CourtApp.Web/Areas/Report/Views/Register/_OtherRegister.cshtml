@@ -3,6 +3,7 @@
     <thead>
         <tr>
             <th>Sno.</th>
+            <th>Reference</th>
             <th>Court.</th>
             <th>Type</th>
             <th>No</th>
@@ -21,6 +22,7 @@
         {
             <tr>
                 <td>@(++count)</td>
+                <td>@bt.Reference</td>
                 <td>@bt.Court</td>
                 <td>@bt.CaseType</td>
                 <td>@bt.No</td>
@@ -30,7 +32,8 @@
                 <td> @bt.WorkDone</td>
                 <td>
                     <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=@bt.Id', 'See History')" class="fa fa-history" title="See History"></a>
-                    <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail" asp-route-id="@bt.Id" class="fa fa-eye" title="View Case Detail"></a>
+                    <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail"
+                       asp-route-id="@bt.Id" asp-route-reft="@bt.Reference" class="fa fa-eye" title="View Case Detail"></a>
                 </td>
             </tr>
         }

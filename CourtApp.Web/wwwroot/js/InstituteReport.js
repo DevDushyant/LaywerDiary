@@ -105,34 +105,4 @@
             }
         });
     });
-
-    // Filtering logic
-    //$(".customFilter").on("change", function () {
-    //    let status = $("#ddlStatus").val();
-    //    let referral = $("#ddlReferral").val();
-    //    let client = $("#ddlClient").val();
-    //    let table = $("#tblRegister").DataTable();
-    //    $("#tblRegister tbody").load("/Report/Register/Search?ClientId=" + client + "&ReferalBy=" + referral + "&Status=" + status + " tbody", function () {
-    //        table.destroy(); // Destroy DataTable before updating
-    //        table = $("#tblRegister").DataTable(); // Reinitialize DataTable after content is loaded
-    //    });
-        //$("#viewAll").load("/Report/Register/Search?ClientId=" + client + "&ReferalBy=" + referral + "&Status=" + status, function () {
-        //    table.destroy(); // Destroy existing DataTable instance before updating
-        //    table = $("#tblRegister").DataTable(); // Reinitialize DataTable after content is loaded
-        //});
-       /* $('#viewAll').load("/Report/Register/Search?ClientId=" + client + "&ReferalBy=" + referral + "&Status=" + status);*/
-        //$.ajax({
-        //    url: "/Report/Register/Search",
-        //    type: "GET",
-        //    data: {
-        //        Status: status,
-        //        ReferalBy: referral,
-        //        ClientId: client
-        //    },
-        //    success: function (response) {
-        //        table.clear().rows.add(response.data).draw(); // Clear & reload table
-        //    }
-        //});
-        ////table.column(2).search(status).column(3).search(referral).column(4).search(client).draw();
-    //});
 });

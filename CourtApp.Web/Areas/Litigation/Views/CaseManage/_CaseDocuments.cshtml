@@ -1,0 +1,24 @@
+﻿@model List<CaseDoc>
+@for (int i = 0; i < Model.Count(); i++)
+{
+    <tr style="border: 1px solid #ddd;">
+        <td style="border: 1px solid #ddd; padding: 8px;">@(i + 1)</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">@Model[i].DocType </td>
+        <td style="border: 1px solid #ddd; padding: 8px;">@Model[i].DocDate</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">@Model[i].DocName</td>
+        <td style="border: 1px solid #ddd; padding: 8px;">
+            <p>
+                <a href="@Model[i].DocFilePath" target="_blank">
+                    <i style="font-size:20px" class="@Model[i].FIcon"></i>
+                </a>
+                @if (Model[i].Reference.ToLower() == "self")
+                {
+                    <a href="javascript:void(0);" onclick="ConfirmDelete('@Model[i].Id','@Model[i].DocFilePath')">
+                        <i style="font-size:20px" class="fa">&#xf00d;</i>
+                    </a>
+                }
+            </p>
+
+        </td>
+    </tr>
+}

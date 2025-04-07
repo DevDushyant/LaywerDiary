@@ -1,5 +1,6 @@
 ﻿using CourtApp.Domain.Entities.LawyerDiary;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,7 +10,8 @@ namespace CourtApp.Application.Interfaces.Repositories
     {
         Task<Guid> SaveCaseDocAsync(CaseDocsEntity entity);
         IQueryable<CaseDocsEntity> Entities { get; }
-        Task DeleteAsync(CaseDocsEntity objEntity);
+        Task DeleteAsync(CaseDocsEntity delEntities);
+        Task DeleteRangeAsync(List<CaseDocsEntity> delEntities);
 
     }
 }
