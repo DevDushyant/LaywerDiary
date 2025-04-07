@@ -34,6 +34,11 @@ namespace CourtApp.Infrastructure.Repositories
             _dbContext.Set<T>().Remove(entity);
             return Task.CompletedTask;
         }
+        public Task DeleteRangeAsync(List<T> entities)
+        {
+            _dbContext.Set<T>().RemoveRange(entities);
+            return Task.CompletedTask;
+        }
 
         public async Task<List<T>> GetAllAsync()
         {

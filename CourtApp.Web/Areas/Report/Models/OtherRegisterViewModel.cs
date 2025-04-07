@@ -1,11 +1,10 @@
-﻿using System;
-
-namespace CourtApp.Web.Areas.Report.Models
+﻿namespace CourtApp.Web.Areas.Report.Models
 {
-    public class OtherRegisterViewModel:CaseDetailViewModel
-    {       
+    public class OtherRegisterViewModel : CaseDetailViewModel
+    {
         public string WorkType { get; set; }
         public string WorkDone { get; set; }
         public string WorkDate { get; set; }
+        public string Reference { get; set; }
     }
 }

@@ -18,6 +18,12 @@ namespace CourtApp.Web.Services
             _configuration = configuration;
             _connectionString = _configuration["AzureBlobStorage:ConnectionString"];
         }
+
+        public string BaseUri()
+        {
+            string basePath = _configuration["AzureBlobStorage:BaseUrl"];
+            return basePath;
+        }
         private BlobContainerClient GetContainerClient(string containerName)
         {
             var containerClient = new BlobContainerClient(_connectionString, containerName);
@@ -59,9 +65,9 @@ namespace CourtApp.Web.Services
 
                 // Upload the file to the Blob Storage with cancellation support
                 await blobClient.UploadAsync(fileStream, uploadOptions, cancellationToken);
-
+                return $"{containerName}/{fileName}";
                 // Return the URI of the uploaded file
-                return blobClient.Uri.ToString();
+                //return blobClient.Uri.ToString();
             }
             catch (OperationCanceledException)
             {

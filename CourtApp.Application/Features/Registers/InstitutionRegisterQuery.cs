@@ -31,18 +31,6 @@ namespace CourtApp.Application.Features.Registers
         }
         public async Task<PaginatedResult<InstitutionResponse>> Handle(InstitutionRegisterQuery request, CancellationToken cancellationToken)
         {
-
-            //Expression<Func<CaseDetailEntity, InstitutionResponse>> expression = e => new InstitutionResponse
-            //{
-            //    Id = e.Id,
-            //    CaseType = e.CaseType.Name_En,
-            //    No = e.CaseNo,
-            //    Year = e.CaseYear.ToString(),
-            //    Court = e.CourtBench.CourtBench_En,
-            //    FirstTitle = e.FirstTitle,
-            //    SecondTitle = e.SecondTitle,
-            //    InsititutionDate = e.InstitutionDate != default(DateTime) ? e.InstitutionDate.ToString("dd/MM/yyyy") : "-",
-            //};
             var predicate = PredicateBuilder.True<CaseDetailEntity>();
             if (predicate != null)
             {
@@ -68,15 +56,8 @@ namespace CourtApp.Application.Features.Registers
                                    FirstTitle = c.FirstTitle,
                                    SecondTitle = c.SecondTitle,
                                    InsititutionDate = c.InstitutionDate != default(DateTime) ? c.InstitutionDate.ToString("dd/MM/yyyy") : "-",
-                               }).ToPaginatedListAsync(request.PageNumber, request.PageSize); ;
+                               }).ToPaginatedListAsync(request.PageNumber, request.PageSize);
             return await caseDetails;
-            //var dt = await _repository.Entites
-            //    .Include(c => c.CaseStage)
-            //    .Include(c => c.CourtBench)
-            //    .Where(predicate)
-            //    .Select(expression)
-            //    .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-
         }
     }
 }

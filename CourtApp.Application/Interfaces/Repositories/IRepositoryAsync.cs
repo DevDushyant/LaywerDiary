@@ -15,5 +15,6 @@ namespace CourtApp.Application.Interfaces.Repositories
         Task DeleteAsync(T entity);
         Task AddRange(List<T> entity);
         Task UpdateRangeAsync(List<T> entities);
+        Task DeleteRangeAsync(List<T> entities);
     }
 }
