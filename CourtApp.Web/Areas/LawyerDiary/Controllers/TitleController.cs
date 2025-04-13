@@ -1,4 +1,5 @@
-﻿using CourtApp.Application.Features.CaseTitle;
+﻿using AspNetCoreHero.Results;
+using CourtApp.Application.Features.CaseTitle;
 using CourtApp.Application.Features.FSTitle;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models.Title;
@@ -19,7 +20,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new GetCaseTitleQuery() { PageNumber=1,PageSize=5000});
+            var response = await _mediator.Send(new GetCaseTitleQuery() { PageNumber = 1, PageSize = 5000 });
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<TitleGetViewModel>>(response.Data);
@@ -30,72 +31,89 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 
         public async Task<JsonResult> OnCreatOrUpdateTitle(Guid id)
         {
+            TitleViewModel viewModel;
+
             if (id == Guid.Empty)
             {
-                var viewModel = new TitleViewModel();
-                var ApplicantDetails = new List<ApplicantDetailViewModel>();
-                ApplicantDetails.Add(new ApplicantDetailViewModel { ApplicantNo = 1, ApplicantDetail = "" });
-                viewModel.Types = FSTypes();
-                viewModel.CaseApplicants = ApplicantDetails;
-                viewModel.Cases = await UserCaseTitle(Guid.Empty);
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrUpdate", viewModel) });
+                viewModel = new TitleViewModel
+                {
+                    Types = FSTypes(),
+                    CaseApplicants = new List<ApplicantDetailViewModel>
+                                    {
+                                      new ApplicantDetailViewModel {
+                                          ApplicantNo = 1, ApplicantDetail = "" }
+                                    },
+                    Cases = await UserCaseTitle(Guid.Empty)
+                };
             }
             else
             {
-                var response = await _mediator.Send(new GetCaseTitleByIdQuery() { Id = id });
-                if (response.Succeeded)
-                {
-                    var ViewModel = _mapper.Map<TitleViewModel>(response.Data);
-                    ViewModel.Types = FSTypes();
-                    ViewModel.Cases = await UserCaseTitle(Guid.Empty);
-                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrUpdate", ViewModel) });
-                }
-                return null;
+                var response = await _mediator.Send(new GetCaseTitleByIdQuery { Id = id });
+                if (!response.Succeeded)
+                    return new JsonResult(new { isValid = false, html = "Record not found." });
+
+                viewModel = _mapper.Map<TitleViewModel>(response.Data);
+                viewModel.Types = FSTypes();
+                viewModel.Cases = await UserCaseTitle(Guid.Empty);
             }
+
+            return await RenderForm(viewModel, true, "_CreateOrUpdate");
         }
+
         [HttpPost]
         public async Task<JsonResult> OnCreatOrUpdateTitle(Guid id, TitleViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return await RenderForm(model, false, "_CreateOrUpdate");
+
+            Result<Guid> result;
+
+            if (id == Guid.Empty)
             {
-                if (id == Guid.Empty)
+                var createCommand = _mapper.Map<CreateCaseTitleCommand>(model);
+                createCommand.CaseApplicants = _mapper.Map<List<CaseApplicantDetail>>(model.CaseApplicants);
+
+                result = await _mediator.Send(createCommand);
+
+                if (result.Succeeded)
                 {
-                    var mapper = _mapper.Map<CreateCaseTitleCommand>(model);
-                    mapper.CaseApplicants = _mapper.Map<List<CaseApplicantDetail>>(model.CaseApplicants);
-                    var result = await _mediator.Send(mapper);
-                    if (result.Succeeded)
-                    {
-                        id = result.Data;
-                        _notify.Success($"Case Title with ID {result.Data} Created.");
-                    }
-                    else
-                        _notify.Error(result.Message);
+                    id = result.Data;
+                    _notify.Success($"Case Title with ID {id} Created.");
                 }
                 else
                 {
-                    var updateCommand = _mapper.Map<UpdateCaseTitleCommand>(model);
-                    var result = await _mediator.Send(updateCommand);
-                    if (result.Succeeded)
-                        _notify.Information($"Case Title ID {result.Data} Updated.");
-                }
-                var response = await _mediator.Send(new GetCaseTitleQuery());
-                if (response.Succeeded)
-                {
-                    var viewModel = _mapper.Map<List<TitleGetViewModel>>(response.Data);
-                    var chtml = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                    return new JsonResult(new { isValid = true, html = chtml });
-                }
-                else
-                {
-                    _notify.Error(response.Message);
-                    return null;
+                    _notify.Error(result.Message);
+                    return await RenderForm(model, false, "_CreateOrUpdate");
                 }
             }
             else
             {
-                var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrUpdate", model);
-                return new JsonResult(new { isValid = false, html = html });
+                var updateCommand = _mapper.Map<UpdateCaseTitleCommand>(model);
+                result = await _mediator.Send(updateCommand);
+
+                if (result.Succeeded)
+                {
+                    _notify.Information($"Case Title ID {result.Data} Updated.");
+                }
+                else
+                {
+                    _notify.Error(result.Message);
+                    return await RenderForm(model, false, "_CreateOrUpdate");
+                }
             }
+
+            // Refresh view
+            var response = await _mediator.Send(new GetCaseTitleQuery());
+            if (!response.Succeeded)
+            {
+                _notify.Error(response.Message);
+                return new JsonResult(new { isValid = false, html = string.Empty });
+            }
+
+            var viewModel = _mapper.Map<List<TitleGetViewModel>>(response.Data);
+            var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+            return new JsonResult(new { isValid = true, html });
+
         }
 
         [HttpPost]
@@ -144,86 +162,97 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
         public async Task<JsonResult> OnGetFSCreateOrUpdate(Guid id)
         {
-            if (id == Guid.Empty)
-            {
-                var viewModel = new FSTitleMViewModel();
-                viewModel.FSTypes = FSTypes();
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateUpdateFSTitle", viewModel) });
-            }
-            else
-            {
-                var response = await _mediator.Send(new FSTitleGetByIdQuery() { Id = id });
-                if (response.Succeeded)
-                {
-                    var ViewModel = _mapper.Map<FSTitleMViewModel>(response.Data);
-                    ViewModel.FSTypes = FSTypes();
-                    return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateUpdateFSTitle", ViewModel) });
-                }
-                return null;
-            }
+            var viewModel = id == Guid.Empty
+                                    ? new FSTitleMViewModel()
+                                    : await GetFSTitleViewModelById(id);
+
+            if (viewModel == null)
+                return new JsonResult(new { isValid = false, html = "Record not found." });
+
+            viewModel.FSTypes = FSTypes();
+
+            return await RenderForm(viewModel, true, "_CreateUpdateFSTitle");
         }
+
+
         [HttpPost]
         public async Task<JsonResult> OnPostFSCreateOrUpdate(Guid id, FSTitleMViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                if (id == Guid.Empty)
+                return await RenderForm(model, false, "_CreateUpdateFSTitle");
+            }
+
+            Result<Guid> result;
+
+            if (id == Guid.Empty)
+            {
+                var createCommand = _mapper.Map<FSTitleCreateCommand>(model);
+                result = await _mediator.Send(createCommand);
+
+                if (result.Succeeded)
                 {
-                    var cmd = _mapper.Map<FSTitleCreateCommand>(model);
-                    var result = await _mediator.Send(cmd);
-                    if (result.Succeeded)
-                    {
-                        id = result.Data;
-                        _notify.Success($"First & Second with ID {result.Data} Created.");
-                    }
-                    else
-                        _notify.Error(result.Message);
+                    id = result.Data;
+                    _notify.Success($"First & Second with ID {result.Data} Created.");
                 }
                 else
                 {
-                    var updateCommand = _mapper.Map<FSTitleUpdateCommand>(model);
-                    var result = await _mediator.Send(updateCommand);
-                    if (result.Succeeded)
-                        _notify.Information($"First & Second with ID {result.Data} Updated.");
+                    _notify.Error(result.Message);
+                    return await RenderForm(model, false, "_CreateUpdateFSTitle");
                 }
-                var response = await _mediator.Send(new FSTitleGetAllQuery());
-                if (response.Succeeded)
-                {
-                    var viewModel = _mapper.Map<List<FSTitleLViewModel>>(response.Data);
-                    var html = await _viewRenderer.RenderViewToStringAsync("_FSTitles", viewModel);
-                    return new JsonResult(new { isValid = true, html = html });
-                }
-                return null;
             }
             else
             {
-                var html = await _viewRenderer.RenderViewToStringAsync("_CreateUpdateFSTitle", model);
-                return new JsonResult(new { isValid = false, html = html });
+                var updateCommand = _mapper.Map<FSTitleUpdateCommand>(model);
+                result = await _mediator.Send(updateCommand);
+
+                if (result.Succeeded)
+                {
+                    _notify.Information($"First & Second with ID {result.Data} Updated.");
+                }
+                else
+                {
+                    _notify.Error(result.Message);
+                    return await RenderForm(model, false, "_CreateUpdateFSTitle");
+                }
             }
+
+            var response = await _mediator.Send(new FSTitleGetAllQuery());
+            if (!response.Succeeded)
+                return null;
+
+            var viewModel = _mapper.Map<List<FSTitleLViewModel>>(response.Data);
+            var listHtml = await _viewRenderer.RenderViewToStringAsync("_FSTitles", viewModel);
+
+            return new JsonResult(new { isValid = true, html = listHtml });
         }
 
         [HttpPost]
         public async Task<JsonResult> OnPostDelete(Guid id)
         {
-            var deleteCommand = await _mediator.Send(new FSTitleDeleteCommand { Id = id });
-            if (deleteCommand.Succeeded)
+            var deleteResult = await _mediator.Send(new FSTitleDeleteCommand { Id = id });
+
+            if (!deleteResult.Succeeded)
             {
-                _notify.Information($"Title with Id {id} Deleted.");
-                var response = await _mediator.Send(new FSTitleGetAllQuery());
-                if (response.Succeeded)
-                {
-                    var viewModel = _mapper.Map<List<FSTitleLViewModel>>(response.Data);
-                    var html = await _viewRenderer.RenderViewToStringAsync("_FSTitles", viewModel);
-                    return new JsonResult(new { isValid = true, html = html });
-                }
+                _notify.Error(deleteResult.Message);
+                return new JsonResult(new { isValid = false, html = string.Empty });
             }
-            else
+
+            _notify.Information($"Title with Id {id} Deleted.");
+
+            var response = await _mediator.Send(new FSTitleGetAllQuery());
+            if (!response.Succeeded)
             {
-                _notify.Error(deleteCommand.Message);
-                return null;
+                return new JsonResult(new { isValid = false, html = string.Empty });
             }
-            return null;
+
+            var viewModel = _mapper.Map<List<FSTitleLViewModel>>(response.Data);
+            var html = await _viewRenderer.RenderViewToStringAsync("_FSTitles", viewModel);
+
+            return new JsonResult(new { isValid = true, html });
         }
+
+        #endregion
 
         private async Task<JsonResult> LoadFSDataAsync()
         {
@@ -241,6 +270,13 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
         }
 
-        #endregion
+        private async Task<FSTitleMViewModel?> GetFSTitleViewModelById(Guid id)
+        {
+            var response = await _mediator.Send(new FSTitleGetByIdQuery { Id = id });
+            if (!response.Succeeded)
+                return null;
+
+            return _mapper.Map<FSTitleMViewModel>(response.Data);
+        }
     }
 }

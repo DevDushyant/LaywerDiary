@@ -20,30 +20,39 @@ namespace CourtApp.Application.Features.FSTitle
 
     public class FSTitleCreateCommandHandler : IRequestHandler<FSTitleCreateCommand, Result<Guid>>
     {
-        private readonly IFSTitleRepository _Repo;
+        private readonly IFSTitleRepository _repoFsTitle;
         private readonly IMapper _mapper;
-        private IUnitOfWork _uow { get; set; }
+        private IUnitOfWork unitOfWork { get; set; }
         public FSTitleCreateCommandHandler(IFSTitleRepository _Repo,
             IMapper _mapper,
             IUnitOfWork _uow)
         {
-            this._Repo = _Repo;
+            this._repoFsTitle = _Repo;
             this._mapper = _mapper;
-            this._uow = _uow;
+            this.unitOfWork = _uow;
         }
         public async Task<Result<Guid>> Handle(FSTitleCreateCommand request, CancellationToken cancellationToken)
         {
-            var isEntityCount = _Repo.Entities
-                .Where(w => w.Name_En.Equals(request.Name_En) && w.TypeId==request.TypeId)
-                .Count();
-            if (isEntityCount == 0)
+            // Check if a record with the same name already exists (case-insensitive)
+            var existingFS = _repoFsTitle.Entities
+                .Where(e => e.TypeId.Equals(request.TypeId) && e.Name_En.ToLower().Trim().Contains(request.Name_En.ToLower().Trim()))
+                .FirstOrDefault();
+
+            if (existingFS != null)
             {
-                var entity = _mapper.Map<FSTitleEntity>(request);
-                await _Repo.InsertAsync(entity);
-                await _uow.Commit(cancellationToken);
-                return Result<Guid>.Success(entity.Id);
+                return Result<Guid>.Fail("Record already exists.");
             }
-            return Result<Guid>.Fail("Entered Title is already exists!");
+
+            // Map the request to the entity
+            var newFs = _mapper.Map<FSTitleEntity>(request);
+
+            // Insert the new entity
+            await _repoFsTitle.InsertAsync(newFs);
+
+            // Commit the transaction
+            await unitOfWork.Commit(cancellationToken);
+
+            return Result<Guid>.Success(newFs.Id);
         }
     }
 }

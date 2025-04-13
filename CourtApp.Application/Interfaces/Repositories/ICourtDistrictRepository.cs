@@ -12,6 +12,7 @@ namespace CourtApp.Application.Interfaces.Repositories
         Task<List<CourtDistrictEntity>> GetListAsync();
         Task<CourtDistrictEntity> GetByIdAsync(Guid Id);
         Task<Guid> InsertAsync(CourtDistrictEntity Entity);
+        Task<Guid> InsertRangeAsync(List<CourtDistrictEntity> entities);
         Task UpdateAsync(CourtDistrictEntity Entity);
         Task DeleteAsync(CourtDistrictEntity Entity);
     }

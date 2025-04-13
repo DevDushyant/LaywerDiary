@@ -1,5 +1,7 @@
 ﻿@model WorkMasterViewModel
-<form id="create-form" method="post" asp-controller="WorkMaster" asp-action="OnPostCreateOrEdit" asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
+<form id="create-form" method="post" asp-controller="WorkMaster" 
+asp-action="OnPostCreateOrEdit" asp-route-id="@Model.Id" 
+onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-12">
              <div class="form-group row">
@@ -11,7 +13,7 @@
                     <span asp-validation-for="Work_En" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group row">
+            @* <div class="form-group row">
                 <label class="col-md-3 col-form-label">@localizer["Abbreviation"]</label>
                 <div class="col-md-9">
                     <div class="input-group">
@@ -19,7 +21,7 @@
                     </div>
                     <span asp-validation-for="Abbreviation" class="text-danger"></span>
                 </div>
-            </div>
+            </div> *@
 
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">@localizer["Work(Hn)"]</label>

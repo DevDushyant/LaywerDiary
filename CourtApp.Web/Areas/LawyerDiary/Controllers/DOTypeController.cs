@@ -62,13 +62,22 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                         id = result.Data;
                         _notify.Success($"Draft order with ID {result.Data} Created.");
                     }
-                    else _notify.Error(result.Message);
+                    else
+                    {
+                        _notify.Error(result.Message);
+                        return await RenderForm(model, false, "_CreateOrEdit");
+                    }
                 }
                 else
                 {
                     var updateBrandCommand = _mapper.Map<UpdateDOTypeCommand>(model);
                     var result = await _mediator.Send(updateBrandCommand);
                     if (result.Succeeded) _notify.Information($"Brand with ID {result.Data} Updated.");
+                    else
+                    {
+                        _notify.Error(result.Message);
+                        return await RenderForm(model, false, "_CreateOrEdit");
+                    }
                 }
                 var response = await _mediator.Send(new GetAllDOTypeCachedQuery());
                 if (response.Succeeded)

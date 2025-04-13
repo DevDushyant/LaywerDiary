@@ -18,7 +18,10 @@
     </div>
 
     <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
-        <button type="submit" class="btn btn-success">Save</button>
+        @{
+            string btnText = Model.Id != Guid.Empty ? "Update" : "Save";
+        }
+        <button type="submit" class="btn btn-success">@btnText</button>
         <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
     </div>
 </form>

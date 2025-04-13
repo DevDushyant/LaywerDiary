@@ -27,14 +27,7 @@
 @model CourtComplexViewModel
 <form id="create-form" method="post" asp-controller="CourtComplex" asp-action="OnPostCreateOrEdit" asp-route-id="@Model.Id" onsubmit="return submitForm(this);" enctype="multipart/form-data">
     <div class="row">
-        <div class="col-md-12">
-            @if (@Model.Message != null)
-            {
-                <div class="form-group row">
-                    @await Html.PartialAsync("_StatusMessage", Model.Message)
-                   @*  <partial name="_StatusMessage" model="@Model.Message" /> *@
-                </div>
-            }
+        <div class="col-md-12">            
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">@localizer["State"]</label>
                 <div class="col-md-9">
@@ -81,26 +74,6 @@
                     </table>
                 </fieldset>
             </div>
-
-            @* <div class="form-group row">
-                <label class="col-md-3 col-form-label">@localizer["Name (En)"]</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <input type="text" placeholder="Please enter name (En)" asp-for="Name_En" name="Name_En" id="Name_En" class="form-control" />
-                    </div>
-                    <span asp-validation-for="Name_En" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-md-3 col-form-label">@localizer["Name (Hn)"]</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <input type="text" placeholder="Please enter name (Hn)" asp-for="Name_Hn" name="Name_Hn" id="Name_Hn" class="form-control" />
-                    </div>
-                    <span asp-validation-for="Name_Hn" class="text-danger"></span>
-                </div>
-            </div> *@
-
             <div class="form-group row">
                 <div class="col-md-3">
                 </div>

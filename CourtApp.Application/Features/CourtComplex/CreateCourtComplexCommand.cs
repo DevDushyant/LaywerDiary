@@ -1,13 +1,11 @@
 ﻿using AspNetCoreHero.Results;
 using AutoMapper;
-using CourtApp.Application.DTOs.CourtDistrict;
 using CourtApp.Application.Interfaces.Repositories;
-using CourtApp.Domain.Entities.Common;
 using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,37 +38,44 @@ namespace CourtApp.Application.Features.CourtComplex
         }
         public async Task<Result<Guid>> Handle(CreateCourtComplexCommand request, CancellationToken cancellationToken)
         {
-            if (request.Complexes.Count > 0)
+            if (request.Complexes == null || request.Complexes.Count == 0)
+                return Result<Guid>.Fail("Court complexes are not supplied!");
+
+            var insertedId = Guid.Empty;
+
+            foreach (var complex in request.Complexes)
             {
-                Guid id = Guid.Empty;
-                foreach (var c in request.Complexes)
+                // Normalize the name to avoid null reference and trim/ToLower
+                var normalizedEnName = complex.Name_En?.Trim().ToLower();
+
+                var exists = await repository.Entities
+                    .AnyAsync(w =>
+                        w.Name_En.Trim().ToLower() == normalizedEnName &&
+                        w.CourtDistrictId == request.CourtDistrictId &&
+                        w.StateId == request.StateId,
+                        cancellationToken);
+
+                if (exists)
                 {
-                    var detail = repository.Entities
-                                .Where(w => w.Name_En.ToLower()
-                                .Equals(c.Name_En.ToLower())
-                                && w.CourtDistrictId == request.CourtDistrictId
-                                && w.StateId == request.StateId
-                                )
-                                .FirstOrDefault() ?? null;
-                    if (detail == null)
-                    {
-                        var cdt = new CourtComplexEntity()
-                        {
-                            Name_En = c.Name_En,
-                            Name_Hn = c.Name_Hn,
-                            StateId = request.StateId,
-                            CourtDistrictId = request.CourtDistrictId
-                        };
-                        await repository.InsertAsync(cdt);
-                        await _unitOfWork.Commit(cancellationToken);
-                        id = cdt.Id;
-                    }
-                    else
-                        return Result<Guid>.Fail("Error! the Given name is already exist! " + detail.Name_En + " ");
+                    return Result<Guid>.Fail($"Record already exists: {complex.Name_En}");
                 }
-                return Result<Guid>.Success(id);
+
+                var newEntity = new CourtComplexEntity
+                {
+                    Name_En = complex.Name_En?.Trim(),
+                    Name_Hn = complex.Name_Hn?.Trim(),
+                    StateId = request.StateId,
+                    CourtDistrictId = request.CourtDistrictId
+                };
+
+                await repository.InsertAsync(newEntity);
+                insertedId = newEntity.Id;
             }
-            return Result<Guid>.Fail("Court complexes is not supplied!");
+
+            // Commit after all inserts (only once)
+            await _unitOfWork.Commit(cancellationToken);
+
+            return Result<Guid>.Success(insertedId);
         }
     }
 }

@@ -5,6 +5,7 @@ using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -16,11 +17,9 @@ namespace CourtApp.Application.Features.CourtMasters.Command
     {
         public Guid CourtTypeId { get; set; }
         public string CourtName { get; set; }
-        //public int DistrictCode { get; set; }
         public int StateCode { get; set; }
         public Guid CourtDistrictId { get; set; }
         public Guid CourtComplexId { get; set; }
-
         public List<CourtBenchResponse> CourtBenches { get; set; }
     }
 
@@ -47,31 +46,54 @@ namespace CourtApp.Application.Features.CourtMasters.Command
         }
         public async Task<Result<Guid>> Handle(CreateCourtMasterCommand request, CancellationToken cancellationToken)
         {
-            var entity = mapper.Map<CourtMasterEntity>(request);
-            entity.CourtComplexId = request.CourtComplexId != Guid.Empty ? request.CourtComplexId : null;
-            entity.CourtDistrictId = request.CourtDistrictId != Guid.Empty ? request.CourtDistrictId : null;
-            await repository.InsertAsync(entity);
-            await _unitOfWork.Commit(cancellationToken);
-            return Result<Guid>.Success(entity.Id);
-            //if (request.CourtBenches != null && request.CourtBenches.Count > 0)
-            //{
-            //    foreach (var entity in request.CourtBenches)
-            //    {
-            //        CourtMasterEntity ent = new CourtMasterEntity();
-            //        ent.Name_En = entity.CourtBench_En;
-            //        ent.Name_Hn = entity.CourtBench_Hn;
-            //        ent.StateId = request.StateCode;
-            //        ent.CourtComplexId = request.CourtComplexId != Guid.Empty ? request.CourtComplexId : null;
-            //        ent.CourtDistrictId = request.CourtDistrictId != Guid.Empty ? request.CourtDistrictId : null;
-            //        ent.CourtTypeId = request.CourtTypeId;
-            //        ent.Abbreviation = ent.Abbreviation;
-            //        await repository.InsertAsync(ent);
-            //        await _unitOfWork.Commit(cancellationToken);
-            //        return Result<Guid>.Success(ent.Id);
-            //    }                
-            //}
-            //return Result<Guid>.Fail("Court/Bench information not provided");
+            if (request.CourtBenches == null || request.CourtBenches.Count == 0)
+                return Result<Guid>.Fail("Court benches are not supplied!");
 
+            var courtExists = await repository.Entities.AnyAsync(w =>
+    w.StateId == request.StateCode && // Mandatory field
+    w.CourtTypeId == request.CourtTypeId && // Mandatory field
+    (request.CourtDistrictId == Guid.Empty || w.CourtDistrictId == request.CourtDistrictId) && // Optional field
+    (request.CourtComplexId == Guid.Empty || w.CourtComplexId == request.CourtComplexId), // Optional field
+    cancellationToken);
+
+            if (courtExists)
+                return Result<Guid>.Fail($"Court relation is already exists, please edit the same for adding more court");
+
+            // Save CourtMasterEntity (parent)
+            var courtMaster = new CourtMasterEntity
+            {
+                StateId = request.StateCode,
+                CourtDistrictId = request.CourtDistrictId,
+                CourtComplexId = request.CourtComplexId,
+                CourtTypeId = request.CourtTypeId
+            };
+
+            await repository.InsertAsync(courtMaster);
+            await _unitOfWork.Commit(cancellationToken); // Ensure parent ID is generated
+
+            // Save each CourtBenchEntity (child)
+            foreach (var bench in request.CourtBenches)
+            {
+                var benchEntity = new CourtBenchEntity
+                {
+                    CourtMasterId = courtMaster.Id,
+                    CourtBench_En = bench.CourtBench_En?.Trim(),
+                    CourtBench_Hn = bench.CourtBench_Hn?.Trim()
+                };
+
+                await _CourtBenchRepo.AddBenchAsync(benchEntity);
+            }
+
+            await _unitOfWork.Commit(cancellationToken);
+
+            return Result<Guid>.Success(courtMaster.Id);
+
+            //var entity = mapper.Map<CourtMasterEntity>(request);
+            //entity.CourtComplexId = request.CourtComplexId != Guid.Empty ? request.CourtComplexId : null;
+            //entity.CourtDistrictId = request.CourtDistrictId != Guid.Empty ? request.CourtDistrictId : null;
+            //await repository.InsertAsync(entity);
+            //await _unitOfWork.Commit(cancellationToken);
+            //return Result<Guid>.Success(entity.Id);
         }
     }
 }

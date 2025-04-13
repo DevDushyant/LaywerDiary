@@ -2,7 +2,9 @@
 using AutoMapper;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,16 +29,28 @@ namespace CourtApp.Application.Features.Cadre
         }
         public async Task<Result<Guid>> Handle(UpdateCadreCommand request, CancellationToken cancellationToken)
         {
-            var detail = await repository.GetByIdAsync(request.Id);
-            if (detail == null) return Result<Guid>.Fail("Record is not exist");
-            else
-            {
-                detail.Name_En = request.Name_En;
-                detail.Name_Hn = request.Name_Hn;
-                await repository.UpdateAsync(detail);
-                await unitOfWork.Commit(cancellationToken);
-                return Result<Guid>.Success(detail.Id);
-            }
+            // Fetch the record to update
+            var existingRecord = await repository.GetByIdAsync(request.Id);
+            if (existingRecord == null)
+                return Result<Guid>.Fail("Record does not exist.");
+
+
+            // Check for name conflict with other records (excluding the current record)
+            var duplicateRecord = await repository.Entities
+                .Where(e => e.Id != request.Id && e.Name_En.ToLower() == request.Name_En.ToLower().Trim())
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (duplicateRecord != null)
+                return Result<Guid>.Fail("Another record with the same name already exists.");
+
+            // Update the entity fields
+            existingRecord.Name_En = request.Name_En;
+            existingRecord.Name_Hn = request.Name_Hn;
+
+            await repository.UpdateAsync(existingRecord);
+            await unitOfWork.Commit(cancellationToken);
+
+            return Result<Guid>.Success(existingRecord.Id);
         }
     }
 }

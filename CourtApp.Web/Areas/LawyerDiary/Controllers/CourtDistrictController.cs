@@ -1,11 +1,7 @@
 ﻿using CourtApp.Application.Features.CourtDistrict;
-using CourtApp.Application.Features.CourtType.Query;
-using CourtApp.Application.Features.Queries.Districts;
-using CourtApp.Application.Features.Queries.States;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -38,6 +34,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 var ViewModel = new CourtDistrictViewModel();
                 ViewModel.States = await LoadStates();
+                ViewModel.CourtDistricts = new List<CourtDistrict> { new CourtDistrict() };
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", ViewModel) });
             }
             else
@@ -70,10 +67,9 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     }
                     else
                     {
-                        btViewModel.Message = result.Message;
+                        _notify.Error(result.Message);
                         var html = await _viewRenderer.RenderViewToStringAsync("_Create", btViewModel);
                         return new JsonResult(new { isValid = false, html = html });
-                        //_notify.Error(result.Message); 
                     }
                 }
                 else
@@ -81,6 +77,12 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     var updateCommand = _mapper.Map<UpdateCourtDistrictCommand>(btViewModel);
                     var result = await _mediator.Send(updateCommand);
                     if (result.Succeeded) _notify.Information($"Court District with ID {result.Data} Updated.");
+                    else
+                    {
+                        _notify.Error(result.Message);
+                        var html = await _viewRenderer.RenderViewToStringAsync("_Create", btViewModel);
+                        return new JsonResult(new { isValid = false, html = html });
+                    }
                 }
                 var response = await _mediator.Send(new GetCourtDistrictQuery());
                 if (response.Succeeded)

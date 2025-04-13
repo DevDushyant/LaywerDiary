@@ -1,6 +1,8 @@
-﻿using CourtApp.Application.Features.Typeofcasess.Commands;
-using CourtApp.Application.Features.Typeofcasess.Query;
+﻿using AspNetCoreHero.Results;
+using CourtApp.Application.Features.CourtType.Query;
 using CourtApp.Application.Features.TypeOfCases.Query;
+using CourtApp.Application.Features.Typeofcasess.Commands;
+using CourtApp.Application.Features.Typeofcasess.Query;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +10,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CourtApp.Application.Features.CourtType.Query;
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 {
     [Area("LawyerDiary")]
@@ -27,13 +28,6 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 var DdlCourtTypes = _mapper.Map<List<CourtTypeViewModel>>(courtTypeList.Data);
                 ViewModel.CourtTypes = new SelectList(DdlCourtTypes, nameof(CourtTypeViewModel.Id), nameof(CourtTypeViewModel.CourtType), null, null); ;
             }
-            //var statelist = await _mediator.Send(new GetStateMasterQuery());
-            //if (statelist.Succeeded)
-            //{
-            //    var DdlStates = _mapper.Map<List<StateViewModel>>(statelist.Data);
-            //    ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Id), nameof(StateViewModel.Name_En), null, null);
-            //}           
-
         }
 
         public async Task<IActionResult> LoadAll()
@@ -53,7 +47,13 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             if (Id == Guid.Empty)
             {
                 var ViewModel = new TypeOfCasesViewModel();
-                await BindDropdownAsync(ViewModel);
+                var courtTypeList = await _mediator.Send(new GetCourtTypeQuery());
+                if (courtTypeList.Succeeded)
+                {
+                    var DdlCourtTypes = _mapper.Map<List<CourtTypeViewModel>>(courtTypeList.Data);
+                    ViewModel.CourtTypes = new SelectList(DdlCourtTypes, nameof(CourtTypeViewModel.Id), nameof(CourtTypeViewModel.CourtType));
+                }
+                ViewModel.CaseTypes = new List<CaseType> { new CaseType() };
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", ViewModel) });
             }
             else
@@ -71,50 +71,100 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> OnPostCreateOrEdit(Guid id, TypeOfCasesViewModel btViewModel)
+        public async Task<JsonResult> OnPostCreateOrEdit(Guid id, TypeOfCasesViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return await RenderForm(model, false, "_Create");
+
+            Result<Guid> result;
+            if (id == Guid.Empty)
             {
-                if (id == Guid.Empty)
+                var createCommand = _mapper.Map<CreateTypeOfCasesCommand>(model);
+                result = await _mediator.Send(createCommand);
+
+                if (result.Succeeded)
                 {
-                    var createTypeofCasesCommand = _mapper.Map<CreateTypeOfCasesCommand>(btViewModel);
-                    var result = await _mediator.Send(createTypeofCasesCommand);
-                    if (result.Succeeded)
-                    {
-                        id = result.Data;
-                        _notify.Success($"Case type with ID {result.Data} Created.");
-                    }
-                    else
-                    {
-                        btViewModel.Message = result.Message;
-                        var html = await _viewRenderer.RenderViewToStringAsync("_Create", btViewModel);
-                        return new JsonResult(new { isValid = false, html = html });
-                    }
+                    id = result.Data;
+                    _notify.Success($"Case Type with ID {id} Created.");
                 }
                 else
                 {
-                    var updateBookCommand = _mapper.Map<UpdateTypeOfCasesCommand>(btViewModel);
-                    var result = await _mediator.Send(updateBookCommand);
-                    if (result.Succeeded) _notify.Information($"Case kind with ID {result.Data} Updated.");
-                }
-                var response = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 100));
-                if (response.Succeeded)
-                {
-                    var viewModel = _mapper.Map<List<TypeOfCasesViewModel>>(response.Data);
-                    var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-                    return new JsonResult(new { isValid = true, html = html });
-                }
-                else
-                {
-                    _notify.Error(response.Message);
-                    return null;
+                    _notify.Error(result.Message);
+                    return await RenderForm(model, false, "_Create");
                 }
             }
             else
             {
-                var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel);
-                return new JsonResult(new { isValid = false, html = html });
+                var updateCommand = _mapper.Map<UpdateTypeOfCasesCommand>(model);
+                result = await _mediator.Send(updateCommand);
+
+                if (result.Succeeded)
+                {
+                    _notify.Information($"Case Title ID {result.Data} Updated.");
+                }
+                else
+                {
+                    _notify.Error(result.Message);
+                    return await RenderForm(model, false, "_CreateOrEdit");
+                }
             }
+
+            // Refresh view
+
+
+            var response = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 10000));
+            if (!response.Succeeded)
+            {
+                _notify.Error(response.Message);
+                return new JsonResult(new { isValid = false, html = string.Empty });
+            }
+            var viewModel = _mapper.Map<List<TypeOfCasesViewModel>>(response.Data);
+            var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+            return new JsonResult(new { isValid = true, html });
+
+
+            //if (ModelState.IsValid)
+            //{
+            //    if (id == Guid.Empty)
+            //    {
+            //        var createTypeofCasesCommand = _mapper.Map<CreateTypeOfCasesCommand>(btViewModel);
+            //        var result = await _mediator.Send(createTypeofCasesCommand);
+            //        if (result.Succeeded)
+            //        {
+            //            id = result.Data;
+            //            _notify.Success($"Case type with ID {result.Data} Created.");
+            //        }
+            //        else
+            //        {
+            //            _notify.Error(result.Message);
+            //            var html = await _viewRenderer.RenderViewToStringAsync("_Create", btViewModel);
+            //            return new JsonResult(new { isValid = false, html = html });
+            //        }
+            //    }
+            //    else
+            //    {
+            //        var updateBookCommand = _mapper.Map<UpdateTypeOfCasesCommand>(btViewModel);
+            //        var result = await _mediator.Send(updateBookCommand);
+            //        if (result.Succeeded) _notify.Information($"Case kind with ID {result.Data} Updated.");
+            //    }
+            //    var response = await _mediator.Send(new GetAllTypeOfCasesQuery(1, 100));
+            //    if (response.Succeeded)
+            //    {
+            //        var viewModel = _mapper.Map<List<TypeOfCasesViewModel>>(response.Data);
+            //        var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
+            //        return new JsonResult(new { isValid = true, html = html });
+            //    }
+            //    else
+            //    {
+            //        _notify.Error(response.Message);
+            //        return null;
+            //    }
+            //}
+            //else
+            //{
+            //    var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel);
+            //    return new JsonResult(new { isValid = false, html = html });
+            //}
         }
 
         [HttpPost]

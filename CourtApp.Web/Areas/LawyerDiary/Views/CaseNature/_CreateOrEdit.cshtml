@@ -1,7 +1,6 @@
 ﻿@model CaseNatureViewModel
-<form id="create-form" method="post" asp-controller="CaseNature" asp-action="OnPostCreateOrEdit" asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
-    
-    
+<form id="create-form" method="post" asp-controller="CaseNature" asp-action="OnPostCreateOrEdit"
+      asp-route-id="@Model.Id" onsubmit="return jQueryModalPost(this);" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row">
@@ -15,18 +14,6 @@
                     <span asp-validation-for="CourtTypeId" class="text-danger"></span>
                 </div>
             </div>
-            @* <div class="form-group row">
-                <label class="col-md-3 col-form-label">State</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <select name="StateId" class="form-control select2bs4" id="StateId" asp-for="StateId"
-                                asp-items="@Model.States">
-                            <option></option>
-                        </select>
-                    </div>
-                    <span asp-validation-for="StateId" class="text-danger"></span>
-                </div>
-            </div> *@
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">Case Category</label>
                 <div class="col-md-9">
@@ -34,16 +21,18 @@
                     <span asp-validation-for="Name_En" class="text-danger"></span>
                 </div>
             </div>
-           
+
             <div class="form-group row">
                 <div class="col-md-3">
                 </div>
             </div>
         </div>
     </div>
-
     <div class="form-group justify-content-between" style="margin-bottom: 0px !important">
-        <button type="submit" class="btn btn-success">Save</button>
+        @{
+            string btnText = Model.Id != Guid.Empty ? "Update" : "Save";
+        }
+        <button type="submit" class="btn btn-success">@btnText</button>
         <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
     </div>
 </form>
@@ -62,5 +51,5 @@
         escapeMarkup: function (m) {
             return m;
         }
-    });    
+    });
 </script>

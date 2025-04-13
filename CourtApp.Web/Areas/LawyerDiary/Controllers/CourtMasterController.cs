@@ -2,7 +2,6 @@
 using CourtApp.Application.Features.CourtMasters;
 using CourtApp.Application.Features.CourtMasters.Command;
 using CourtApp.Application.Features.CourtType.Query;
-using CourtApp.Application.Features.Queries.Districts;
 using CourtApp.Application.Features.Queries.States;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
@@ -58,6 +57,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 var ViewModel = new CourtMasterViewModel();
                 ViewModel.CourtTypes = await LoadCourtTypes();
                 ViewModel.States = await LoadStates();
+                ViewModel.CourtBenches = new List<CourtBench> { new CourtBench() };
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel) });
             }
             else
@@ -115,12 +115,18 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                         var result = await _mediator.Send(createBookTypeCommand);
                         if (result.Succeeded)
                             _notify.Success($"Case type with ID {result.Data} Created.");
-                        else _notify.Error(result.Message);
+                        else
+                        {
+                            _notify.Error(result.Message);
+                            var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel);
+                            return new JsonResult(new { isValid = false, html = html });
+                        }
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.ToString());
-                    };
+                    }
+                    ;
                 }
                 else
                 {

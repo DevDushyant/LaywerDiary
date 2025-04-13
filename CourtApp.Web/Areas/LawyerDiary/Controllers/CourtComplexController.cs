@@ -1,11 +1,7 @@
 ﻿using CourtApp.Application.Features.CourtComplex;
-using CourtApp.Application.Features.CourtDistrict;
-using CourtApp.Application.Features.Queries.Districts;
-using CourtApp.Application.Features.Queries.States;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,7 +18,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         }
         public async Task<IActionResult> LoadAll()
         {
-            var response = await _mediator.Send(new GetCourtComplexQuery() { PageNumber = 1, PageSize = 100 });
+            var response = await _mediator.Send(new GetCourtComplexQuery() { PageNumber = 1, PageSize = 10000 });
             if (response.Succeeded)
             {
                 var viewModel = _mapper.Map<List<CourtComplexViewModel>>(response.Data);
@@ -37,6 +33,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             {
                 var ViewModel = new CourtComplexViewModel();
                 ViewModel.States = await LoadStates();
+                ViewModel.Complexes = new List<Complex> { new Complex() };
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", ViewModel) });
             }
             else
@@ -70,10 +67,9 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     }
                     else
                     {
-                        btViewModel.Message = result.Message;
+                        _notify.Error(result.Message);
                         var html = await _viewRenderer.RenderViewToStringAsync("_Create", btViewModel);
                         return new JsonResult(new { isValid = false, html = html });
-                        //_notify.Error(result.Message);
                     }
                 }
                 else
@@ -81,8 +77,14 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     var updateCommand = _mapper.Map<UpdateCourtComplexCommand>(btViewModel);
                     var result = await _mediator.Send(updateCommand);
                     if (result.Succeeded) _notify.Information($"Court complex with ID {result.Data} Updated.");
+                    else
+                    {
+                        _notify.Error(result.Message);
+                        var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel);
+                        return new JsonResult(new { isValid = false, html = html });
+                    }
                 }
-                var response = await _mediator.Send(new GetCourtComplexQuery());
+                var response = await _mediator.Send(new GetCourtComplexQuery() { PageNumber = 1, PageSize = 10000 });
                 if (response.Succeeded)
                 {
                     var viewModel = _mapper.Map<List<CourtComplexViewModel>>(response.Data);
@@ -109,7 +111,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             if (deleteCommand.Succeeded)
             {
                 _notify.Information($"Court district with Id {id} Deleted.");
-                var response = await _mediator.Send(new GetCourtComplexQuery());
+                var response = await _mediator.Send(new GetCourtComplexQuery() { PageNumber = 1, PageSize = 100 });
                 if (response.Succeeded)
                 {
                     var viewModel = _mapper.Map<List<CourtComplexViewModel>>(response.Data);

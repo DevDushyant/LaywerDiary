@@ -8,7 +8,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Validators
         public ProceedingModelValidator()
         {
             RuleFor(p => p.Name_En)
-                .NotEmpty().WithMessage("{PropertyName} is required.")
+                .NotEmpty().WithMessage("Proceeding head is required.")
                 .NotNull()
                 ;
             //RuleFor(p => p.Abbreviation)

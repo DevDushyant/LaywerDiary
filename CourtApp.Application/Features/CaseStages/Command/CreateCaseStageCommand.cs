@@ -4,9 +4,7 @@ using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,14 +33,26 @@ namespace CourtApp.Application.Features.CaseStages.Command
 
         public async Task<Result<Guid>> Handle(CreateCaseStageCommand request, CancellationToken cancellationToken)
         {
-            var entity = repository.QryEntities
-                .Where(w => w.Abbreviation.Equals(request) || w.CaseStage.Equals(request.CaseStage))
+            // Check if a record with the same name already exists (case-insensitive)
+            var existingCadre = repository.QryEntities
+                .Where(e => e.CaseStage.ToLower().Trim().Contains(request.CaseStage.ToLower().Trim()))
                 .FirstOrDefault();
-            if (entity != null) return Result<Guid>.Fail("The provided detail is already exist!");
-            var mappeddata = mapper.Map<CaseStageEntity>(request);
-            await repository.InsertAsync(mappeddata);
+
+            if (existingCadre != null)
+            {
+                return Result<Guid>.Fail("Record already exists.");
+            }
+
+            // Map the request to the entity
+            var newStage = mapper.Map<CaseStageEntity>(request);
+
+            // Insert the new entity
+            await repository.InsertAsync(newStage);
+
+            // Commit the transaction
             await _unitOfWork.Commit(cancellationToken);
-            return Result<Guid>.Success(mappeddata.Id);
+
+            return Result<Guid>.Success(newStage.Id);
         }
     }
 }

@@ -101,9 +101,17 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         {
             if (Id == Guid.Empty)
             {
-                var ViewModel = new ProceedingSubHeadViewModel();
-                ViewModel.PHeads = await DdlProcHeads();
-                return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", ViewModel) });
+                var ViewModel = new ProceedingSubHeadViewModel
+                {
+                    PHeads = await DdlProcHeads(),
+                    ProcHeads = new List<ProcHead> { new ProcHead() } // Ensure at least one item is present
+                };
+
+                return new JsonResult(new
+                {
+                    isValid = true,
+                    html = await _viewRenderer.RenderViewToStringAsync("_Create", ViewModel)
+                });
             }
             else
             {
@@ -134,7 +142,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     }
                     else
                     {
-                        viewModel.Message = result.Message;
+                        _notify.Success(result.Message);
                         var html = await _viewRenderer.RenderViewToStringAsync("_Create", viewModel);
                         return new JsonResult(new { isValid = false, html = html });
                     }
@@ -144,11 +152,17 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     var cmd = _mapper.Map<UpdateProcSubHeadCommand>(viewModel);
                     var result = await _mediator.Send(cmd);
                     if (result.Succeeded) _notify.Information($"Proceeding Head with ID {result.Data} Updated.");
+                    else
+                    {
+                        _notify.Success(result.Message);
+                        var html = await _viewRenderer.RenderViewToStringAsync("_Create", viewModel);
+                        return new JsonResult(new { isValid = false, html = html });
+                    }
                 }
                 var response = await _mediator.Send(new GetProceedingSubHeadQuery()
                 {
                     PageNumber = 1,
-                    PageSize = 1000
+                    PageSize = 10000
                 });
                 if (response.Succeeded)
                 {

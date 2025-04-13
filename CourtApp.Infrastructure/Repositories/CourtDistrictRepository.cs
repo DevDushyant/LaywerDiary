@@ -1,15 +1,12 @@
-﻿using CourtApp.Application.Interfaces.Repositories;
+﻿using CourtApp.Application.CacheKeys;
+using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
-using CourtApp.Application.CacheKeys;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static CourtApp.Application.Constants.Permissions;
-
 namespace CourtApp.Infrastructure.Repositories
 {
     public class CourtDistrictRepository : ICourtDistrictRepository
@@ -34,7 +31,6 @@ namespace CourtApp.Infrastructure.Repositories
         {
             var DetailById = _repository.Entities
                .Include(d => d.State)
-               //.Include(d => d.District)
                .Where(p => p.Id == Id).FirstOrDefaultAsync();
             return await DetailById;
         }
@@ -50,6 +46,13 @@ namespace CourtApp.Infrastructure.Repositories
             await _repository.AddAsync(Entity);
             await _distributedCache.RemoveAsync(CourtDistrictCacheKeys.ListKey);
             return Entity.Id;
+        }
+
+        public async Task<Guid> InsertRangeAsync(List<CourtDistrictEntity> entities)
+        {
+            await _repository.AddRange(entities);
+            await _distributedCache.RemoveAsync(CourtDistrictCacheKeys.ListKey);
+            return entities.FirstOrDefault().Id;
         }
 
         public async Task UpdateAsync(CourtDistrictEntity Entity)

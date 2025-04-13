@@ -2,7 +2,9 @@
 using AutoMapper;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,21 +28,33 @@ namespace CourtApp.Application.Features.FSTitle
             this._Repo = _Repo;
             this._uow = _uow;
         }
-        public async Task<Result<Guid>> Handle(FSTitleUpdateCommand command, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(FSTitleUpdateCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _Repo.GetByIdAsync(command.Id);
+            // Fetch the record to update
+            var existingRecord = await _Repo.GetByIdAsync(request.Id);
+            if (existingRecord == null)
+                return Result<Guid>.Fail("Record does not exist.");
 
-            if (entity == null)
-                return Result<Guid>.Fail($"First & Secound Title Not Found.");
-            else
-            {
-                entity.Name_En = command.Name_En ?? entity.Name_En;
-                entity.Name_Hn = command.Name_Hn ?? entity.Name_Hn;
-                entity.TypeId = (command.TypeId == 0) ? entity.TypeId : command.TypeId;
-                await _Repo.UpdateAsync(entity);
-                await _uow.Commit(cancellationToken);
-                return Result<Guid>.Success(entity.Id);
-            }
+
+            // Check for name conflict with other records (excluding the current record)
+            var duplicateRecord = await _Repo.Entities
+                .Where(e => e.Id != request.Id && e.Name_En.ToLower() == request.Name_En.ToLower().Trim())
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (duplicateRecord != null)
+                return Result<Guid>.Fail("Another record with the same name already exists.");
+
+            // Update the entity fields
+            existingRecord.Name_En = request.Name_En;
+            existingRecord.Name_Hn = request.Name_Hn;
+            existingRecord.TypeId = request.TypeId;
+
+            await _Repo.UpdateAsync(existingRecord);
+
+            //Commit the transaction.
+            await _uow.Commit(cancellationToken);
+
+            return Result<Guid>.Success(existingRecord.Id);
         }
     }
 }

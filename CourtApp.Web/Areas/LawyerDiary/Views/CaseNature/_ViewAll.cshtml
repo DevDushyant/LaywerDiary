@@ -36,7 +36,7 @@
                             <div class="dropdown-menu shadow animated--grow-in">
                                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.TypeOfCase.Edit)).Result.Succeeded)
                                 {
-                                    <a onclick="jQueryModalGet('/LawyerDiary/CaseNature/OnGetCreateOrEdit?id=@bt.Id','Edit Brand')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
+                                    <a onclick="jQueryModalGet('/LawyerDiary/CaseNature/OnGetCreateOrEdit?id=@bt.Id','Edit Case Category')" class="dropdown-item"><i class="fas fa-pencil-alt"></i>  Edit</a>
 
                                 }
                                 @if ((AuthorizationService.AuthorizeAsync(User, Permissions.TypeOfCase.Delete)).Result.Succeeded)

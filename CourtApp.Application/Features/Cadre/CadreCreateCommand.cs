@@ -28,18 +28,26 @@ namespace CourtApp.Application.Features.Cadre
         }
         public async Task<Result<Guid>> Handle(CadreCreateCommand request, CancellationToken cancellationToken)
         {
-            var CadreIsExist = repository
-                .Entities
-                .Where(w => w.Name_En.Equals(request.Name_En.Trim()))
+            // Check if a record with the same name already exists (case-insensitive)
+            var existingCadre = repository.Entities
+                .Where(e => e.Name_En.ToLower().Trim().Contains(request.Name_En.ToLower().Trim()))
                 .FirstOrDefault();
-            if (CadreIsExist != null) return Result<Guid>.Fail("Record is already exist");
-            else
+
+            if (existingCadre != null)
             {
-                var mEntity = mapper.Map<CadreMasterEntity>(request);
-                await repository.InsertAsync(mEntity);
-                await unitOfWork.Commit(cancellationToken);
-                return Result<Guid>.Success(mEntity.Id);
+                return Result<Guid>.Fail("Record already exists.");
             }
+
+            // Map the request to the entity
+            var newCadre = mapper.Map<CadreMasterEntity>(request);
+
+            // Insert the new entity
+            await repository.InsertAsync(newCadre);
+
+            // Commit the transaction
+            await unitOfWork.Commit(cancellationToken);
+
+            return Result<Guid>.Success(newCadre.Id);
         }
     }
 }

@@ -35,6 +35,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             if (Id == Guid.Empty)
             {
                 var ViewModel = new WorkMasterSubViewModel();
+                ViewModel.Works = new List<WorkSubMaster> { new WorkSubMaster() };
                 var wMasterViewModel = _mapper.Map<List<WorkMasterViewModel>>(wMasterList.Data);
                 ViewModel.WMasters = new SelectList(wMasterViewModel, nameof(WorkMasterViewModel.Id), nameof(WorkMasterViewModel.Work_En), null, null);
                 return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_Create", ViewModel) });
@@ -74,7 +75,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                         }
                         else
                         {
-                            viewModel.Message = result.Message;
+                            _notify.Success(result.Message);
                             var html = await _viewRenderer.RenderViewToStringAsync("_Create", viewModel);
                             return new JsonResult(new { isValid = false, html = html });
                         }

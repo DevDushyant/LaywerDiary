@@ -1,7 +1,6 @@
 ﻿using CourtApp.Application.Features.CaseCategory;
 using CourtApp.Application.Features.CaseNatures.Command;
 using CourtApp.Application.Features.CourtType.Query;
-using CourtApp.Application.Features.Queries.States;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -40,13 +39,6 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 var DdlCourtTypes = _mapper.Map<List<CourtTypeViewModel>>(courtTypeList.Data);
                 ViewModel.CourtTypes = new SelectList(DdlCourtTypes, nameof(CourtTypeViewModel.Id), nameof(CourtTypeViewModel.CourtType), null, null); ;
             }
-            //var statelist = await _mediator.Send(new GetStateMasterQuery());
-            //if (statelist.Succeeded)
-            //{
-            //    var DdlStates = _mapper.Map<List<StateViewModel>>(statelist.Data);
-            //    ViewModel.States = new SelectList(DdlStates, nameof(StateViewModel.Id), nameof(StateViewModel.Name_En), null, null);
-
-            //}
         }
 
         public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
@@ -84,13 +76,22 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                         id = result.Data;
                         _notify.Success($"Case Category with ID {result.Data} Created.");
                     }
-                    else _notify.Error(result.Message);
+                    else
+                    {
+                        _notify.Error(result.Message);
+                        return await RenderForm(btViewModel, false, "_CreateOrEdit");
+                    }
                 }
                 else
                 {
                     var updateBookCommand = _mapper.Map<UpdateCaseNatureCommand>(btViewModel);
                     var result = await _mediator.Send(updateBookCommand);
                     if (result.Succeeded) _notify.Information($"Case Category with ID {result.Data} Updated.");
+                    else
+                    {
+                        _notify.Error(result.Message);
+                        return await RenderForm(btViewModel, false, "_CreateOrEdit");
+                    }
                 }
                 var response = await _mediator.Send(new GetQueryCaseCategory());
                 if (response.Succeeded)

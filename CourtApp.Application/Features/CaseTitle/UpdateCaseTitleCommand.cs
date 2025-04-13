@@ -2,13 +2,11 @@
 using AutoMapper;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
-using CourtApp.Domain.Entities.LawyerDiary;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using static CourtApp.Application.Constants.Permissions;
 namespace CourtApp.Application.Features.CaseTitle
 {
     public class UpdateCaseTitleCommand : IRequest<Result<Guid>>
@@ -35,18 +33,19 @@ namespace CourtApp.Application.Features.CaseTitle
         }
         public async Task<Result<Guid>> Handle(UpdateCaseTitleCommand request, CancellationToken cancellationToken)
         {
-            var TitleDetail = await _CaseTitleRepository.GetByIdAsync(request.Id);
-            if (TitleDetail == null)
-                return Result<Guid>.Fail($"Case title not found.");
-            else
-            {
-                TitleDetail.CaseId = request.CaseId;
-                TitleDetail.TypeId = request.TypeId;
-                TitleDetail.CaseApplicants = _mapper.Map<List<CaseApplicantDetailEntity>>(request.CaseApplicants);
-                await _CaseTitleRepository.UpdateAsync(TitleDetail);
-                await _unitOfWork.Commit(cancellationToken);
-                return Result<Guid>.Success(TitleDetail.Id);
-            }
+            var titleDetail = await _CaseTitleRepository.GetByIdAsync(request.Id);
+
+            if (titleDetail is null)
+                return Result<Guid>.Fail("Case title not found.");
+
+            _mapper.Map(request, titleDetail); // Map only updated fields
+
+            titleDetail.CaseApplicants = _mapper.Map<List<CaseApplicantDetailEntity>>(request.CaseApplicants);
+
+            await _CaseTitleRepository.UpdateAsync(titleDetail);
+            await _unitOfWork.Commit(cancellationToken);
+
+            return Result<Guid>.Success(titleDetail.Id);
         }
     }
 }

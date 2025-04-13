@@ -38,43 +38,36 @@ namespace CourtApp.Application.Features.WorkMasterSub
         }
         public async Task<Result<Guid>> Handle(CreateWorkSubMstCommand request, CancellationToken cancellationToken)
         {
-            if (request.Works.Count > 0)
+            if (request.Works == null || !request.Works.Any())
+                return Result<Guid>.Fail("Work type is not supplied!");
+
+            Guid lastInsertedId = Guid.Empty;
+
+            foreach (var c in request.Works)
             {
-                Guid id = Guid.Empty;
-                foreach (var c in request.Works)
+                bool isDuplicate = repository.Entities.Any(w =>
+                    w.Name_En.ToLower() == c.Name_En.ToLower().Trim() &&
+                    w.WorkId == request.WorkId
+                );
+
+                if (isDuplicate)
+                    return Result<Guid>.Fail($"The name '{c.Name_En}' already exists for the given Court Type and Nature.");
+
+                var entity = new WorkMasterSubEntity
                 {
-                    var detail = repository.Entities
-                                .Where(w => w.Name_En.ToLower()
-                                .Equals(c.Name_En.ToLower())
-                                && w.WorkId.Equals(request.WorkId))
-                                .FirstOrDefault() ?? null;
-                    if (detail == null)
-                    {
-                        var cdt = new WorkMasterSubEntity()
-                        {
-                            Name_En = c.Name_En,
-                            Name_Hn = c.Name_Hn,
-                            WorkId = request.WorkId,
-                        };
-                        await repository.InsertAsync(cdt);
-                        await unitOfWork.Commit(cancellationToken);
-                        id = cdt.Id;
-                    }
-                    else
-                        return Result<Guid>.Fail("Error! the Given name is already exist! " + c.Name_En+" ");
-                }
-                return Result<Guid>.Success(id);
+                    Name_En = c.Name_En.ToUpper().Trim(),
+                    Name_Hn = c.Name_Hn?.Trim(),
+                    WorkId = request.WorkId
+                };
+
+                await repository.InsertAsync(entity);
+                lastInsertedId = entity.Id;
             }
-            return Result<Guid>.Fail("Work type is not supplied!");
-            //var wsmdt =repository.Entities
-            //           .Where(x => (x.WorkId == request.WorkId && x.Name_En.Equals(request.Name_En)) 
-            //            || (x.Abbreviation.Equals(request.Abbreviation)))
-            //            .FirstOrDefault();
-            //if (wsmdt != null) return Result<Guid>.Fail("The provided detail already exist!");
-            //var mappeddata = mapper.Map<WorkMasterSubEntity>(request);
-            //await repository.InsertAsync(mappeddata);
-            //await unitOfWork.Commit(cancellationToken);
-            //return Result<Guid>.Success(mappeddata.Id);
+
+            // Commit once after loop for better performance
+            await unitOfWork.Commit(cancellationToken);
+
+            return Result<Guid>.Success(lastInsertedId);
         }
     }
 }

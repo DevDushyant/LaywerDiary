@@ -6,7 +6,6 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,48 +43,41 @@ namespace CourtApp.Application.Features.Typeofcasess.Commands
         }
         public async Task<Result<Guid>> Handle(CreateTypeOfCasesCommand request, CancellationToken cancellationToken)
         {
-            if (request.CaseTypes.Count > 0)
+
+            if (request.CaseTypes == null || !request.CaseTypes.Any())
+                return Result<Guid>.Fail("Case type is not supplied!");
+
+            Guid lastInsertedId = Guid.Empty;
+
+            foreach (var c in request.CaseTypes)
             {
-                Guid id = Guid.Empty;
-                foreach (var c in request.CaseTypes)
+                bool isDuplicate = repository.QryEntities.Any(w =>
+                    w.Name_En.ToLower() == c.Name_En.ToLower().Trim() &&
+                    w.CourtTypeId == request.CourtTypeId &&
+                    w.NatureId == request.NatureId
+                );
+
+                if (isDuplicate)
+                    return Result<Guid>.Fail($"The name '{c.Name_En}' already exists for the given Court Type and Nature.");
+
+                var entity = new TypeOfCasesEntity
                 {
-                    var detail = repository.QryEntities
-                                .Where(w => w.Name_En.ToLower()
-                                .Equals(c.Name_En.ToLower())
-                                && w.CourtTypeId.Equals(request.CourtTypeId)
-                                && w.NatureId.Equals(request.NatureId)
-                                && w.Abbreviation.Equals(c.Abbreviation)
-                                )
-                                .FirstOrDefault() ?? null;
-                    if (detail == null)
-                    {
-                        var cdt = new TypeOfCasesEntity()
-                        {
-                            Name_En = c.Name_En,
-                            Name_Hn = c.Name_Hn,
-                            CourtTypeId = request.CourtTypeId,
-                            NatureId = request.NatureId,
-                            Abbreviation = c.Abbreviation
-                        };
-                        await repository.InsertAsync(cdt);
-                        await _unitOfWork.Commit(cancellationToken);
-                        id = cdt.Id;
-                    }
-                    else
-                        return Result<Guid>.Fail("Error! the Given name is already exist! "+ c.Name_En + " ");
-                }
-                return Result<Guid>.Success(id);
+                    Name_En = c.Name_En.Trim(),
+                    Name_Hn = c.Name_Hn?.Trim(),
+                    CourtTypeId = request.CourtTypeId,
+                    NatureId = request.NatureId,
+                    Abbreviation = c.Abbreviation.Trim()
+                };
+
+                await repository.InsertAsync(entity);
+                lastInsertedId = entity.Id;
             }
-            return Result<Guid>.Fail("Case type is not supplied!");
-            //var isExist = repository.QryEntities
-            //    .Where(w => (w.Abbreviation.Equals(request.Abbreviation.Trim()) ||
-            //    w.Name_En.Equals(request.Name_En.Trim())) && w.CourtTypeId == request.CourtTypeId).FirstOrDefault();
-            //if (isExist != null)
-            //    return Result<Guid>.Fail("The given information is already exist");
-            //var mappeddata = mapper.Map<TypeOfCasesEntity>(request);
-            //await repository.InsertAsync(mappeddata);
-            //await _unitOfWork.Commit(cancellationToken);
-            //return Result<Guid>.Success(mappeddata.Id);
+
+            // Commit once after loop for better performance
+            await _unitOfWork.Commit(cancellationToken);
+
+            return Result<Guid>.Success(lastInsertedId);
+
         }
     }
 }

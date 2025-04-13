@@ -86,6 +86,12 @@ namespace CourtApp.Web.Abstractions
         protected IMapper _mapper => _mapperInstance ??= HttpContext.RequestServices.GetService<IMapper>();
 
 
+        protected async Task<JsonResult> RenderForm<TModel>(TModel model, bool isValid, string viewName)
+        {
+            var html = await _viewRenderer.RenderViewToStringAsync(viewName, model);
+            return new JsonResult(new { isValid, html });
+        }
+
 
         #region Dropdown Select List
         public async Task<SelectList> LoadStates()

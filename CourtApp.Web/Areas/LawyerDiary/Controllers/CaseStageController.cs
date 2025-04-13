@@ -5,7 +5,6 @@ using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers
@@ -64,13 +63,24 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                         id = result.Data;
                         _notify.Success($"Case stage with ID {result.Data} Created.");
                     }
-                    else _notify.Error(result.Message);
+                    else
+                    {
+                        _notify.Error(result.Message);
+                        var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel);
+                        return new JsonResult(new { isValid = false, html = html });
+                    }
                 }
                 else
                 {
                     var updateBookCommand = _mapper.Map<UpdateCaseStageCommand>(btViewModel);
                     var result = await _mediator.Send(updateBookCommand);
                     if (result.Succeeded) _notify.Information($"Case Nature with ID {result.Data} Updated.");
+                    else
+                    {
+                        _notify.Error(result.Message);
+                        var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", btViewModel);
+                        return new JsonResult(new { isValid = false, html = html });
+                    }
                 }
                 var response = await _mediator.Send(new CaseStageCacheAllQuery());
                 if (response.Succeeded)

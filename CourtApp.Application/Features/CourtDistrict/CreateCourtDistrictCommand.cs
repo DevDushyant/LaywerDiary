@@ -2,12 +2,10 @@
 using AutoMapper;
 using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.LawyerDiary;
-using CourtApp.Entities.Common;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,11 +13,8 @@ namespace CourtApp.Application.Features.CourtDistrict
 {
     public class CreateCourtDistrictCommand : IRequest<Result<Guid>>
     {
-        //public string Name_En { get; set; }
-        //public string Name_Hn { get; set; }
+
         public int StateId { get; set; }
-        //public int DistrictId { get; set; }
-        //public string Abbreviation { get; set; }
         public List<StateCourtDistrict> CourtDistricts { get; set; }
     }
     public class StateCourtDistrict
@@ -41,41 +36,48 @@ namespace CourtApp.Application.Features.CourtDistrict
         }
         public async Task<Result<Guid>> Handle(CreateCourtDistrictCommand request, CancellationToken cancellationToken)
         {
-            if (request.CourtDistricts.Count > 0)
+            if (request.CourtDistricts == null || request.CourtDistricts.Count == 0)
             {
-                Guid id = Guid.Empty;
-                foreach (var c in request.CourtDistricts)
-                {
-                    var detail = repository.Entities
-                                .Where(w => w.Name_En.ToLower()
-                                .Equals(c.Name_En.ToLower())
-                                && w.StateId == request.StateId)
-                                .FirstOrDefault() ?? null;
-                    if (detail == null)
-                    {
-                        var cdt = new CourtDistrictEntity()
-                        {
-                            Name_En = c.Name_En,
-                            Name_Hn = c.Name_Hn,
-                            StateId = request.StateId
-                        };
-                        await repository.InsertAsync(cdt);
-                        await _unitOfWork.Commit(cancellationToken);
-                        id = cdt.Id;
-                    }
-                    else
-                        return Result<Guid>.Fail("Error! the Given name is already exist! " + c.Name_En + "!");
-                }
-                return Result<Guid>.Success(id);
+                return Result<Guid>.Fail("Court district is not supplied!");
             }
-            return Result<Guid>.Fail("Court district is not supplied!");
-            //var IsExist = repository.Entities.Where(w => w.StateId == request.StateId && w.Abbreviation.Equals(request.Abbreviation)).FirstOrDefault();
-            //if (IsExist != null)
-            //    return Result<Guid>.Fail("The given abbreviation is already exists!");
-            //var bookType = mapper.Map<CourtDistrictEntity>(request);
-            //await repository.InsertAsync(bookType);
-            //await _unitOfWork.Commit(cancellationToken);
-            //return Result<Guid>.Success(bookType.Id);
+
+            // Use HashSet for faster lookup and remove unnecessary trims inside the loop
+            var inputNameMap = request.CourtDistricts
+                .Select(cd => new
+                {
+                    Original = cd,
+                    NormalizedName = cd.Name_En?.Trim().ToLower()
+                })
+                .Where(x => !string.IsNullOrWhiteSpace(x.NormalizedName))
+                .ToList();
+
+            var normalizedNames = inputNameMap.Select(x => x.NormalizedName).ToHashSet();
+
+            // Fetch existing names (case-insensitive match)
+            var existingNames = repository.Entities
+                .Where(w => w.StateId == request.StateId && normalizedNames.Contains(w.Name_En.ToLower()))
+                .Select(w => w.Name_En)
+                .ToList();
+
+            if (existingNames.Any())
+            {
+                return Result<Guid>.Fail("Record is already exist: " + string.Join(", \n", existingNames));
+            }
+
+            // Map to entities using original objects
+            var newEntities = inputNameMap.Select(x => new CourtDistrictEntity
+            {
+                Name_En = x.Original.Name_En?.Trim(),
+                Name_Hn = x.Original.Name_Hn?.Trim(),
+                StateId = request.StateId
+            }).ToList();
+
+            // Bulk insert
+            await repository.InsertRangeAsync(newEntities);
+            await _unitOfWork.Commit(cancellationToken);
+
+            // Return last inserted ID
+            return Result<Guid>.Success(newEntities.Last().Id);
         }
     }
 }

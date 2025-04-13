@@ -1,13 +1,10 @@
-﻿using CourtApp.Application.Features.Typeofcasess.Commands;
-using CourtApp.Application.Features.Typeofcasess.Query;
-using CourtApp.Application.Features.CourtType.Command;
+﻿using CourtApp.Application.Features.CourtType.Command;
 using CourtApp.Application.Features.CourtType.Query;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.LawyerDiary.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers
@@ -34,7 +31,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 
         public async Task<JsonResult> OnGetCreateOrEdit(Guid id)
         {
-          
+
             if (id == Guid.Empty)
             {
                 var ViewModel = new CourtTypeViewModel();
@@ -66,13 +63,22 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                         id = result.Data;
                         _notify.Success($"Court type with ID {result.Data} Created.");
                     }
-                    else _notify.Error(result.Message);
+                    else
+                    {
+                        _notify.Error(result.Message);
+                        return await RenderForm(btViewModel, false, "_CreateOrEdit");
+                    }
                 }
                 else
                 {
                     var updateCommand = _mapper.Map<UpdateCourtTypeCommand>(btViewModel);
                     var result = await _mediator.Send(updateCommand);
                     if (result.Succeeded) _notify.Information($"Court type with ID {result.Data} Updated.");
+                    else
+                    {
+                        _notify.Error(result.Message);
+                        return await RenderForm(btViewModel, false, "_CreateOrEdit");
+                    }
                 }
                 var response = await _mediator.Send(new GetCourtTypeQuery());
                 if (response.Succeeded)

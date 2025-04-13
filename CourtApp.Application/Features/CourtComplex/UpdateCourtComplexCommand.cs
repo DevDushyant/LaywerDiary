@@ -1,17 +1,15 @@
 ﻿using AspNetCoreHero.Results;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace CourtApp.Application.Features.CourtComplex
 {
-    public class UpdateCourtComplexCommand:IRequest<Result<Guid>>
+    public class UpdateCourtComplexCommand : IRequest<Result<Guid>>
     {
         public Guid Id { get; set; }
         public int StateId { get; set; }
@@ -28,25 +26,37 @@ namespace CourtApp.Application.Features.CourtComplex
         public UpdateCourtComplexCommandHandler(ICourtComplexRepository repository, IUnitOfWork _unitOfWork)
         {
             this.repository = repository;
-            this._unitOfWork= _unitOfWork;
+            this._unitOfWork = _unitOfWork;
         }
         public async Task<Result<Guid>> Handle(UpdateCourtComplexCommand cmd, CancellationToken cancellationToken)
         {
-            var detailById = await repository.GetByIdAsync(cmd.Id);
-            if (detailById == null)
-                return Result<Guid>.Fail($"Court complex not found.");
-            else
-            {
-                //detailById.DistrictCode = cmd.DistrictId;
-                detailById.StateId = cmd.StateId;
-                detailById.Abbreviation = cmd.Abbreviation;
-                detailById.Name_En = cmd.Name_En;
-                detailById.Name_Hn = cmd.Name_Hn;
-                detailById.CourtDistrictId = cmd.CourtDistrictId;
-                await repository.UpdateAsync(detailById);
-                await _unitOfWork.Commit(cancellationToken);
-                return Result<Guid>.Success(detailById.Id);
-            }
+            // Fetch the record to update
+            var existingRecord = await repository.GetByIdAsync(cmd.Id);
+            if (existingRecord == null)
+                return Result<Guid>.Fail("Record does not exist.");
+
+
+            // Check for name conflict with other records (excluding the current record)
+            var duplicateRecord = await repository.Entities
+                .Where(e => e.Id != cmd.Id
+                            && e.StateId == cmd.StateId
+                            && e.CourtDistrictId == cmd.CourtDistrictId
+                            && e.Name_En.ToLower() == cmd.Name_En.ToLower().Trim())
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (duplicateRecord != null)
+                return Result<Guid>.Fail("Another record with the same name already exists.");
+
+            // Update the entity fields
+            existingRecord.StateId = cmd.StateId;
+            existingRecord.CourtDistrictId = cmd.CourtDistrictId;
+            existingRecord.Name_En = cmd.Name_En.ToLower().Trim();
+            existingRecord.Name_Hn = cmd.Name_Hn;
+
+            await repository.UpdateAsync(existingRecord);
+            await _unitOfWork.Commit(cancellationToken);
+
+            return Result<Guid>.Success(existingRecord.Id);
         }
     }
 }

@@ -39,11 +39,11 @@
                 data: new FormData(form),
                 contentType: false,
                 processData: false,
-                success: function (res) {
+                success: function (res) {                  
                     if (res.isValid) {
                         $('#viewAll').html(res.html)
                         $('#form-modal').modal('hide');
-                    }
+                    }                   
                 },
                 error: function (err) {
                     console.log(err)

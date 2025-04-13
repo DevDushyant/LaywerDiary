@@ -57,14 +57,25 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     var result = await _mediator.Send(createCommand);
                     if (result.Succeeded)
                         _notify.Success($"Cadre with ID {result.Data} Created.");
-                    else _notify.Error(result.Message);
+                    else
+                    {
+                        _notify.Error(result.Message);
+                        var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
+                        return new JsonResult(new { isValid = false, html = html });
+                    }
                 }
                 else
                 {
                     var updateCommand = _mapper.Map<UpdateCadreCommand>(ViewModel);
                     var result = await _mediator.Send(updateCommand);
                     if (result.Succeeded)
-                        _notify.Information($"Book type with ID {result.Data} Updated.");
+                        _notify.Information($"Cadre with ID {result.Data} Updated.");
+                    else
+                    {
+                        _notify.Error(result.Message);
+                        var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", ViewModel);
+                        return new JsonResult(new { isValid = false, html = html });
+                    }
                 }
                 var response = await _mediator.Send(new GetQueryCadre());
                 if (response.Succeeded)

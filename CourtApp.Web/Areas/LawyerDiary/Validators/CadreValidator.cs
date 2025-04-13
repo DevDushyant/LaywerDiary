@@ -8,9 +8,9 @@ namespace CourtApp.Web.Areas.LawyerDiary.Validators
         public CadreValidator()
         {
             RuleFor(p => p.Name_En)
-               .NotEmpty().WithMessage("{PropertyName} is required.")
+               .NotEmpty().WithMessage("Cadre name is required.")
                .NotNull();
-            
+
         }
     }
 }
