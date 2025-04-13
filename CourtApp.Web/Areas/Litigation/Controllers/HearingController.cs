@@ -185,6 +185,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 else
                 {
                     var wmodel = new CaseWorkingViewModel();
+                    wmodel.Workdt = new List<ProcWork> { new ProcWork() };
                     wmodel.WorkTypes = await DdlWorks();
                     model.ProceedingTypes = await DdlProcHeads();
                     model.Stages = await DdlCaseStages();

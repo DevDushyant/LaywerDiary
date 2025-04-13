@@ -56,17 +56,7 @@
                 </div>
             </div>
 
-            @* <div class="form-group row">
-                <label class="col-md-3 col-form-label">@localizer["District"]</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <select name="DistrictCode" class="form-control select2bs4" id="DistrictCode" asp-for="DistrictCode"
-                                asp-items="@Model.Districts">
-                        </select>
-                    </div>
-                    <span asp-validation-for="DistrictCode" class="text-danger"></span>
-                </div>
-            </div> *@
+            
             @if (@Model.Id == Guid.Empty)
             {
                 <div class="form-group row div_hide" id="c_district">
@@ -91,15 +81,6 @@
                     </div>
                 </div>
 
-               @*  <div class="form-group row div_hide" id="d_high_court_name">
-                    <label class="col-md-3 col-form-label">High Court Name</label>
-                    <div class="col-md-9">
-                        <div class="input-group">
-                            <input type="text" placeholder="Please enter high court name" asp-for="CourtName" name="CourtName" class="form-control">
-                        </div>
-                        <span asp-validation-for="CourtName" class="text-danger"></span>
-                    </div>
-                </div> *@
 
                 <div class="form-group row">
                     <fieldset class="scheduler-border">
@@ -107,8 +88,8 @@
                         <table id="tblCourtBench" border="1" style="width:100%!important">
                             <thead>
                                 <tr>
-                                    <th width="30%"><label class="col-md-3 col-form-label">Court/Bench</label></th>
-                                    <th width="60%"><label class="col-md-3 col-form-label">Address</label></th>
+                                    <th width="60%">Court/Bench</th>
+                                    <th width="40%">Address</th>
                                     <th width="10%"></th>
                                 </tr>
                             </thead>
@@ -159,20 +140,7 @@
                         </div>
                     </div>
                 }
-                @* else
-                {
-                    <div class="form-group row">
-                        <label class="col-md-3 col-form-label">High Court Name</label>
-                        <div class="col-md-9">
-                            <div class="input-group">
-                                <input type="text" placeholder="Please enter high court name"
-                                       asp-for="CourtName"
-                                       class="form-control">
-                            </div>
-                            <span asp-validation-for="CourtName" class="text-danger"></span>
-                        </div>
-                    </div>
-                } *@
+                
 
                 <div class="form-group row">
                     <fieldset class="scheduler-border">
@@ -180,8 +148,8 @@
                         <table id="tblCourtBench" border="1" style="width:100%!important">
                             <thead>
                                 <tr>
-                                    <th width="30%"><label class="col-md-3 col-form-label">Court/Bench</label></th>
-                                    <th width="60%"><label class="col-md-3 col-form-label">Address</label></th>
+                                    <th width="60%">Court/Bench</th>
+                                    <th width="40%">Address</th>
                                     <th width="10%"></th>
                                 </tr>
                             </thead>
@@ -236,8 +204,4 @@
         <button type="submit" class="btn btn-default close-button" data-dismiss="modal">Cancel</button>
     </div>
 </form>
-<script type="text/javascript" language=javascript>
-    $.validator.unobtrusive.parse(document);
-
-</script>
 <script src="~/js/lawyer/courtmaster.js"></script>

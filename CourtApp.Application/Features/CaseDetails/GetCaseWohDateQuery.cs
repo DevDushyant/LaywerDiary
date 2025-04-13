@@ -32,7 +32,7 @@ namespace CourtApp.Application.Features.CaseDetails
                         .Include(c => c.CaseType)
                         .Include(c => c.CaseStage)
                         .Include(c => c.CourtBench)
-                        .Where(c => c.CreatedBy == request.UserId)
+                        .Where(c => c.CreatedBy == request.UserId && c.DisposalDate == null)
                         .Select(e => new
                         {
                             Case = e,

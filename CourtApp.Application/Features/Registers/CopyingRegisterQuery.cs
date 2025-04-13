@@ -1,14 +1,13 @@
 ﻿using AspNetCoreHero.Results;
-using AutoMapper;
 using CourtApp.Application.DTOs.Registers;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 
 namespace CourtApp.Application.Features.Registers
 {
@@ -80,10 +79,10 @@ IWorkMasterRepository _WorkRepo)
                         a.Id = cd.Case.Id;
                         a.Court = cd.Case.CourtBench.CourtBench_En.ToString();
                         a.No = cd.Case.CaseNo;
-                        a.Year = cd.Case.CaseYear.ToString();                        
+                        a.Year = cd.Case.CaseYear.ToString();
                         a.FirstTitle = cd.Case.FirstTitle;
                         a.SecondTitle = cd.Case.SecondTitle;
-                        a.CaseType =cd.Case.CaseType.Name_En;                       
+                        a.CaseType = cd.Case.CaseType.Name_En;
                         a.AppliedOn = cd.CaseWorkDetail.AppliedOn != default(DateTime) ? cd.CaseWorkDetail.AppliedOn.ToString("dd/MM/yyyy") : "";
                         a.ReceivedOn = cd.CaseWorkDetail.ReceivedOn != default(DateTime) ? cd.CaseWorkDetail.ReceivedOn.ToString("dd/MM/yyyy") : "";
                         a.Reason = cd.Work.Work_En;
@@ -91,7 +90,7 @@ IWorkMasterRepository _WorkRepo)
                     }
                 }
                 if (request.SearchType == 3) awc = awc.Where(w => w.ReceivedOn != "").ToList();
-                if (request.SearchType == 2 || request.SearchType==1) awc = awc.Where(w => w.ReceivedOn == "").ToList();
+                if (request.SearchType == 2) awc = awc.Where(w => w.ReceivedOn == "").ToList();
                 var dt = awc.Where(w => w.AppliedOn != "").ToList();
                 return Result<List<CopyDisposalResponse>>.Success(dt);
             }
