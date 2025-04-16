@@ -18,7 +18,8 @@ namespace CourtApp.Application.Features.Registers
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public int SearchType { get; set; }
-        public string UserId { get; set; }
+        public List<string> LinkedIds { get; set; }
+        //public string UserId { get; set; }
     }
     public class CopyingRegisterQueryHandler : IRequestHandler<CopyingRegisterQuery, Result<List<CopyDisposalResponse>>>
     {
@@ -39,7 +40,7 @@ IWorkMasterRepository _WorkRepo)
         public async Task<Result<List<CopyDisposalResponse>>> Handle(CopyingRegisterQuery request, CancellationToken cancellationToken)
         {
             var distinctCases = await _ProcRepo.Entities
-                                .Where(w => w.CreatedBy.Equals(request.UserId))
+                                .Where(w => request.LinkedIds.Contains(w.CreatedBy))
                              .Include(c => c.Case)
                                  .ThenInclude(c => c.CaseType)
                             .Include(c => c.Case)

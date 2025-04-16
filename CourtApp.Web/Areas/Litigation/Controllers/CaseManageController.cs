@@ -4,11 +4,14 @@ using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.CaseProceeding;
 using CourtApp.Application.Features.Clients.Commands;
 using CourtApp.Application.Features.UserCase;
+using CourtApp.Application.Interfaces.Shared;
+using CourtApp.Infrastructure.DbContexts;
 using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
+using CourtApp.Web.Extensions;
 using CourtApp.Web.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +24,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
@@ -33,11 +35,17 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         private const long MaxFileSize = 200 * 1024 * 1024; // 200MB
         private readonly BlobService _blobService;
         private readonly UserManager<ApplicationUser> _userManager;
-        public CaseManageController(IWebHostEnvironment _webHostEnvironment, BlobService _blobService, UserManager<ApplicationUser> _userManager)
+        private readonly IDocumentUploadService _documentUploadService;
+
+        public CaseManageController(IWebHostEnvironment _webHostEnvironment, BlobService _blobService,
+            UserManager<ApplicationUser> _userManager, IDocumentUploadService _documentUploadService,
+            IdentityContext _identityDbContext)
         {
             this._webHostEnvironment = _webHostEnvironment;
             this._blobService = _blobService;
             this._userManager = _userManager;
+            this._documentUploadService = _documentUploadService;
+
         }
 
         #region Case Management Area
@@ -50,7 +58,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             var response = await _mediator.Send(new GetCaseInfoQuery()
             {
-                UserId = CurrentUser.Id,
+                LinkedIds = User.GetUserLinkedIds(),
                 PageSize = 10000,
                 PageNumber = 1
             });
@@ -313,7 +321,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 _notify.Information($"Case with Id {id} is deleted.");
                 var response = await _mediator.Send(new GetCaseInfoQuery()
                 {
-                    UserId = CurrentUser.Id,
+                    LinkedIds = User.GetUserLinkedIds(),
                     PageSize = 10000,
                     PageNumber = 1
                 });
@@ -491,7 +499,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     {
                         // Step 2: Generate Unique File Name
                         string uniqueFileName = $"{Path.GetFileNameWithoutExtension(f.Document.FileName)}_{Guid.NewGuid()}{Path.GetExtension(f.Document.FileName)}";
-                        string containerName = f.TypeId == 1 ? "Draft" : "Order";
+                        string documentType = f.TypeId == 1 ? "Draft" : "Order";
 
                         // Step 3: Compress the File into a ZIP
                         using var docStream = f.Document.OpenReadStream();
@@ -507,7 +515,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
                         // Step 5: Upload the compressed file to Azure Blob Storage
                         string compressedFileName = $"{Path.GetFileNameWithoutExtension(f.Document.FileName)}_{Guid.NewGuid()}.zip";
-                        string filePath = await _blobService.UploadOrUpdateFileAsync(memoryStream, compressedFileName, "application/zip", containerName, CancellationToken.None);
+                        string filePath = await _documentUploadService.UploadCompressedFileAsync(memoryStream, compressedFileName, documentType);
+                        //string filePath = await _blobService.UploadOrUpdateFileAsync(memoryStream, compressedFileName, "application/zip", containerName, CancellationToken.None);
 
                         // Step 6: Map Data for Database Entry
                         ddoc.Add(new CaseDocumentModel
@@ -726,7 +735,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             var response = await _mediator.Send(new GetCaseWohDateQuery()
             {
-                UserId = CurrentUser.Id,
+                LinkedIds = User.GetUserLinkedIds(),
                 PageSize = 10000,
                 PageNumber = 1
             });

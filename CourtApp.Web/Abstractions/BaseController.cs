@@ -30,6 +30,7 @@ using CourtApp.Web.Areas.LawyerDiary.Models;
 using CourtApp.Web.Areas.LawyerDiary.Models.Lawyer;
 using CourtApp.Web.Areas.LawyerDiary.Models.Title;
 using CourtApp.Web.Areas.Litigation.Models;
+using CourtApp.Web.Extensions;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using HtmlAgilityPack;
@@ -167,7 +168,7 @@ namespace CourtApp.Web.Abstractions
         {
             var response = await _mediator.Send(new GetAllClientCachedQuery()
             {
-                UserId = UserId,
+                LinkedIds = User.GetUserLinkedIds(),
                 PageSize = 10000,
                 PageNumber = 1
             });
@@ -188,7 +189,7 @@ namespace CourtApp.Web.Abstractions
             {
                 PageSize = 10000,
                 PageNumber = 1,
-                UserId = CurrentUser.Id
+                LinkedIds = User.GetUserLinkedIds(),
             });
             var viewModel = _mapper.Map<List<GetCaseInfoViewModel>>(CaseId != null && CaseId != Guid.Empty ? response.Data.Where(w => w.Id != CaseId.Value) : response.Data);
             var selectListItems = viewModel.Select(v => new
@@ -748,7 +749,7 @@ namespace CourtApp.Web.Abstractions
         {
             var response = await _mediator.Send(new GetCaseInfoQuery()
             {
-                UserId = UserId,
+                LinkedIds = User.GetUserLinkedIds(),
                 PageNumber = 1,
                 PageSize = 10000
             });

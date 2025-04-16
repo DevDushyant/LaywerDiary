@@ -6,6 +6,7 @@ using CourtApp.Domain.Entities.LawyerDiary;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -17,7 +18,7 @@ namespace CourtApp.Application.Features.Clients.Queries.GetAllCached
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-        public string UserId { get; set; }
+        public List<string> LinkedIds { get; set; }
     }
 
     public class GetAllClientsCachedQueryHandler : IRequestHandler<GetAllClientCachedQuery, PaginatedResult<GetAllClientCachedResponse>>
@@ -48,7 +49,7 @@ namespace CourtApp.Application.Features.Clients.Queries.GetAllCached
             var paginatedList = await
                 _RepoClient
                 .Clients
-                .Where(w => w.CreatedBy.Equals(request.UserId))
+                .Where(w => request.LinkedIds.Contains(w.CreatedBy))
                 .Select(expression)
                 .ToPaginatedListAsync(request.PageNumber, request.PageSize);
             return paginatedList;

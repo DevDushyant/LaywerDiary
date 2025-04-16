@@ -3,6 +3,7 @@ using CourtApp.Application.Features.Clients.Queries.GetAllCached;
 using CourtApp.Application.Features.Clients.Queries.GetById;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Client.Model;
+using CourtApp.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -26,7 +27,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 PageNumber = 1,
                 PageSize = 10000,
-                UserId = CurrentUser.Id
+                LinkedIds = User.GetUserLinkedIds(),
             });
             if (response.Succeeded)
             {
@@ -98,7 +99,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         }
                         else
                         {
-                            var res = await _mediator.Send(new GetAllClientCachedQuery() { UserId = CurrentUser.Id, PageNumber = 1, PageSize = 10000 });
+                            var res = await _mediator.Send(new GetAllClientCachedQuery() { LinkedIds = User.GetUserLinkedIds(), PageNumber = 1, PageSize = 10000 });
                             if (res.Succeeded)
                             {
                                 var viewModel = _mapper.Map<List<GClientViewModel>>(res.Data);
@@ -111,7 +112,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     {
 
                         _notify.Error(result.Message);
-                        var res = await _mediator.Send(new GetAllClientCachedQuery() { UserId = CurrentUser.Id, PageNumber = 1, PageSize = 1000 });
+                        var res = await _mediator.Send(new GetAllClientCachedQuery() { LinkedIds = User.GetUserLinkedIds(), PageNumber = 1, PageSize = 1000 });
                         if (res.Succeeded)
                         {
                             var viewModel = _mapper.Map<List<GClientViewModel>>(res.Data);
@@ -131,7 +132,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     var result = await _mediator.Send(updateClientCommand);
                     if (result.Succeeded) _notify.Information($"Client with ID {result.Data} Updated.");
                 }
-                var response = await _mediator.Send(new GetAllClientCachedQuery() { UserId = CurrentUser.Id, PageNumber = 1, PageSize = 1000 });
+                var response = await _mediator.Send(new GetAllClientCachedQuery() { LinkedIds = User.GetUserLinkedIds(), PageNumber = 1, PageSize = 1000 });
                 if (response.Succeeded)
                 {
                     var viewModel = _mapper.Map<List<GClientViewModel>>(response.Data);
@@ -158,7 +159,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             if (deleteCommand.Succeeded)
             {
                 _notify.Information($"Client with Id {Id} Deleted.");
-                var res = await _mediator.Send(new GetAllClientCachedQuery() { UserId = CurrentUser.Id, PageNumber = 1, PageSize = 1000 });
+                var res = await _mediator.Send(new GetAllClientCachedQuery() { LinkedIds = User.GetUserLinkedIds(), PageNumber = 1, PageSize = 1000 });
                 if (res.Succeeded)
                 {
                     var viewModel = _mapper.Map<List<GClientViewModel>>(res.Data);
@@ -174,7 +175,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             else
             {
                 _notify.Error(deleteCommand.Message);
-                var res = await _mediator.Send(new GetAllClientCachedQuery() { UserId = CurrentUser.Id, PageNumber = 1, PageSize = 1000 });
+                var res = await _mediator.Send(new GetAllClientCachedQuery() { LinkedIds = User.GetUserLinkedIds(), PageNumber = 1, PageSize = 1000 });
                 var viewModel = _mapper.Map<List<GClientViewModel>>(res.Data);
                 var html = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
                 return new JsonResult(new { isValid = true, html = html });

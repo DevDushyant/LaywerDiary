@@ -8,6 +8,7 @@ using KT3Core.Areas.Global.Classes;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -28,7 +29,8 @@ namespace CourtApp.Application.Features.UserCase
         public Guid CaseTyepId { get; set; }
         public DateTime HearingDate { get; set; }
         public string CallingFrm { get; set; }
-        public string UserId { get; set; }
+        public List<string> LinkedIds { get; set; }
+        //public string UserId { get; set; }
     }
     public class GetCaseDetailsQueryHandler : IRequestHandler<GetCaseDetailsQuery, PaginatedResult<CaseDetailResponse>>
     {
@@ -79,8 +81,8 @@ namespace CourtApp.Application.Features.UserCase
             var predicate = PredicateBuilder.True<CaseDetailEntity>();
             if (predicate != null)
             {
-                if (request.UserId != string.Empty)
-                    predicate = predicate.And(u => u.CreatedBy.Equals(request.UserId));
+                if (request.LinkedIds.Count > 0)
+                    predicate = predicate.And(c => request.LinkedIds.Contains(c.CreatedBy));
                 if (request.Year != 0)
                     predicate = predicate.And(y => y.CaseYear == request.Year);
                 if (request.CaseNumber != string.Empty)

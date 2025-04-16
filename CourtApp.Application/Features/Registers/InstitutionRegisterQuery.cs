@@ -6,6 +6,7 @@ using CourtApp.Domain.Entities.CaseDetails;
 using KT3Core.Areas.Global.Classes;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +18,8 @@ namespace CourtApp.Application.Features.Registers
         public DateTime ToDt { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-        public string UserId { get; set; }
+        //public string UserId { get; set; }
+        public List<string> LinkedIds { get; set; }
     }
     public class InstitutionRegisterQueryHandler : IRequestHandler<InstitutionRegisterQuery, PaginatedResult<InstitutionResponse>>
     {
@@ -34,8 +36,8 @@ namespace CourtApp.Application.Features.Registers
             var predicate = PredicateBuilder.True<CaseDetailEntity>();
             if (predicate != null)
             {
-                if (request.UserId != string.Empty)
-                    predicate = predicate.And(c => c.CreatedBy.Equals(request.UserId));
+                if (request.LinkedIds.Count > 0)
+                    predicate = predicate.And(c => request.LinkedIds.Contains(c.CreatedBy));
 
                 predicate = predicate.And(i => i.InstitutionDate >= request.FromDt && i.InstitutionDate <= request.ToDt);
             }
@@ -43,12 +45,13 @@ namespace CourtApp.Application.Features.Registers
                                join ac in _assignRepo.Entities
                                     on c.Id equals ac.CaseId into caseAssignments
                                from ac in caseAssignments.DefaultIfEmpty()
-                               where c.CreatedBy == request.UserId
-                               || ac.LawyerId == Guid.Parse(request.UserId)
+                               where request.LinkedIds.Contains(c.CreatedBy)
+                               || request.LinkedIds.Contains(ac.LawyerId.ToString())
                                select new InstitutionResponse
                                {
                                    Id = c.Id,
-                                   Reference = ac != null && ac.LawyerId == Guid.Parse(request.UserId) ? "Assigned" : "Self",
+                                   Reference = ac != null && request.LinkedIds.Contains(ac.LawyerId.ToString()) ? "Assigned" : "Self",
+                                   //Reference = ac != null && ac.LawyerId == Guid.Parse(request.UserId) ? "Assigned" : "Self",
                                    CaseType = c.CaseType.Name_En,
                                    No = c.CaseNo,
                                    Year = c.CaseYear.ToString(),

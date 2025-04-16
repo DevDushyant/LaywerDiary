@@ -5,6 +5,7 @@ using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace CourtApp.Application.Features.CaseDetails
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-        public string UserId { get; set; }
+        public List<string> LinkedIds { get; set; }
     }
     public class GetCaseWohDateQueryHandler : IRequestHandler<GetCaseWohDateQuery, PaginatedResult<GetCaseInfoDto>>
     {
@@ -32,7 +33,7 @@ namespace CourtApp.Application.Features.CaseDetails
                         .Include(c => c.CaseType)
                         .Include(c => c.CaseStage)
                         .Include(c => c.CourtBench)
-                        .Where(c => c.CreatedBy == request.UserId && c.DisposalDate == null)
+                        .Where(c => request.LinkedIds.Contains(c.CreatedBy) && c.DisposalDate == null)
                         .Select(e => new
                         {
                             Case = e,

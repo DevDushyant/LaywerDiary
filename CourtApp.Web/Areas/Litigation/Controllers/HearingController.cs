@@ -4,6 +4,7 @@ using CourtApp.Application.Features.CaseWork;
 using CourtApp.Application.Features.UserCase;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Litigation.Models;
+using CourtApp.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 CallingFrm = "HTD",
                 HearingDate = Convert.ToDateTime(seleDate),
-                UserId = CurrentUser.Id,
+                LinkedIds = User.GetUserLinkedIds(),
                 PageSize = 10000,
                 PageNumber = 1
             });
@@ -50,7 +51,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             {
                 CallingFrm = "HTD",
                 HearingDate = Convert.ToDateTime(SDate),
-                UserId = CurrentUser.Id,
+                LinkedIds = User.GetUserLinkedIds(),
                 PageSize = 10000,
                 PageNumber = 1
             });
@@ -70,7 +71,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var response = await _mediator.Send(new GetCaseDetailsQuery()
             {
                 CallingFrm = "BTD",
-                UserId = CurrentUser.Id,
+                LinkedIds = User.GetUserLinkedIds(),
                 PageSize = 10000,
                 PageNumber = 1
             });

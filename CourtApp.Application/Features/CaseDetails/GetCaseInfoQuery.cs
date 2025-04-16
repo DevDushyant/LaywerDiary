@@ -6,6 +6,7 @@ using KT3Core.Areas.Global.Classes;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace CourtApp.Application.Features.CaseDetails
         public int PageSize { get; set; }
         public string CaseNumber { get; set; }
         public int Year { get; set; }
-        public string UserId { get; set; }
+        public List<string> LinkedIds { get; set; }
     }
 
     public class GetCaseInfoQueryHandler : IRequestHandler<GetCaseInfoQuery, PaginatedResult<GetCaseInfoDto>>
@@ -27,7 +28,6 @@ namespace CourtApp.Application.Features.CaseDetails
         private readonly IUserCaseRepository _repository;
         private readonly ICaseProceedingRepository _ProcRepo;
         private readonly ICaseAssignedRepository _assignRepo;
-
         public GetCaseInfoQueryHandler(IUserCaseRepository _repository,
             ICaseProceedingRepository procRepo,
             ICaseAssignedRepository assignRepo)
@@ -41,8 +41,8 @@ namespace CourtApp.Application.Features.CaseDetails
             var predicate = PredicateBuilder.True<CaseDetailEntity>();
             if (predicate != null)
             {
-                if (request.UserId != null)
-                    predicate = predicate.And(c => c.CreatedBy.Equals(request.UserId));
+                if (request.LinkedIds.Count > 0)
+                    predicate = predicate.And(c => request.LinkedIds.Contains(c.CreatedBy));
                 if (request.Year != 0)
                     predicate = predicate.And(y => y.CaseYear == request.Year);
                 if (request.CaseNumber != null && request.CaseNumber != string.Empty)
@@ -54,12 +54,13 @@ namespace CourtApp.Application.Features.CaseDetails
                                   join ac in _assignRepo.Entities
                                   on c.Id equals ac.CaseId into caseAssignments
                                   from ac in caseAssignments.DefaultIfEmpty()
-                                  where c.CreatedBy == request.UserId
-                                  || ac.LawyerId == Guid.Parse(request.UserId) // Check if user is the creator or assigned lawyer
+                                  where request.LinkedIds.Contains(c.CreatedBy)
+                                  || request.LinkedIds.Contains(ac.LawyerId.ToString()) // Check if user is the creator or assigned lawyer
                                   select new GetCaseInfoDto
                                   {
                                       Id = c.Id,
-                                      Reference = ac != null && ac.LawyerId == Guid.Parse(request.UserId) ? "Assigned" : "Self", // Reference is "Assigned" if LawyerId matches
+                                      //Reference = ac != null && ac.LawyerId == Guid.Parse(request.UserId) ? "Assigned" : "Self", // Reference is "Assigned" if LawyerId matches
+                                      Reference = ac != null && request.LinkedIds.Contains(ac.LawyerId.ToString()) ? "Assigned" : "Self", // Reference is "Assigned" if LawyerId matches
                                       No = c.CaseNo,
                                       Year = c.CaseYear.ToString(),
                                       CourtType = c.CourtType.CourtType.ToString(),

@@ -1,9 +1,11 @@
 ﻿using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using CourtApp.Application.Extensions;
+using CourtApp.Application.Interfaces.Shared;
 using CourtApp.Infrastructure.Extensions;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Extensions;
+using CourtApp.Web.Models;
 using CourtApp.Web.Permission;
 using CourtApp.Web.Services;
 using FluentValidation.AspNetCore;
@@ -91,6 +93,20 @@ namespace CourtApp.Web
                 options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied"); // ✅ Access Denied Page
             });
             services.AddSingleton<BlobService>();
+            services.Configure<UploadSettings>(_configuration.GetSection("UploadSettings"));
+            var uploadProvider = _configuration["UploadSettings:Provider"];
+            if (uploadProvider == "Azure")
+            {
+                services.AddScoped<IDocumentUploadService, AzureBlobUploaderService>();
+            }
+            else if (uploadProvider == "GoogleDrive")
+            {
+                services.AddScoped<IDocumentUploadService, GoogleDriveUploaderService>();
+            }
+            else
+            {
+                services.AddScoped<IDocumentUploadService, LocalUploaderService>();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

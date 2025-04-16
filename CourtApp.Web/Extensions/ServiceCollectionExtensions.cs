@@ -94,6 +94,7 @@ namespace CourtApp.Web.Extensions
             services.AddTransient<IMailService, SMTPMailService>();
             services.AddTransient<WhatsAppService>();
             services.AddTransient<IAuthenticatedUserService, AuthenticatedUserService>();
+            services.AddTransient<IDocumentUploadService, GoogleDriveUploaderService>();
         }
     }
 }

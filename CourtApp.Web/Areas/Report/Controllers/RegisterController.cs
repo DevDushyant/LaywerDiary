@@ -3,6 +3,7 @@ using CourtApp.Application.Features.CaseWork;
 using CourtApp.Application.Features.Registers;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Report.Models;
+using CourtApp.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -45,7 +46,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         PageSize = 10000,
                         FromDt = fromDt,
                         ToDt = toDt,
-                        UserId = CurrentUser.Id
+                        LinkedIds = User.GetUserLinkedIds()
+                        //UserId = CurrentUser.Id
                     });
                     InstitutionRegisterViewMode model = new InstitutionRegisterViewMode();
                     List<InstituteModel> inmd = new List<InstituteModel>();
@@ -78,7 +80,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             var viewName = ""; dynamic md = null;
             var response = await _mediator.Send(new CaseSearchableDataQuery()
             {
-                UserId = CurrentUser.Id,
+                LinkedIds = User.GetUserLinkedIds(),
                 ClientId = ClientId,
                 ReferalBy = ReferalBy,
                 Status = Status
@@ -121,7 +123,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 PageSize = 10000,
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
-                UserId = CurrentUser.Id
+                LinkedIds = User.GetUserLinkedIds(),
             });
             if (response.Succeeded)
             {
@@ -151,7 +153,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
                 SearchType = s,
-                UserId = CurrentUser.Id
+                LinkedIds = User.GetUserLinkedIds(),
             });
             CopyingRegisterViewModel model = new CopyingRegisterViewModel();
             List<CopyingCaseDetailModel> rdd = new List<CopyingCaseDetailModel>();
@@ -208,7 +210,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 PageSize = 10000,
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
-                UserId = CurrentUser.Id
+                LinkedIds = User.GetUserLinkedIds()
             });
             InstitutionRegisterViewMode model = new InstitutionRegisterViewMode();
             List<InstituteModel> inmd = new List<InstituteModel>();
@@ -247,7 +249,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 PageSize = 10000,
                 FromDt = Convert.ToDateTime("2024-05-01"),
                 ToDt = DateTime.Now,
-                UserId = CurrentUser.Id
+                LinkedIds = User.GetUserLinkedIds(),
             });
             if (response.Succeeded)
             {

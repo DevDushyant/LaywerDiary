@@ -17,7 +17,8 @@ namespace CourtApp.Application.Features.Registers
         public DateTime ToDt { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-        public string UserId { get; set; }
+        public List<string> LinkedIds { get; set; }
+        //public string UserId { get; set; }
     }
     public class OtherRegisterQueryHandler : IRequestHandler<OtherRegisterQuery, Result<List<OtherRegisterResponse>>>
     {
@@ -43,7 +44,7 @@ namespace CourtApp.Application.Features.Registers
         {
             var caseResponses = await (
                         from p in _ProcRepo.Entities
-                            .Where(w => w.CreatedBy.Equals(request.UserId))
+                            .Where(w => request.LinkedIds.Contains(w.CreatedBy))
                             .Include(p => p.Case)
                                 .ThenInclude(c => c.CaseType)
                             .Include(p => p.Case)
@@ -57,12 +58,13 @@ namespace CourtApp.Application.Features.Registers
                         join w in _wRepo.Entities.Where(w => !w.Abbreviation.Equals("COPY"))
                             on work.WorkTypeId equals w.Id
                         let c = p.Case
-                        where c != null && (c.CreatedBy == request.UserId ||
-                                (ac != null && ac.LawyerId == Guid.Parse(request.UserId)))
+                        where c != null && (request.LinkedIds.Contains(c.CreatedBy) ||
+                                (ac != null && request.LinkedIds.Contains(ac.LawyerId.ToString())))
                         select new OtherRegisterResponse
                         {
                             Id = c.Id,
-                            Reference = ac != null && ac.LawyerId == Guid.Parse(request.UserId) ? "Assigned" : "Self",
+                            Reference = ac != null && request.LinkedIds.Contains(ac.LawyerId.ToString()) ? "Assigned" : "Self",
+                            //Reference = ac != null && ac.LawyerId == Guid.Parse(request.UserId) ? "Assigned" : "Self",
                             CaseType = c.CaseType != null ? c.CaseType.Name_En : string.Empty,
                             Year = c.CaseYear.ToString(),
                             Court = c.CourtBench != null ? c.CourtBench.CourtBench_En : string.Empty,
