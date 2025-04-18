@@ -7,6 +7,7 @@ using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models.Lawyer;
 using CourtApp.Web.Areas.Litigation.Models;
+using CourtApp.Web.Extensions;
 using CourtApp.Web.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -163,9 +164,16 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             var ViewModel = new BringCaseViewModel();
             var currentUser = await _userManager.GetUserAsync(HttpContext.User);
             var allUsersExceptCurrentUser = await _userManager.Users
-                .Where(a => a.Id != currentUser.Id).ToListAsync();
+                .Where(a => !User.GetUserLinkedIds().Contains(a.Id) && a.IsActive == true && a.UserType.Equals("")).ToListAsync();
             var model = _mapper.Map<IEnumerable<UserViewModel>>(allUsersExceptCurrentUser);
-            ViewModel.Lawyers = new SelectList(model, nameof(UserViewModel.Id), nameof(UserViewModel.FirstName), null, null); ;
+            var lawyerSelectList = model.Select(x => new
+            {
+                Id = x.Id,
+                FullDisplay = $"{x.FirstName} {x.LastName}"
+            });
+
+            ViewModel.Lawyers = new SelectList(lawyerSelectList, "Id", "FullDisplay");
+            //ViewModel.Lawyers = new SelectList(model, nameof(UserViewModel.Id), nameof(UserViewModel.FirstName+" "+UserViewModel.LastName), null, null); ;
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_BringCaseDetail", ViewModel) });
         }
         public async Task<IActionResult> GetClientDetailByCase(Guid CaseId)

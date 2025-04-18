@@ -36,6 +36,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using HtmlAgilityPack;
 using HtmlToOpenXml;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -53,6 +54,7 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Web.Abstractions
 {
+    [Authorize]
     public abstract class BaseController<T> : Controller
     {
         protected UserViewModel CurrentUser { get; private set; }

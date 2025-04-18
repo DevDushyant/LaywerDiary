@@ -50,11 +50,13 @@
                         </td>
                         <td>
                             @{
-                                DateTime? ndt =null;
-                                if (@bt.NextDate != "")
-                                    ndt = Convert.ToDateTime(@bt.NextDate);
+                                DateTime? ndt = null;
+                                if (!string.IsNullOrWhiteSpace(bt.NextDate) && bt.NextDate != "-infinity")
+                                {
+                                    ndt = Convert.ToDateTime(bt.NextDate);
+                                }
                             }
-                            <input type="date" asp-for="@ndt" class="form-control" />
+                            <input type="date" value="@(ndt?.ToString("yyyy-MM-dd") ?? "")" class="form-control" />
                             @if (ndt == null)
                             {                                
                                 <span style="color:red">*</span>

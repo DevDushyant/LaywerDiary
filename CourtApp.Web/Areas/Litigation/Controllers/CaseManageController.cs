@@ -32,7 +32,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     public class CaseManageController : BaseController<CaseManageController>
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private const long MaxFileSize = 200 * 1024 * 1024; // 200MB
+        private const long MaxFileSize = 30 * 1024 * 1024; // 200MB
         private readonly BlobService _blobService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IDocumentUploadService _documentUploadService;
@@ -261,6 +261,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 if (Id == Guid.Empty)
                 {
                     var createCommand = _mapper.Map<CreateCaseCommand>(ViewModel);
+                    createCommand.LinkedIds = User.GetUserLinkedIds();
                     createCommand.AgainstCaseDetails = _mapper.Map<List<UpseartAgainstCaseDto>>(ViewModel.AgainstCaseDetails);
                     var result = await _mediator.Send(createCommand);
                     if (result.Succeeded)
@@ -493,7 +494,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
                     if (f.Document.Length > MaxFileSize)
                     {
-                        return BadRequest("File size exceeds the 200MB limit.");
+                        return Json(new { success = "failed", message = "Uploaded document has exeed size(>30mb), please compress and upload it again " + f.Document.FileName });
+                        //return BadRequest("File size exceeds the 200MB limit.");
                     }
                     try
                     {

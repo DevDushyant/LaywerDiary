@@ -6,9 +6,10 @@
         BindDocument('Documents_' + id + '__DocId', $("#Documents_" + id + "__TypeId").val());
     });
 
-    $('#create-form').submit(function (e) {
+    $('#CaseDocUpload').submit(function (e) {
+        debugger;
         e.preventDefault();
-        var form = $('#create-form')[0];
+        var form = $('#CaseDocUpload')[0];
         var formData = new FormData(form);
         $.ajax({
             url: form.action, // or manually: '/CaseManage/UploadCaseDocs'

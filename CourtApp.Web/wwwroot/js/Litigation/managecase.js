@@ -3,6 +3,7 @@
     $("#StateId").select2({
         placeholder: "Select a state",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -10,6 +11,7 @@
     $("#ClientId").select2({
         placeholder: "Select a client",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -17,6 +19,7 @@
     $("#AppearenceID").select2({
         placeholder: "Select a appearence",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -24,6 +27,7 @@
     $("#AgStateId").select2({
         placeholder: "Select a state",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -32,6 +36,7 @@
     $("#CourtTypeId").select2({
         placeholder: "Select a court type",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -40,6 +45,7 @@
     $("#AgCourtTypeId").select2({
         placeholder: "Select a court type",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -48,6 +54,7 @@
     $("#AgBenchId").select2({
         placeholder: "Select a Bench",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -56,6 +63,7 @@
     $("#AgCourtDistrictId").select2({
         placeholder: "Select a Court District",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -64,6 +72,7 @@
     $("#BenchId").select2({
         placeholder: "Select a court",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -71,6 +80,7 @@
     $("#CourtId").select2({
         placeholder: "Select a court",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -79,6 +89,7 @@
     $("#AgCourtId").select2({
         placeholder: "Select a court",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -89,6 +100,7 @@
     $("#StrengthId").select2({
         placeholder: "Select strength",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -97,6 +109,7 @@
     $("#AgStrengthId").select2({
         placeholder: "Select strength",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -105,6 +118,7 @@
     $("#CaseCategoryId").select2({
         placeholder: "Select case category",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -113,6 +127,7 @@
     $("#AgComplexId").select2({
         placeholder: "Select complex",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -121,6 +136,7 @@
     $("#AgCaseCategoryId").select2({
         placeholder: "Select case category",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -129,6 +145,7 @@
     $("#CourtDistrictId").select2({
         placeholder: "Select a district",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -138,6 +155,7 @@
     $("#ComplexId").select2({
         placeholder: "Select a complex",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -146,6 +164,7 @@
     $("#AgComplexId").select2({
         placeholder: "Select a complex",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -154,6 +173,7 @@
     $("#CaseTypeId").select2({
         placeholder: "Select case type",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -162,6 +182,7 @@
     $("#AgCaseTypeId").select2({
         placeholder: "Select case type",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -176,6 +197,7 @@
     $("#CaseYear").select2({
         placeholder: "Select year",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -184,6 +206,7 @@
     $("#AgCaseYear").select2({
         placeholder: "Select year",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -192,6 +215,7 @@
     $("#SelectedFirstTitle").select2({
         placeholder: "Select a title first",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -200,6 +224,7 @@
     $("#SelectedSecondTitle").select2({
         placeholder: "Select a title second",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -208,6 +233,7 @@
     $("#LinkedClient").select2({
         placeholder: "Select a client",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -216,6 +242,7 @@
     $("#FirstTitleCode").select2({
         placeholder: "Select a First Title",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -224,6 +251,7 @@
     $("#SecoundTitleCode").select2({
         placeholder: "Select a Second Title",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -232,6 +260,7 @@
     $("#CaseStageCode").select2({
         placeholder: "Select a case stage",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -240,6 +269,7 @@
     $("#CaseStageId").select2({
         placeholder: "Select a case stage",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -248,6 +278,7 @@
     $("#LinkedCaseId").select2({
         placeholder: "Select a case",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -256,6 +287,7 @@
     $("#CisYear").select2({
         placeholder: "Select cis year",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -264,6 +296,7 @@
     $("#AgCisYear").select2({
         placeholder: "Select cis year",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -272,6 +305,7 @@
     $("#LinkedCaseId").select2({
         placeholder: "Select link case",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }
@@ -280,6 +314,7 @@
     $("#AgCadreId").select2({
         placeholder: "Select cadre",
         theme: "bootstrap4",
+        allowClear: true,
         escapeMarkup: function (m) {
             return m;
         }

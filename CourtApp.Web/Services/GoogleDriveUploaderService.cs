@@ -20,12 +20,13 @@ namespace CourtApp.Web.Services
         {
             this._settings = options.Value;
             var credential = GoogleCredential.FromFile(_settings.GoogleDrive.ServiceAccountKeyFilePath)
-           .CreateScoped(DriveService.ScopeConstants.Drive);
+            .CreateScoped(DriveService.Scope.Drive);
 
             _driveService = new DriveService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
-                ApplicationName = _settings.GoogleDrive.ApplicationName
+                ApplicationName = _settings.GoogleDrive.ApplicationName,
+                HttpClientFactory = new CustomHttpClientFactory()
             });
         }
         public async Task<string> UploadCompressedFileAsync(Stream zipStream, string zipFileName, string documentType)
@@ -56,30 +57,60 @@ namespace CourtApp.Web.Services
         }
         private async Task<string> GetOrCreateFolderAsync(string folderName, string parentFolderId)
         {
-            // Check if folder exists
-            var listRequest = _driveService.Files.List();
-            listRequest.Q = $"mimeType='application/vnd.google-apps.folder' and name='{folderName}' and '{parentFolderId}' in parents and trashed=false";
-            listRequest.Fields = "files(id, name)";
-            var result = await listRequest.ExecuteAsync();
-
-            if (result.Files.Count > 0)
+            if (string.IsNullOrEmpty(parentFolderId))
             {
-                return result.Files[0].Id;
+                Console.WriteLine("Parent folder ID is null or empty.");
+                return null;
             }
 
-            // Create folder
-            var fileMetadata = new Google.Apis.Drive.v3.Data.File
+            try
             {
-                Name = folderName,
-                MimeType = "application/vnd.google-apps.folder",
-                Parents = new List<string> { parentFolderId }
-            };
+                // First: check if parentFolderId is valid
+                var parentCheck = await _driveService.Files.Get(parentFolderId).ExecuteAsync();
+                if (parentCheck == null || parentCheck.MimeType != "application/vnd.google-apps.folder")
+                {
+                    Console.WriteLine("Invalid parent folder ID.");
+                    return null;
+                }
 
-            var request = _driveService.Files.Create(fileMetadata);
-            request.Fields = "id";
-            var folder = await request.ExecuteAsync();
+                var safeFolderName = folderName.Replace("'", "\\'");
+                var listRequest = _driveService.Files.List();
+                listRequest.Q = $"mimeType='application/vnd.google-apps.folder' and name='{safeFolderName}' and '{parentFolderId}' in parents and trashed=false";
+                listRequest.Fields = "files(id, name)";
+                listRequest.Spaces = "drive";
 
-            return folder.Id;
+                var result = await listRequest.ExecuteAsync();
+
+                if (result.Files.Count > 0)
+                {
+                    return result.Files[0].Id;
+                }
+
+                // Create folder if not found
+                var fileMetadata = new Google.Apis.Drive.v3.Data.File
+                {
+                    Name = folderName,
+                    MimeType = "application/vnd.google-apps.folder",
+                    Parents = new List<string> { parentFolderId }
+                };
+
+                var createRequest = _driveService.Files.Create(fileMetadata);
+                createRequest.Fields = "id";
+                var folder = await createRequest.ExecuteAsync();
+
+                return folder.Id;
+            }
+            catch (Google.GoogleApiException gex)
+            {
+                Console.WriteLine($"Google API Error: {gex.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unhandled error: {ex.Message}");
+                return null;
+            }
         }
+
     }
 }

@@ -17,6 +17,7 @@ namespace CourtApp.Application.Features.Case
     public class CreateCaseCommand : IRequest<Result<Guid>>
     {
         #region Common Properties Among all Court Type
+        public List<string> LinkedIds { get; set; }
         public DateTime InstitutionDate { get; set; }
         public int StateId { get; set; }
         public Guid CourtTypeId { get; set; }
@@ -120,62 +121,76 @@ namespace CourtApp.Application.Features.Case
             var predicate = PredicateBuilder.True<CaseDetailEntity>();
             if (predicate != null)
             {
+                if (request.LinkedIds.Count > 0)
+                    predicate = predicate.And(y => request.LinkedIds.Contains(y.CreatedBy));
+
                 if (request.CourtTypeId != Guid.Empty)
                     predicate = predicate.And(y => y.CourtTypeId == request.CourtTypeId);
+
+                if (request.ComplexId.HasValue && request.ComplexId.Value != Guid.Empty)
+                    predicate = predicate.And(y => y.CourtBenchId == request.CourtId && y.ComplexId == request.ComplexId);
+
+                if (request.BenchId.HasValue && request.BenchId.Value != Guid.Empty)
+                    predicate = predicate.And(y => y.CourtBenchId == request.BenchId);
+
                 if (request.CaseTypeId != Guid.Empty)
-                    predicate = predicate.And(y => request.CaseTypeId == request.CaseTypeId);
-                if (!string.IsNullOrEmpty(request.CaseNo) && request.CaseYear != 0)
-                    predicate = predicate.And(y => y.CourtTypeId != request.CourtTypeId && y.CaseNo.Equals(request.CaseNo) && y.CaseYear == request.CaseYear);
-                if (string.IsNullOrEmpty(request.CaseNo) && request.FirstTitle != "" && request.SecondTitle != "")
-                    predicate = predicate.And(y => y.FirstTitle.Equals(request.FirstTitle) && y.SecondTitle.Equals(request.SecondTitle));
+                    predicate = predicate.And(y => y.CaseTypeId == request.CaseTypeId);
 
-            }
-            var isCaseExist = _Repository.Entites.Where(predicate).FirstOrDefault();
-            if (isCaseExist == null)
-            {
-                var entity = _mapper.Map<CaseDetailEntity>(request);
-                entity.CourtBenchId = request.BenchId != null ? request.BenchId.Value : request.CourtId.Value;
-                if (request.CourtDistrictId == Guid.Empty)
-                    entity.CourtDistrictId = null;
-                if (request.ComplexId == Guid.Empty)
-                    entity.ComplexId = null;
+                if (!string.IsNullOrWhiteSpace(request.CaseNo) && request.CaseYear != 0)
+                    predicate = predicate.And(y => y.CaseNo == request.CaseNo && y.CaseYear == request.CaseYear);
 
-                var isAdd = request.AgainstCaseDetails.Where(s => s.CaseNo != null);
-                if (isAdd.Count() > 0)
+                if (string.IsNullOrWhiteSpace(request.CaseNo) &&
+                    !string.IsNullOrWhiteSpace(request.FirstTitle) &&
+                    !string.IsNullOrWhiteSpace(request.SecondTitle))
                 {
-                    var agcs = new List<CaseDetailAgainstEntity>();
-                    foreach (var item in request.AgainstCaseDetails)
-                    {
-                        var ac = new CaseDetailAgainstEntity();
-                        ac.ImpugedOrderDate = item.ImpugedOrderDate.Value;
-                        ac.CourtTypeId = item.CourtTypeId.Value;
-                        ac.CourtBenchId = item.CourtId != null ? item.CourtId.Value : item.BenchId.Value;
-                        ac.StateId = item.StateId.Value;
-                        ac.CaseYear = item.CaseYear.Value;
-                        ac.CaseNo = item.CaseNo;
-                        ac.CaseCategoryId = item.CaseCategoryId.Value;
-                        ac.CaseTypeId = item.CaseTypeId.Value;
-                        ac.StrengthId = item.StrengthId != null ? item.StrengthId.Value : 0;
-                        ac.OfficerName = item.OfficerName;
-                        ac.CisYear = item.CisYear != null ? item.CisYear.Value : 0;
-                        ac.CisNo = item.CisNo;
-                        ac.CadreId = item.CadreId != null ? item.CadreId.Value : Guid.Empty;
-                        ac.CnrNo = item.CnrNo;
-                        ac.CourtDistrictId = item.CourtDistrictId != Guid.Empty ? item.CourtDistrictId : null;
-                        ac.ComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null;
-                        agcs.Add(ac);
-                    }
-                    entity.CaseAgainstEntities = agcs;
-
+                    predicate = predicate.And(y => y.FirstTitle == request.FirstTitle && y.SecondTitle == request.SecondTitle);
                 }
-                var result = await _Repository.InsertAsync(entity);
-                await _unitOfWork.Commit(cancellationToken);
-                return Result<Guid>.Success(entity.Id);
             }
-            else
-                return Result<Guid>.Fail($"Case number and case year already exist.");
+
+            var existingCase = _Repository.Entites.Where(predicate).FirstOrDefault();
+            if (existingCase != null)
+                return Result<Guid>.Fail("Record is already already exist.");
+
+            var entity = _mapper.Map<CaseDetailEntity>(request);
+
+            // Ensure CourtBenchId fallback
+            entity.CourtBenchId = request.BenchId ?? request.CourtId ?? Guid.Empty;
+
+            // Nullify empty optional fields
+            entity.CourtDistrictId = request.CourtDistrictId == Guid.Empty ? null : request.CourtDistrictId;
+            entity.ComplexId = request.ComplexId == Guid.Empty ? null : request.ComplexId;
+
+            // Add "Against Case" details
+            if (request.AgainstCaseDetails?.Any(s => !string.IsNullOrWhiteSpace(s.CaseNo)) == true)
+            {
+                entity.CaseAgainstEntities = request.AgainstCaseDetails
+                    .Where(s => !string.IsNullOrWhiteSpace(s.CaseNo))
+                    .Select(item => new CaseDetailAgainstEntity
+                    {
+                        ImpugedOrderDate = item.ImpugedOrderDate ?? DateTime.MinValue,
+                        CourtTypeId = item.CourtTypeId ?? Guid.Empty,
+                        CourtBenchId = item.BenchId ?? item.CourtId ?? Guid.Empty,
+                        StateId = item.StateId.Value,
+                        CaseYear = item.CaseYear ?? 0,
+                        CaseNo = item.CaseNo,
+                        CaseCategoryId = item.CaseCategoryId ?? Guid.Empty,
+                        CaseTypeId = item.CaseTypeId ?? Guid.Empty,
+                        StrengthId = item.StrengthId ?? 0,
+                        OfficerName = item.OfficerName,
+                        CisYear = item.CisYear ?? 0,
+                        CisNo = item.CisNo,
+                        CadreId = item.CadreId ?? Guid.Empty,
+                        CnrNo = item.CnrNo,
+                        CourtDistrictId = item.CourtDistrictId != Guid.Empty ? item.CourtDistrictId : null,
+                        ComplexId = item.ComplexId != Guid.Empty ? item.ComplexId : null
+                    }).ToList();
+            }
+
+            var result = await _Repository.InsertAsync(entity);
+            await _unitOfWork.Commit(cancellationToken);
+
+            return Result<Guid>.Success(entity.Id);
+
         }
-
-
     }
 }

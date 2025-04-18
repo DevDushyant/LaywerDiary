@@ -84,7 +84,12 @@ namespace CourtApp.Web
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IViewRenderService, ViewRenderService>();
-            //services.AddScoped<PermissionService>();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(20); // Set timeout
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
             services.ConfigureApplicationCookie(options =>
             {
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
@@ -92,6 +97,7 @@ namespace CourtApp.Web
                 options.LoginPath = new PathString("/Identity/Account/Login"); // ✅ Correct path for areas
                 options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied"); // ✅ Access Denied Page
             });
+
             services.AddSingleton<BlobService>();
             services.Configure<UploadSettings>(_configuration.GetSection("UploadSettings"));
             var uploadProvider = _configuration["UploadSettings:Provider"];
@@ -113,6 +119,7 @@ namespace CourtApp.Web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMultiLingualFeature();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -120,27 +127,30 @@ namespace CourtApp.Web
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHsts(); // Keep HSTS enabled in production
             }
 
-            app.UseNotyf();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
-
+            app.UseCookiePolicy();     // Ensure cookies respect policy
             app.UseRouting();
-            app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseSession();          // 🔑 Session before Routing
+
+
+            app.UseAuthentication();   // 🔒 Authentication before Authorization
+            app.UseAuthorization();    // 🔐 Authorization after Authentication
+
+            app.UseNotyf(); // Notification (can also be placed earlier if not dependent on auth/session)
+
+            // Routing setup
             app.UseEndpoints(endpoints =>
             {
-
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{area=Dashboard}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
-
             });
+
         }
     }
 }
