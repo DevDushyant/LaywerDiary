@@ -1,6 +1,7 @@
 ﻿using CourtApp.Application.Constants;
 using CourtApp.Application.Features.CaseDetails;
 using CourtApp.Application.Features.Lawyer;
+using CourtApp.Application.Interfaces.Shared;
 using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
@@ -8,7 +9,6 @@ using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.LawyerDiary.Models.Lawyer;
 using CourtApp.Web.Areas.Litigation.Models;
 using CourtApp.Web.Extensions;
-using CourtApp.Web.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,11 +25,16 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
     public class LawyerController : BaseController<LawyerController>
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly BlobService _blobService;
-        public LawyerController(UserManager<ApplicationUser> _userManager, BlobService blobService)
+        //private readonly BlobService _blobService;
+        private readonly IDocumentUploadService _docService;
+        public LawyerController(UserManager<ApplicationUser> UserManager,
+            IDocumentUploadService docService
+            //BlobService blobService
+            )
         {
-            this._userManager = _userManager;
-            _blobService = blobService;
+            _userManager = UserManager;
+            _docService = docService;
+            //_blobService = blobService;
         }
         public IActionResult Index()
         {
@@ -87,7 +92,8 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                 {
                     string fileName = Guid.NewGuid() + System.IO.Path.GetExtension(ProfileImgFile.FileName);
                     using var stream = ProfileImgFile.OpenReadStream();
-                    newImagePath = await _blobService.UploadOrUpdateFileAsync(stream, fileName, ProfileImgFile.ContentType, "ProfileImage", System.Threading.CancellationToken.None);
+                    newImagePath = await _docService.UploadFileAsync(stream, fileName, "ProfileImage");
+                    //newImagePath = await _blobService.UploadOrUpdateFileAsync(stream, fileName, ProfileImgFile.ContentType, "ProfileImage", System.Threading.CancellationToken.None);
                 }
                 if (!isUpdating)
                 {
@@ -106,7 +112,8 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     if (result.Succeeded)
                     {
                         if (result.Data != null)
-                            await _blobService.DeleteFileAsync(result.Message);
+                            await _docService.DeleteFileAsync(upModel.ProfileImgPath);
+                        // await _blobService.DeleteFileAsync(result.Message);
                         _notify.Information($"Lawyer with ID {result.Data} Updated.");
                     }
                 }
@@ -136,7 +143,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             var result = await _mediator.Send(new LawyerDeleteCommand { Id = id });
             if (result.Succeeded)
             {
-                await _blobService.DeleteFileAsync(result.Message);
+                await _docService.DeleteFileAsync(result.Message);
                 _notify.Information($"Lawyer with Id {id} Deleted.");
                 var response = await _mediator.Send(new LawyerGetAllQuery());
                 if (response.Succeeded)
@@ -161,20 +168,19 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         #region Bring Case Detail By Lawyer 
         public async Task<IActionResult> GetCaseByLawyer()
         {
-            var ViewModel = new BringCaseViewModel();
+            var model = new BringCaseViewModel();
             var currentUser = await _userManager.GetUserAsync(HttpContext.User);
             var allUsersExceptCurrentUser = await _userManager.Users
-                .Where(a => !User.GetUserLinkedIds().Contains(a.Id) && a.IsActive == true && a.UserType.Equals("")).ToListAsync();
-            var model = _mapper.Map<IEnumerable<UserViewModel>>(allUsersExceptCurrentUser);
-            var lawyerSelectList = model.Select(x => new
+                .Where(a => !User.GetUserLinkedIds().Contains(a.Id) && a.IsActive == true).ToListAsync();
+            var modelUser = _mapper.Map<IEnumerable<UserViewModel>>(allUsersExceptCurrentUser);
+            var lawyerSelectList = modelUser.Select(x => new
             {
                 Id = x.Id,
                 FullDisplay = $"{x.FirstName} {x.LastName}"
             });
 
-            ViewModel.Lawyers = new SelectList(lawyerSelectList, "Id", "FullDisplay");
-            //ViewModel.Lawyers = new SelectList(model, nameof(UserViewModel.Id), nameof(UserViewModel.FirstName+" "+UserViewModel.LastName), null, null); ;
-            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_BringCaseDetail", ViewModel) });
+            model.Lawyers = new SelectList(lawyerSelectList, "Id", "FullDisplay");
+            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_BringCaseDetail", model) });
         }
         public async Task<IActionResult> GetClientDetailByCase(Guid CaseId)
         {

@@ -5,6 +5,7 @@ using CourtApp.Infrastructure.DbContexts;
 using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
+using CourtApp.Web.Extensions;
 using CourtApp.Web.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -32,11 +33,14 @@ namespace CourtApp.Web.Areas.Admin.Controllers
         private readonly IdentityContext _identityDbContext;
         private readonly IMailService _emailSender;
         private readonly BlobService _blobService;
+        private readonly IDocumentUploadService _documentUploadService;
         public UserController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager,
             IdentityContext _identityDbContext,
-            IMailService emailSender, BlobService _blobService)
+            IMailService emailSender,
+            BlobService _blobService,
+            IDocumentUploadService documentUploadService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -44,6 +48,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             this._identityDbContext = _identityDbContext;
             _emailSender = emailSender;
             this._blobService = _blobService;
+            _documentUploadService = documentUploadService;
         }
 
 
@@ -56,7 +61,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
         private async Task<List<UserViewModel>> GetAllUsers()
         {
             var model = new List<UserViewModel>();
-            if (CurrentUser.Role.ToUpper() == "SUPERADMIN")
+            if (User.GetRoles().Contains("SUPERADMIN"))
             {
                 List<string> superAdminUsers = new List<string>() { "LAWYER", "CORPORATE" };
                 var superAdminUsersData = await _userManager.Users
@@ -234,7 +239,9 @@ namespace CourtApp.Web.Areas.Admin.Controllers
             {
                 string fileName = user.Id + System.IO.Path.GetExtension(ProfileImgFile.FileName);
                 using var stream = ProfileImgFile.OpenReadStream();
-                user.ProfileImgPath = await _blobService.UploadOrUpdateFileAsync(stream, fileName, ProfileImgFile.ContentType, "ProfileImage", cancellationToken: System.Threading.CancellationToken.None);
+                var path = await _documentUploadService.UploadFileAsync(stream, fileName, "ProfileImage");
+                user.ProfileImgPath = path;
+                //user.ProfileImgPath = await _blobService.UploadOrUpdateFileAsync(stream, fileName, ProfileImgFile.ContentType, "ProfileImage", cancellationToken: System.Threading.CancellationToken.None);
                 await _userManager.UpdateAsync(user);
             }
 
@@ -358,7 +365,8 @@ namespace CourtApp.Web.Areas.Admin.Controllers
                 // Delete associated files from Azure Blob Storage
                 if (!string.IsNullOrEmpty(user.ProfileImgPath))
                 {
-                    await _blobService.DeleteFileAsync(user.ProfileImgPath);
+                    await _documentUploadService.DeleteFileAsync(user.ProfileImgPath);
+                    //await _blobService.DeleteFileAsync(user.ProfileImgPath);
                 }
 
 

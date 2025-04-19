@@ -801,5 +801,6 @@ namespace CourtApp.Web.Abstractions
             return allowedExtensions.Contains(fileExtension);
         }
         #endregion
+
     }
 }

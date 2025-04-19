@@ -8,6 +8,7 @@
                         <thead>
                             <tr>
                                 <th>Sno.</th>
+                                <th>Reference</th>
                                 <th>Case Detail</th>
                                 <th></th>
                             </tr>
@@ -23,6 +24,7 @@
                                         <input type="hidden" asp-for="@Model.CaseList[i].Id" />
                                         @(count = count + 1)
                                     </td>
+                                    <td>@Model.CaseList[i].Reference</td>
                                     <td>
                                         <input type="hidden" asp-for="@Model.CaseList[i].CaseTitle" />
                                         @Model.CaseList[i].CaseTitle

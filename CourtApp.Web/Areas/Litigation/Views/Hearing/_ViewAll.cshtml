@@ -11,6 +11,7 @@
                         <thead>
                             <tr>
                                 <th>Sno.</th>
+                                <th>Reference</th>
                                 <th>Court</th>
                                 <th>Type</th>
                                 <th>Number</th>
@@ -38,6 +39,7 @@
                                         <input type="hidden" asp-for="@Model.CaseList[i].Id" />
                                         @(count = count + 1)
                                     </td>
+                                    <td>@Model.CaseList[i].Reference</td>
                                     <td style="width:10%">
                                         <input type="hidden" asp-for="@Model.CaseList[i].CourtName" />
                                         @Model.CaseList[i].CourtName

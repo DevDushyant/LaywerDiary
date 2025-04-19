@@ -18,7 +18,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models
         public string Name_En { get; set; }
         public string Name_Hn { get; set; }
         public string Abbreviation { get; set; }
-        public List<CaseType>? CaseTypes { get; set; }
+        public List<CaseType> CaseTypes { get; set; }
     }
     public class CaseType
     {

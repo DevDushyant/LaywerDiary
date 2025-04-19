@@ -97,6 +97,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 hearing.CourtName = item.CourtName;
                 hearing.CaseTypeName = item.CaseTypeName;
                 hearing.IsProceedingDone = item.IsProceedingDone;
+                hearing.Reference = item.Reference;
                 cdt.Add(hearing);
             }
             model.CaseList = cdt;

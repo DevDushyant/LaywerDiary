@@ -80,22 +80,31 @@ namespace CourtApp.Infrastructure.Repositories
             return await _repository.Entities.ToListAsync();
         }
 
-        public async Task<CaseDetailEntity> GetMostRecentCaseInfo(string UserId)
+        public async Task<CaseDetailEntity> GetMostRecentCaseInfo(List<string> LinkedIds)
         {
-            var IsRecord = _repository.Entities.Where(w => w.CreatedBy.Equals(UserId));
-            if (IsRecord.Count() > 0)
-            {
-                return await _repository
-                   .Entities
+            var caseDetails = await _repository.Entities
+                    .Where(u => LinkedIds.Contains(u.CreatedBy))
                     .Include(d => d.CaseAgainstEntities)
                         .ThenInclude(c => c.CourtType)
                     .Include(d => d.CourtType)
                     .Include(c => c.CourtBench)
-                    .Where(u => u.CreatedBy.Equals(UserId))
                     .OrderByDescending(u => u.CreatedOn)
-                    .FirstAsync();
-            }
-            return null;
+                    .FirstOrDefaultAsync();
+            return caseDetails;
+            //var IsRecord = _repository.Entities.Where(w => LinkedIds.Contains(w.CreatedBy));
+            //if (IsRecord.Count() > 0)
+            //{
+            //    return await _repository
+            //       .Entities
+            //        .Include(d => d.CaseAgainstEntities)
+            //            .ThenInclude(c => c.CourtType)
+            //        .Include(d => d.CourtType)
+            //        .Include(c => c.CourtBench)
+            //        .Where(u => LinkedIds.Contains(u.CreatedBy))
+            //        .OrderByDescending(u => u.CreatedOn)
+            //        .FirstAsync();
+            //}
+            //return null;
         }
 
         public async Task<Guid> InsertAsync(CaseDetailEntity objEntity)

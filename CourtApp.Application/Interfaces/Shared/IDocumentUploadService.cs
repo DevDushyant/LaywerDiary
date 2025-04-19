@@ -5,6 +5,8 @@ namespace CourtApp.Application.Interfaces.Shared
 {
     public interface IDocumentUploadService
     {
-        Task<string> UploadCompressedFileAsync(Stream zipStream, string zipFileName, string documentType);
+        Task<string> UploadFileAsync(Stream zipStream, string zipFileName, string documentType);
+
+        Task<bool> DeleteFileAsync(string fileId);
     }
 }

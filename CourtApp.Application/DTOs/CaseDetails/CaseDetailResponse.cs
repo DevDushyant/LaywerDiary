@@ -20,5 +20,6 @@ namespace CourtApp.Application.DTOs.Case
         public string CaseTitle { get; set; }
         public string Abbreviation { get; set; }
         public bool IsProceedingDone { get; set; }
+        public string Reference { get; set; }
     }
 }

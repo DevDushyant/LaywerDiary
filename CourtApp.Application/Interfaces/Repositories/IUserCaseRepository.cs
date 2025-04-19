@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CourtApp.Application.Interfaces.Repositories
@@ -12,7 +11,7 @@ namespace CourtApp.Application.Interfaces.Repositories
         IQueryable<CaseDetailEntity> Entites { get; }
         Task<List<CaseDetailEntity>> GetListAsync();
         Task<CaseDetailEntity> GetByIdAsync(Guid Id);
-        Task<CaseDetailEntity> GetMostRecentCaseInfo(string UserId);
+        Task<CaseDetailEntity> GetMostRecentCaseInfo(List<string> LinkedIds);
         Task<CaseDetailEntity> GetDetailAsync(Guid Id);
         Task<Guid> InsertAsync(CaseDetailEntity caseEntity);
         Task UpdateAsync(CaseDetailEntity caseEntity);

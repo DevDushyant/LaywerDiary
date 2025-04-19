@@ -150,12 +150,13 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
 
                 linkedIds.Add(userIdGuid);
                 string lawyerIdsCsv = string.Join(",", linkedIds);
-
+                string userRoles = string.Join(",", normalizedUserRoles);
                 var allClaims = new List<Claim>(existingClaims)
                                 {
                                     new Claim(ClaimTypes.NameIdentifier, user.Id),
                                     new Claim(ClaimTypes.Name, user.UserName),
-                                    new Claim("LinkedIds", lawyerIdsCsv)
+                                    new Claim("LinkedIds", lawyerIdsCsv),
+                                    new Claim("Roles", userRoles)
                                 };
 
                 await _signInManager.SignOutAsync(); // Ensures a clean sign-in context

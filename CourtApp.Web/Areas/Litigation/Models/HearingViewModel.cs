@@ -14,6 +14,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string CaseTitle { get; set; }
         public bool Selected { get; set; }
         public bool IsProceedingDone { get; set; }
+        public string Reference { get; set; }
 
     }
 }

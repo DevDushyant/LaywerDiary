@@ -12,7 +12,6 @@ using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
 using CourtApp.Web.Extensions;
-using CourtApp.Web.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -33,16 +32,16 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private const long MaxFileSize = 30 * 1024 * 1024; // 200MB
-        private readonly BlobService _blobService;
+        //private readonly BlobService _blobService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IDocumentUploadService _documentUploadService;
 
-        public CaseManageController(IWebHostEnvironment _webHostEnvironment, BlobService _blobService,
+        public CaseManageController(IWebHostEnvironment _webHostEnvironment, /*BlobService _blobService,*/
             UserManager<ApplicationUser> _userManager, IDocumentUploadService _documentUploadService,
             IdentityContext _identityDbContext)
         {
             this._webHostEnvironment = _webHostEnvironment;
-            this._blobService = _blobService;
+            //this._blobService = _blobService;
             this._userManager = _userManager;
             this._documentUploadService = _documentUploadService;
 
@@ -149,7 +148,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     var response = await _mediator.Send(new GetUserCaseDetailByIdQuery
                     {
                         CaseId = id,
-                        UserId = CurrentUser.Id
+                        LinkedIds = User.GetUserLinkedIds(),
                     });
                     if (response.Succeeded)
                     {
@@ -428,7 +427,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     UDocs.Add(new CaseDoc
                     {
                         //DocFilePath = item.DocFilePath,
-                        DocFilePath = _blobService.BaseUri() + "/" + item.DocFilePath,
+                        DocFilePath = item.DocFilePath,
                         DocName = item.DocName,
                         DocType = item.DocType,
                         DocDate = item.DocDate,
@@ -517,7 +516,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
 
                         // Step 5: Upload the compressed file to Azure Blob Storage
                         string compressedFileName = $"{Path.GetFileNameWithoutExtension(f.Document.FileName)}_{Guid.NewGuid()}.zip";
-                        string filePath = await _documentUploadService.UploadCompressedFileAsync(memoryStream, compressedFileName, documentType);
+                        string filePath = await _documentUploadService.UploadFileAsync(memoryStream, compressedFileName, documentType);
                         //string filePath = await _blobService.UploadOrUpdateFileAsync(memoryStream, compressedFileName, "application/zip", containerName, CancellationToken.None);
 
                         // Step 6: Map Data for Database Entry
@@ -647,7 +646,11 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             ViewBag.Title = "Add New";
             if (ModelState.IsValid)
             {
-                var response = await _mediator.Send(new GetUserCaseDetailByIdQuery { CaseId = id, UserId = CurrentUser.Id });
+                var response = await _mediator.Send(new GetUserCaseDetailByIdQuery
+                {
+                    CaseId = id,
+                    LinkedIds = User.GetUserLinkedIds()
+                });
                 if (response.Succeeded)
                 {
                     _notify.Success($"Client with ID {response.Data} Created.");
@@ -763,10 +766,21 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         public async Task<JsonResult> OnGetAssignCase(Guid CaseId)
         {
             var model = new AssignCaseViewModel();
+            var userType = new List<string>();
+            userType.Add("LAWYER");
+            userType.Add("CORPORATE");
             var allUsersExceptCurrentUser = await _userManager.Users
-                .Where(a => a.Id != CurrentUser.Id).ToListAsync();
-            var lUsers = _mapper.Map<IEnumerable<UserViewModel>>(allUsersExceptCurrentUser);
-            model.Lawyers = new SelectList(lUsers, nameof(UserViewModel.Id), nameof(UserViewModel.FirstName), null, null);
+                .Where(a => !User.GetUserLinkedIds().Contains(a.Id)
+                            && a.IsActive == true
+                            && userType.Contains(a.UserType)).ToListAsync();
+            var modelUser = _mapper.Map<IEnumerable<UserViewModel>>(allUsersExceptCurrentUser);
+            var lawyerSelectList = modelUser.Select(x => new
+            {
+                Id = x.Id,
+                FullDisplay = $"{x.FirstName} {x.LastName}"
+            });
+
+            model.Lawyers = new SelectList(lawyerSelectList, "Id", "FullDisplay");
             model.CaseId = CaseId;
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_AssignCase", model) });
         }

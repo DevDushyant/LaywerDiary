@@ -6,6 +6,7 @@ using CourtApp.Domain.Entities.CaseDetails;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace CourtApp.Application.Features.UserCase
     public class GetUserCaseDetailByIdQuery : IRequest<Result<UserCaseDetailResponse>>
     {
         public Guid CaseId { get; set; }
-        public string UserId { get; set; }
+        public List<string> LinkedIds { get; set; }
     }
 
     public class GetUserCaseDetailByIdQueryHandler : IRequestHandler<GetUserCaseDetailByIdQuery, Result<UserCaseDetailResponse>>
@@ -33,8 +34,8 @@ namespace CourtApp.Application.Features.UserCase
             CaseDetailEntity detail = new CaseDetailEntity();
             //this condition is applicable for getting most
             //recent case for repeat the case.
-            if (request.UserId != null && request.CaseId == Guid.Empty)
-                detail = await _CaseRepo.GetMostRecentCaseInfo(request.UserId);
+            if (request.LinkedIds.Any())
+                detail = await _CaseRepo.GetMostRecentCaseInfo(request.LinkedIds);
             else
                 detail = await _CaseRepo.GetByIdAsync(request.CaseId);
             if (detail != null)
@@ -79,8 +80,8 @@ namespace CourtApp.Application.Features.UserCase
                         agl.Add(agc);
                     }
                     mappeddata.AgainstCaseDetails = agl;
-                }                
-                
+                }
+
                 return Result<UserCaseDetailResponse>.Success(mappeddata);
             }
             return Result<UserCaseDetailResponse>.Fail("Information is not exist!");

@@ -11,5 +11,11 @@ namespace CourtApp.Web.Extensions
             var raw = user?.FindFirst("LinkedIds")?.Value;
             return raw?.Split(",", StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>();
         }
+
+        public static List<string> GetRoles(this ClaimsPrincipal user)
+        {
+            var raw = user?.FindFirst("Roles")?.Value;
+            return raw?.Split(",", StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>();
+        }
     }
 }

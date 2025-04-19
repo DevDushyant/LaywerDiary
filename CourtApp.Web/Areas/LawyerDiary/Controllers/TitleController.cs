@@ -270,7 +270,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             }
         }
 
-        private async Task<FSTitleMViewModel?> GetFSTitleViewModelById(Guid id)
+        private async Task<FSTitleMViewModel> GetFSTitleViewModelById(Guid id)
         {
             var response = await _mediator.Send(new FSTitleGetByIdQuery { Id = id });
             if (!response.Succeeded)

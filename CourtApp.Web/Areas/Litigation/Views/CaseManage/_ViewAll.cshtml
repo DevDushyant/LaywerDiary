@@ -65,7 +65,7 @@
                                class="dropdown-item" title="Upload Document"><i class="fas fa-file-alt"></i>  Upload Document</a>
                             <a asp-area="Litigation" asp-controller="casemanage" asp-action="GetCaseDetail"
                                asp-route-id="@bt.Id" asp-route-reft="@bt.Reference" class="dropdown-item" title="View Case Detail"><i class="fa fa-eye"></i>  Case Detail</a>
-                            @if ((AuthorizationService.AuthorizeAsync(User, "CasePanel.ManageCase.Delete")).Result.Succeeded)
+                            @if ((AuthorizationService.AuthorizeAsync(User, "CasePanel.ManageCase.Delete")).Result.Succeeded && bt.Reference.ToLower() != "assigned")
                             {
                                 <form id="form_delete_@bt.Id" asp-area="Litigation"
                                       asp-controller="casemanage" method="post"

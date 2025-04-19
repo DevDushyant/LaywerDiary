@@ -3,6 +3,7 @@ using CourtApp.Web.Models;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -15,21 +16,44 @@ namespace CourtApp.Web.Services
     public class GoogleDriveUploaderService : IDocumentUploadService
     {
         private readonly UploadSettings _settings;
-        private readonly DriveService _driveService;
-        public GoogleDriveUploaderService(IOptions<UploadSettings> options)
-        {
-            this._settings = options.Value;
-            var credential = GoogleCredential.FromFile(_settings.GoogleDrive.ServiceAccountKeyFilePath)
-            .CreateScoped(DriveService.Scope.Drive);
+        private readonly IWebHostEnvironment _environment;
+        private DriveService _driveService;
 
-            _driveService = new DriveService(new BaseClientService.Initializer
+        public GoogleDriveUploaderService(IOptions<UploadSettings> options,
+            IWebHostEnvironment environment)
+        {
+            _settings = options.Value;
+            _environment = environment;
+            _driveService = CreateDriveService();
+        }
+
+        private DriveService CreateDriveService()
+        {
+            var servicePath = Path.Combine(_environment.WebRootPath, "service-account-key.json");
+            GoogleCredential credentials;
+
+            using (var stream = new FileStream(servicePath, FileMode.Open, FileAccess.Read))
             {
-                HttpClientInitializer = credential,
-                ApplicationName = _settings.GoogleDrive.ApplicationName,
-                HttpClientFactory = new CustomHttpClientFactory()
+                credentials = GoogleCredential.FromStream(stream);
+            }
+
+            if (credentials.IsCreateScopedRequired)
+            {
+                credentials = credentials.CreateScoped(new[]
+                {
+                    DriveService.Scope.Drive // ✅ Full Drive access
+                });
+            }
+
+            return new DriveService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credentials,
+                ApplicationName = "LawyerDiaryUpload",
+                HttpClientFactory = new CustomHttpClientFactory() // ✅ Apply custom factory
             });
         }
-        public async Task<string> UploadCompressedFileAsync(Stream zipStream, string zipFileName, string documentType)
+
+        public async Task<string> UploadFileAsync(Stream zipStream, string zipFileName, string documentType)
         {
             var folderName = documentType switch
             {
@@ -38,7 +62,9 @@ namespace CourtApp.Web.Services
                 "Profile" => _settings.Folders["ProfileImage"],
                 _ => throw new ArgumentException("Invalid document type")
             };
+
             var subFolderId = await GetOrCreateFolderAsync(folderName, _settings.GoogleDrive.BaseFolderId);
+            if (subFolderId == null) throw new Exception("Failed to access or create target folder.");
 
             var fileMetadata = new Google.Apis.Drive.v3.Data.File
             {
@@ -46,47 +72,41 @@ namespace CourtApp.Web.Services
                 Parents = new List<string> { subFolderId }
             };
 
-            var request = _driveService.Files.Create(fileMetadata, zipStream, "application/zip");
+            string contentType = documentType == "ProfileImage"
+                ? GetContentType(zipFileName)
+                : "application/zip";
+
+            var request = _driveService.Files.Create(fileMetadata, zipStream, contentType);
             request.Fields = "id, webViewLink";
 
-            await request.UploadAsync(CancellationToken.None);
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(10));
+            await request.UploadAsync(cts.Token);
 
-            var uploadedFile = request.ResponseBody;
-
-            return uploadedFile.WebViewLink;
+            return request.ResponseBody.WebViewLink;
         }
+
         private async Task<string> GetOrCreateFolderAsync(string folderName, string parentFolderId)
         {
-            if (string.IsNullOrEmpty(parentFolderId))
-            {
-                Console.WriteLine("Parent folder ID is null or empty.");
-                return null;
-            }
-
             try
             {
-                // First: check if parentFolderId is valid
-                var parentCheck = await _driveService.Files.Get(parentFolderId).ExecuteAsync();
-                if (parentCheck == null || parentCheck.MimeType != "application/vnd.google-apps.folder")
-                {
-                    Console.WriteLine("Invalid parent folder ID.");
-                    return null;
-                }
+                // ✅ Short timeout for metadata check
+                //using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                var parent = await _driveService.Files.Get(parentFolderId).ExecuteAsync();
 
-                var safeFolderName = folderName.Replace("'", "\\'");
+                if (parent == null || parent.MimeType != "application/vnd.google-apps.folder")
+                    throw new Exception("Invalid or inaccessible parent folder.");
+
                 var listRequest = _driveService.Files.List();
-                listRequest.Q = $"mimeType='application/vnd.google-apps.folder' and name='{safeFolderName}' and '{parentFolderId}' in parents and trashed=false";
-                listRequest.Fields = "files(id, name)";
+                listRequest.Q = $"mimeType='application/vnd.google-apps.folder' and name='{folderName}' and '{parentFolderId}' in parents and trashed=false";
+                listRequest.Fields = "files(id)";
                 listRequest.Spaces = "drive";
 
                 var result = await listRequest.ExecuteAsync();
 
                 if (result.Files.Count > 0)
-                {
                     return result.Files[0].Id;
-                }
 
-                // Create folder if not found
+                // Create new folder if not found
                 var fileMetadata = new Google.Apis.Drive.v3.Data.File
                 {
                     Name = folderName,
@@ -96,21 +116,59 @@ namespace CourtApp.Web.Services
 
                 var createRequest = _driveService.Files.Create(fileMetadata);
                 createRequest.Fields = "id";
-                var folder = await createRequest.ExecuteAsync();
+                var newFolder = await createRequest.ExecuteAsync();
 
-                return folder.Id;
+                return newFolder.Id;
             }
             catch (Google.GoogleApiException gex)
             {
-                Console.WriteLine($"Google API Error: {gex.Message}");
-                return null;
+                Console.WriteLine($"Google API error: {gex.Message}");
+                throw;
+            }
+            catch (TaskCanceledException)
+            {
+                Console.WriteLine("Folder existence check timed out.");
+                throw;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Unhandled error: {ex.Message}");
-                return null;
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+                throw;
             }
         }
 
+        private string GetContentType(string fileName)
+        {
+            var extension = Path.GetExtension(fileName).ToLowerInvariant();
+            return extension switch
+            {
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                _ => "application/octet-stream"
+            };
+        }
+
+        public async Task<bool> DeleteFileAsync(string fileId)
+        {
+            try
+            {
+                var deleteRequest = _driveService.Files.Delete(fileId);
+                await deleteRequest.ExecuteAsync();
+                return true;
+            }
+            catch (Google.GoogleApiException gex)
+            {
+                Console.WriteLine($"Google API error during delete: {gex.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error during delete: {ex.Message}");
+                return false;
+            }
+        }
     }
+
+
 }
