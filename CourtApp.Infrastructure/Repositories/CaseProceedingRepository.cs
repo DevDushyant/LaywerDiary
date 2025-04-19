@@ -43,6 +43,11 @@ namespace CourtApp.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task DeleteRangeAsync(List<CaseProcedingEntity> Entities)
+        {
+            await _repository.DeleteRangeAsync(Entities);
+        }
+
         public async Task<CaseProcedingEntity> GetByIdAsync(Guid CaseId, DateTime? SelDate)
         {
 

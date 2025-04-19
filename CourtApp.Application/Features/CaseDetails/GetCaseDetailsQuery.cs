@@ -1,6 +1,5 @@
 ﻿using AspNetCoreHero.Results;
 using CourtApp.Application.DTOs.Case;
-using CourtApp.Application.Extensions;
 using CourtApp.Application.Interfaces.CacheRepositories;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
@@ -13,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CourtApp.Application.Features.UserCase
 {
-    public class GetCaseDetailsQuery : IRequest<PaginatedResult<CaseDetailResponse>>
+    public class GetCaseDetailsQuery : IRequest<Result<List<CaseDetailResponse>>>
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
@@ -29,7 +28,7 @@ namespace CourtApp.Application.Features.UserCase
         public List<string> LinkedIds { get; set; }
         //public string UserId { get; set; }
     }
-    public class GetCaseDetailsQueryHandler : IRequestHandler<GetCaseDetailsQuery, PaginatedResult<CaseDetailResponse>>
+    public class GetCaseDetailsQueryHandler : IRequestHandler<GetCaseDetailsQuery, Result<List<CaseDetailResponse>>>
     {
         private readonly ICourtTypeCacheRepository _RepoCourtType;
         private readonly ICourtTypeRepository _RepoCrtType;
@@ -56,100 +55,119 @@ namespace CourtApp.Application.Features.UserCase
             _RepoCrtType = repoCrtType;
             _assignRepo = assignRepo;
         }
-        public async Task<PaginatedResult<CaseDetailResponse>> Handle(GetCaseDetailsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<CaseDetailResponse>>> Handle(GetCaseDetailsQuery request, CancellationToken cancellationToken)
         {
-
-            var hearingDate = request.HearingDate.Date;
-
-            // Step 1: Get proceeding data
-            var proceedingData = _RepoProceeding.Entities.AsQueryable();
-            if (request.HearingDate != default)
+            try
             {
-                proceedingData = proceedingData
-                    .Where(n => n.NextDate.HasValue && n.NextDate.Value.Date == hearingDate);
-            }
+                var hearingDate = request.HearingDate.Date;
 
-            // Step 2: Dictionary for Max Proceeding Dates
-            Dictionary<Guid, DateTime> maxDatesByCaseId = new();
-            if (proceedingData.Any())
-            {
-                maxDatesByCaseId = proceedingData
-                    .Where(p => p.NextDate.HasValue)
-                    .GroupBy(p => p.CaseId)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Max(p => p.NextDate.Value)
-                    );
-            }
-
-            // Step 3: Base query with assigned/self logic and projection
-            var query = _RepoCase.Entites
-                .Include(p => p.CaseProcEntities)
-                .Join(
-                    _assignRepo.Entities,
-                    caseEntity => caseEntity.Id,
-                    assign => assign.CaseId,
-                    (caseEntity, assign) => new { Case = caseEntity, Assign = assign }
-                )
-                .Where(x =>
-                    request.LinkedIds.Contains(x.Case.CreatedBy) ||
-                    request.LinkedIds.Contains(x.Assign.LawyerId.ToString())
-                )
-                .Select(x => new CaseDetailResponse
+                // Step 1: Get proceeding data
+                var proceedingData = _RepoProceeding.Entities.AsQueryable();
+                if (request.HearingDate != default)
                 {
-                    Id = x.Case.Id,
-                    CourtName = x.Case.CourtBench.CourtBench_En,
-                    CaseTypeName = x.Case.CaseType.Name_En,
-                    FTitleType = x.Case.FTitle.Name_En,
-                    STitleType = x.Case.FTitle.Name_En, // Potential typo: should be SecondTitleType?
-                    FirstTitle = x.Case.FirstTitle,
-                    SecondTitle = x.Case.SecondTitle,
-                    CaseStage = x.Case.CaseStage.CaseStage,
-                    CaseNumber = x.Case.CaseNo ?? "",
-                    CaseYear = x.Case.CaseYear.ToString(),
-                    NextHearingDate = x.Case.NextDate ?? default,
-                    CaseTitle = x.Case.FirstTitle + " V/S " + x.Case.SecondTitle,
-                    IsProceedingDone = x.Case.CaseProcEntities != null &&
-                                                 x.Case.CaseProcEntities.Any(s => s.ProceedingDate == request.HearingDate),
-                    Reference = request.LinkedIds.Contains(x.Assign.LawyerId.ToString()) ? "Assigned" : "Self"
-                })
-                .AsQueryable();
+                    proceedingData = proceedingData
+                        .Where(n => n.NextDate.HasValue && n.NextDate.Value.Date == hearingDate);
+                }
 
-            // Step 4: Update hearing dates from proceedingData if available
-            if (maxDatesByCaseId.Any())
-            {
-                query = query.Select(cd => new CaseDetailResponse
+                // Step 2: Dictionary for Max Proceeding Dates
+                Dictionary<Guid, DateTime> maxDatesByCaseId = new();
+                if (proceedingData.Any())
                 {
-                    Id = cd.Id,
-                    CourtName = cd.CourtName,
-                    Abbreviation = cd.Abbreviation,
-                    CaseTypeName = cd.CaseTypeName,
-                    FTitleType = cd.FTitleType,
-                    STitleType = cd.STitleType,
-                    FirstTitle = cd.FirstTitle,
-                    SecondTitle = cd.SecondTitle,
-                    CaseStage = cd.CaseStage,
-                    CaseNumber = cd.CaseNumber,
-                    CaseYear = cd.CaseYear,
-                    CaseTitle = cd.CaseTitle,
-                    IsProceedingDone = cd.IsProceedingDone,
-                    NextHearingDate = maxDatesByCaseId.ContainsKey(cd.Id)
-                        ? maxDatesByCaseId[cd.Id]
-                        : cd.NextHearingDate,
-                    Reference = cd.Reference
-                });
-            }
+                    maxDatesByCaseId = proceedingData
+                        .Where(p => p.NextDate.HasValue)
+                        .GroupBy(p => p.CaseId)
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.Max(p => p.NextDate.Value)
+                        );
+                }
 
-            // Step 5: Filter by hearing date if needed
-            if (request.HearingDate != default)
+                // Step 3: Base query with assigned/self logic and projection
+                var query = _RepoCase.Entites
+                    .Include(p => p.CaseProcEntities)
+                    .Join(
+                        _assignRepo.Entities,
+                        caseEntity => caseEntity.Id,
+                        assign => assign.CaseId,
+                        (caseEntity, assign) => new { Case = caseEntity, Assign = assign }
+                    )
+                    .Where(x =>
+                        request.LinkedIds.Contains(x.Case.CreatedBy) ||
+                        request.LinkedIds.Contains(x.Assign.LawyerId.ToString())
+                    )
+                    .Select(x => new CaseDetailResponse
+                    {
+                        Id = x.Case.Id,
+                        CourtName = x.Case.CourtBench.CourtBench_En,
+                        CaseTypeName = x.Case.CaseType.Name_En,
+                        FTitleType = x.Case.FTitle.Name_En,
+                        STitleType = x.Case.FTitle.Name_En, // Potential typo: should be SecondTitleType?
+                        FirstTitle = x.Case.FirstTitle,
+                        SecondTitle = x.Case.SecondTitle,
+                        CaseStage = x.Case.CaseStage.CaseStage,
+                        CaseNumber = x.Case.CaseNo ?? "",
+                        CaseYear = x.Case.CaseYear.ToString(),
+                        NextHearingDate = x.Case.NextDate ?? default,
+                        CaseTitle = x.Case.FirstTitle + " V/S " + x.Case.SecondTitle,
+                        IsProceedingDone = x.Case.CaseProcEntities != null &&
+                                                     x.Case.CaseProcEntities.Any(s => s.ProceedingDate == request.HearingDate),
+                        Reference = request.LinkedIds.Contains(x.Assign.LawyerId.ToString()) ? "Assigned" : "Self"
+                    })
+                    .AsQueryable();
+
+                // Step 4: Update hearing dates from proceedingData if available
+                //IQueryable<CaseDetailResponse> caseDetails = Enumerable.Empty<CaseDetailResponse>().AsQueryable();
+                List<CaseDetailResponse> caseDetails;
+                if (maxDatesByCaseId.Any())
+                {
+                    caseDetails = await query.ToListAsync();
+                    caseDetails = caseDetails.Select(cd => new CaseDetailResponse
+                    {
+                        Id = cd.Id,
+                        CourtName = cd.CourtName,
+                        Abbreviation = cd.Abbreviation,
+                        CaseTypeName = cd.CaseTypeName,
+                        FTitleType = cd.FTitleType,
+                        STitleType = cd.STitleType,
+                        FirstTitle = cd.FirstTitle,
+                        SecondTitle = cd.SecondTitle,
+                        CaseStage = cd.CaseStage,
+                        CaseNumber = cd.CaseNumber,
+                        CaseYear = cd.CaseYear,
+                        CaseTitle = cd.CaseTitle,
+                        IsProceedingDone = cd.IsProceedingDone,
+                        NextHearingDate = maxDatesByCaseId.ContainsKey(cd.Id)
+                            ? maxDatesByCaseId[cd.Id]
+                            : cd.NextHearingDate,
+                        Reference = cd.Reference
+                    }).ToList();
+                }
+                else
+                    caseDetails = query.ToList();
+
+                // Step 5: Filter by hearing date if provided
+                if (request.HearingDate != default)
+                {
+                    var nextDate = request.HearingDate.Date;
+                    caseDetails = caseDetails
+                        .Where(e => e.NextHearingDate.Date == nextDate)
+                        .ToList();
+                }
+                // Manual paging
+                var result = caseDetails
+                    .Skip((request.PageNumber - 1) * request.PageSize)
+                    .Take(request.PageSize)
+                    .ToList();
+                return Result<List<CaseDetailResponse>>.Success(result);
+                // Step 6: Paginate and return
+                //return await caseDetails.ToPaginatedListAsync(request.PageNumber, request.PageSize);
+
+            }
+            catch (Exception ex)
             {
-                query = query.Where(e => e.NextHearingDate.Date == hearingDate);
+                Console.WriteLine(ex);
+                return null;
             }
-
-            // Step 6: Paginate and return
-            return await query.ToPaginatedListAsync(request.PageNumber, request.PageSize);
-
-
             //Expression<Func<CaseDetailEntity, CaseDetailResponse>> expression = e => new CaseDetailResponse
             //{
             //    Id = e.Id,
