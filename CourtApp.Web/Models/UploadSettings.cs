@@ -26,6 +26,7 @@ namespace CourtApp.Web.Models
         public string BaseFolderId { get; set; }
         public string ServiceAccountKeyFilePath { get; set; }
         public string ApplicationName { get; set; }
+        public string DownloadBaseUri { get; set; }
     }
 
     public class LocalConfig

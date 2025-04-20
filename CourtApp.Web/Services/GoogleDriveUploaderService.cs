@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,53 +18,37 @@ namespace CourtApp.Web.Services
     {
         private readonly UploadSettings _settings;
         private readonly IWebHostEnvironment _environment;
-        private DriveService _driveService;
-
         public GoogleDriveUploaderService(IOptions<UploadSettings> options,
-            IWebHostEnvironment environment)
+     IWebHostEnvironment environment)
         {
             _settings = options.Value;
             _environment = environment;
-            _driveService = CreateDriveService();
+
         }
-
-        private DriveService CreateDriveService()
-        {
-            var servicePath = Path.Combine(_environment.WebRootPath, "service-account-key.json");
-            GoogleCredential credentials;
-
-            using (var stream = new FileStream(servicePath, FileMode.Open, FileAccess.Read))
-            {
-                credentials = GoogleCredential.FromStream(stream);
-            }
-
-            if (credentials.IsCreateScopedRequired)
-            {
-                credentials = credentials.CreateScoped(new[]
-                {
-                    DriveService.Scope.Drive // ✅ Full Drive access
-                });
-            }
-
-            return new DriveService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credentials,
-                ApplicationName = "LawyerDiaryUpload",
-                HttpClientFactory = new CustomHttpClientFactory() // ✅ Apply custom factory
-            });
-        }
-
         public async Task<string> UploadFileAsync(Stream zipStream, string zipFileName, string documentType)
         {
             var folderName = documentType switch
             {
                 "Draft" => _settings.Folders["DraftDocuments"],
                 "Order" => _settings.Folders["OrderDocuments"],
-                "Profile" => _settings.Folders["ProfileImage"],
+                "Profile" => _settings.Folders["ProfileImages"],
                 _ => throw new ArgumentException("Invalid document type")
             };
+            var jsonKeyPath = Path.Combine(_environment.WebRootPath, "service-account-key.json");
+            GoogleCredential credential;
+            using (var stream = new FileStream(jsonKeyPath, FileMode.Open, FileAccess.Read))
+            {
+                credential = GoogleCredential.FromStream(stream)
+                    .CreateScoped(DriveService.Scope.Drive);
+            }
 
-            var subFolderId = await GetOrCreateFolderAsync(folderName, _settings.GoogleDrive.BaseFolderId);
+            var service = new DriveService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "DriveUploader"
+            });
+
+            var subFolderId = await GetOrCreateFolderAsync(service, folderName, _settings.GoogleDrive.BaseFolderId);
             if (subFolderId == null) throw new Exception("Failed to access or create target folder.");
 
             var fileMetadata = new Google.Apis.Drive.v3.Data.File
@@ -76,49 +61,53 @@ namespace CourtApp.Web.Services
                 ? GetContentType(zipFileName)
                 : "application/zip";
 
-            var request = _driveService.Files.Create(fileMetadata, zipStream, contentType);
-            request.Fields = "id, webViewLink";
 
-            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(10));
-            await request.UploadAsync(cts.Token);
+            var request = service.Files.Create(fileMetadata, zipStream, contentType);
+            request.Fields = "id, name, webViewLink";
 
-            return request.ResponseBody.WebViewLink;
+            var result = await request.UploadAsync();
+            if (result.Status == Google.Apis.Upload.UploadStatus.Completed)
+            {
+                var uploadedFile = request.ResponseBody;
+                string fileId = uploadedFile.Id;
+                return fileId;
+            }
+            else
+            {
+                throw new Exception($"Upload failed: {result.Exception?.Message}");
+            }
         }
 
-        private async Task<string> GetOrCreateFolderAsync(string folderName, string parentFolderId)
+        private async Task<string> GetOrCreateFolderAsync(DriveService service, string folderName, string parentFolderId)
         {
             try
             {
-                // ✅ Short timeout for metadata check
-                //using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-                var parent = await _driveService.Files.Get(parentFolderId).ExecuteAsync();
-
-                if (parent == null || parent.MimeType != "application/vnd.google-apps.folder")
-                    throw new Exception("Invalid or inaccessible parent folder.");
-
-                var listRequest = _driveService.Files.List();
-                listRequest.Q = $"mimeType='application/vnd.google-apps.folder' and name='{folderName}' and '{parentFolderId}' in parents and trashed=false";
-                listRequest.Fields = "files(id)";
-                listRequest.Spaces = "drive";
-
+                // 🔍 Check if subfolder exists
+                var listRequest = service.Files.List();
+                listRequest.Q = $"mimeType = 'application/vnd.google-apps.folder' and name = '{folderName}' and '{parentFolderId}' in parents and trashed = false";
+                listRequest.Fields = "files(id, name)";
                 var result = await listRequest.ExecuteAsync();
 
                 if (result.Files.Count > 0)
-                    return result.Files[0].Id;
+                {
+                    Console.WriteLine("📁 Subfolder exists.");
+                    return result.Files.First().Id;
+                }
 
-                // Create new folder if not found
-                var fileMetadata = new Google.Apis.Drive.v3.Data.File
+                // 📁 Create subfolder
+                var folderMetadata = new Google.Apis.Drive.v3.Data.File
                 {
                     Name = folderName,
                     MimeType = "application/vnd.google-apps.folder",
                     Parents = new List<string> { parentFolderId }
                 };
 
-                var createRequest = _driveService.Files.Create(fileMetadata);
+                var createRequest = service.Files.Create(folderMetadata);
                 createRequest.Fields = "id";
-                var newFolder = await createRequest.ExecuteAsync();
+                var folder = await createRequest.ExecuteAsync();
 
-                return newFolder.Id;
+                Console.WriteLine("✅ Subfolder created.");
+                return folder.Id;
             }
             catch (Google.GoogleApiException gex)
             {
@@ -153,7 +142,20 @@ namespace CourtApp.Web.Services
         {
             try
             {
-                var deleteRequest = _driveService.Files.Delete(fileId);
+                var jsonKeyPath = Path.Combine(_environment.WebRootPath, "service-account-key.json");
+                GoogleCredential credential;
+                using (var stream = new FileStream(jsonKeyPath, FileMode.Open, FileAccess.Read))
+                {
+                    credential = GoogleCredential.FromStream(stream)
+                        .CreateScoped(DriveService.Scope.Drive);
+                }
+
+                var service = new DriveService(new BaseClientService.Initializer
+                {
+                    HttpClientInitializer = credential,
+                    ApplicationName = "DriveUploader"
+                });
+                var deleteRequest = service.Files.Delete(fileId);
                 await deleteRequest.ExecuteAsync();
                 return true;
             }

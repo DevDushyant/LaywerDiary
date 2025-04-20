@@ -7,18 +7,24 @@
         <td style="border: 1px solid #ddd; padding: 8px;">@Model[i].DocDate</td>
         <td style="border: 1px solid #ddd; padding: 8px;">@Model[i].DocName</td>
         <td style="border: 1px solid #ddd; padding: 8px;">
-            <p>
-                <a href="@Model[i].DocFilePath" target="_blank">
-                    <i style="font-size:20px" class="@Model[i].FIcon"></i>
+            @{
+                var downloadLink = $"https://drive.google.com/uc?export=download&id={Model[i].DocFilePath}";
+            }
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <!-- Download Link -->
+                <a href="@downloadLink" target="_blank" title="Download File">
+                    <i class="fa fa-file-archive-o" style="font-size: 18px;"></i>
                 </a>
+
+                <!-- Delete Icon (only for 'self') -->
                 @if (Model[i].Reference.ToLower() == "self")
                 {
-                    <a href="javascript:void(0);" onclick="ConfirmDelete('@Model[i].Id','@Model[i].DocFilePath')">
-                        <i style="font-size:20px" class="fa">&#xf00d;</i>
+                    <a href="javascript:void(0);" onclick="ConfirmDelete('@Model[i].Id','@Model[i].DocFilePath')" title="Delete File">
+                        <i class="fa fa-trash" style="font-size: 18px; color: red;" aria-hidden="true"></i>
                     </a>
                 }
-            </p>
-
+            </div>
         </td>
+
     </tr>
 }

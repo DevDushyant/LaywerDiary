@@ -12,12 +12,14 @@ using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
 using CourtApp.Web.Extensions;
+using CourtApp.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,16 +37,17 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         //private readonly BlobService _blobService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IDocumentUploadService _documentUploadService;
+        private readonly UploadSettings _settings;
 
         public CaseManageController(IWebHostEnvironment _webHostEnvironment, /*BlobService _blobService,*/
             UserManager<ApplicationUser> _userManager, IDocumentUploadService _documentUploadService,
-            IdentityContext _identityDbContext)
+            IdentityContext _identityDbContext, IOptions<UploadSettings> options)
         {
             this._webHostEnvironment = _webHostEnvironment;
             //this._blobService = _blobService;
             this._userManager = _userManager;
             this._documentUploadService = _documentUploadService;
-
+            _settings = options.Value;
         }
 
         #region Case Management Area
@@ -420,10 +423,10 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 var CaseInfo = response.Data;
                 foreach (var item in docs)
                 {
-                    string ext = item.DocFilePath.Split(".")[1];
-                    string Icon = "";
-                    if (ext == "doc" || ext == "docx") Icon = "fa fa-file-word-o";
-                    else Icon = "fa fa-file-pdf";
+                    //string ext = item.DocFilePath.Split(".")[1];
+                    //string Icon = "";
+                    //if (ext == "doc" || ext == "docx") Icon = "fa fa-file-word-o";
+                    //else Icon = "fa fa-file-pdf";
                     UDocs.Add(new CaseDoc
                     {
                         //DocFilePath = item.DocFilePath,
@@ -432,7 +435,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         DocType = item.DocType,
                         DocDate = item.DocDate,
                         Id = item.Id,
-                        FIcon = Icon,
+                        FIcon = "fa-solid fa-file-zip",
                         Reference = reft
                     });
                 }
@@ -462,7 +465,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     DocFilePath = s.DocFilePath,
                     DocName = s.DocName,
                     DocType = s.DocType,
-                    FIcon = s.DocFilePath.Split(".")[1].Contains("doc") ? "fa fa-file-word-o" : "fa fa-file-pdf",
+                    FIcon = "fa-solid fa-file-zip",
+                    //FIcon = s.DocFilePath.Split("_")[1].Contains("doc") ? "fa fa-file-word-o" : "fa fa-file-pdf",
                     Id = s.Id
                 }).ToList();
                 return PartialView("_CaseDocuments", caseDocs);
@@ -562,12 +566,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             });
             if (respose.Succeeded)
             {
-                string filePath = Path.Combine(_webHostEnvironment.WebRootPath, fPath);
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
-                return Json(new { success = true });
+                var isDeleted = await _documentUploadService.DeleteFileAsync(fPath);
+                if (isDeleted)
+                    return Json(new { success = true });
             }
             return Json(new { success = respose.Failed, respose.Message });
 
