@@ -17,7 +17,7 @@
             data: formData,
             contentType: false,
             processData: false,
-            success: function (response) {               
+            success: function (response) {
                 if (response.success === true) {
                     Swal.fire({
                         title: 'Success!',
@@ -29,6 +29,13 @@
                             refreshDocsTable(response.caseId, response.caseType);
                         }
                     });
+                } else {
+                    Swal.fire({
+                        title: 'Failure!',
+                        text: response.message,
+                        icon: 'fail',
+                        confirmButtonText: 'OK'
+                    })
                 }
             },
             error: function (xhr) {
@@ -37,7 +44,7 @@
         });
     });
 });
-function refreshDocsTable(caseId,caseType) {
+function refreshDocsTable(caseId, caseType) {
     $.ajax({
         url: '/Litigation/CaseManage/GetUpdatedDocs?caseId=' + caseId + "&reft=" + caseType,
         type: 'GET',
@@ -150,7 +157,7 @@ function BindType(ddl) {
             $("#" + ddl).append(`<option /><option value="${key}">${value}</option>`);
         });
         defaultload();
-    });   
+    });
 }
 function BindDocument(ddl, v) {
     $("#" + ddl).empty();

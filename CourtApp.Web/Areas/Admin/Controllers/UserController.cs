@@ -5,7 +5,6 @@ using CourtApp.Infrastructure.DbContexts;
 using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Admin.Models;
-using CourtApp.Web.Extensions;
 using CourtApp.Web.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -61,7 +60,7 @@ namespace CourtApp.Web.Areas.Admin.Controllers
         private async Task<List<UserViewModel>> GetAllUsers()
         {
             var model = new List<UserViewModel>();
-            if (User.GetRoles().Contains("SUPERADMIN"))
+            if (User.IsInRole("SuperAdmin"))
             {
                 List<string> superAdminUsers = new List<string>() { "LAWYER", "CORPORATE" };
                 var superAdminUsersData = await _userManager.Users

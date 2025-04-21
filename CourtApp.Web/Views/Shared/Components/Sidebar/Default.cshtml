@@ -40,6 +40,7 @@
                     var canAccessInspReg = (await AuthorizationService.AuthorizeAsync(User, "Register.Menu.Institue")).Succeeded;
                     var canAccessOthpReg = (await AuthorizationService.AuthorizeAsync(User, "Register.Menu.Other")).Succeeded;
                     var canAccessTools = (await AuthorizationService.AuthorizeAsync(User, Permissions.Tool.MenuAccess)).Succeeded;
+                    
                     var canAccessAppMaster = User.IsInRole("SuperAdmin");
                 }
 

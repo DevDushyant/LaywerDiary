@@ -479,7 +479,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new JsonResult(new { isValid = false, message = "Invalid request data." });
+                return Json(new { success = "failed", message = "Invalid request data, uplaoded file size may be > 30MB or some information is missin! " });
+
             }
 
             List<CaseDocumentModel> ddoc = new List<CaseDocumentModel>();
@@ -830,5 +831,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
         }
         #endregion
+
+
+
     }
 }
