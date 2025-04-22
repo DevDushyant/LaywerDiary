@@ -38,16 +38,18 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IDocumentUploadService _documentUploadService;
         private readonly UploadSettings _settings;
+        private readonly IdentityContext _identityDbContext;
 
         public CaseManageController(IWebHostEnvironment _webHostEnvironment, /*BlobService _blobService,*/
             UserManager<ApplicationUser> _userManager, IDocumentUploadService _documentUploadService,
-            IdentityContext _identityDbContext, IOptions<UploadSettings> options)
+            IdentityContext identityDbContext, IOptions<UploadSettings> options)
         {
             this._webHostEnvironment = _webHostEnvironment;
             //this._blobService = _blobService;
             this._userManager = _userManager;
             this._documentUploadService = _documentUploadService;
             _settings = options.Value;
+            _identityDbContext = identityDbContext;
         }
 
         #region Case Management Area
@@ -832,7 +834,41 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         }
         #endregion
 
+        #region Case DropDown By Lawyer
+        public async Task<JsonResult> ddlCaseInfoByLawyer(string UserId)
+        {
+            try
+            {
+                Console.WriteLine("UserId" + UserId);
+                List<string> LinkedIds = new List<string>();
+                LinkedIds = await _identityDbContext.LawyerUsers
+                            .Where(w => w.LawyerId == UserId)
+                            .Select(s => s.Id.ToString())
+                            .ToListAsync();
 
+                Console.WriteLine("LinkedUserId" + string.Join(",", LinkedIds));
+                var response = await _mediator.Send(new GetCasesByUserQuery()
+                {
+                    LinkIds = LinkedIds,
+                    CallingFrom = "Bring"
+                });
+                if (response.Succeeded)
+                {
+                    Console.WriteLine("After success" + string.Join(",", LinkedIds));
+                    var dt = response.Data;
+                    var ViewModel = _mapper.Map<List<DropDownGViewModel>>(dt);
+                    Console.WriteLine("After success" + string.Join(",", LinkedIds));
+                    return Json(ViewModel);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+        #endregion
 
     }
 }

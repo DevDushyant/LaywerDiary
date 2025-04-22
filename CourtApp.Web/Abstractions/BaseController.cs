@@ -746,26 +746,6 @@ namespace CourtApp.Web.Abstractions
 
         #endregion
 
-        #region Case DropDown By Lawyer
-        public async Task<JsonResult> ddlCaseInfoByLawyer(string UserId)
-        {
-            var response = await _mediator.Send(new GetCaseInfoQuery()
-            {
-                LinkedIds = User.GetUserLinkedIds(),
-                PageNumber = 1,
-                PageSize = 10000
-            });
-            if (response.Succeeded)
-            {
-                var dt = response.Data;
-                var result = dt.Where(d => d.DisposalDate != null).ToList();
-                var ViewModel = _mapper.Map<List<DropDownGViewModel>>(result);
-                return Json(ViewModel);
-            }
-            return null;
-        }
-        #endregion
-
         #region File Compression
 
         /// <summary>
