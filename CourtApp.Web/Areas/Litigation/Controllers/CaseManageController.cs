@@ -845,7 +845,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                             .Where(w => w.LawyerId == UserId)
                             .Select(s => s.Id.ToString())
                             .ToListAsync();
-
+                LinkedIds.Add(UserId);
                 Console.WriteLine("LinkedUserId" + string.Join(",", LinkedIds));
                 var response = await _mediator.Send(new GetCasesByUserQuery()
                 {
