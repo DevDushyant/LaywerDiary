@@ -34,7 +34,7 @@ namespace CourtApp.Application.Features.UserCase
             CaseDetailEntity detail = new CaseDetailEntity();
             //this condition is applicable for getting most
             //recent case for repeat the case.
-            if (request.LinkedIds.Any())
+            if (request.LinkedIds.Any() && request.CaseId == Guid.Empty)
                 detail = await _CaseRepo.GetMostRecentCaseInfo(request.LinkedIds);
             else
                 detail = await _CaseRepo.GetByIdAsync(request.CaseId);
