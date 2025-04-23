@@ -124,7 +124,9 @@ namespace CourtApp.Application.Features.UserCase
                               CourtName = c.CourtBench.CourtBench_En,
                               CaseStage = c.CaseStage.CaseStage,
                               //DisposalDate = c.DisposalDate,                                  
-                              CaseTitle = c.FirstTitle + " V/S " + c.SecondTitle,
+                              CaseTitle = (c.FirstTitle + " V/S " + c.SecondTitle + " [" +
+                                            (string.IsNullOrEmpty(c.CaseNo) ? c.CaseYear.ToString() : c.CaseNo + "/" + c.CaseYear.ToString()) +
+                                            "]").ToUpperInvariant(),
                               NextHearingDate = c.CaseProcEntities
                                                 .OrderByDescending(o => o.NextDate)
                                                 .Select(s => s.NextDate)

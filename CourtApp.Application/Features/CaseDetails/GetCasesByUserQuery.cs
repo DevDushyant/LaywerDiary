@@ -50,7 +50,9 @@ namespace CourtApp.Application.Features.CaseDetails
                         Court = c.CourtBench.CourtBench_En,
                         CaseStage = c.CaseStage.CaseStage,
                         DisposalDate = c.DisposalDate,
-                        CaseDetail = c.FirstTitle + " V/S " + c.SecondTitle + " [" + c.CaseNo + "/" + c.CaseYear.ToString() + "]",
+                        CaseDetail = (c.FirstTitle + " V/S " + c.SecondTitle + " [" +
+                                            (string.IsNullOrEmpty(c.CaseNo) ? c.CaseYear.ToString() : c.CaseNo + "/" + c.CaseYear.ToString()) +
+                                            "]").ToUpperInvariant(),
                         NextDate = c.CaseProcEntities
                                               .OrderByDescending(o => o.NextDate.Value) // Order by latest date
                                               .Select(s => s.NextDate.Value.ToString("dd-MM-yyyy"))
