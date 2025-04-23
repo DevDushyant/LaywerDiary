@@ -71,7 +71,7 @@ namespace CourtApp.Application.Features.CaseProceeding
                 {
                     foreach (var caseDetail in casesToUpdate)
                     {
-                        caseDetail.DisposalDate = DateTime.UtcNow;
+                        caseDetail.DisposalDate = request.ProceedingDate;
                     }
 
                     // ✅ Batch update instead of multiple update calls
