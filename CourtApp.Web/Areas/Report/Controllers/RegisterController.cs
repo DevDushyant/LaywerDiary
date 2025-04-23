@@ -192,7 +192,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                     {
                         var result = await _mediator.Send(new UpdateCopyingStatusCommand
                         { CaseId = CopyingCaseId, Status = 2 });
-                        if (result.Succeeded) _notify.Information($"Case Work with ID {result.Data} Updated.");
+                        if (result.Succeeded) _notify.Information($"Case copying receive status update successfull!");
                         else _notify.Error(result.Message);
                     }
                 }
