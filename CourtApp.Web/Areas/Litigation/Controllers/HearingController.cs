@@ -170,6 +170,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 model.Court = dt.Court;
                 model.CaseType = dt.CaseType;
                 model.Stage = dt.Stage;
+                model.MCasIds = dt.ParentChildCaseIds;
                 if (dt.HeadId != Guid.Empty)
                 {
                     model = _mapper.Map<CaseProceedingViewModel>(dt);
