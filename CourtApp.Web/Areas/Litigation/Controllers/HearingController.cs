@@ -229,7 +229,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         up.ProcWork = null;
                     var result = await _mediator.Send(up);
                     if (result.Succeeded)
-                        _notify.Success($"Case proceeding with ID {result.Data} Updated.");
+                        _notify.Success($"Case proceeding updated successfull!");
                 }
                 else
                 {
@@ -242,7 +242,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         cmd.ProcWork = null;
                     var result = await _mediator.Send(cmd);
                     if (result.Succeeded)
-                        _notify.Success($"Case proceeding with ID {result.Data} Created.");
+                        _notify.Success($"Case proceeding done successfull!");
                 }
             }
             return RedirectToAction("Index", new { SelectedDate = TempData["SelectedDate"].ToString() });
