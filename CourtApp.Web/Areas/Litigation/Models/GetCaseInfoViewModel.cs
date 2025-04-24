@@ -15,5 +15,6 @@ namespace CourtApp.Web.Areas.Litigation.Models
         public string No { get; set; }
         public string Year { get; set; }
         public bool IsProceedingDone { get; set; }
+        public bool IsCaseAssigned { get; set; }
     }
 }

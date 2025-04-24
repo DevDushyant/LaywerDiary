@@ -52,6 +52,9 @@
                 <td>
                     @if (bt.NextDate != "01-01-0001")
                         @bt.NextDate
+
+
+
                 </td>
                 <td class="text-right">
                     <div class="btn-group">
@@ -73,14 +76,21 @@
                                     <a href="javascript:$('#form_delete_@bt.Id').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i>  Delete</a>
                                 </form>
                             }
-                            @if(bt.Reference.ToLower()=="self"){
-                            <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetAssignCase?CaseId=@bt.Id', 'Assigned case to other lawyer')"
-                               class="dropdown-item" title="Assigned case to other lawyer"><i class="fa fa-tasks" aria-hidden="true"></i> Assigned Case</a>
+                            @if (bt.Reference.ToLower() == "self")
+                            {
+                               @*  string ButtonText = bt.IsCaseAssigned == true ? "De-Assigned" : "Assigned";
+                                string PlaceHolderText = bt.IsCaseAssigned == true ? "De-Assigned case from lawyer" : "Assigned case to other lawyer";
+                                string Url = bt.IsCaseAssigned == false ? "/Litigation/casemanage/OnGetAssignCase?CaseId=" + @bt.Id : ""; *@
+                                string ButtonText =  "Assigned";
+                                string PlaceHolderText =  "Assigned case to other lawyer";
+                                string Url =  "/Litigation/casemanage/OnGetAssignCase?CaseId=" + @bt.Id;
+                                <a onclick="jQueryModalGet('@Url', '@PlaceHolderText')"
+                                   class="dropdown-item" title="@PlaceHolderText"><i class="fa fa-tasks" aria-hidden="true"></i> @ButtonText</a>
                             }
                         </div>
                     </div>
                 </td>
-                
+
             </tr>
         }
     </tbody>
