@@ -770,6 +770,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         public async Task<JsonResult> OnGetAssignCase(Guid CaseId)
         {
             var model = new AssignCaseViewModel();
+            model.IsAssignAction = true;
             var userType = new List<string>();
             userType.Add("LAWYER");
             userType.Add("CORPORATE");
@@ -783,22 +784,23 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 Id = x.Id,
                 FullDisplay = $"{x.FirstName} {x.LastName}"
             });
-
             model.Lawyers = new SelectList(lawyerSelectList, "Id", "FullDisplay");
-            model.CaseId = CaseId;
+            model.Id = CaseId;
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_AssignCase", model) });
         }
+
         [HttpPost]
         public async Task<JsonResult> OnPostAssignCase(Guid Id, AssignCaseViewModel model)
         {
             if (ModelState.IsValid)
             {
-                if (Id == Guid.Empty)
+                if (model.IsAssignAction == true)
                 {
                     try
                     {
                         var cmd = _mapper.Map<CreateCaseAssignedCommand>(model);
                         cmd.UserId = Guid.Parse(CurrentUser.Id);
+                        cmd.CaseId = Id;
                         var result = await _mediator.Send(cmd);
                         if (result.Succeeded)
                         {
@@ -813,8 +815,34 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         Console.WriteLine(ex);
                     }
                 }
+                else
+                {
+                    var cmd = _mapper.Map<CaseDeAssignedCommnad>(model);
+                    var result = await _mediator.Send(cmd);
+                    if (result.Succeeded)
+                    {
+                        Id = result.Data;
+                        _notify.Success($"Case is de-assigned successfully!");
+                        return new JsonResult(new { isValid = true, html = "" });
+                    }
+                }
             }
             return new JsonResult(new { isValid = false, html = "html" });
+        }
+
+
+        public async Task<JsonResult> DeAssignedCase(Guid CaseId, Guid LawyerId)
+        {
+            var model = new AssignCaseViewModel();
+            model.IsAssignAction = false;
+            model.Id = CaseId;
+            model.LawyerId = LawyerId;
+            var lawyerInfo = await _userManager.Users
+                .Where(a => a.IsActive == true
+                            && a.Id == LawyerId.ToString()).FirstOrDefaultAsync();
+            string lawyerFullName = lawyerInfo.FirstName + " " + lawyerInfo.LastName;
+            model.LawyerInfo = lawyerFullName;
+            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_AssignCase", model) });
         }
         #endregion
 

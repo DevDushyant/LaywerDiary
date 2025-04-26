@@ -56,11 +56,15 @@ namespace CourtApp.Application.Features.CaseDetails
                                   from ac in caseAssignments.DefaultIfEmpty()
                                   where request.LinkedIds.Contains(c.CreatedBy)
                                   || request.LinkedIds.Contains(ac.LawyerId.ToString()) // Check if user is the creator or assigned lawyer
+                                  let asignedOrSelf = ac != null && request.LinkedIds.Contains(ac.LawyerId.ToString()) ? "Assigned" : "Self"
+                                  let isCaseAssigned = asignedOrSelf == "Self" && ac != null && ac.CaseId == c.Id
+                                  let AssignedLawyerId = asignedOrSelf == "Self" && ac != null ? ac.LawyerId : Guid.Empty
                                   select new GetCaseInfoDto
                                   {
                                       Id = c.Id,
-                                      //Reference = ac != null && ac.LawyerId == Guid.Parse(request.UserId) ? "Assigned" : "Self", // Reference is "Assigned" if LawyerId matches
-                                      Reference = ac != null && request.LinkedIds.Contains(ac.LawyerId.ToString()) ? "Assigned" : "Self", // Reference is "Assigned" if LawyerId matches
+                                      Reference = asignedOrSelf,
+                                      IsCaseAssigned = isCaseAssigned,
+                                      LawyerId=AssignedLawyerId,
                                       No = c.CaseNo,
                                       Year = c.CaseYear.ToString(),
                                       CourtType = c.CourtType.CourtType.ToString(),

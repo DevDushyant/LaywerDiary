@@ -83,7 +83,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 LinkedIds = User.GetUserLinkedIds(),
                 ClientId = ClientId,
                 ReferalBy = ReferalBy,
-                Status = Status
+                Status = Status,
+                PageNumber = 1,
+                PageSize = 10000,
             });
             InstitutionRegisterViewMode model = new InstitutionRegisterViewMode();
             List<InstituteModel> inmd = new List<InstituteModel>();
@@ -92,6 +94,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 foreach (var d in response.Data)
                 {
                     InstituteModel rd = new InstituteModel();
+                    rd.IsCaseAssigned = d.IsCaseAssigned;
+                    rd.LawyerId = d.LawyerId;
                     rd.Reference = d.Reference;
                     rd.Id = d.Id;
                     rd.Court = d.Court;
@@ -219,7 +223,9 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 foreach (var d in response.Data)
                 {
                     InstituteModel rd = new InstituteModel();
+                    rd.IsCaseAssigned = d.IsCaseAssigned;
                     rd.Reference = d.Reference;
+                    rd.LawyerId = d.LawyerId;
                     rd.Id = d.Id;
                     rd.Court = d.Court;
                     rd.CaseType = d.CaseType;
