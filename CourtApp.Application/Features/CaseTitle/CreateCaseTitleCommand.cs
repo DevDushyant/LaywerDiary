@@ -56,7 +56,7 @@ namespace CourtApp.Application.Features.CaseTitle
             // Step 4: Check for any duplicate CaseId-TypeId pair
             if (hasDuplicate)
             {
-                return Result<Guid>.Fail("Duplicate applicants found for the given CaseId and TypeId.");
+                return Result<Guid>.Fail("Selected case detail and it's title type already exist, please edit the record for add more applicant.");
             }
 
             // Step 5: Proceed with save

@@ -1,5 +1,4 @@
-﻿using CourtApp.Application.Features.CaseDetails;
-using CourtApp.Application.Features.FormPrint;
+﻿using CourtApp.Application.Features.FormPrint;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Areas.Litigation.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static CourtApp.Application.Constants.Permissions;
 
 namespace CourtApp.Web.Areas.Litigation.Controllers
 {
@@ -73,8 +71,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         var viewmodel = _mapper.Map<List<NoticeAdmissionViewModel>>(response.Data);
                         FmpNoticeAdmissionViewModel fmpViewModel = new FmpNoticeAdmissionViewModel();
                         fmpViewModel.Cases = viewmodel;
-                        var WritCases = viewmodel.Where(x => x.CaseType == "Writ");
-                        var CivilCases = viewmodel.Where(x => x.CaseType == "Civil");
+                        var WritCases = viewmodel.Where(x => x.CaseCategory.ToLower() == "writ");
+                        var CivilCases = viewmodel.Where(x => x.CaseCategory.ToLower() == "civil");
                         if (WritCases.Count() > 0)
                         {
                             fmpViewModel.Cases = WritCases.ToList();

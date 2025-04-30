@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CourtApp.Application.DTOs.FormPrint
+﻿namespace CourtApp.Application.DTOs.FormPrint
 {
     public class NoticeOfAdmissionResponse
     {
@@ -17,6 +11,11 @@ namespace CourtApp.Application.DTOs.FormPrint
         /// When Second title value is Respondent
         /// </summary>
         public string Respondent { get; set; }
+
+        /// <summary>
+        /// Case category either form Writ, Civil, or criminal
+        /// </summary>
+        public string CaseCategory { get; set; }
 
         /// <summary>
         /// Case Type of the user
