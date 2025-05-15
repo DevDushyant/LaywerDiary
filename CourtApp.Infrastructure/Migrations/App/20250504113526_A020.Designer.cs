@@ -3,6 +3,7 @@ using System;
 using CourtApp.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CourtApp.Infrastructure.Migrations.App
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250504113526_A020")]
+    partial class A020
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -872,8 +875,8 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Property<string>("FormTemplate")
                         .HasColumnType("text");
 
-                    b.Property<string>("LanguageCode")
-                        .HasColumnType("text");
+                    b.Property<Guid>("LanguageId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
@@ -889,6 +892,8 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.HasIndex("CaseCategoryId");
 
                     b.HasIndex("CourtTypeId");
+
+                    b.HasIndex("LanguageId");
 
                     b.HasIndex("StateId");
 
@@ -2528,6 +2533,12 @@ namespace CourtApp.Infrastructure.Migrations.App
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CourtApp.Domain.Entities.Common.LanguageEntity", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
                         .WithMany()
                         .HasForeignKey("StateId")
@@ -2537,6 +2548,8 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.Navigation("CaseCategory");
 
                     b.Navigation("CourtType");
+
+                    b.Navigation("Language");
 
                     b.Navigation("State");
                 });

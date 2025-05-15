@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = localizer["Generate Case Forms"];
 }
-@* <style>
+<style>
     @@media print {
         body {
             margin: 0;
@@ -67,51 +67,42 @@
     .right-align {
         text-align: right;
     }
-</style> *@
+</style>
 
 @model FmpViewModel
 
-<div class="row mb-3">
-    @* <div class="col-mb-3">
-        <label class="global-font">Select Court Type (<span style="color:red">*</span>)</label>
-        <select class="form-control select2bs4" asp-for="@Model.CourtTypeId" asp-items="@Model.CourtTypes">
-            <option></option>
-        </select>
-    </div> *@
-    <div class="col-lg-3">
-        <label class="global-font">Select Form Type (<span style="color:red">*</span>)</label>
-        <select class="form-control select2bs4" asp-for="@Model.FormTypeId" asp-items="@Model.FormTypes">
-            <option></option>
-        </select>
-    </div>
-    <div class="col-lg-3">
-        <label class="global-font">Select Case (<span style="color:red">*</span>)</label>
-        <select class="form-control select2bs4" asp-for="@Model.CaseIds" asp-items="@Model.Cases">
-            <option></option>
-        </select>
-    </div>
-    <div class="col-lg-3">
-        <label class="global-font">Select Title</label>
-        <select class="form-control select2bs4" asp-for="@Model.TitleIds" asp-items="@Model.Titles">
-            <option></option>
-        </select>
-    </div>
-    
-
-
-    <div class="col-lg-3 d-flex align-items-end">
-        <a id="btnSearch" class="btn bg-success mr-2">
-            <i class="fa fa-search"></i> Generate
-        </a>
-        <a id="reload" class="btn btn-primary text-white">
-            <i class="fa fas fa-reset"></i> Reset
-        </a>
-    </div>
-</div>
-
 <div class="container">
     <!-- Filter Section -->
-    
+    <div class="row mb-3">
+        <div class="col-lg-3">
+            <label class="global-font">Select Cases (<span style="color:red">*</span>)</label>
+            <select class="form-control select2bs4" asp-for="@Model.CaseIds" asp-items="@Model.Cases">
+                <option></option>
+            </select>
+        </div>
+        <div class="col-lg-3">
+            <label class="global-font">Select Title</label>
+            <select class="form-control select2bs4" asp-for="@Model.TitleIds" asp-items="@Model.Titles">
+                <option></option>
+            </select>
+        </div>
+        <div class="col-lg-3">
+            <label class="global-font">Select Form Type (<span style="color:red">*</span>)</label>
+            <select class="form-control select2bs4" asp-for="@Model.FormTypeId" asp-items="@Model.FormTypes">
+                <option></option>
+            </select>
+        </div>
+
+
+        <div class="col-lg-3 d-flex align-items-end">
+            <a id="btnSearch" class="btn bg-success mr-2">
+                <i class="fa fa-search"></i> Generate
+            </a>
+            <a id="reload" class="btn btn-primary text-white">
+                <i class="fa fas fa-reset"></i> Reset
+            </a>
+        </div>
+    </div>
 
     <!-- Output Section -->
     <div class="row">

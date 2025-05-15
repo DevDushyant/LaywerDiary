@@ -151,8 +151,13 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         #region Today's Proceeding to the case
         public async Task<JsonResult> CaseProceeding(Guid CaseId)
         {
-            var SelectedDate = TempData["SelectedDate"].ToString();
-            TempData.Keep();
+            string SelectedDate = DateTime.Now.ToString();
+            if (TempData["SelectedDate"] != null)
+            {
+                SelectedDate = TempData["SelectedDate"].ToString();
+                TempData.Keep();
+            }
+
             var response = await _mediator.Send(new GetCaseProceedingByIdQuery()
             {
                 CaseId = CaseId,

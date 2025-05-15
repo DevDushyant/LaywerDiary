@@ -59,5 +59,7 @@ namespace CourtApp.Web.Areas.Litigation.Models
         [DisplayName("Officer Name")]
         public string OfficerName { get; set; }        
         public string Cadre { get; set; }
+        public string CourtDistrict { get; set; }
+        
     }
 }

@@ -73,6 +73,8 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<CadreMasterEntity> Cadres { get; set; }
         public DbSet<SpecializationEntity> Specilities { get; set; }
         public DbSet<AssignCaseEntity> AssignedCases { get; set; }
+        public DbSet<LanguageEntity> LanguageEntities { get; set; }
+        public DbSet<CourtFormTypeEntity> CourtFormTypeEntities { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -184,6 +186,12 @@ namespace CourtApp.Infrastructure.DbContexts
                    j.OwnsMany(d => d.Works);
                }
                );
+            builder.Entity<LanguageEntity>().OwnsMany(
+                j => j.Languages, k =>
+                {
+                    k.ToJson();
+                }
+                );
             #endregion
         }
     }

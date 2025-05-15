@@ -135,6 +135,13 @@ namespace CourtApp.Infrastructure.Extensions
 
             services.AddTransient<ICaseAssignedRepository, CaseAssignedRepository>();
             #endregion
+
+            #region Language & Court Form Print
+            services.AddTransient<ILanguageRepository, LanguageRepository>();
+            services.AddTransient<ICourtFormTypeRepository, CourtFormTypeRepository>();
+            #endregion
+
+
         }
     }
 }

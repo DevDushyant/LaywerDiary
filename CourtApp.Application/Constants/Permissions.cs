@@ -21,7 +21,8 @@ namespace CourtApp.Application.Constants
                             "AdminPanel.Menu.LawyerDirectory",
                             "AdminPanel.Menu.Client",
                             "AdminPanel.Menu.Associate",
-                            "AdminPanel.Menu.Template"
+                            "AdminPanel.Menu.Template",
+                            "AdminPanel.Menu.CaseForm"
                         }
                     },
                     { "User", new() { "AdminPanel.User.Create", "AdminPanel.User.View", "AdminPanel.User.Edit", "AdminPanel.User.Delete" } },
@@ -31,6 +32,7 @@ namespace CourtApp.Application.Constants
                     { "Client", new() { "AdminPanel.Client.Create", "AdminPanel.Client.View", "AdminPanel.Client.Edit", "AdminPanel.Client.Delete" } },
                     { "Associate", new() { "AdminPanel.Associate.Create", "AdminPanel.Associate.View", "AdminPanel.Associate.Edit", "AdminPanel.Associate.Delete" } },
                     { "Template", new() { "AdminPanel.Template.Create", "AdminPanel.Template.View", "AdminPanel.Template.Edit", "AdminPanel.Template.Delete" } },
+                    { "CaseForm", new() { "AdminPanel.CaseForm.Create", "AdminPanel.CaseForm.View", "AdminPanel.CaseForm.Edit", "AdminPanel.CaseForm.Delete" } },
                 }
             },
             { "Case", new Dictionary<string, List<string>>

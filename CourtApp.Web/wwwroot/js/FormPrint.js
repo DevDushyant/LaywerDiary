@@ -45,6 +45,87 @@
         newWin.close();
     }
 
+    function printData_() {
+        var divToPrint = document.getElementById("printableArea");
+        var newWin = window.open("", "_blank");
+
+        newWin.document.write('<html><head><title>Print Form</title>');
+
+        newWin.document.write(`
+    <style>
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 20mm 25mm 20mm 20mm;
+            }
+
+            body {
+                font-size: 13px;
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+            }
+
+            .a4-page {
+                width: 100%;
+                max-width: 170mm;
+                margin: 0 auto;
+                /*padding: 10mm;  */              
+                page-break-after: always;
+                /*background: white;*/               
+            }
+
+            table {
+                width: 100%;
+                table-layout: fixed;
+                border-collapse: collapse;
+            }
+
+            td {
+                word-wrap: break-word;
+                vertical-align: top;
+                padding: 4px;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        .a4-page {
+            width: 100%;
+            max-width: 170mm;
+            margin: 0 auto;
+            
+           
+            background: white;
+        }
+
+        table {
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        td {
+            word-wrap: break-word;
+            vertical-align: top;
+            padding: 4px;
+        }
+    </style>
+    `);
+
+        newWin.document.write('</head><body>');
+        newWin.document.write(divToPrint.outerHTML);
+        newWin.document.write('</body></html>');
+
+        newWin.document.close();
+        newWin.focus();
+        newWin.print();
+        newWin.close();
+    }
+
+
     function printData() {
         var divToPrint = document.getElementById("printableArea");
         var newWin = window.open("", "_blank");
@@ -56,13 +137,13 @@
             @media print {
                 @page {
                     size: A4 portrait;
-                    margin: 20mm 25mm 20mm 20mm;
+                    margin: 20mm 0mm 20mm 0mm;
                 }
 
                 body {
-                    font-size: 13px; /* slightly smaller */
+                    font-size: 13px;
                     font-family: Arial, sans-serif;
-                    line-height: 1.3;
+                    line-height: 1.5;
                     margin: 0;
                     padding: 0;
                     text-align: justify;
@@ -77,22 +158,39 @@
                     page-break-inside: avoid;
                 }
 
-                table {
-                    width: 100%;
-                    table-layout: fixed;
-                    border-collapse: collapse;
+                .row-flex {
+                    display: flex;
+                    justify-content: space-between;
+                    margin: 0 0 10px 0;
+                    font-size: 14pt;
                 }
 
-                td {
-                    word-wrap: break-word;
-                    vertical-align: top;
-                    padding: 4px;
+                .right-align {
+                    text-align: right;
+                }
+
+                .center-text {
+                    text-align: center;
+                }
+
+                hr {
+                    border: none;
+                    border-top: 1px solid #000;
+                    margin: 20px 0;
                 }
 
                 * {
                     -webkit-print-color-adjust: exact;
                     print-color-adjust: exact;
                 }
+            }
+
+            /* Screen styles (optional) */
+            body {
+                font-size: 12px;
+                font-family: Arial, sans-serif;
+                line-height: 1.4;
+                text-align: justify;
             }
 
             .a4-size {
@@ -103,28 +201,61 @@
                 box-sizing: border-box;
             }
 
+            .row-flex {
+                display: flex;
+                justify-content: space-between;
+                margin: 0 0 10px 0;
+                font-size: 12pt;
+            }
+
+            .right-align {
+                text-align: right;
+            }
+
+            .center-text {
+                text-align: center;
+            }
+
             table {
                 width: 100%;
                 table-layout: fixed;
+                border-collapse: collapse;
+                table-layout: fixed;           
+                font-size: 12pt;
             }
 
             td {
                 word-wrap: break-word;
                 vertical-align: top;
-                padding: 4px;
+                padding: 8px 20px;
+                border: 1px solid black;
+            }
+
+            hr {
+                border: none;
+                border-top: 1px solid #000;
+                margin: 20px 0;
+                width:100%
             }
         </style>
     `);
 
         newWin.document.write('</head><body>');
-        newWin.document.write(divToPrint.outerHTML);
+        newWin.document.write('<div class="a4-size">');
+        newWin.document.write(divToPrint.innerHTML);
+        newWin.document.write('</div>');
         newWin.document.write('</body></html>');
 
         newWin.document.close();
         newWin.focus();
-        newWin.print();
-        newWin.close();
+
+        // Wait for content to load before printing
+        newWin.onload = function () {
+            newWin.print();
+            newWin.close();
+        };
     }
+
 
     function printDatatoday() {
         var divToPrint = document.getElementById("printableArea");
