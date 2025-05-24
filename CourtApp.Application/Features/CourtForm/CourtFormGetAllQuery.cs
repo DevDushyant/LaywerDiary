@@ -25,10 +25,12 @@ namespace CourtApp.Application.Features.CourtForm
     {
         private readonly ICourtFormTypeRepository repository;
         private readonly ILanguageRepository langRepository;
-        public CourtFormGetAllQueryHandler(ICourtFormTypeRepository repository, ILanguageRepository langRepository  )
+        private readonly ITypeOfCasesRepository caseTypeRepository;
+        public CourtFormGetAllQueryHandler(ICourtFormTypeRepository repository, ILanguageRepository langRepository , ITypeOfCasesRepository caseTypeRepository)
         {
             this.repository = repository;
             this.langRepository = langRepository;
+            this.caseTypeRepository = caseTypeRepository;
         }
         public async Task<Result<List<CourtFormDto>>> Handle(CourtFormGetAllQuery request, CancellationToken cancellationToken)
         {
@@ -42,16 +44,22 @@ namespace CourtApp.Application.Features.CourtForm
                             .Where(l => l.Code == form.LanguageCode)
                             .DefaultIfEmpty()
 
+                        join caseType in caseTypeRepository.QryEntities.AsNoTracking()
+                            on form.CaseTypeId equals caseType.Id into caseTypesForm
+
+                        from ctf in caseTypesForm.DefaultIfEmpty()
+
                         where request.StateId == 0 || form.StateId == request.StateId
 
                         select new CourtFormDto
                         {
                             Id = form.Id,
-                            CaseCategory = form.CaseCategory != null ? form.CaseCategory.Name_En : null,
+                            CaseCategory = form.CaseCategory != null ? form.CaseCategory.Name_En : "All",
                             CourtType = form.CourtType != null ? form.CourtType.CourtType : null,
-                            Language = langItem != null ? langItem.Name : "", // resolved language name
+                            Language = langItem != null ? langItem.Name : "", 
                             FormName = form.FormName,
-                            StateName = form.State != null ? form.State.Name_En : null
+                            StateName = form.State != null ? form.State.Name_En : null,
+                            CaseType= ctf.Name_En
                         }
                     ).ToListAsync(cancellationToken);
 

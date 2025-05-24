@@ -15,5 +15,6 @@ namespace CourtApp.Application.DTOs.CourtForm
         public string FormName { get; set; }
         public string FormTemplate { get; set; }
         public string Language { get; set; }
+        public string CaseType { get; set; }
     }
 }

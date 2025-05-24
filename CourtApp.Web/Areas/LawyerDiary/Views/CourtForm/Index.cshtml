@@ -1,26 +1,4 @@
-﻿@{
-	ViewData["Title"] = localizer["Court Form Master"];
-	ViewData["Caption"] = localizer["Manage Court Master"];
-}
-
-<div class="card">
-	<div class="col-sm-12" style="padding:20px">
-
-		@* <a onclick="jQueryModalGet('/lawyerdiary/CourtForm/OnGetCreateOrEdit','Create Court Form')" class="btn bg-success">
-			<i class="fa fa-plus-square"></i> Add new Form
-		</a> *@
-		<a asp-area="lawyerdiary" asp-controller="CourtForm" asp-action="OnGetCreateOrEdit" class="btn bg-success">
-			<i class="fa fa-plus-square"></i> Add new Form
-		</a>
-
-		<a id="reload" class="btn btn-primary text-white">
-			<i class="fa fas fa-bolt"></i>
-			Reload
-		</a>
-	</div>
-	<div id="viewAll" class="card-body table-responsive">
-	</div>
-</div>
+﻿<div id="viewAll"></div>
 @section Scripts
 {
 

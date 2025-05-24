@@ -1,134 +1,146 @@
 ﻿@{
-    ViewData["Title"] = localizer["Generate Case Forms"];
+    ViewData["Title"] = localizer["Form Print"];
 }
-@* <style>
-    @@media print {
-        body {
-            margin: 0;
-            padding: 0;
-        }
+@* @model FmpViewModel
 
-        .a4-size {
-            width: 210mm;
-            height: 297mm;
-            padding: 20mm 15mm 20mm 15mm; /* Top, Right, Bottom, Left */
-            box-sizing: border-box;
-            page-break-after: always;
-        }
-
-        * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-    }
-
-    .a4-size {
-        width: 210mm;
-        height: 297mm;
-        padding: 20mm 15mm 20mm 15mm;
-        box-sizing: border-box;
-        margin: auto;
-        page-break-after: always;
-        background: white;
-    }
-
-    td {
-        word-wrap: break-word;
-        vertical-align: top;
-    }
-
-    table {
-        width: 100%;
-        table-layout: fixed;
-    }
-
-    .center-text {
-        text-align: center;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-
-    .form-section {
-        margin-top: 20px;
-    }
-
-    .signature-section {
-        margin-top: 60px;
-    }
-
-    .indent {
-        text-indent: 50px;
-    }
-
-    .line-space {
-        margin-bottom: 10px;
-    }
-
-    .right-align {
-        text-align: right;
-    }
-</style> *@
-
-@model FmpViewModel
-
-<div class="row mb-3">
-    @* <div class="col-mb-3">
-        <label class="global-font">Select Court Type (<span style="color:red">*</span>)</label>
-        <select class="form-control select2bs4" asp-for="@Model.CourtTypeId" asp-items="@Model.CourtTypes">
-            <option></option>
-        </select>
-    </div> *@
-    <div class="col-lg-3">
-        <label class="global-font">Select Form Type (<span style="color:red">*</span>)</label>
-        <select class="form-control select2bs4" asp-for="@Model.FormTypeId" asp-items="@Model.FormTypes">
-            <option></option>
-        </select>
-    </div>
-    <div class="col-lg-3">
-        <label class="global-font">Select Case (<span style="color:red">*</span>)</label>
-        <select class="form-control select2bs4" asp-for="@Model.CaseIds" asp-items="@Model.Cases">
-            <option></option>
-        </select>
-    </div>
-    <div class="col-lg-3">
-        <label class="global-font">Select Title</label>
-        <select class="form-control select2bs4" asp-for="@Model.TitleIds" asp-items="@Model.Titles">
-            <option></option>
-        </select>
-    </div>
-    
-
-
-    <div class="col-lg-3 d-flex align-items-end">
-        <a id="btnSearch" class="btn bg-success mr-2">
-            <i class="fa fa-search"></i> Generate
-        </a>
-        <a id="reload" class="btn btn-primary text-white">
-            <i class="fa fas fa-reset"></i> Reset
-        </a>
-    </div>
-</div>
-
-<div class="container">
-    <!-- Filter Section -->
-    
-
-    <!-- Output Section -->
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0" id="lblHeader"></h3>
-                    <a href="#" id="btnPrint" class="btn btn-primary">Print</a>
+<div class="card shadow">
+    <!-- Search Panel -->
+    <div class="card shadow border-0 mb-4">
+        <div class="card-header">
+            <h5 class="mb-0 text-primary">@localizer["Generate Case Documents"]</h5>
+        </div>
+        <div class="card-body pt-3">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Select Court Type <span class="text-danger">*</span></label>
+                    <select class="form-control select2bs4" asp-for="CourtTypeId" asp-items="@Model.CourtTypes">
+                        <option value="">-- Select --</option>
+                    </select>
                 </div>
-
-                <div class="card-body">
-                    <div id="viewAll" class="table-responsive"></div>
+                <div class="col-md-3">
+                    <label class="form-label">Select Case Type <span class="text-danger">*</span></label>
+                    <select class="form-control select2bs4" asp-for="CaseTypeId" asp-items="@Model.CaseTypes">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Select Form Type <span class="text-danger">*</span></label>
+                    <select class="form-control select2bs4" asp-for="FormTypeId" asp-items="@Model.FormTypes">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Select Case <span class="text-danger">*</span></label>
+                    <select class="form-control select2bs4" asp-for="CaseIds" asp-items="@Model.Cases">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+                <div class="col-md-9">
+                    <label class="form-label">Select Title</label>
+                    <select class="form-control select2bs4" asp-for="TitleIds" asp-items="@Model.Titles">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end justify-content-end">
+                    <div class="d-flex w-100 gap-2">
+                        <a id="btnSearch" class="btn btn-success w-50">
+                            <i class="fa fa-search"></i> Generate
+                        </a>
+                        <a id="reload" class="btn btn-primary w-50">
+                            <i class="fa fa-undo"></i> Reset
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Output Section -->
+    <div class="card shadow border-0">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 text-primary" id="lblHeader">Output Section</h5>
+            <a href="#" id="btnPrint" class="btn btn-outline-primary">
+                <i class="fa fa-print"></i> Print
+            </a>
+        </div>
+        <div class="card-body">
+            <div id="viewAll" class="table-responsive">
+                <!-- Dynamic content will render here -->
+            </div>
+        </div>
+    </div>
+</div> *@
+
+
+@model FmpViewModel
+<div class="card shadow">
+    <!-- Search Panel -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header">
+            <h6 class="mb-0 text-primary">@localizer["Search Detail for generating the form"]</h6>
+        </div>
+        <div class="card-body pt-3">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Select Court Type <span class="text-danger">*</span></label>
+                    <select class="form-control select2bs4" asp-for="CourtTypeId" asp-items="@Model.CourtTypes">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Select Case Type <span class="text-danger">*</span></label>
+                    <select class="form-control select2bs4" asp-for="CaseTypeId" asp-items="@Model.CaseTypes">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Select Form Type <span class="text-danger">*</span></label>
+                    <select class="form-control select2bs4" asp-for="FormTypeId" asp-items="@Model.FormTypes">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Select Case <span class="text-danger">*</span></label>
+                    <select class="form-control select2bs4" asp-for="CaseIds" asp-items="@Model.Cases">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+                <div class="col-md-9">
+                    <label class="form-label">Select Title</label>
+                    <select class="form-control select2bs4" asp-for="TitleIds" asp-items="@Model.Titles">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end justify-content-end">
+                    <div class="d-flex w-100 gap-2">
+                        <a id="btnSearch" class="btn btn-success">
+                            <i class="fa fa-search"></i> Generate
+                        </a> &nbsp;
+                        <a id="reload" class="btn btn-primary">
+                            <i class="fa fa-undo"></i> Reset
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Output Section -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 text-primary" id="lblHeader">Output Section</h4>
+            <a href="#" id="btnPrint" class="btn btn-outline-primary">
+                <i class="fa fa-print"></i> Print
+            </a>
+        </div>
+        <div class="card-body">
+            <div id="viewAll" class="table-responsive">
+                <!-- Table or dynamic content here -->
+            </div>
+        </div>
+    </div>
 </div>
+
 
 @section Scripts
 {

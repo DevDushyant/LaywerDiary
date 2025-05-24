@@ -12,7 +12,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
     [Area("LawyerDiary")]
     public class TitleController : BaseController<TitleController>
     {
-        #region Detail Title 
+        #region Case Complete Detail Title 
         public IActionResult Index()
         {
             return View();
@@ -41,7 +41,7 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     CaseApplicants = new List<ApplicantDetailViewModel>
                                     {
                                       new ApplicantDetailViewModel {
-                                          ApplicantNo = 1, ApplicantDetail = "" }
+                                          ApplicantNo = "1", ApplicantDetail = "" }
                                     },
                     Cases = await UserCaseTitle(Guid.Empty)
                 };

@@ -1,7 +1,15 @@
 ﻿$(document).ready(function () {
-    //initCKEditor($("#LanguageCode").val())
+    
     $("#StateId").select2({
         placeholder: "Select a state",
+        theme: "bootstrap4",
+        allowClear: true,
+        escapeMarkup: function (m) {
+            return m;
+        }
+    });
+    $("#CaseTypeId").select2({
+        placeholder: "Select a Case Type",
         theme: "bootstrap4",
         allowClear: true,
         escapeMarkup: function (m) {
@@ -39,10 +47,25 @@
         BindCaseCategory($("#CourtTypeId").val());
         BindLanguages($("#StateId").val());
     });
+
+    $("#CaseCategoryId").on("change", function () {        
+        BindCaseType($("#CaseCategoryId").val());
+    });
 });
+BindCaseType = function (caseCategoryId) {
+    $("#CaseTypeId").empty()
+    $("#CaseTypeId").append(`<option /><option value="00000000-0000-0000-0000-000000000000">----All----</option>`);
+    $.getJSON("/Litigation/CaseManage/LoadTypeOfCase?natureId=" + caseCategoryId, function (data) {        
+        $.each(data.Data, function (i, item) {
+            $("#CaseTypeId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
+        });
+    });
+}
+
 
 BindCaseCategory = function (CategoryId) {
     $("#CaseCategoryId").empty()
+    $("#CaseCategoryId").append(`<option /><option value="00000000-0000-0000-0000-000000000000">----All----</option>`);
     $.getJSON("/Litigation/CaseManage/LoadCaseCategory?CourtTypeId=" + CategoryId, function (data) {
         $.each(data, function (i, item) {
             $("#CaseCategoryId").append(`<option /><option value="${item.Id}">${item.Name_En}</option>`);
@@ -59,15 +82,6 @@ BindLanguages = function (StateId) {
         });
     });
 }
-
-//$("#LanguageCode").on("change", function () {
-//    initCKEditor($("#LanguageCode").val());    
-//});
-
-//$("#btnReset").on('click', function () {
-//    CKEDITOR.instances['FormTemplate'].setData();
-//    $("#FormTemplate").val('');
-//});
 
 $(document).ready(function () {
     tinymce.init({
@@ -106,41 +120,6 @@ $(document).ready(function () {
         branding: false
     });
 });
-
-
-
-//$(document).ready(function () {
-//    CKEDITOR.replace('FormTemplate');
-//    $("#btnReset").on('click', function () {
-//        CKEDITOR.instances['FormTemplate'].setData();
-//        $("#FormTemplate").val('');
-//    });
-//});
-
-//$(document).ready(function () {
-//    $('#CourtFormTemplate').submit(function (event) {
-//        event.preventDefault();
-//        var url = $("#CourtFormTemplate").attr("action");
-//        var data = $("#CourtFormTemplate").serialize();
-//        $.ajax({
-//            type: 'POST',            
-//            url: url,
-//            data: data,
-//            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-
-//            success: function (response) {
-//                if (response.success) {
-//                    Swal.fire('Success', response.message, 'success');
-//                } else {
-//                    Swal.fire('Error', response.message, 'error');
-//                }
-//            },
-//            error: function () {
-//                Swal.fire('Error', 'An unexpected error occurred.', 'error');
-//            }
-//        });
-//    });
-//});
 
 
 

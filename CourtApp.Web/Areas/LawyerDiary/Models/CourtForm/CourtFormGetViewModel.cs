@@ -10,5 +10,6 @@ namespace CourtApp.Web.Areas.LawyerDiary.Models.CourtForm
         public string CourtType { get; set; }
         public string FormName { get; set; }
         public string Language { get; set; }
+        public string CaseType { get; set; }
     }
 }

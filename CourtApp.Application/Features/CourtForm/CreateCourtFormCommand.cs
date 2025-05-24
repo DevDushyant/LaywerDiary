@@ -21,9 +21,10 @@ namespace CourtApp.Application.Features.CourtForm
         public int StateId { get; set; }
         public string LanguageCode { get; set; }
         public Guid CourtTypeId { get; set; }
-        public Guid CaseCategoryId { get; set; }
+        public Guid? CaseCategoryId { get; set; }
         public string FormName { get; set; }
         public string FormTemplate { get; set; }
+        public Guid? CaseTypeId { get; set; }
     }
 
     public class CreateCourtFormCommandHandler : IRequestHandler<CreateCourtFormCommand, Result<Guid>>
@@ -54,6 +55,9 @@ namespace CourtApp.Application.Features.CourtForm
 
             if (!string.IsNullOrWhiteSpace(request.FormName))
                 predicate = predicate.And(crt => crt.FormName == request.FormName);
+
+            if (request.CaseTypeId!=Guid.Empty)
+                predicate = predicate.And(crt => crt.CaseTypeId == request.CaseTypeId);
 
             // Check for existence before inserting
             bool formExists = await repository.Entities.AnyAsync(predicate, cancellationToken);

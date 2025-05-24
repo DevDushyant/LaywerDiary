@@ -12,6 +12,7 @@ using CourtApp.Application.Interfaces.Repositories;
 using CourtApp.Domain.Entities.CaseDetails;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Serialization;
 
 namespace CourtApp.Application.Features.FormPrint
 {
@@ -41,70 +42,80 @@ namespace CourtApp.Application.Features.FormPrint
         public async Task<Result<List<GlobalFormPrintDto>>> Handle(GetFormPrintDataQuery request, CancellationToken cancellationToken)
         {
 
-            var caseData = (
-                        from caseInfo in _CaseRepo.Entites
-                            .AsNoTracking()
-                            .Include(c => c.CaseCategory)
-                            .Include(c => c.State)
-                            .Include(c => c.CaseStage)
-                            .Include(c => c.CourtType)
-                            .Include(c => c.FTitle)
-                            .Include(c => c.STitle)
-                            .Include(c => c.CaseProcEntities)
-                            .Include(ac => ac.CaseAgainstEntities).ThenInclude(c=>c.CourtBench)
-                            .Include(ac => ac.CaseAgainstEntities).ThenInclude(c=>c.CourtDistrict)
-                            .Include(ac => ac.CaseAgainstEntities).ThenInclude(c=>c.CaseCategory)
-                            .Include(ac => ac.CaseAgainstEntities).ThenInclude(c=>c.CaseType)
-                            .Include(ac => ac.CaseAgainstEntities).ThenInclude(c=>c.CourtType)
-                            .Include(ac => ac.CaseAgainstEntities).ThenInclude(c=>c.Complex)                            
-                            .Include(ac => ac.CaseAgainstEntities).ThenInclude(c=>c.Cadre)
-                            .Where(w => request.CaseIds.Contains(w.Id))
-                        join title in _TitleRepo.Titles.AsNoTracking().Where(t => t.TypeId == 2)
-                            .Include(t => t.CaseApplicants)
-                            on caseInfo.Id equals title.CaseId into CompleteTitle
-                        from ct in CompleteTitle.DefaultIfEmpty()
-                        let cd = caseInfo
-                        select new
+            try
+            {
+                var caseData = (
+                            from caseInfo in _CaseRepo.Entites
+                                .AsNoTracking()
+                                .Include(c => c.CaseCategory)
+                                .Include(c => c.State)
+                                .Include(c => c.CaseStage)
+                                .Include(c => c.CourtType)
+                                .Include(c => c.CourtBench)
+                                .Include(c => c.FTitle)
+                                .Include(c => c.STitle)
+                                .Include(c => c.CaseProcEntities)
+                                .Include(ac => ac.CaseAgainstEntities).ThenInclude(c => c.CourtBench)
+                                .Include(ac => ac.CaseAgainstEntities).ThenInclude(c => c.CourtDistrict)
+                                .Include(ac => ac.CaseAgainstEntities).ThenInclude(c => c.CaseCategory)
+                                .Include(ac => ac.CaseAgainstEntities).ThenInclude(c => c.CaseType)
+                                .Include(ac => ac.CaseAgainstEntities).ThenInclude(c => c.CourtType)
+                                .Include(ac => ac.CaseAgainstEntities).ThenInclude(c => c.CourtBench)
+                                .Include(ac => ac.CaseAgainstEntities).ThenInclude(c => c.Complex)
+                                .Include(ac => ac.CaseAgainstEntities).ThenInclude(c => c.Cadre)
+                                .Where(w => request.CaseIds.Contains(w.Id))
+                            join title in _TitleRepo.Titles.AsNoTracking().Where(t => t.TypeId == 2)
+                                .Include(t => t.CaseApplicants)
+                                on caseInfo.Id equals title.CaseId into CompleteTitle
+                            from ct in CompleteTitle.DefaultIfEmpty()
+                            let cd = caseInfo
+                            select new
+                            {
+                                CaseInfo = caseInfo,
+                                Title = ct,
+                                AgainstCaseDetail = caseInfo.CaseAgainstEntities,
+                                CaseApplicants = ct != null && ct.TypeId == 2 ? ct.CaseApplicants : null
+                            }
+                        )
+                        .AsEnumerable()
+                        .Select(data => new GlobalFormPrintDto
                         {
-                            CaseInfo = caseInfo,
-                            Title = ct,
-                            AgainstCaseDetail = caseInfo.CaseAgainstEntities,
-                            CaseApplicants = ct != null && ct.TypeId == 2 ? ct.CaseApplicants : null
-                        }
-                    )
-                    .AsEnumerable()
-                    .Select(data => new GlobalFormPrintDto
-                    {
-                        InstitutionDate = data.CaseInfo.InstitutionDate.ToString("dd/MM/yyyy"),
-                        State = data.CaseInfo.State.Name_En,
-                        CourtType = data.CaseInfo.CourtType?.CourtType ?? "",
-                        CourtDistrict=data.CaseInfo.CourtDistrict?.Name_En??"",
-                        CourtComplex=data.CaseInfo.Complex?.Name_En??"",
-                        Court=data.CaseInfo.CourtBench?.CourtBench_En??"",
-                        Strength="",
-                        CaseNoYear = data.CaseInfo.CaseNo + "/" + data.CaseInfo.CaseYear,
-                        CaseCategory = data.CaseInfo.CaseCategory?.Name_En ?? "",
-                        CaseType=data.CaseInfo.CaseType?.Name_En??"",
-                        CisNoYear= data.CaseInfo.CisNumber +"/"+ data.CaseInfo.CisYear,
-                        PetitionerAppearance = data.CaseInfo.FTitle?.Name_En ?? "",
-                        Petitioner = data.CaseInfo.FirstTitle,
-                        RespondantAppearance = data.CaseInfo.STitle?.Name_En ?? "",
-                        Respondent = data.CaseInfo.SecondTitle,
-                        NextDate = GetLatestNextDate(data.CaseInfo),                        
-                        CaseStage = data.CaseInfo.CaseStage?.CaseStage ?? "",
-                        CnrNo=data.CaseInfo.CnrNumber,
-                        DisposalDate = data.CaseInfo.DisposalDate?.ToString("dd/MM/yyyy") ?? "",
-                        AgainstCourtDetail = GetAgainsCaseDetail(data.CaseInfo),
-                        Applicants = data.CaseApplicants?.Select(s => new ApplicantDetailDto
-                        {
-                            Applicant = s.ApplicantDetail,
-                            ApplicantNo = s.ApplicantNo
-                        }).ToList(),
-                        
+                            InstitutionDate = data.CaseInfo.InstitutionDate.ToString("dd/MM/yyyy"),
+                            State = data.CaseInfo.State.Name_En,
+                            CourtType = data.CaseInfo.CourtType?.CourtType ?? "",
+                            CourtDistrict = data.CaseInfo.CourtDistrict?.Name_En ?? "",
+                            CourtComplex = data.CaseInfo.Complex?.Name_En ?? "",
+                            Court = data.CaseInfo.CourtBench?.CourtBench_En ?? "",
+                            Strength = "",
+                            CaseNoYear = data.CaseInfo.CaseNo + "/" + data.CaseInfo.CaseYear,
+                            CaseCategory = data.CaseInfo.CaseCategory?.Name_En ?? "",
+                            CaseType = data.CaseInfo.CaseType?.Name_En ?? "",
+                            CisNoYear = data.CaseInfo.CisNumber + "/" + data.CaseInfo.CisYear,
+                            PetitionerAppearance = data.CaseInfo.FTitle?.Name_En ?? "",
+                            Petitioner = data.CaseInfo.FirstTitle,
+                            RespondantAppearance = data.CaseInfo.STitle?.Name_En ?? "",
+                            Respondent = data.CaseInfo.SecondTitle,
+                            NextDate = GetLatestNextDate(data.CaseInfo),
+                            CaseStage = data.CaseInfo.CaseStage?.CaseStage ?? "",
+                            CnrNo = data.CaseInfo.CnrNumber,
+                            DisposalDate = data.CaseInfo.DisposalDate?.ToString("dd/MM/yyyy") ?? "",
+                            AgainstCourtDetail = GetAgainsCaseDetail(data.CaseInfo),
+                            Applicants = data.CaseApplicants?.Select(s => new ApplicantDetailDto
+                            {
+                                Applicant = s.ApplicantDetail,
+                                ApplicantNo = s.ApplicantNo
+                            }).ToList(),
 
-                    }).ToList();
 
-            return await Result<List<GlobalFormPrintDto>>.SuccessAsync(caseData);
+                        }).ToList();
+
+                return await Result<List<GlobalFormPrintDto>>.SuccessAsync(caseData);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error at Get Query Form:" + ex);
+                return null;
+            }
         }
 
         private AgainstCaseDetail GetAgainsCaseDetail(CaseDetailEntity caseInfo)

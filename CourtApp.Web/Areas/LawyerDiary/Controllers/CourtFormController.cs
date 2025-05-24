@@ -10,6 +10,7 @@ using CourtApp.Application.Features.Languages;
 using AspNetCoreHero.Results;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Azure;
+using static CourtApp.Application.Constants.Permissions;
 
 namespace CourtApp.Web.Areas.LawyerDiary.Controllers
 {
@@ -50,7 +51,9 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
         {
             viewModel.States = await LoadStates();
             viewModel.CourtTypes = await LoadCourtTypes();
-            viewModel.CaseCategory = await LoadCaseNature();
+            viewModel.CaseCategory = await LoadCaseNatureByCourtType(viewModel.CourtTypeId);
+            viewModel.CaseTypes = await CaseTypes(viewModel.CaseCategoryId);
+
             if (viewModel.StateId != 0)
             {
                 var dt = await _mediator.Send(new LangaugeAllQuery() { StateId = viewModel.StateId });
@@ -72,12 +75,9 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
                     return null;
 
                 viewModel = _mapper.Map<CourtFormAddUpdateViewModel>(response.Data);
+                viewModel.CaseTypeId = response.Data.CaseTypeId == null ? Guid.Empty : response.Data.CaseTypeId;
                 await PopulateDropdownsAsync(viewModel);
             }
-
-            //var html = await _viewRenderer.RenderViewToStringAsync("_CreateOrEdit", viewModel);
-            //return new JsonResult(new { isValid = true, html });
-
 
             return View("_CreateOrEdit", viewModel);
         }
@@ -97,11 +97,15 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             if (id == Guid.Empty)
             {
                 var createCommand = _mapper.Map<CreateCourtFormCommand>(ViewModel);
+                createCommand.CaseCategoryId = ViewModel.CaseCategoryId == Guid.Empty ? null : ViewModel.CaseCategoryId;
+                createCommand.CaseTypeId = ViewModel.CaseTypeId == Guid.Empty ? null : ViewModel.CaseTypeId;
                 result = await _mediator.Send(createCommand);
             }
             else
             {
                 var updateCommand = _mapper.Map<UpdateCourtFormCommand>(ViewModel);
+                updateCommand.CaseCategoryId = ViewModel.CaseCategoryId == Guid.Empty ? null : ViewModel.CaseCategoryId;
+                updateCommand.CaseTypeId = ViewModel.CaseTypeId == Guid.Empty ? null : ViewModel.CaseTypeId;
                 result = await _mediator.Send(updateCommand);
             }
 
@@ -112,21 +116,6 @@ namespace CourtApp.Web.Areas.LawyerDiary.Controllers
             ViewModel = ViewModel.Id == Guid.Empty ? new CourtFormAddUpdateViewModel() : ViewModel;
             await PopulateDropdownsAsync(ViewModel);
             return View("_CreateOrEdit", ViewModel);
-
-            // Load updated list after successful create/update
-            //var response = await _mediator.Send(new CourtFormGetAllQuery());
-
-            //if (!response.Succeeded)
-            //{
-            //    _notify.Error(response.Message);
-            //    return null;
-            //}
-
-            //var viewModel = _mapper.Map<List<CourtFormGetViewModel>>(response.Data);
-            //var viewHtml = await _viewRenderer.RenderViewToStringAsync("_ViewAll", viewModel);
-
-            //return new JsonResult(new { isValid = true, html = viewHtml });
-
         }
 
         [HttpPost]

@@ -1,10 +1,14 @@
-﻿using CourtApp.Infrastructure.Identity.Models;
+﻿using AuditTrail.Abstrations;
+using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,6 +35,14 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account.Manage
 
         [BindProperty]
         public InputModel Input { get; set; }
+        public SelectList Specializations { get; set; }
+        public SelectList Years { get; set; }
+        public SelectList States { get; set; }
+        public SelectList CourtTypes { get; set; }
+        public SelectList CourtDistricts { get; set; }
+        public SelectList Complexes { get; set; }
+        public SelectList Courts { get; set; }
+        public SelectList Genders { get; set; }
 
         public class InputModel
         {
@@ -51,16 +63,65 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account.Manage
             public byte[] ProfilePicture { get; set; }
             public string EnrollmentNo { get; set; }
             public string Mobile { get; set; }
-            public string Website { get; set; }
-            public string Telephone { get; set; }
+
+            [Display(Name ="Date of birth")]
+            public DateTime DateOfBirth { get; set; }
+
+            [Display(Name = "Date of joining")]
+            public DateTime DateOfJoining { get; set; }
+
+            public ProfessionalInfo ProfInfo { get; set; }
+            public WorkLocation WorkLocInfo { get; set; }
+            public AddressInfo AddressInfo { get; set; }
+
+        }
+
+        public class AddressInfo
+        {
+            public int StateId { get; set; }
+            public int DistrictId { get; set; }
+            public int CityId { get; set; }
+            [Display(Name ="Complete Address")]
+            public string Address { get; set; }
+            public string Landmark { get; set; }
+        }
+
+        public class WorkLocation
+        {
             public string Address { get; set; }
             public int StateId { get; set; }
+            public int DistrictId { get; set; }
             public Guid CourtTypeId { get; set; }
-            public Guid DistrictId { get; set; }
-            public Guid ComplexId { get; set; }
             public Guid CourtId { get; set; }
-            public int PracticeSince { get; set; }
         }
+
+        public class ContactInfo
+        {
+            public string O_Phone { get; set; }
+            public string R_Phone { get; set; }
+            public string P_Email { get; set; }
+            public string O_Email { get; set; }
+        }
+
+        public class ProfessionalInfo
+        {
+            [Display(Name ="Enrollment Number")]
+            public string EnrollmentNo { get; set; }            
+            
+            [Display(Name = "Bar Association Number")]
+            public string BarAssociationNumber { get; set; }
+
+            [Display(Name = "License Date")]
+            public DateTime PracticeLicenseDate { get; set; }
+
+            [Display(Name = "Practice Since")]
+            public int PracticeSince { get; set; }
+
+            [Display(Name = "Specialization Date")]
+            public Guid SpecializationId { get; set; }
+            
+        }
+
 
         private async Task LoadAsync(ApplicationUser user)
         {

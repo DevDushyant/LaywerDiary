@@ -48,7 +48,7 @@
         /// <summary>
         /// This is complete title Number of Respondent
         /// </summary>
-        public int TitleNo { get; set; }
+        public string TitleNo { get; set; }
         /// <summary>
         /// This is case bench
         /// </summary>

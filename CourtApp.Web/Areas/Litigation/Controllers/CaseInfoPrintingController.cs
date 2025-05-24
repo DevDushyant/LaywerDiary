@@ -47,81 +47,217 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             return View(fmpViewModel);
         }
 
-
-        public async Task<IActionResult> LoadFormPrinting(Guid type, List<Guid> Cases, string AppNo)
+        public async Task<IActionResult> LoadFormPrinting(Guid type, List<Guid> Cases, List<string> AppNo)
         {
-            var formTemplates = await _mediator.Send(new CourtFormSearchQuery() { StateId = 1, Id = type });
-            string formTemplate = string.Empty;
-            if (formTemplates.Succeeded)
-                formTemplate = formTemplates.Data.Select(s => s.FormTemplate).FirstOrDefault();
-
-            var caseDetail = await _mediator.Send(new GetFormPrintDataQuery { CaseIds = Cases });
-            GlobalFormPrintViewModel prinatbleData = new GlobalFormPrintViewModel();
-            if (caseDetail.Succeeded)
+            try
             {
-                var caseInfoDetails = _mapper.Map<List<FormPrintData>>(caseDetail.Data);
-                prinatbleData.CasesInfo = caseInfoDetails;
-            }
-            List<string> formRawHtml = new List<string>();
-            foreach (var v in prinatbleData.CasesInfo)
-            {
-                var applicantDetail = v.Applicants;
-                var agCaseDetail=v.AgainstCourtDetail;
-                foreach (var ad in applicantDetail)
+                // Fetch form template
+                var formTemplates = await _mediator.Send(new CourtFormSearchQuery { StateId = 1, Id = type });
+                if (!formTemplates.Succeeded || formTemplates.Data == null || !formTemplates.Data.Any())
                 {
-                    // Clone the template each time to avoid overwriting previous replacements
-                    var tempForm = formTemplate;
-                    tempForm = tempForm.Replace("#InstitutionDate#", v.InstitutionDate)
-                                       .Replace("#StateName#", v.State)
-                                       .Replace("#CourtType#", v.CourtType)
-                                       .Replace("#CourtDistrict#", v.CourtDistrict)
-                                       .Replace("#CourtComplex#", v.CourtComplex)
-                                       .Replace("#Court#", v.Court)
-                                       .Replace("#Strength#", v.Strength)
-                                       .Replace("#CaseNoYear#", v.CaseNoYear)
-                                       .Replace("#CaseCategory#", v.CaseCategory)
-                                       .Replace("#CaseType#", v.CaseType)
-                                       .Replace("#CisNoYear#", v.CisNoYear)
-                                       .Replace("#PetitionerAppearance#", v.PetitionerAppearance)
-                                       .Replace("#Petitioner#", v.Petitioner)
-                                       .Replace("#RespondantAppearance#", v.RespondantAppearance)
-                                       .Replace("#Respondant#", v.Respondent)
-                                       .Replace("#NextDate#", v.NextDate)
-                                       .Replace("#CaseStage#", v.CaseStage)
-                                       .Replace("#DisposalDate#", v.DisposalDate)
-                                       .Replace("#CnrNo#", v.CnrNo)
-                                       .Replace("#CurrentDate#", DateTime.Now.Date.ToString("dd/MM/yyyy"))
-                                       .Replace("#ApplicantNo#", ad.ApplicantNo.ToString())
-                                       .Replace("#ApplicantDetail#", ad.Applicant)
-                                       .Replace("#ImpugedOrder#", agCaseDetail.CourtBench)
-                                       .Replace("#AgState#", agCaseDetail.State)
-                                       .Replace("#AgCourtType#", agCaseDetail.CourtType)
-                                       .Replace("#AgCourtDistrict#", agCaseDetail.CourtDistrict)
-                                       .Replace("#AgCourtComplex#", agCaseDetail.CourtComplex)
-                                       .Replace("#AgCourtBench#", agCaseDetail.CourtBench)
-                                       .Replace("#AgCaseNoYear#", agCaseDetail.CaseNo +"/"+ agCaseDetail.CaseYear)
-                                       .Replace("#AgCaseType#", agCaseDetail.CaseType)
-                                       .Replace("#AgCnrNo#", agCaseDetail.CnrNo)
-                                       .Replace("#Cadre#", agCaseDetail.Cadre)
-                                       .Replace("#OfficerName#", agCaseDetail.OfficerName)
-                                       .Replace("#OfficerName#", agCaseDetail.OfficerName)
-                                       .Replace("#AgCaseCategory#", agCaseDetail.CaseCategory)
-                                    ;
-                                       
-
-
-                    
-
-                    formRawHtml.Add(tempForm);
+                    Console.WriteLine("No form template found.");
+                    return BadRequest("Form template not found.");
                 }
+
+                var formTemplate = formTemplates.Data.FirstOrDefault()?.FormTemplate;
+                if (string.IsNullOrWhiteSpace(formTemplate))
+                {
+                    Console.WriteLine("Form template is empty.");
+                    return BadRequest("Form template is empty.");
+                }
+
+                Console.WriteLine("Template is available.");
+
+                // Fetch case details
+                var caseDetail = await _mediator.Send(new GetFormPrintDataQuery { CaseIds = Cases });
+                if (!caseDetail.Succeeded || caseDetail.Data == null)
+                {
+                    Console.WriteLine("Case details retrieval failed.");
+                    return BadRequest("Unable to retrieve case details.");
+                }
+
+                var caseInfoDetails = _mapper.Map<List<FormPrintData>>(caseDetail.Data);
+                if (caseInfoDetails == null || !caseInfoDetails.Any())
+                {
+                    Console.WriteLine("No case data available to process.");
+                    return BadRequest("No case data available.");
+                }
+
+                List<string> formRawHtml = new List<string>();
+
+                foreach (var v in caseInfoDetails)
+                {
+                    if (v == null || v.Applicants == null)
+                    {
+                        Console.WriteLine("Skipping null case info or applicants.");
+                        continue;
+                    }
+
+                    var agCaseDetail = v.AgainstCourtDetail;
+
+                    foreach (var ad in v.Applicants)
+                    {
+                        if (ad == null)
+                        {
+                            Console.WriteLine("Skipping null applicant.");
+                            continue;
+                        }
+
+                        try
+                        {
+                            Console.WriteLine($"Generating form for ApplicantNo: {ad.ApplicantNo}");
+
+                            // Clone template each iteration
+                            var tempForm = formTemplate;
+
+                            // Use null-safe dictionary approach
+                            var replacements = new Dictionary<string, string>
+                            {
+                                ["#InstitutionDate#"] = v.InstitutionDate ?? "",
+                                ["#StateName#"] = v.State ?? "",
+                                ["#CourtType#"] = v.CourtType ?? "",
+                                ["#CourtDistrict#"] = v.CourtDistrict ?? "",
+                                ["#CourtComplex#"] = v.CourtComplex ?? "",
+                                ["#Court#"] = v.Court ?? "",
+                                ["#Strength#"] = v.Strength ?? "",
+                                ["#CaseNoYear#"] = v.CaseNoYear ?? "",
+                                ["#CaseCategory#"] = v.CaseCategory ?? "",
+                                ["#CaseType#"] = v.CaseType ?? "",
+                                ["#CisNoYear#"] = v.CisNoYear ?? "",
+                                ["#PetitionerAppearance#"] = v.PetitionerAppearance ?? "",
+                                ["#Petitioner#"] = v.Petitioner ?? "",
+                                ["#RespondantAppearance#"] = v.RespondantAppearance ?? "",
+                                ["#Respondant#"] = v.Respondent ?? "",
+                                ["#NextDate#"] = v.NextDate ?? "",
+                                ["#CaseStage#"] = v.CaseStage ?? "",
+                                ["#DisposalDate#"] = v.DisposalDate ?? "",
+                                ["#CnrNo#"] = v.CnrNo ?? "",
+                                ["#CurrentDate#"] = DateTime.Now.ToString("dd/MM/yyyy"),
+                                ["#ApplicantNo#"] = ad.ApplicantNo.ToString() ?? "",
+                                ["#ApplicantDetail#"] = ad.Applicant ?? "",
+                                ["#ImpugedOrder#"] = agCaseDetail?.CourtBench ?? "",
+                                ["#AgState#"] = agCaseDetail?.State ?? "",
+                                ["#AgCourtType#"] = agCaseDetail?.CourtType ?? "",
+                                ["#AgCourtDistrict#"] = agCaseDetail?.CourtDistrict ?? "",
+                                ["#AgCourtComplex#"] = agCaseDetail?.CourtComplex ?? "",
+                                ["#AgCourtBench#"] = agCaseDetail?.CourtBench ?? "",
+                                ["#AgCaseNoYear#"] = $"{agCaseDetail?.CaseNo ?? ""}/{agCaseDetail?.CaseYear ?? ""}",
+                                ["#AgCaseType#"] = agCaseDetail?.CaseType ?? "",
+                                ["#AgCnrNo#"] = agCaseDetail?.CnrNo ?? "",
+                                ["#Cadre#"] = agCaseDetail?.Cadre ?? "",
+                                ["#OfficerName#"] = agCaseDetail?.OfficerName ?? "",
+                                ["#AgCaseCategory#"] = agCaseDetail?.CaseCategory ?? "",
+                                ["#DecisionDate#"]= v.DisposalDate?? v.NextDate
+                            };
+
+                            foreach (var pair in replacements)
+                            {
+                                tempForm = tempForm.Replace(pair.Key, pair.Value);
+                            }
+
+                            formRawHtml.Add(HttpUtility.HtmlDecode(tempForm));
+                        }
+                        catch (Exception innerEx)
+                        {
+                            Console.WriteLine($"Error processing applicant {ad.ApplicantNo}: {innerEx.Message}");
+                            continue; // skip and continue other applicants
+                        }
+                    }
+                }
+
+                return PartialView("_GlobalFormPrintPartial", formRawHtml);
             }
-
-            // You don’t need HtmlDecode unless you're decoding entities — use it if needed:
-            var decodedList = formRawHtml.Select(html => HttpUtility.HtmlDecode(html)).ToList();
-
-            return PartialView("_GlobalFormPrintPartial", decodedList);
-
+            catch (Exception ex)
+            {
+                // Consider logging with a logger instead of just console
+                Console.WriteLine($"Unhandled Exception: {ex.Message}\n{ex.StackTrace}");
+                return StatusCode(500, "An internal error occurred while generating the form.");
+            }
         }
+
+
+
+        //public async Task<IActionResult> LoadFormPrinting(Guid type, List<Guid> Cases, List<string> AppNo)
+        //{
+        //    try
+        //    {
+        //        var formTemplates = await _mediator.Send(new CourtFormSearchQuery() { StateId = 1, Id = type });
+        //        string formTemplate = string.Empty;
+        //        if (formTemplates.Succeeded)
+        //            formTemplate = formTemplates.Data.Select(s => s.FormTemplate).FirstOrDefault();
+        //        Console.WriteLine("Template is available or not:" + formTemplate);
+
+        //        var caseDetail = await _mediator.Send(new GetFormPrintDataQuery { CaseIds = Cases });
+        //        GlobalFormPrintViewModel prinatbleData = new GlobalFormPrintViewModel();
+        //        if (caseDetail.Succeeded)
+        //        {
+        //            var caseInfoDetails = _mapper.Map<List<FormPrintData>>(caseDetail.Data);
+        //            prinatbleData.CasesInfo = caseInfoDetails;
+        //        }
+        //        List<string> formRawHtml = new List<string>();
+        //        foreach (var v in prinatbleData.CasesInfo)
+        //        {
+        //            var applicantDetail = v.Applicants;
+        //            var agCaseDetail = v.AgainstCourtDetail;
+        //            Console.WriteLine("Inside the  main loop loop");
+        //            foreach (var ad in applicantDetail)
+        //            {
+        //                Console.WriteLine("Inside the applicant loop" + ad.ApplicantNo);
+        //                // Clone the template each time to avoid overwriting previous replacements
+        //                var tempForm = formTemplate;
+        //                tempForm = tempForm.Replace("#InstitutionDate#", v.InstitutionDate)
+        //                                   .Replace("#StateName#", v.State)
+        //                                   .Replace("#CourtType#", v.CourtType)
+        //                                   .Replace("#CourtDistrict#", v.CourtDistrict)
+        //                                   .Replace("#CourtComplex#", v.CourtComplex)
+        //                                   .Replace("#Court#", v.Court)
+        //                                   .Replace("#Strength#", v.Strength)
+        //                                   .Replace("#CaseNoYear#", v.CaseNoYear)
+        //                                   .Replace("#CaseCategory#", v.CaseCategory)
+        //                                   .Replace("#CaseType#", v.CaseType)
+        //                                   .Replace("#CisNoYear#", v.CisNoYear)
+        //                                   .Replace("#PetitionerAppearance#", v.PetitionerAppearance)
+        //                                   .Replace("#Petitioner#", v.Petitioner)
+        //                                   .Replace("#RespondantAppearance#", v.RespondantAppearance)
+        //                                   .Replace("#Respondant#", v.Respondent)
+        //                                   .Replace("#NextDate#", v.NextDate)
+        //                                   .Replace("#CaseStage#", v.CaseStage)
+        //                                   .Replace("#DisposalDate#", v.DisposalDate)
+        //                                   .Replace("#CnrNo#", v.CnrNo)
+        //                                   .Replace("#CurrentDate#", DateTime.Now.Date.ToString("dd/MM/yyyy"))
+        //                                   .Replace("#ApplicantNo#", ad.ApplicantNo.ToString())
+        //                                   .Replace("#ApplicantDetail#", ad.Applicant)
+        //                                   .Replace("#ImpugedOrder#", agCaseDetail?.CourtBench ?? "")
+        //                                   .Replace("#AgState#", agCaseDetail?.State ?? "")
+        //                                   .Replace("#AgCourtType#", agCaseDetail?.CourtType)
+        //                                   .Replace("#AgCourtDistrict#", agCaseDetail?.CourtDistrict??"")
+        //                                   .Replace("#AgCourtComplex#", agCaseDetail?.CourtComplex ?? "")
+        //                                   .Replace("#AgCourtBench#", agCaseDetail?.CourtBench ?? "")
+        //                                   .Replace("#AgCaseNoYear#", agCaseDetail?.CaseNo + "/" + agCaseDetail?.CaseYear)
+        //                                   .Replace("#AgCaseType#", agCaseDetail?.CaseType ?? "")
+        //                                   .Replace("#AgCnrNo#", agCaseDetail?.CnrNo ?? "")
+        //                                   .Replace("#Cadre#", agCaseDetail?.Cadre ?? "")
+        //                                   .Replace("#OfficerName#", agCaseDetail?.OfficerName ?? "")                                           
+        //                                   .Replace("#AgCaseCategory#", agCaseDetail?.CaseCategory ?? "")
+        //                                ;
+        //                formRawHtml.Add(tempForm);
+        //            }
+        //        }
+
+        //        // You don’t need HtmlDecode unless you're decoding entities — use it if needed:
+        //        var decodedList = formRawHtml.Select(html => HttpUtility.HtmlDecode(html)).ToList();
+
+        //        return PartialView("_GlobalFormPrintPartial", decodedList);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine("Err:" + ex.Message);
+        //        Console.WriteLine("Err:" + ex.StackTrace);
+        //        Console.WriteLine("Err:" + ex);
+        //        return null;
+        //    }
+
+        //}
 
         public async Task<IActionResult> LoadFormPrinting1(string type, List<Guid> Cases, string AppNo)
         {

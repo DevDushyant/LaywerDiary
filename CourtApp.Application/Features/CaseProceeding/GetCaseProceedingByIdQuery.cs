@@ -89,7 +89,7 @@ namespace CourtApp.Application.Features.CaseProceeding
             //md.Year = cd != null && cd.CourtBench != null ? cd.CaseYear.ToString() : "";
             //md.No = cd != null && cd.CourtBench != null ? cd.CaseNo.ToString() : "";
             //md.CaseType = cd != null && cd.CourtBench != null ? cd.CaseType.Name_En : "";
-            return Result<CaseProceedingDto>.Success(md);
+           // return Result<CaseProceedingDto>.Success(md);
         }
     }
 
