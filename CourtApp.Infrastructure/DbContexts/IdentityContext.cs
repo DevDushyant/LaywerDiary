@@ -66,6 +66,33 @@ namespace CourtApp.Infrastructure.DbContexts
                 entity.ToTable("UserTokens");
             });
 
+            builder.Entity<ApplicationUser>(entity =>
+            {
+                entity.Property(e => e.ProfessionalInfo)
+                 .HasConversion(
+                     v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                     v => JsonSerializer.Deserialize<ProfessionalInfo>(v, (JsonSerializerOptions)null))
+                 .HasColumnType("jsonb");
+
+                entity.Property(e => e.AddressInfo)
+                  .HasConversion(
+                      v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                      v => JsonSerializer.Deserialize<AddressInfo>(v, (JsonSerializerOptions)null))
+                  .HasColumnType("jsonb");
+
+                entity.Property(e => e.ContactInfo)
+                  .HasConversion(
+                      v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                      v => JsonSerializer.Deserialize<ContactInfo>(v, (JsonSerializerOptions)null))
+                  .HasColumnType("jsonb");
+
+                entity.Property(e => e.WorkLocInfo)
+                  .HasConversion(
+                      v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                      v => JsonSerializer.Deserialize<WorkLocation>(v, (JsonSerializerOptions)null))
+                  .HasColumnType("jsonb");
+            });
+
             builder.Entity<Demographic>(entity =>
             {
                 entity.Property(e => e.ProfessionalInfo)

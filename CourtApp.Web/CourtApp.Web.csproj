@@ -5,7 +5,14 @@
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
     <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
     <UserSecretsId>9155b630-bc39-4ed9-8edd-e1b380ae1b95</UserSecretsId>
-  </PropertyGroup> 
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\Shared\Components\Notyf\**" />
+    <Content Remove="Views\Shared\Components\Notyf\**" />
+    <EmbeddedResource Remove="Views\Shared\Components\Notyf\**" />
+    <None Remove="Views\Shared\Components\Notyf\**" />
+  </ItemGroup> 
 
   <ItemGroup>
     <PackageReference Include="AspNetCoreHero.ToastNotification" Version="1.1.0" />

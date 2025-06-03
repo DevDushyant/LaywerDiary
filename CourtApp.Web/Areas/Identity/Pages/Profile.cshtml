@@ -3,7 +3,7 @@
 @using CourtApp.Web.Views.Shared.Components.Culture
 @inject IHtmlLocalizer<SharedResource> localizer
 @{
-	ViewData["Title"] = @Model.FirstName + @Model.LastName +"'s Prfile";
+	ViewData["Title"] = @Model.FirstName +  @Model.LastName +"'s Prfile";
 }
 <style>
 	.profile-picture {
@@ -113,7 +113,7 @@
 							<strong class="mr-2">@localizer["Mobile"]:</strong> @Model.Mobile
 						</div>
 						<div class="col-md-6 d-flex">
-							<strong class="mr-2">@localizer["Email"]:</strong> @Model.Email
+							<strong class="mr-2">@localizer["Phone"]:</strong> @Model.Phone
 						</div>
 					</div>
 					<div class="row mb-2">
@@ -121,19 +121,43 @@
 							<strong class="mr-2">@localizer["Date of Birth"]:</strong> <!-- Add DOB value -->
 						</div>
 						<div class="col-md-6 d-flex">
-							<strong class="mr-2">@localizer["Date of Joining"]:</strong> <!-- Add DOJ value -->
-						</div>
+							<strong class="mr-2">@localizer["Email"]:</strong> @Model.Email
+						</div>						
 					</div>
 				</fieldset>
 
 				<fieldset class="scheduler-border">
-					<legend class="scheduler-border">@localizer["Work Info"]</legend>
-					<p class="text-muted">[Add work details here]</p>
+					<legend class="scheduler-border">@localizer["Professional Info"]</legend>
+					<div class="row mb-2">
+						<div class="col-md-6 d-flex">
+							<strong class="mr-2">@localizer["Enrollment Number"]:</strong> @Model.LaywerInfo.ProfInfo.EnrollmentNo
+						</div>
+						<div class="col-md-6 d-flex">
+							<strong class="mr-2">@localizer["Bar Association Number"]:</strong> @Model.LaywerInfo.ProfInfo.BarAssociationNumber
+						</div>
+					</div>
+					<div class="row mb-2">
+						<div class="col-md-6 d-flex">
+							<strong class="mr-2">@localizer["License Date"]:</strong> @Model.LaywerInfo.ProfInfo.PracticeLicenseDate
+						</div>
+						
+					</div>
+					
 				</fieldset>
 
 				<fieldset class="scheduler-border">
-					<legend class="scheduler-border">@localizer["Address Info"]</legend>
-					<p class="text-muted">[Add address details here]</p>
+					<legend class="scheduler-border">@localizer["Work Info"]</legend>
+					<div class="col-md-6 d-flex">
+						<strong class="mr-2">@localizer["Address"]:</strong> @Model.LaywerInfo.WorkLocInfo.Address
+					</div>
+
+				</fieldset>
+
+				<fieldset class="scheduler-border">
+					<legend class="scheduler-border">@localizer["Residense Cum Office Address Info"]</legend>
+					<div class="col-md-6 d-flex">
+						<strong class="mr-2">@localizer["Address"]:</strong> @Model.LaywerInfo.AddressInfo.StreetAddress
+					</div>
 				</fieldset>
 			</div>
 		</div>

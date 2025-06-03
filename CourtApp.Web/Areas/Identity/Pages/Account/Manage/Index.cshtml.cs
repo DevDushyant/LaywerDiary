@@ -1,5 +1,6 @@
 ﻿using AuditTrail.Abstrations;
 using CourtApp.Domain.Entities.LawyerDiary;
+using CourtApp.Infrastructure.DbContexts;
 using CourtApp.Infrastructure.Identity.Models;
 using CourtApp.Web.Extensions;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,13 +21,15 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IdentityContext _identityContext;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager, IdentityContext _identityContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            this._identityContext = _identityContext;
         }
 
         public string Username { get; set; }
@@ -61,10 +65,10 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account.Manage
 
             [Display(Name = "Profile Picture")]
             public byte[] ProfilePicture { get; set; }
-            public string EnrollmentNo { get; set; }
+            public string Gender { get; set; }
             public string Mobile { get; set; }
 
-            [Display(Name ="Date of birth")]
+            [Display(Name = "Date of birth")]
             public DateTime DateOfBirth { get; set; }
 
             [Display(Name = "Date of joining")]
@@ -81,7 +85,7 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account.Manage
             public int StateId { get; set; }
             public int DistrictId { get; set; }
             public int CityId { get; set; }
-            [Display(Name ="Complete Address")]
+            [Display(Name = "Complete Address")]
             public string Address { get; set; }
             public string Landmark { get; set; }
         }
@@ -105,21 +109,21 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account.Manage
 
         public class ProfessionalInfo
         {
-            [Display(Name ="Enrollment Number")]
-            public string EnrollmentNo { get; set; }            
-            
+            [Display(Name = "Enrollment Number")]
+            public string EnrollmentNo { get; set; }
+
             [Display(Name = "Bar Association Number")]
             public string BarAssociationNumber { get; set; }
 
             [Display(Name = "License Date")]
             public DateTime PracticeLicenseDate { get; set; }
 
-            [Display(Name = "Practice Since")]
-            public int PracticeSince { get; set; }
+            //[Display(Name = "Practice Since")]
+            //public int PracticeSince { get; set; }
 
-            [Display(Name = "Specialization Date")]
-            public Guid SpecializationId { get; set; }
-            
+            //[Display(Name = "Specialization Date")]
+            //public Guid SpecializationId { get; set; }
+
         }
 
 
@@ -127,9 +131,14 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            var firstName = user.FirstName;
-            var lastName = user.LastName;
-            var profilePicture = user.ProfilePicture;
+            var firstName = user?.FirstName;
+            var lastName = user?.LastName;
+            var profilePicture = user?.ProfilePicture;
+            var addressInfo = user?.AddressInfo;
+            var workLocInfo = user?.WorkLocInfo;
+            var contactInfo = user?.ContactInfo;
+            var profInfo = user?.ProfessionalInfo;
+
             Username = userName;
             Input = new InputModel
             {
@@ -137,9 +146,37 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account.Manage
                 Username = userName,
                 FirstName = firstName,
                 LastName = lastName,
-                ProfilePicture = profilePicture
+                Mobile = user?.Mobile,
+                Gender = user?.Gender,
+                DateOfBirth = (DateTime)(user?.DateOfBirth),
+                DateOfJoining = DateTime.Now,
+                ProfilePicture = profilePicture,
+                AddressInfo = new AddressInfo
+                {
+                    Address = addressInfo?.StreetAddress,
+                    CityId = addressInfo?.CityId ?? 0,
+                    DistrictId = addressInfo?.DistrictId ?? 0,
+                    StateId = addressInfo?.StateId ?? 0
+                },
+                WorkLocInfo = new WorkLocation
+                {
+                    DistrictId = workLocInfo?.DistrictId ?? 0,
+                    CourtId = workLocInfo?.CourtId ?? Guid.Empty,
+                    CourtTypeId = workLocInfo?.CourtTypeId ?? Guid.Empty,
+                    StateId = workLocInfo?.StateId ?? 0,
+                    Address = workLocInfo?.Address??""
+                },
+                ProfInfo = new ProfessionalInfo
+                {
+                    BarAssociationNumber = profInfo?.BarAssociationNumber ?? string.Empty,
+                    EnrollmentNo = profInfo?.EnrollmentNo ?? string.Empty,
+                    PracticeLicenseDate = profInfo?.PracticeLicenseDate ?? DateTime.MinValue,
+                    //PracticeSince = profInfo?.PracticeSince ?? 0,
+                    //SpecializationId = userProfileData?.ProfessionalInfo?.SpecializationId ?? 0,
+                }
             };
         }
+
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -166,8 +203,11 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+            bool isUserUpdated = false;
+
+            // Phone number update
+            var currentPhoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            if (Input.PhoneNumber != currentPhoneNumber)
             {
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
@@ -176,28 +216,104 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
-            var firstName = user.FirstName;
-            var lastName = user.LastName;
-            if (Input.FirstName != firstName)
+
+            // Check and update user properties
+            if (Input.FirstName != user.FirstName)
             {
                 user.FirstName = Input.FirstName;
-                await _userManager.UpdateAsync(user);
-            }
-            if (Input.LastName != lastName)
-            {
-                user.LastName = Input.LastName;
-                await _userManager.UpdateAsync(user);
+                isUserUpdated = true;
             }
 
+            if (Input.LastName != user.LastName)
+            {
+                user.LastName = Input.LastName;
+                isUserUpdated = true;
+            }
+            if (Input.Mobile != user.Mobile)
+            {
+                user.Mobile = Input.Mobile;
+                isUserUpdated = true;
+            }
+            if (Input.DateOfBirth != user.DateOfBirth)
+            {
+                user.DateOfBirth = Input.DateOfBirth;
+                isUserUpdated = true;
+            }
+
+            // Address Info
+            var address = user.AddressInfo ?? new Infrastructure.Identity.Models.AddressInfo();
+            if (address.StreetAddress != Input.AddressInfo.Address ||
+                address.StateId != Input.AddressInfo.StateId ||
+                address.CityId != Input.AddressInfo.CityId ||
+                address.DistrictId != Input.AddressInfo.DistrictId)
+            {
+                user.AddressInfo = new Infrastructure.Identity.Models.AddressInfo
+                {
+                    StreetAddress = Input.AddressInfo.Address,
+                    StateId = Input.AddressInfo.StateId,
+                    CityId = Input.AddressInfo.CityId,
+                    DistrictId = Input.AddressInfo.DistrictId
+                };
+                isUserUpdated = true;
+            }
+
+            // Work Location Info
+            var workLoc = user.WorkLocInfo ?? new Infrastructure.Identity.Models.WorkLocation();
+            if (workLoc.StateId != Input.WorkLocInfo.StateId ||
+                workLoc.DistrictId != Input.WorkLocInfo.DistrictId ||
+                workLoc.CourtId != Input.WorkLocInfo.CourtId ||
+                workLoc.CourtTypeId != Input.WorkLocInfo.CourtTypeId||
+                workLoc.Address!=Input.WorkLocInfo.Address)
+            {
+                user.WorkLocInfo = new Infrastructure.Identity.Models.WorkLocation
+                {
+                    StateId = Input.WorkLocInfo.StateId,
+                    DistrictId = Input.WorkLocInfo.DistrictId,
+                    CourtId = Input.WorkLocInfo.CourtId,
+                    CourtTypeId = Input.WorkLocInfo.CourtTypeId,
+                    Address=Input.WorkLocInfo.Address
+                };
+                isUserUpdated = true;
+            }
+
+            // Professional Info
+            var prof = user.ProfessionalInfo ?? new Infrastructure.Identity.Models.ProfessionalInfo();
+            if (prof.BarAssociationNumber != Input.ProfInfo.BarAssociationNumber ||
+                prof.EnrollmentNo != Input.ProfInfo.EnrollmentNo ||
+                prof.PracticeLicenseDate != Input.ProfInfo.PracticeLicenseDate //||
+               /* prof.PracticeSince != Input.ProfInfo.PracticeSince*/)
+            {
+                user.ProfessionalInfo = new Infrastructure.Identity.Models.ProfessionalInfo
+                {
+                    BarAssociationNumber = Input.ProfInfo.BarAssociationNumber,
+                    EnrollmentNo = Input.ProfInfo.EnrollmentNo,
+                    PracticeLicenseDate = Input.ProfInfo.PracticeLicenseDate,
+                    //PracticeSince = Input.ProfInfo.PracticeSince
+                };
+                isUserUpdated = true;
+            }
+
+            // Handle profile picture upload
             if (Request.Form.Files.Count > 0)
             {
                 IFormFile file = Request.Form.Files.FirstOrDefault();
-                user.ProfilePicture = file.OptimizeImageSize(720, 720);
+                if (file != null)
+                {
+                    user.ProfilePicture = file.OptimizeImageSize(720, 720);
+                    isUserUpdated = true;
+                }
+            }
+
+            // Save changes if any
+            if (isUserUpdated)
+            {
                 await _userManager.UpdateAsync(user);
             }
+
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
+
     }
 }

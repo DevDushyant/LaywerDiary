@@ -1,17 +1,26 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
 namespace CourtApp.Web.Areas.Identity.Pages.Account.Manage
 {
     public partial class BillingDetailModel : PageModel
     {
+
+        private readonly ILogger<BillingDetailModel> _logger;
+
+        public BillingDetailModel(ILogger<BillingDetailModel> _logger)
+        {
+            this._logger = _logger;
+        }
+
+
         [BindProperty]
         public BillingDetailInputModel Input { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
-
 
         public class BillingDetailInputModel
         {

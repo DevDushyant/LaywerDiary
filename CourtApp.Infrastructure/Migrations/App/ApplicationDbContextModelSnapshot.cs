@@ -2411,8 +2411,8 @@ namespace CourtApp.Infrastructure.Migrations.App
                             b1.Property<string>("ApplicantDetail")
                                 .HasColumnType("text");
 
-                            b1.Property<int>("ApplicantNo")
-                                .HasColumnType("integer");
+                            b1.Property<string>("ApplicantNo")
+                                .HasColumnType("text");
 
                             b1.HasKey("CaseTitleEntityId", "__synthesizedOrdinal");
 

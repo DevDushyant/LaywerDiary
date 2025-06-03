@@ -1,4 +1,5 @@
-﻿using CourtApp.Domain.Entities.CaseDetails;
+﻿using CourtApp.Domain.Entities.Account;
+using CourtApp.Domain.Entities.CaseDetails;
 using CourtApp.Domain.Entities.Common;
 using CourtApp.Domain.Entities.FormBuilder;
 using CourtApp.Domain.Entities.LawyerDiary;
@@ -52,6 +53,7 @@ namespace CourtApp.Application.Interfaces.Contexts
         DbSet<AssignCaseEntity> AssignedCases { get; set; }
         DbSet<LanguageEntity> LanguageEntities { get; set; }
         DbSet<CourtFormTypeEntity> CourtFormTypeEntities { get; set; }
+        DbSet<BillingDetailEntity> BillingDetails { get; set; }
 
     }
 }

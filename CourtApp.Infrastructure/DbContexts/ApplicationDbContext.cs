@@ -1,6 +1,7 @@
 ﻿using AuditTrail.Abstrations;
 using CourtApp.Application.Interfaces.Contexts;
 using CourtApp.Application.Interfaces.Shared;
+using CourtApp.Domain.Entities.Account;
 using CourtApp.Domain.Entities.CaseDetails;
 using CourtApp.Domain.Entities.Common;
 using CourtApp.Domain.Entities.FormBuilder;
@@ -75,6 +76,7 @@ namespace CourtApp.Infrastructure.DbContexts
         public DbSet<AssignCaseEntity> AssignedCases { get; set; }
         public DbSet<LanguageEntity> LanguageEntities { get; set; }
         public DbSet<CourtFormTypeEntity> CourtFormTypeEntities { get; set; }
+        public DbSet<BillingDetailEntity> BillingDetails { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

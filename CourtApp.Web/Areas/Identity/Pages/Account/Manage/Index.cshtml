@@ -83,11 +83,11 @@
 
 
 
-							<div class="col-md-6">
+							@* <div class="col-md-6">
 								<label asp-for="Input.DateOfJoining" class="form-label"></label>
 								<input type="date" asp-for="Input.DateOfJoining" class="form-control" />
 								<span asp-validation-for="Input.DateOfJoining" class="text-danger small"></span>
-							</div>
+							</div> *@
 						</div>
 					</fieldset>
 
@@ -110,23 +110,23 @@
 								<span asp-validation-for="Input.ProfInfo.PracticeLicenseDate" class="text-danger small"></span>
 							</div>
 
-							<div class="col-md-6">
+							@* <div class="col-md-6">
 								<label asp-for="Input.ProfInfo.PracticeSince" class="form-label"></label>
 								<select class="form-control select2bs4" asp-for="Input.ProfInfo.PracticeSince"
 										asp-items="Model.Years">
 									<option value=""></option>
 								</select>
 								<span asp-validation-for="Input.ProfInfo.PracticeSince" class="text-danger small"></span>
-							</div>
+							</div> *@
 
-							<div class="col-md-6">
+							@* <div class="col-md-6">
 								<label asp-for="Input.ProfInfo.SpecializationId" class="form-label"></label>
 								<select class="form-control select2bs4" asp-for="Input.ProfInfo.SpecializationId"
 										asp-items="Model.Specializations">
 									<option value=""></option>
 								</select>
 								<span asp-validation-for="Input.ProfInfo.SpecializationId" class="text-danger small"></span>
-							</div>
+							</div> *@
 						</div>
 					</fieldset>
 
@@ -149,11 +149,11 @@
 								<textarea asp-for="Input.AddressInfo.Address" class="form-control" ></textarea>
 								<span asp-validation-for="Input.AddressInfo.Address" class="text-danger small"></span>
 							</div>
-							<div class="col-md-6">
+							@* <div class="col-md-6">
 								<label asp-for="Input.AddressInfo.Landmark" class="form-label"></label>
 								<input asp-for="Input.AddressInfo.Landmark" class="form-control" />
 								<span asp-validation-for="Input.AddressInfo.Landmark" class="text-danger small"></span>
-							</div>
+							</div> *@
 						</div>
 					</fieldset>
 
