@@ -81,7 +81,7 @@
         </div>
         <div class="card-body pt-3">
             <div class="row g-3">
-                <div class="col-md-3">
+                @* <div class="col-md-3">
                     <label class="form-label">Select Court Type <span class="text-danger">*</span></label>
                     <select class="form-control select2bs4" asp-for="CourtTypeId" asp-items="@Model.CourtTypes">
                         <option value="">-- Select --</option>
@@ -92,7 +92,7 @@
                     <select class="form-control select2bs4" asp-for="CaseTypeId" asp-items="@Model.CaseTypes">
                         <option value="">-- Select --</option>
                     </select>
-                </div>
+                </div> *@
                 <div class="col-md-3">
                     <label class="form-label">Select Form Type <span class="text-danger">*</span></label>
                     <select class="form-control select2bs4" asp-for="FormTypeId" asp-items="@Model.FormTypes">
@@ -105,7 +105,7 @@
                         <option value="">-- Select --</option>
                     </select>
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-3">
                     <label class="form-label">Select Title</label>
                     <select class="form-control select2bs4" asp-for="TitleIds" asp-items="@Model.Titles">
                         <option value="">-- Select --</option>
