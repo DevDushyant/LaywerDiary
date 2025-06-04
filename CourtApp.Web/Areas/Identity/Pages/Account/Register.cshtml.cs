@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -115,22 +116,21 @@ namespace CourtApp.Web.Areas.Identity.Pages.Account
                 ApplicationUser user = new ApplicationUser();
                 MailAddress address = new MailAddress(Input.Email);
                 string userName = address.User;
+                string[] parts = Input.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                string lastName= parts.Length > 0 ? parts[^1] : string.Empty;
+                string fsName= parts.Length > 0 ? parts[0] : string.Empty;
                 user = new ApplicationUser
                 {
                     UserType = Input.UserType.ToUpper(),
                     UserName = userName.ToUpper(),
                     Email = Input.Email,
-                    FirstName = Input.Name.ToUpper(),
-                    Mobile = Input.Mobile,
-                    Demographic = Input.UserType.ToUpper() == "LAWYER" ? new Demographic
+                    FirstName = fsName.ToUpper(),
+                    LastName= lastName.ToUpper(),
+                    Mobile = Input.Mobile,                    
+                    ProfessionalInfo = Input.UserType.ToUpper() == "LAWYER" ? new ProfessionalInfo
                     {
-                        CreatedBy = "-",
-                        ProfessionalInfo = new ProfessionalInfo
-                        {
-                            EnrollmentNo = Input.EnrollmentNo,
-                            BarAssociationNumber = Input.EnrollmentNo
-                        }
-                    } : null, // Only assign Demographic if UserType is Lawyer
+                        EnrollmentNo = Input.EnrollmentNo                        
+                    } : null                    
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)

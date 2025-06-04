@@ -7,13 +7,33 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CourtApp.Infrastructure.Migrations.Identity
 {
     /// <inheritdoc />
-    public partial class Id001 : Migration
+    public partial class IdentityM01 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
                 name: "Identity");
+
+            migrationBuilder.CreateTable(
+                name: "demographic",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ContactInfo = table.Column<string>(type: "jsonb", nullable: true),
+                    AddressInfo = table.Column<string>(type: "jsonb", nullable: true),
+                    WorkLocInfo = table.Column<string>(type: "jsonb", nullable: true),
+                    ProfessionalInfo = table.Column<string>(type: "jsonb", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_demographic", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Roles",
@@ -36,15 +56,19 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    DemographicId = table.Column<Guid>(type: "uuid", nullable: true),
                     FirstName = table.Column<string>(type: "text", nullable: true),
                     LastName = table.Column<string>(type: "text", nullable: true),
-                    EnrollmentNo = table.Column<string>(type: "text", nullable: true),
                     Mobile = table.Column<string>(type: "text", nullable: true),
-                    Website = table.Column<string>(type: "text", nullable: true),
-                    Telephone = table.Column<string>(type: "text", nullable: true),
-                    Address = table.Column<string>(type: "text", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Gender = table.Column<string>(type: "text", nullable: true),
                     ProfilePicture = table.Column<byte[]>(type: "bytea", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    ContactInfo = table.Column<string>(type: "jsonb", nullable: true),
+                    AddressInfo = table.Column<string>(type: "jsonb", nullable: true),
+                    WorkLocInfo = table.Column<string>(type: "jsonb", nullable: true),
+                    ProfessionalInfo = table.Column<string>(type: "jsonb", nullable: true),
+                    UserType = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -63,6 +87,12 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_demographic_DemographicId",
+                        column: x => x.DemographicId,
+                        principalSchema: "Identity",
+                        principalTable: "demographic",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -86,6 +116,56 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Corporates",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    FirmName = table.Column<string>(type: "text", nullable: true),
+                    FirmType = table.Column<string>(type: "text", nullable: true),
+                    Address = table.Column<string>(type: "text", nullable: true),
+                    RegistrationNo = table.Column<string>(type: "text", nullable: true),
+                    Owner = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Corporates", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Corporates_Users_Id",
+                        column: x => x.Id,
+                        principalSchema: "Identity",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "lawerusers",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    LawyerId = table.Column<string>(type: "text", nullable: true),
+                    Enrollment = table.Column<string>(type: "text", nullable: true),
+                    DateOfJoining = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    AddressInfo = table.Column<string>(type: "jsonb", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_lawerusers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_lawerusers_Users_LawyerId",
+                        column: x => x.LawyerId,
+                        principalSchema: "Identity",
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -183,6 +263,12 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_lawerusers_LawyerId",
+                schema: "Identity",
+                table: "lawerusers",
+                column: "LawyerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
                 schema: "Identity",
                 table: "RoleClaims",
@@ -220,6 +306,13 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Users_DemographicId",
+                schema: "Identity",
+                table: "Users",
+                column: "DemographicId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 schema: "Identity",
                 table: "Users",
@@ -230,6 +323,14 @@ namespace CourtApp.Infrastructure.Migrations.Identity
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Corporates",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "lawerusers",
+                schema: "Identity");
+
             migrationBuilder.DropTable(
                 name: "RoleClaims",
                 schema: "Identity");
@@ -256,6 +357,10 @@ namespace CourtApp.Infrastructure.Migrations.Identity
 
             migrationBuilder.DropTable(
                 name: "Users",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "demographic",
                 schema: "Identity");
         }
     }

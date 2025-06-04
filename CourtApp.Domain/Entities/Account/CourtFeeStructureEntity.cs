@@ -3,16 +3,16 @@ using CourtApp.Entities.Common;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CourtApp.Domain.Entities.LawyerDiary
+namespace CourtApp.Domain.Entities.Account
 {
 
-    [Table("m_court_fee_structure", Schema = "ld")]
+    [Table("court_fee_structure", Schema = "account")]
     public class CourtFeeStructureEntity : AuditableEntity
     {
-        public Double MinValue { get; set; }
-        public Double MaxValue { get; set; }
-        public Double Rate { get; set; }
-        public Double FixAmount { get; set; }        
+        public double MinValue { get; set; }
+        public double MaxValue { get; set; }
+        public double Rate { get; set; }
+        public double FixAmount { get; set; }        
         public int StateId { get; set; }
         public virtual StateEntity State { get; set; }
     }

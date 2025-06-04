@@ -41,7 +41,7 @@ namespace CourtApp.Application.Features.CaseTitle
             entity.CaseApplicants = _mapper.Map<List<CaseApplicantDetailEntity>>(request.CaseApplicants);
 
             // Step 2: Load all existing applicants from all titles
-            var existingTitles = await _caseTitleRepository.Titles
+            var existingTitles = await _caseTitleRepository.Titles.Where(w=>w.CaseId==request.CaseId)
                 .AsNoTracking()
                 .Include(e => e.CaseApplicants) // Important: include navigation property                
                 .ToListAsync(cancellationToken);

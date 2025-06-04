@@ -6,8 +6,8 @@ namespace CourtApp.Infrastructure.Identity.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public Guid? DemographicId { get; set; }
-        public Demographic Demographic { get; set; }
+        //public Guid? DemographicId { get; set; }
+        //public Demographic Demographic { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Mobile { get; set; }

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CourtApp.Infrastructure.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20250215202821_ProfileImage")]
-    partial class ProfileImage
+    [Migration("20250604024851_IdentityM01")]
+    partial class IdentityM01
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,9 +34,15 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<string>("AddressInfo")
+                        .HasColumnType("jsonb");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
+
+                    b.Property<string>("ContactInfo")
+                        .HasColumnType("jsonb");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("timestamp without time zone");
@@ -89,8 +95,8 @@ namespace CourtApp.Infrastructure.Migrations.Identity
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("ProfileImgPath")
-                        .HasColumnType("text");
+                    b.Property<string>("ProfessionalInfo")
+                        .HasColumnType("jsonb");
 
                     b.Property<byte[]>("ProfilePicture")
                         .HasColumnType("bytea");
@@ -107,6 +113,9 @@ namespace CourtApp.Infrastructure.Migrations.Identity
 
                     b.Property<string>("UserType")
                         .HasColumnType("text");
+
+                    b.Property<string>("WorkLocInfo")
+                        .HasColumnType("jsonb");
 
                     b.HasKey("Id");
 

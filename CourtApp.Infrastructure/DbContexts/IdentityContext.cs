@@ -14,7 +14,7 @@ namespace CourtApp.Infrastructure.DbContexts
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
-        public DbSet<Demographic> Lawyers { get; set; }
+        //public DbSet<Demographic> Lawyers { get; set; }
         public DbSet<OperatorUser> LawyerUsers { get; set; }
         public DbSet<CorporateUser> Corporates { get; set; }
 
@@ -28,9 +28,9 @@ namespace CourtApp.Infrastructure.DbContexts
             });
 
             // configure Application User and Demographic relationship.
-            builder.Entity<ApplicationUser>().
-                HasOne(e => e.Demographic).WithOne(d => d.User)
-                .HasForeignKey<ApplicationUser>(a => a.DemographicId);
+            //builder.Entity<ApplicationUser>().
+            //    HasOne(e => e.Demographic).WithOne(d => d.User)
+            //    .HasForeignKey<ApplicationUser>(a => a.DemographicId);
 
             //Configure Application User and operator Relationship.
             builder.Entity<OperatorUser>()

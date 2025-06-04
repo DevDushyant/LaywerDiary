@@ -7,11 +7,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CourtApp.Infrastructure.Migrations.App
 {
     /// <inheritdoc />
-    public partial class A001 : Migration
+    public partial class DairyAppM001 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "account");
+
             migrationBuilder.EnsureSchema(
                 name: "ld");
 
@@ -38,6 +41,29 @@ namespace CourtApp.Infrastructure.Migrations.App
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AuditLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "billing_detail",
+                schema: "account",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    LawyerId = table.Column<string>(type: "text", nullable: true),
+                    BankName = table.Column<string>(type: "text", nullable: true),
+                    AccountNo = table.Column<string>(type: "text", nullable: true),
+                    Branch = table.Column<string>(type: "text", nullable: true),
+                    IfscCode = table.Column<string>(type: "text", nullable: true),
+                    PanNumber = table.Column<string>(type: "text", nullable: true),
+                    GstNo = table.Column<string>(type: "text", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_billing_detail", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -140,7 +166,7 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             migrationBuilder.CreateTable(
                 name: "m_court_fee_type",
-                schema: "ld",
+                schema: "account",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -453,8 +479,8 @@ namespace CourtApp.Infrastructure.Migrations.App
                 });
 
             migrationBuilder.CreateTable(
-                name: "m_court_fee",
-                schema: "ld",
+                name: "court_fee",
+                schema: "account",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -467,11 +493,11 @@ namespace CourtApp.Infrastructure.Migrations.App
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_m_court_fee", x => x.Id);
+                    table.PrimaryKey("PK_court_fee", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_m_court_fee_m_court_fee_type_FeeTypeId",
+                        name: "FK_court_fee_m_court_fee_type_FeeTypeId",
                         column: x => x.FeeTypeId,
-                        principalSchema: "ld",
+                        principalSchema: "account",
                         principalTable: "m_court_fee_type",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -643,6 +669,33 @@ namespace CourtApp.Infrastructure.Migrations.App
                 });
 
             migrationBuilder.CreateTable(
+                name: "court_fee_structure",
+                schema: "account",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    MinValue = table.Column<double>(type: "double precision", nullable: false),
+                    MaxValue = table.Column<double>(type: "double precision", nullable: false),
+                    Rate = table.Column<double>(type: "double precision", nullable: false),
+                    FixAmount = table.Column<double>(type: "double precision", nullable: false),
+                    StateId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_court_fee_structure", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_court_fee_structure_m_state_StateId",
+                        column: x => x.StateId,
+                        principalTable: "m_state",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "m_court_district",
                 schema: "ld",
                 columns: table => new
@@ -662,33 +715,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                     table.PrimaryKey("PK_m_court_district", x => x.Id);
                     table.ForeignKey(
                         name: "FK_m_court_district_m_state_StateId",
-                        column: x => x.StateId,
-                        principalTable: "m_state",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "m_court_fee_structure",
-                schema: "ld",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    MinValue = table.Column<double>(type: "double precision", nullable: false),
-                    MaxValue = table.Column<double>(type: "double precision", nullable: false),
-                    Rate = table.Column<double>(type: "double precision", nullable: false),
-                    FixAmount = table.Column<double>(type: "double precision", nullable: false),
-                    StateId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
-                    LastModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_m_court_fee_structure", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_m_court_fee_structure_m_state_StateId",
                         column: x => x.StateId,
                         principalTable: "m_state",
                         principalColumn: "Id",
@@ -1687,6 +1713,18 @@ namespace CourtApp.Infrastructure.Migrations.App
                 column: "CaseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_court_fee_FeeTypeId",
+                schema: "account",
+                table: "court_fee",
+                column: "FeeTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_court_fee_structure_StateId",
+                schema: "account",
+                table: "court_fee_structure",
+                column: "StateId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_m_act_ActTypeId",
                 schema: "ad",
                 table: "m_act",
@@ -1819,18 +1857,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                 column: "StateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_m_court_fee_FeeTypeId",
-                schema: "ld",
-                table: "m_court_fee",
-                column: "FeeTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_m_court_fee_structure_StateId",
-                schema: "ld",
-                table: "m_court_fee_structure",
-                column: "StateId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_m_district_StateId",
                 table: "m_district",
                 column: "StateId");
@@ -1929,6 +1955,10 @@ namespace CourtApp.Infrastructure.Migrations.App
                 name: "AuditLogs");
 
             migrationBuilder.DropTable(
+                name: "billing_detail",
+                schema: "account");
+
+            migrationBuilder.DropTable(
                 name: "case_assigned",
                 schema: "ld");
 
@@ -1942,6 +1972,14 @@ namespace CourtApp.Infrastructure.Migrations.App
             migrationBuilder.DropTable(
                 name: "case_titles",
                 schema: "ld");
+
+            migrationBuilder.DropTable(
+                name: "court_fee",
+                schema: "account");
+
+            migrationBuilder.DropTable(
+                name: "court_fee_structure",
+                schema: "account");
 
             migrationBuilder.DropTable(
                 name: "m_act_amended",
@@ -1964,14 +2002,6 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             migrationBuilder.DropTable(
                 name: "m_court_case_template");
-
-            migrationBuilder.DropTable(
-                name: "m_court_fee",
-                schema: "ld");
-
-            migrationBuilder.DropTable(
-                name: "m_court_fee_structure",
-                schema: "ld");
 
             migrationBuilder.DropTable(
                 name: "m_expense_head",
@@ -2017,6 +2047,10 @@ namespace CourtApp.Infrastructure.Migrations.App
                 name: "m_template_info");
 
             migrationBuilder.DropTable(
+                name: "m_court_fee_type",
+                schema: "account");
+
+            migrationBuilder.DropTable(
                 name: "m_act",
                 schema: "ad");
 
@@ -2026,10 +2060,6 @@ namespace CourtApp.Infrastructure.Migrations.App
 
             migrationBuilder.DropTable(
                 name: "m_publisher",
-                schema: "ld");
-
-            migrationBuilder.DropTable(
-                name: "m_court_fee_type",
                 schema: "ld");
 
             migrationBuilder.DropTable(

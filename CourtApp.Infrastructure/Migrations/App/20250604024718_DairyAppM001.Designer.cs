@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CourtApp.Infrastructure.Migrations.App
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250601130024_A001")]
-    partial class A001
+    [Migration("20250604024718_DairyAppM001")]
+    partial class DairyAppM001
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,6 +62,151 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.HasKey("Id");
 
                     b.ToTable("AuditLogs");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.Account.BillingDetailEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AccountNo")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BankName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Branch")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("GstNo")
+                        .HasColumnType("text");
+
+                    b.Property<string>("IfscCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LawyerId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PanNumber")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("billing_detail", "account");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.Account.CourtFeeEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("FeeTypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<float>("Value")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FeeTypeId");
+
+                    b.ToTable("court_fee", "account");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.Account.CourtFeeStructureEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<double>("FixAmount")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<double>("MaxValue")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("MinValue")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Rate")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("StateId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StateId");
+
+                    b.ToTable("court_fee_structure", "account");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.Account.CourtFeeTypeEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CourtFeeType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("m_court_fee_type", "account");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.Advocate.ActAmendedEntity", b =>
@@ -1361,106 +1506,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.ToTable("m_court_district", "ld");
                 });
 
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtFeeEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("FeeTypeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<float>("Value")
-                        .HasColumnType("real");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FeeTypeId");
-
-                    b.ToTable("m_court_fee", "ld");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtFeeStructureEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<double>("FixAmount")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<double>("MaxValue")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("MinValue")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Rate")
-                        .HasColumnType("double precision");
-
-                    b.Property<int>("StateId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StateId");
-
-                    b.ToTable("m_court_fee_structure", "ld");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtFeeTypeEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CourtFeeType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("m_court_fee_type", "ld");
-                });
-
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtMasterEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2063,6 +2108,28 @@ namespace CourtApp.Infrastructure.Migrations.App
                     b.HasKey("Id");
 
                     b.ToTable("m_state");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.Account.CourtFeeEntity", b =>
+                {
+                    b.HasOne("CourtApp.Domain.Entities.Account.CourtFeeTypeEntity", "FeeType")
+                        .WithMany()
+                        .HasForeignKey("FeeTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FeeType");
+                });
+
+            modelBuilder.Entity("CourtApp.Domain.Entities.Account.CourtFeeStructureEntity", b =>
+                {
+                    b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
+                        .WithMany()
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.Advocate.ActAmendedEntity", b =>
@@ -2807,28 +2874,6 @@ namespace CourtApp.Infrastructure.Migrations.App
                 });
 
             modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtDistrictEntity", b =>
-                {
-                    b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
-                        .WithMany()
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("State");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtFeeEntity", b =>
-                {
-                    b.HasOne("CourtApp.Domain.Entities.LawyerDiary.CourtFeeTypeEntity", "FeeType")
-                        .WithMany()
-                        .HasForeignKey("FeeTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FeeType");
-                });
-
-            modelBuilder.Entity("CourtApp.Domain.Entities.LawyerDiary.CourtFeeStructureEntity", b =>
                 {
                     b.HasOne("CourtApp.Entities.Common.StateEntity", "State")
                         .WithMany()

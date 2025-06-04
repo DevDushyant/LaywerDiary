@@ -1,27 +1,23 @@
 ﻿using AspNetCoreHero.Results;
-using AutoMapper;
 using CourtApp.Application.Interfaces.Repositories;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CourtApp.Application.Features.CourtFeeStructure.Command
+namespace CourtApp.Application.Features.Account
 {
-    public class UpdateCourtFeeStructureCommand : IRequest<Result<Guid>>
+    public class CourtFeeStructureUpdateCommand : IRequest<Result<Guid>>
     {
         public Guid Id { get; set; }
         public int StateCode { get; set; }
-        public Double MinValue { get; set; }
-        public Double MaxValue { get; set; }
-        public Double Rate { get; set; }
-        public Double FixAmount { get; set; }
+        public double MinValue { get; set; }
+        public double MaxValue { get; set; }
+        public double Rate { get; set; }
+        public double FixAmount { get; set; }
     }
 
-    public class UpdateCourtFeeStructureCommandHandler : IRequestHandler<UpdateCourtFeeStructureCommand, Result<Guid>>
+    public class UpdateCourtFeeStructureCommandHandler : IRequestHandler<CourtFeeStructureUpdateCommand, Result<Guid>>
     {
         private readonly ICourtFeeStructureRepository repository;
        private IUnitOfWork _unitOfWork { get; set; }
@@ -31,7 +27,7 @@ namespace CourtApp.Application.Features.CourtFeeStructure.Command
             this._unitOfWork = _unitOfWork;
 
         }
-        public async Task<Result<Guid>> Handle(UpdateCourtFeeStructureCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(CourtFeeStructureUpdateCommand request, CancellationToken cancellationToken)
         {
             var detail = await repository.GetByIdAsync(request.Id);
             if (detail == null)

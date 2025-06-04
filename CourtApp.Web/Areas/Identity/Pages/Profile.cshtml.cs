@@ -60,18 +60,18 @@ namespace CourtApp.Web.Areas.Identity.Pages
                 {
                     ProfInfo = new ProfessionalInfoViewModel
                     {
-                        EnrollmentNo = user != null ? user.ProfessionalInfo.EnrollmentNo : "",
-                        BarAssociationNumber = user != null ? user.ProfessionalInfo.BarAssociationNumber : "",
-                        PracticeLicenseDate= user != null ? user.ProfessionalInfo.PracticeLicenseDate : System.DateTime.Now,
-                        PracticeSince = user != null ? user.ProfessionalInfo.PracticeSince.ToString() : "",
+                        EnrollmentNo = user != null && user.ProfessionalInfo!=null? user.ProfessionalInfo.EnrollmentNo : "",
+                        BarAssociationNumber = user != null && user.ProfessionalInfo != null ? user.ProfessionalInfo.BarAssociationNumber : "",
+                        PracticeLicenseDate= user != null && user.ProfessionalInfo != null ? user.ProfessionalInfo.PracticeLicenseDate : System.DateTime.Now,
+                        PracticeSince = user != null && user.ProfessionalInfo != null ? user.ProfessionalInfo.PracticeSince.ToString() : "",
                     },
                     AddressInfo = new AddressInfoViewModel()
                     {
-                        StreetAddress = user != null ? user.AddressInfo.StreetAddress : ""
+                        StreetAddress = user != null&& user.AddressInfo!=null ? user.AddressInfo.StreetAddress : ""
                     },
                     WorkLocInfo = new WorkInfoViewModel()
                     {
-                        Address = user != null ? user.WorkLocInfo.Address : ""
+                        Address = user != null && user.WorkLocInfo !=null? user.WorkLocInfo.Address : ""
                     }
                 };
             }
