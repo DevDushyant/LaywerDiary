@@ -33,7 +33,8 @@ namespace CourtApp.Web.Services
                 "Profile" => _settings.Folders["ProfileImages"],
                 _ => throw new ArgumentException("Invalid document type")
             };
-            var jsonKeyPath = Path.Combine(_environment.WebRootPath, "service-account-key.json");
+            //var jsonKeyPath = Path.Combine(_environment.WebRootPath, "service-account-key.json");
+            var jsonKeyPath = Environment.GetEnvironmentVariable("GOOGLE_SERVICE_ACCOUNT_KEY");
             GoogleCredential credential;
             using (var stream = new FileStream(jsonKeyPath, FileMode.Open, FileAccess.Read))
             {

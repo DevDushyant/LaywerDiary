@@ -12,6 +12,7 @@ using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
 using CourtApp.Web.Extensions;
+using CourtApp.Web.Helpers;
 using CourtApp.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -39,10 +40,12 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         private readonly IDocumentUploadService _documentUploadService;
         private readonly UploadSettings _settings;
         private readonly IdentityContext _identityDbContext;
+        private readonly ActionRenderHelper _viewRenderHelper;
 
         public CaseManageController(IWebHostEnvironment _webHostEnvironment, /*BlobService _blobService,*/
             UserManager<ApplicationUser> _userManager, IDocumentUploadService _documentUploadService,
-            IdentityContext identityDbContext, IOptions<UploadSettings> options)
+            IdentityContext identityDbContext, IOptions<UploadSettings> options,
+            ActionRenderHelper _viewRenderHelper)
         {
             this._webHostEnvironment = _webHostEnvironment;
             //this._blobService = _blobService;
@@ -50,12 +53,76 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             this._documentUploadService = _documentUploadService;
             _settings = options.Value;
             _identityDbContext = identityDbContext;
+            this._viewRenderHelper = _viewRenderHelper;
         }
 
         #region Case Management Area
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadAllAsync([FromForm] DataTableRequest request)
+        {
+            int pageSize = request.length;
+            int start = request.start;
+            int pageNumber = (start / pageSize) + 1;
+
+            var response = await _mediator.Send(new GetCaseInfoQuery
+            {
+                LinkedIds = User.GetUserLinkedIds(),
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Search = request.search?.value ?? "",   // Optional: for search
+                SortColumn = request.columns?[request.order[0].column].data,
+                SortDirection = request.order[0].dir
+            });
+
+            if (response.Succeeded)
+            {
+                
+                List<GetCaseInfoViewModel> dataModels = new List<GetCaseInfoViewModel>();
+                foreach (var item in response.Data)
+                {
+                    var actionModel = new CaseActionViewModel
+                    {
+                        CaseId = item.Id,
+                        Reference = item.Reference,
+                        IsCaseAssigned = item.IsCaseAssigned,
+                        LawyerId = item.LawyerId
+                    };
+                    dataModels.Add(new GetCaseInfoViewModel
+                    {
+                        Id = item.Id,
+                        CaseDetail = item.CaseDetail,
+                        CaseStage = item.CaseStage,
+                        CaseType = item.CaseType,
+                        Court = item.Court,
+                        CourtType = item.CourtType,
+                        IsCaseAssigned = item.IsCaseAssigned,
+                        NextDate = item.NextDate,
+                        No = item.No,
+                        Reference = item.Reference,
+                        Year = item.Year,
+                        ActionHtml = await _viewRenderHelper.RenderPartialViewToStringAsync("_CaseGroupActionPartial", actionModel)
+                    });
+                }
+
+                _logger.LogInformation("Load all the user's cases successfully!");
+                var dataTableResponse = new
+                {
+                    draw = request.draw,
+                    recordsTotal = response.TotalCount,
+                    recordsFiltered = response.TotalCount, // Filtered = Total when no filtering logic used
+                    data = dataModels
+                };
+
+                return Json(dataTableResponse);
+            }
+
+            return Json(new { error = "Unable to load data" });
+
         }
 
         public async Task<IActionResult> LoadAll()

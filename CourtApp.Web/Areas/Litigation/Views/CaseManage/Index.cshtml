@@ -1,4 +1,4 @@
-﻿ @{
+﻿@{
     ViewData["Title"] = localizer["User Case List"];
     ViewData["Caption"] = localizer["Your Case List"];
 }
@@ -7,9 +7,9 @@
         display: none;
     }
 </style>
-
+@Html.AntiForgeryToken()
 <div class="card">
-    <div class="col-sm-12" style="padding:20px">       
+    <div class="col-sm-12" style="padding:20px">
         @if (AuthorizationService.AuthorizeAsync(User, "CasePanel.ManageCase.Create").Result.Succeeded)
         {
             <a asp-area="Litigation" asp-controller="CaseManage" asp-action="CreateOrUpdate" class="btn bg-success">
@@ -22,131 +22,68 @@
         </a>
     </div>
     <div id="viewAll" class="card-body table-responsive">
+        <table id="tblUserCase" class="table table-striped" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th style="width:1%!important">Sno.</th>
+                    <th style="width:10%!important">Reference</th>
+                    <th style="width:16%!important">Court</th>
+                    <th style="width:16%!important">Type</th>
+                    <th style="width:5%!important">No.</th>
+                    <th style="width:5%!important">Year</th>
+                    <th style="width:30%!important">Title</th>
+                    <th style="width:10%!important">Stage</th>
+                    <th style="width:14%!important">Next Date</th>
+                    <th style="width:3%!important">Actions</th>
+                </tr>
+            </thead>
+        </table>
     </div>
 </div>
 @section Scripts
 {
-
-    <script src="~/js/litigation/caselist.js"></script>
-}
-
-@* <div class="card">
-    <div class="col-sm-12" style="padding:20px">
-        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.Cases.Create)).Result.Succeeded)
-        {
-            <a asp-area="Litigation" asp-controller="CaseManage" asp-action="CreateOrUpdate" class="btn bg-success">
-                <i class="fa fa-plus-square"></i> Add New Case
-            </a>
-
-        }
-        <a id="reload" class="btn btn-primary text-white">
-            <i class="fa fas fa-bolt"></i>
-            Reload
-        </a>
-    </div>
-    <div id="viewAll" class="card-body table-responsive">
-    </div>
-</div>
-
-<table id="tblUserCase" class="table table-striped" width="100%" cellspacing="0">
-    <thead>
-        <tr>
-            <th>Sno.</th>
-            <th>Court</th>
-            <th>Type</th>
-            <th>No.</th>
-            <th>Year</th>
-            <th>Title</th>
-            <th>Stage</th>
-            <th>Next Date</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-</table>
-
-@section Scripts {
     <script>
         $(document).ready(function () {
-            $('#tblUserCase').DataTable({
-                "processing": true, // Show loading indicator
-                "serverSide": true, // Enable server-side processing
-                "filter": true, // Enable search box
-                "orderMulti": false, // Disable multiple column sorting
-                "pageLength": 5, // Default page size
-
+            // Initialize and store the DataTable
+            var table = $('#tblUserCase').DataTable({
+                "processing": true,
+                "serverSide": true,
                 "ajax": {
-                    "url": "/Litigation/CaseManage/LoadAll", // Server API URL
-                    "type": "POST", // Request method
-                     "contentType": "application/json",
-                    "data": function (d) {
-                return JSON.stringify({
-                    pageNumber: (d.start / d.length) + 1, // Calculate page number
-                    pageSize: d.length, // Number of records per page
-                    searchValue: d.search.value, // Search term
-                    sortColumn: d.columns[d.order[0].column].data, // Sorting column
-                    sortDirection: d.order[0].dir // Sorting order (asc/desc)
-                });
-            },
-            "dataSrc": function (json) {
-                $('.dataTables_processing').hide();  // Hide Processing Indicator
-                return json.data;
-            },
-            "error": function () {
-                $('.dataTables_processing').hide();  // Hide in case of error
-            }
-                },
-                "columnDefs": [
-            { "targets": 0, "orderable": false }, // Prevent sorting on Sno. column
-            { "targets": -1, "orderable": false } // Prevent sorting on Actions column
-        ],
-                "columns": [
-                    { "data": null },
-                    { "data": "Court", "name": "Court" },
-                    { "data": "CaseType", "name": "CaseType" },
-                    { "data": "No", "name": "No" },
-                    { "data": "Year", "name": "Year" },
-                    { "data": "CaseDetail", "name": "CaseDetail" },
-                    { "data": "CaseStage", "name": "CaseStage" },
-                    { "data": "NextDate", "name": "NextDate" },
-                    {
-                        "data": "Id",
-                        "render": function (data, type, row) {
-                            return `<div class="btn-group">
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Action
-                                        </button>
-                                        <div class="dropdown-menu shadow animated--grow-in">
-                                            <a onclick="jQueryModalGet('/Litigation/casemanage/OnGetCaseHistory?CaseId=${data}', 'See History')" class="dropdown-item">
-                                                <i class="fa fa-history"></i>  History
-                                            </a>
-                                            <a onclick="jQueryModalGet('/Litigation/casemanage/GetFileUploadModel?CaseId=${data}&w=mc', 'Upload Document')" class="dropdown-item">
-                                                <i class="fas fa-file-alt"></i>  Upload Document
-                                            </a>
-                                            <a href="/Litigation/casemanage/GetCaseDetail/${data}" class="dropdown-item">
-                                                <i class="fa fa-eye"></i>  Case Detail
-                                            </a>
-                                             <form id="form_delete_${data}" asp-area="Litigation"
-                                              asp-controller="casemanage" method="post"
-                                              asp-action="OnPostDelete" asp-route-id="${data}"
-                                              onsubmit="return jQueryModalDelete(this)">
-                                            <a href="javascript:$('#form_delete_${data}').submit();" class="dropdown-item">
-                                                <i class="fas fa-trash-alt"></i>  Delete
-                                            </a>
-                                        </form>
-                                        </div>
-                                    </div>`;
-                        }
+                    "url": "/Litigation/CaseManage/LoadAll",
+                    "type": "POST",
+                    "headers": {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    "dataSrc": function (json) {
+                        console.log(json);
+                        return json.data;
                     }
-                ],
-                "rowCallback": function (row, data, index) {
-            var table = $('#tblUserCase').DataTable();
-            var pageInfo = table.page.info();
-            var serialNo = pageInfo.start + index + 1; // Calculate serial number
-            $('td:eq(0)', row).html(serialNo);
-        }
-
+                },
+                "columns": [
+                    {
+                        "data": null,
+                        "render": function (data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        },
+                        "orderable": false
+                    },
+                    { "data": "Reference" },
+                    { "data": "Court" },
+                    { "data": "CaseType" },
+                    { "data": "No" },
+                    { "data": "Year" },
+                    { "data": "CaseDetail" },
+                    { "data": "CaseStage" },
+                    { "data": "NextDate" },
+                    { "data": "ActionHtml", "orderable": false, "searchable": false }
+                ]
             });
+
+            // Optional reload on button click
+            $('#reload').on('click', function () {
+                table.ajax.reload(null, false);
+            });
+
         });
     </script>
 }
- *@

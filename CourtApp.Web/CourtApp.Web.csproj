@@ -5,13 +5,22 @@
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
     <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
     <UserSecretsId>9155b630-bc39-4ed9-8edd-e1b380ae1b95</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Dashboard\Data\**" />
     <Compile Remove="Views\Shared\Components\Notyf\**" />
+    <Content Remove="Areas\Dashboard\Data\**" />
     <Content Remove="Views\Shared\Components\Notyf\**" />
+    <EmbeddedResource Remove="Areas\Dashboard\Data\**" />
     <EmbeddedResource Remove="Views\Shared\Components\Notyf\**" />
+    <None Remove="Areas\Dashboard\Data\**" />
     <None Remove="Views\Shared\Components\Notyf\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Dockerfile" />
   </ItemGroup> 
 
   <ItemGroup>
@@ -28,6 +37,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1-Preview.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="AspNetCoreHero.Extensions.Logging" Version="1.0.0" />
@@ -38,8 +48,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Dashboard\Data\" />
-    <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Drafting\Data\" />
     <Folder Include="Areas\Settings\Data\" />
     <Folder Include="Areas\Settings\Models\" />
@@ -51,6 +59,18 @@
   <ItemGroup>
     <ProjectReference Include="..\CourtApp.Infrastructure.Shared\CourtApp.Infrastructure.Shared.csproj" />
     <ProjectReference Include="..\CourtApp.Infrastructure\CourtApp.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="..\.dockerignore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="..\.dockerignore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="..\.dockerignore" />
   </ItemGroup>
 
  

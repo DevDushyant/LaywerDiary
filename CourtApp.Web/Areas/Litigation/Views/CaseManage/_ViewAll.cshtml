@@ -1,4 +1,5 @@
-﻿@model IEnumerable<GetCaseInfoViewModel>
+﻿@* @model IEnumerable<GetCaseInfoViewModel> *@
+@model PaginationViewModel<GetCaseInfoViewModel>
 <table id="tblUserCase" class="table table-striped" width="100%" cellspacing="0">
 	<thead>
 		<tr>
@@ -18,7 +19,7 @@
 		@{
 			int count = 0;
 		}
-		@foreach (var bt in Model)
+		@foreach (var bt in Model.Data)
 		{
 			<tr>
 				<td>
@@ -52,10 +53,6 @@
 				<td>
 					@if (bt.NextDate != "01-01-0001")
 						@bt.NextDate
-
-
-
-
 				</td>
 				<td class="text-right">
 					@{
@@ -73,7 +70,34 @@
 </table>
 <script>
 	$(document).ready(function () {
-		$("#tblUserCase").DataTable();
-		//JqueryDataTable('tblUserCase','User Data List','0,1,2,3,4,5,6,7');
+		$("#tblUserCase").DataTable({
+			"processing": true,
+			"serverSide": true,
+			"ajax": {
+				"url": "/LawyerDiary/CaseManage/LoadAll",
+				"type": "POST"
+			},
+			"columns": [
+				{ "data": "Head" },
+				{ "data": "Name_En" },
+				{ "data": "Name_Hn" },
+				{
+					"data": null,
+					"render": function (data, type, row) {
+						var actions = '<div class="btn-group">';
+						actions += '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action</button>';
+						actions += '<div class="dropdown-menu shadow animated--grow-in">';
+						if (data.CanEdit) {
+							actions += '<a onclick="jQueryModalGet(\'/LawyerDiary/ProceedingSubHead/OnGetCreateOrEdit?id=' + row.Id + '\',\'Edit Proceeding Sub Head Type\')" class="dropdown-item"><i class="fas fa-pencil-alt"></i> Edit</a>';
+						}
+						if (data.CanDelete) {
+							actions += '<a href="javascript:$(\'#form_delete_' + row.Id + '\').submit();" class="dropdown-item"><i class="fas fa-trash-alt"></i> Delete</a>';
+						}
+						actions += '</div></div>';
+						return actions;
+					}
+				}
+			]
+		});
 	});
 </script>
