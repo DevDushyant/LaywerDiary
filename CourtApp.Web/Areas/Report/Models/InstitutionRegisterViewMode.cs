@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CourtApp.Web.Areas.Report.Models
 {
@@ -9,5 +10,7 @@ namespace CourtApp.Web.Areas.Report.Models
     public class InstituteModel : CaseDetailViewModel
     {
         public string Reference { get; set; }
+        public bool IsCaseAssigned { get; set; }
+        public Guid LawyerId { get; set; }
     }
 }

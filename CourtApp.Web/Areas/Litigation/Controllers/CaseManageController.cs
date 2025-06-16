@@ -12,6 +12,7 @@ using CourtApp.Web.Areas.Admin.Models;
 using CourtApp.Web.Areas.Client.Model;
 using CourtApp.Web.Areas.Litigation.Models;
 using CourtApp.Web.Extensions;
+using CourtApp.Web.Helpers;
 using CourtApp.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -38,22 +39,90 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IDocumentUploadService _documentUploadService;
         private readonly UploadSettings _settings;
+        private readonly IdentityContext _identityDbContext;
+        private readonly ActionRenderHelper _viewRenderHelper;
 
         public CaseManageController(IWebHostEnvironment _webHostEnvironment, /*BlobService _blobService,*/
             UserManager<ApplicationUser> _userManager, IDocumentUploadService _documentUploadService,
-            IdentityContext _identityDbContext, IOptions<UploadSettings> options)
+            IdentityContext identityDbContext, IOptions<UploadSettings> options,
+            ActionRenderHelper _viewRenderHelper)
         {
             this._webHostEnvironment = _webHostEnvironment;
             //this._blobService = _blobService;
             this._userManager = _userManager;
             this._documentUploadService = _documentUploadService;
             _settings = options.Value;
+            _identityDbContext = identityDbContext;
+            this._viewRenderHelper = _viewRenderHelper;
         }
 
         #region Case Management Area
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadAllAsync([FromForm] DataTableRequest request)
+        {
+            int pageSize = request.length;
+            int start = request.start;
+            int pageNumber = (start / pageSize) + 1;
+
+            var response = await _mediator.Send(new GetCaseInfoQuery
+            {
+                LinkedIds = User.GetUserLinkedIds(),
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Search = request.search?.value ?? "",   // Optional: for search
+                SortColumn = request.columns?[request.order[0].column].data,
+                SortDirection = request.order[0].dir
+            });
+
+            if (response.Succeeded)
+            {
+                
+                List<GetCaseInfoViewModel> dataModels = new List<GetCaseInfoViewModel>();
+                foreach (var item in response.Data)
+                {
+                    var actionModel = new CaseActionViewModel
+                    {
+                        CaseId = item.Id,
+                        Reference = item.Reference,
+                        IsCaseAssigned = item.IsCaseAssigned,
+                        LawyerId = item.LawyerId
+                    };
+                    dataModels.Add(new GetCaseInfoViewModel
+                    {
+                        Id = item.Id,
+                        CaseDetail = item.CaseDetail,
+                        CaseStage = item.CaseStage,
+                        CaseType = item.CaseType,
+                        Court = item.Court,
+                        CourtType = item.CourtType,
+                        IsCaseAssigned = item.IsCaseAssigned,
+                        NextDate = item.NextDate,
+                        No = item.No,
+                        Reference = item.Reference,
+                        Year = item.Year,
+                        ActionHtml = await _viewRenderHelper.RenderPartialViewToStringAsync("_CaseGroupActionPartial", actionModel)
+                    });
+                }
+
+                _logger.LogInformation("Load all the user's cases successfully!");
+                var dataTableResponse = new
+                {
+                    draw = request.draw,
+                    recordsTotal = response.TotalCount,
+                    recordsFiltered = response.TotalCount, // Filtered = Total when no filtering logic used
+                    data = dataModels
+                };
+
+                return Json(dataTableResponse);
+            }
+
+            return Json(new { error = "Unable to load data" });
+
         }
 
         public async Task<IActionResult> LoadAll()
@@ -479,7 +548,8 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new JsonResult(new { isValid = false, message = "Invalid request data." });
+                return Json(new { success = "failed", message = "Invalid request data, uplaoded file size may be > 30MB or some information is missin! " });
+
             }
 
             List<CaseDocumentModel> ddoc = new List<CaseDocumentModel>();
@@ -767,6 +837,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         public async Task<JsonResult> OnGetAssignCase(Guid CaseId)
         {
             var model = new AssignCaseViewModel();
+            model.IsAssignAction = true;
             var userType = new List<string>();
             userType.Add("LAWYER");
             userType.Add("CORPORATE");
@@ -780,22 +851,23 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 Id = x.Id,
                 FullDisplay = $"{x.FirstName} {x.LastName}"
             });
-
             model.Lawyers = new SelectList(lawyerSelectList, "Id", "FullDisplay");
-            model.CaseId = CaseId;
+            model.Id = CaseId;
             return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_AssignCase", model) });
         }
+
         [HttpPost]
         public async Task<JsonResult> OnPostAssignCase(Guid Id, AssignCaseViewModel model)
         {
             if (ModelState.IsValid)
             {
-                if (Id == Guid.Empty)
+                if (model.IsAssignAction == true)
                 {
                     try
                     {
                         var cmd = _mapper.Map<CreateCaseAssignedCommand>(model);
                         cmd.UserId = Guid.Parse(CurrentUser.Id);
+                        cmd.CaseId = Id;
                         var result = await _mediator.Send(cmd);
                         if (result.Succeeded)
                         {
@@ -810,8 +882,34 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         Console.WriteLine(ex);
                     }
                 }
+                else
+                {
+                    var cmd = _mapper.Map<CaseDeAssignedCommnad>(model);
+                    var result = await _mediator.Send(cmd);
+                    if (result.Succeeded)
+                    {
+                        Id = result.Data;
+                        _notify.Success($"Case is de-assigned successfully!");
+                        return new JsonResult(new { isValid = true, html = "" });
+                    }
+                }
             }
             return new JsonResult(new { isValid = false, html = "html" });
+        }
+
+
+        public async Task<JsonResult> DeAssignedCase(Guid CaseId, Guid LawyerId)
+        {
+            var model = new AssignCaseViewModel();
+            model.IsAssignAction = false;
+            model.Id = CaseId;
+            model.LawyerId = LawyerId;
+            var lawyerInfo = await _userManager.Users
+                .Where(a => a.IsActive == true
+                            && a.Id == LawyerId.ToString()).FirstOrDefaultAsync();
+            string lawyerFullName = lawyerInfo.FirstName + " " + lawyerInfo.LastName;
+            model.LawyerInfo = lawyerFullName;
+            return new JsonResult(new { isValid = true, html = await _viewRenderer.RenderViewToStringAsync("_AssignCase", model) });
         }
         #endregion
 
@@ -830,5 +928,42 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
             }
         }
         #endregion
+
+        #region Case DropDown By Lawyer
+        public async Task<JsonResult> ddlCaseInfoByLawyer(string UserId)
+        {
+            try
+            {
+                Console.WriteLine("UserId" + UserId);
+                List<string> LinkedIds = new List<string>();
+                LinkedIds = await _identityDbContext.LawyerUsers
+                            .Where(w => w.LawyerId == UserId)
+                            .Select(s => s.Id.ToString())
+                            .ToListAsync();
+                LinkedIds.Add(UserId);
+                Console.WriteLine("LinkedUserId" + string.Join(",", LinkedIds));
+                var response = await _mediator.Send(new GetCasesByUserQuery()
+                {
+                    LinkIds = LinkedIds,
+                    CallingFrom = "Bring"
+                });
+                if (response.Succeeded)
+                {
+                    Console.WriteLine("After success" + string.Join(",", LinkedIds));
+                    var dt = response.Data;
+                    var ViewModel = _mapper.Map<List<DropDownGViewModel>>(dt);
+                    Console.WriteLine("After success" + string.Join(",", LinkedIds));
+                    return Json(ViewModel);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+        #endregion
+
     }
 }

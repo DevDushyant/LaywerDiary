@@ -40,6 +40,7 @@
                     var canAccessInspReg = (await AuthorizationService.AuthorizeAsync(User, "Register.Menu.Institue")).Succeeded;
                     var canAccessOthpReg = (await AuthorizationService.AuthorizeAsync(User, "Register.Menu.Other")).Succeeded;
                     var canAccessTools = (await AuthorizationService.AuthorizeAsync(User, Permissions.Tool.MenuAccess)).Succeeded;
+                    
                     var canAccessAppMaster = User.IsInRole("SuperAdmin");
                 }
 
@@ -151,6 +152,12 @@
                                 <a is-active-route asp-area="LawyerDiary" asp-controller="cadre" asp-action="index" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>@localizer["Cadre Master"]</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a is-active-route asp-area="LawyerDiary" asp-controller="courtform" asp-action="index" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>@localizer["Court forms"]</p>
                                 </a>
                             </li>
                         </ul>

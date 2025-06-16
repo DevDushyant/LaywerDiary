@@ -71,7 +71,7 @@ namespace CourtApp.Application.Features.CaseProceeding
                 {
                     foreach (var caseDetail in casesToUpdate)
                     {
-                        caseDetail.DisposalDate = DateTime.UtcNow;
+                        caseDetail.DisposalDate = request.ProceedingDate;
                     }
 
                     // ✅ Batch update instead of multiple update calls
@@ -132,8 +132,8 @@ namespace CourtApp.Application.Features.CaseProceeding
             }
 
             // ✅ Step 5: Insert All Entities Efficiently
-            if (request.CaseId != Guid.Empty)
-                caseProceedings.Add(entity); // Always insert the main entity
+            //if (request.CaseId != Guid.Empty)
+              //  caseProceedings.Add(entity); // Always insert the main entity
 
             if (caseProceedings.Any())
             {

@@ -1,6 +1,51 @@
 ﻿@{
     ViewData["Title"] = localizer["Lawyer Dashboard"];
 }
+@model DashboardViewModel
+@using Newtonsoft.Json
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .card-summary {
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        font-weight: bold;
+    }
+
+        .card-summary.blue {
+            background-color: #007bff;
+        }
+
+        .card-summary.orange {
+            background-color: #fd7e14;
+        }
+
+        .card-summary.teal {
+            background-color: #20c997;
+        }
+
+        .card-summary.cyan {
+            background-color: #17a2b8;
+        }
+
+    .section-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .add-case-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+</style>
 @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
 {
     <div class="container-fluid">
@@ -59,7 +104,7 @@
                     </div>
                 </div>
             </div> *@
-            
+
         </div>
     </div>
 }
@@ -67,7 +112,82 @@ else
 {
     <div class="container-fluid">
         <div class="row">
-            Hi User
+            Coming soon!
         </div>
     </div>
+    /*
+    <div class="container py-4">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="card-summary blue text-center">Total Cases<br><span class="fs-3">@Model.TotalCases</span></div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-summary orange text-center">Assigned Cases<br><span class="fs-3">@Model.AssignedCases</span></div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-summary teal text-center">Disposed Cases<br><span class="fs-3">@Model.DisposedCases</span></div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-summary cyan text-center">Today's Hearings<br><span class="fs-3">@Model.PendingCases</span></div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h5 class="section-title">Cases vs Disposed Cases</h5>
+                <canvas id="barChart" width="400" height="300" style="width: 400px; height: 300px;"></canvas>
+            </div>
+            <div class="col-md-6">
+                <h5 class="section-title">Case Status Distribution</h5>
+                <canvas id="pieChart" width="400" height="300" style="width: 400px; height: 300px;"></canvas>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h5 class="section-title">Top Clients</h5>
+                <table class="table table-bordered">
+                    <thead><tr><th>Client</th><th>Cases</th><th>Next Hearing</th></tr></thead>
+                    <tbody>
+                        <tr><td>Acme Inc</td><td>5</td><td>Apr 22</td></tr>
+                        <tr><td>State v. John</td><td>4</td><td>Apr 18</td></tr>
+                        <tr><td>Jones & Roe</td><td>3</td><td>Apr 15</td></tr>
+                    </tbody>
+                </table>
+                <button class="btn add-case-btn">+ Add Case</button>
+            </div>
+            @* <div class="col-md-6">
+                <h5 class="section-title">Upcoming Hearings</h5>
+                <input type="text" id="calendarInput" class="form-control" placeholder="Select Date" style="width: 100%;" />
+                <div id="calendarInline"></div>
+            </div> *@
+        </div>
+
+        @* <div class="row mt-4">
+
+            <div class="col-md-6">
+                <h5 class="section-title">Pending Work</h5>
+                <table class="table table-bordered">
+                    <thead><tr><th>Case ID</th><th>Task</th><th>Due Date</th></tr></thead>
+                    <tbody>
+                        <tr><td>PQR v. Davis</td><td>Draft Motion</td><td>Apr 25</td></tr>
+                        <tr><td>GHI v. Brown</td><td>Review Docs</td><td>Apr 24</td></tr>
+                        <tr><td>LMN v. Doe</td><td>Draft Motion</td><td>Apr 19</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div> *@
+    </div>
+    */
+}
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        window.monthlyCaseData = @Html.Raw(Json.Serialize(Model.MonthlyCaseStatuses));
+        window.caseStatusData = @Html.Raw(Json.Serialize(Model.StatusSummaries));
+        window.hearingDates = @Html.Raw(Json.Serialize(Model.UpcomingHearings));
+    </script>
+    <script src="~/js/Dashboard.js"></script>
 }

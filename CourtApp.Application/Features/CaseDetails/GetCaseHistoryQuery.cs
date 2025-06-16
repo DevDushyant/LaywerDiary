@@ -48,9 +48,9 @@ namespace CourtApp.Application.Features.CaseDetails
                 CaseHistoryResposnse chr = new CaseHistoryResposnse();
                 chr.Id = request.CaseId;
                 chr.CaseNoYear = detail.CaseNo + "/" + detail.CaseYear;
-                chr.Title = detail.FirstTitle + " Vs " + detail.SecondTitle;
-                chr.CourtType = detail.CourtType != null ? detail.CourtType.CourtType : "";
-                chr.Court = detail.CourtBench != null ? detail.CourtBench.CourtBench_En : "";
+                chr.Title = (detail.FirstTitle + " Vs " + detail.SecondTitle).ToUpper();
+                chr.CourtType = detail.CourtType != null ? detail.CourtType.CourtType.ToUpper() : "";
+                chr.Court = detail.CourtBench != null ? detail.CourtBench.CourtBench_En.ToUpper() : "";
                 var cprocs = await _ProceedingRepo.GetProceedingByCaseIdAsync(request.CaseId);
                 var PWorks = cprocs.GroupBy(pd => pd.ProceedingDate)
                     .Select(g => new
@@ -139,7 +139,7 @@ namespace CourtApp.Application.Features.CaseDetails
                         Id = s.Id,
                         DocType = s.DOTypeId == 1 ? "Drafting" : "Order",
                         DocFilePath = s.Path,
-                        DocName = s.DO.Name_En,
+                        DocName = s.DO.Name_En.ToUpper(),
                         DocDate = s.DocDate.ToString("dd/MM/yyyyy")
                     }).ToList();
 

@@ -52,7 +52,7 @@ namespace CourtApp.Application.Features.CaseProceeding
             if (ProcDetail != null && ProcDetail.Abbreviation == "DISP")
             {
                 var CaseDetail = await _CaseRepo.GetByIdAsync(request.CaseId);
-                CaseDetail.DisposalDate = DateTime.Now;
+                CaseDetail.DisposalDate = request.ProceedingDate;
                 await _CaseRepo.UpdateAsync(CaseDetail);
             }
             var entity = await _Repository.GetByIdAsync(request.CaseId, null);

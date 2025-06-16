@@ -5,6 +5,7 @@ using CourtApp.Application.Interfaces.Shared;
 using CourtApp.Infrastructure.Extensions;
 using CourtApp.Web.Abstractions;
 using CourtApp.Web.Extensions;
+using CourtApp.Web.Helpers;
 using CourtApp.Web.Models;
 using CourtApp.Web.Permission;
 using CourtApp.Web.Services;
@@ -113,6 +114,7 @@ namespace CourtApp.Web
             {
                 services.AddScoped<IDocumentUploadService, LocalUploaderService>();
             }
+            services.AddScoped<ActionRenderHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

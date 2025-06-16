@@ -98,6 +98,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 hearing.CaseTypeName = item.CaseTypeName;
                 hearing.IsProceedingDone = item.IsProceedingDone;
                 hearing.Reference = item.Reference;
+                hearing.IsCaseAssigned = item.IsCaseAssigned;
                 cdt.Add(hearing);
             }
             model.CaseList = cdt;
@@ -150,8 +151,13 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
         #region Today's Proceeding to the case
         public async Task<JsonResult> CaseProceeding(Guid CaseId)
         {
-            var SelectedDate = TempData["SelectedDate"].ToString();
-            TempData.Keep();
+            string SelectedDate = DateTime.Now.ToString();
+            if (TempData["SelectedDate"] != null)
+            {
+                SelectedDate = TempData["SelectedDate"].ToString();
+                TempData.Keep();
+            }
+
             var response = await _mediator.Send(new GetCaseProceedingByIdQuery()
             {
                 CaseId = CaseId,
@@ -170,6 +176,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                 model.Court = dt.Court;
                 model.CaseType = dt.CaseType;
                 model.Stage = dt.Stage;
+                model.MCasIds = dt.ParentChildCaseIds;
                 if (dt.HeadId != Guid.Empty)
                 {
                     model = _mapper.Map<CaseProceedingViewModel>(dt);
@@ -228,7 +235,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         up.ProcWork = null;
                     var result = await _mediator.Send(up);
                     if (result.Succeeded)
-                        _notify.Success($"Case proceeding with ID {result.Data} Updated.");
+                        _notify.Success($"Case proceeding updated successfull!");
                 }
                 else
                 {
@@ -241,7 +248,7 @@ namespace CourtApp.Web.Areas.Litigation.Controllers
                         cmd.ProcWork = null;
                     var result = await _mediator.Send(cmd);
                     if (result.Succeeded)
-                        _notify.Success($"Case proceeding with ID {result.Data} Created.");
+                        _notify.Success($"Case proceeding done successfull!");
                 }
             }
             return RedirectToAction("Index", new { SelectedDate = TempData["SelectedDate"].ToString() });
